@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CISA Domain 3 — IS Acquisition, Development &amp; Implementation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f14;--surface:#161920;--surface2:#1e2330;--border:#2a3045;
+  --em:#00c9a7;--em2:#4ee8cc;--em-dim:rgba(0,201,167,.13);
+  --gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+  --red:#e05c5c;--orange:#f5a623;--green:#2ed573;
+  --text:#e8eaf0;--text-muted:#7a859a;--text-dim:#4a5568;
+  --radius:12px;--radius-lg:20px;--shadow:0 8px 40px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{flex:1;overflow-x:hidden}
+.sidebar-logo{padding:24px 24px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo .badge{background:var(--em-dim);border:1px solid var(--em);color:var(--em2);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.sidebar-logo h2{font-family:"Playfair Display",serif;font-size:18px;color:var(--text);line-height:1.3}
+.progress-wrap{padding:16px 24px;border-bottom:1px solid var(--border)}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.progress-bar{height:4px;background:var(--border);border-radius:2px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:2px;width:0%;transition:width .6s ease}
+.nav-list{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;font-size:13.5px;color:var(--text-muted);transition:all .2s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--em2);background:var(--em-dim);border-left-color:var(--em)}
+.nav-item .nav-num{width:22px;height:22px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:"DM Mono",monospace;flex-shrink:0;transition:all .3s}
+.nav-item.active .nav-num{background:var(--em);color:var(--bg);border-color:var(--em)}
+.nav-item.visited .nav-num{background:rgba(0,201,167,.15);border-color:rgba(0,201,167,.4);color:var(--em2);font-size:10px}
+.nav-item.visited .nav-num::after{content:"✓"}
+.nav-item.visited .nav-num span{display:none}
+.sidebar-footer{padding:16px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)}
+.sidebar-footer a{color:var(--em2);text-decoration:none}
+.toast-stack{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text);transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);max-width:320px;box-shadow:var(--shadow)}
+.toast.show{transform:translateX(0)}
+.toast.em{border-color:rgba(0,201,167,.4);background:rgba(0,201,167,.07)}
+.toast.green{border-color:rgba(46,213,115,.3);background:rgba(46,213,115,.06)}
+.toast-icon{font-size:18px;flex-shrink:0}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998}
+.hero{min-height:480px;position:relative;overflow:hidden;display:flex;align-items:center;background:radial-gradient(ellipse at 30% 50%,#0d1f1e 0%,var(--bg) 70%);border-bottom:1px solid var(--border)}
+.hero-grid{position:absolute;inset:0;opacity:.05;background-image:linear-gradient(var(--em) 1px,transparent 1px),linear-gradient(90deg,var(--em) 1px,transparent 1px);background-size:40px 40px}
+.hero-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(0,201,167,.1),transparent 70%);top:-100px;right:-100px;animation:glow-pulse 4s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.hero-content{position:relative;padding:60px 64px;max-width:800px}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.domain-tag{background:var(--em-dim);border:1px solid var(--em);color:var(--em2);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:20px}
+.weight-tag{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px}
+.hero h1{font-family:"Playfair Display",serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.15;margin-bottom:20px}
+.hero h1 span{color:var(--em2)}
+.hero p{font-size:17px;color:var(--text-muted);max-width:560px;margin-bottom:32px;line-height:1.75}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat-val{font-family:"Playfair Display",serif;font-size:28px;color:var(--em2);font-weight:700}
+.stat-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.section{padding:64px;border-bottom:1px solid var(--border);opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section:last-child{border-bottom:none}
+.section-header{margin-bottom:40px}
+.section-eyebrow{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--em2);margin-bottom:10px}
+.section-title{font-family:"Playfair Display",serif;font-size:32px;font-weight:700;color:var(--text);line-height:1.25}
+.section-subtitle{font-size:16px;color:var(--text-muted);margin-top:8px}
+.divider{width:60px;height:3px;background:linear-gradient(90deg,var(--em),transparent);margin:14px 0 0}
+.info-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:20px}
+.info-block h3{font-family:"Playfair Display",serif;font-size:22px;color:var(--text);margin-bottom:16px}
+.info-block p{color:var(--text-muted);margin-bottom:12px}
+.info-block ul{list-style:none;padding:0}
+.info-block li{padding:6px 0 6px 20px;position:relative;color:var(--text-muted);font-size:14.5px;border-bottom:1px solid var(--border)}
+.info-block li:last-child{border-bottom:none}
+.info-block li::before{content:"▸";position:absolute;left:0;color:var(--em);font-size:12px;top:9px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:760px){.two-col,.three-col{grid-template-columns:1fr}}
+.highlight-box{background:linear-gradient(135deg,rgba(0,201,167,.08),rgba(0,201,167,.02));border:1px solid rgba(0,201,167,.25);border-radius:var(--radius);padding:20px 24px;margin:16px 0}
+.highlight-box .hb-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--em2);margin-bottom:8px}
+.highlight-box p{color:var(--text);font-size:14.5px;margin:0}
+.tip-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius);padding:16px 20px;margin:16px 0;display:flex;gap:12px}
+.tip-icon{font-size:20px;flex-shrink:0}
+.tip-box p{color:var(--text-muted);font-size:14px;margin:0}
+.tip-box strong{color:var(--gold)}
+.content-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.tab-btn{padding:8px 18px;border-radius:8px;font-size:13.5px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.tab-btn:hover{border-color:var(--em);color:var(--em2)}
+.tab-btn.active{background:var(--em);border-color:var(--em);color:var(--bg)}
+.tab-panel{display:none;animation:fadeSlideUp .3s ease}
+.tab-panel.active{display:block}
+.objectives-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.obj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;cursor:pointer;position:relative}
+.obj-card:hover{border-color:var(--em);transform:translateY(-2px)}
+.obj-card.done{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.04)}
+.obj-card.done::before{content:"✓";position:absolute;top:10px;right:12px;color:var(--green);font-size:14px;font-weight:700}
+.obj-icon{width:38px;height:38px;border-radius:8px;flex-shrink:0;background:var(--em-dim);border:1px solid rgba(0,201,167,.3);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .3s}
+.obj-card:hover .obj-icon{transform:rotate(-8deg) scale(1.1)}
+.obj-text h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.obj-text p{font-size:13px;color:var(--text-muted);line-height:1.5}
+.obj-progress{margin-top:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted)}
+.obj-progress-bar{height:3px;background:var(--border);border-radius:2px;flex:1;margin:0 8px}
+.obj-progress-inner{height:100%;background:var(--em);border-radius:2px;width:0%;transition:width .5s ease}
+.sdlc-track{display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;margin-bottom:4px}
+.sdlc-phase{flex:1;min-width:110px;cursor:pointer}
+.sdlc-phase-inner{border:2px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:14px 10px;text-align:center;transition:all .25s;position:relative}
+.sdlc-phase:hover .sdlc-phase-inner,.sdlc-phase.open .sdlc-phase-inner{border-color:var(--em);background:var(--em-dim)}
+.sdlc-phase.audited .sdlc-phase-inner{border-color:rgba(46,213,115,.45);background:rgba(46,213,115,.04)}
+.sdlc-icon{font-size:24px;margin-bottom:6px}
+.sdlc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text)}
+.sdlc-num{font-size:10px;color:var(--text-dim);margin-top:2px}
+.sdlc-check{display:none;position:absolute;top:5px;right:8px;color:var(--green);font-size:13px;font-weight:700}
+.sdlc-phase.audited .sdlc-check{display:block}
+.sdlc-detail{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;display:none;animation:fadeSlideUp .3s ease;margin-top:8px;margin-bottom:20px}
+.sdlc-detail.show{display:block}
+.sdlc-detail-title{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:16px}
+.sdlc-audit-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.sac{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.sac-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:5px}
+.sac h5{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.sac p{font-size:12.5px;color:var(--text-muted);margin:0}
+.sdlc-mark-btn{padding:7px 18px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:12.5px;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.sdlc-mark-btn:hover{border-color:var(--em);color:var(--em2)}
+.sdlc-mark-btn.done{background:rgba(46,213,115,.07);border-color:rgba(46,213,115,.3);color:var(--green)}
+.sdlc-progress-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;font-size:12px;color:var(--text-muted)}
+.sdlc-pb{flex:1;height:4px;background:var(--border);border-radius:2px}
+.sdlc-pb-fill{height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:2px;width:0%;transition:width .5s}
+.method-comp{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px}
+.method-comp h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.method-comp>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.method-toggle{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:20px}
+.meth-btn{padding:10px 24px;background:var(--surface2);color:var(--text-muted);border:none;cursor:pointer;font-size:13.5px;font-weight:600;font-family:"DM Sans",sans-serif;transition:all .2s}
+.meth-btn.active{background:var(--em);color:var(--bg)}
+.meth-panel{display:none;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.meth-panel.show{display:grid;animation:fadeSlideUp .3s ease}
+.meth-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.meth-card .mc-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:5px}
+.meth-card h5{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.meth-card p{font-size:12.5px;color:var(--text-muted);margin:0}
+.meth-card.risk .mc-lbl{color:var(--orange)}
+.meth-card.risk h5{color:var(--orange)}
+.test-match-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px}
+.test-match-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.test-match-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.test-match-grid{display:grid;grid-template-columns:1fr 210px;gap:20px}
+@media(max-width:700px){.test-match-grid{grid-template-columns:1fr}}
+.test-scenarios{display:flex;flex-direction:column;gap:8px}
+.ts-row{background:var(--surface2);border:2px dashed var(--border);border-radius:var(--radius);padding:10px 12px;min-height:60px;transition:border-color .2s}
+.ts-row.drag-over{border-color:var(--em);background:var(--em-dim)}
+.ts-row.correct{border-color:rgba(46,213,115,.5);background:rgba(46,213,115,.04);border-style:solid}
+.ts-row.incorrect{border-color:var(--red);background:rgba(224,92,92,.04);border-style:solid}
+.ts-prompt{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:4px}
+.ts-slot{font-size:12px;color:var(--text-dim);font-style:italic}
+.ts-placed{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:var(--em-dim);color:var(--em2);border:1px solid rgba(0,201,167,.3)}
+.test-chips{display:flex;flex-direction:column;gap:8px}
+.test-chip{padding:9px 12px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);color:var(--text-muted);cursor:grab;font-size:13px;font-weight:500;user-select:none;transition:all .2s}
+.test-chip:hover{border-color:var(--em);color:var(--em2)}
+.test-chip.dragging{opacity:.35}
+.test-chip.used{opacity:.3;pointer-events:none}
+.check-btn{padding:9px 22px;border-radius:8px;background:var(--em);border:none;color:var(--bg);font-size:13.5px;font-weight:600;cursor:pointer;margin-top:12px;font-family:"DM Sans",sans-serif;transition:all .2s}
+.check-btn:hover{background:var(--em2)}
+.match-result{margin-top:12px;padding:12px 16px;border-radius:var(--radius);display:none;font-size:13.5px}
+.match-result.show{display:block;animation:fadeSlideUp .3s ease}
+.match-result.all-correct{background:rgba(46,213,115,.07);border:1px solid rgba(46,213,115,.3);color:var(--green)}
+.match-result.partial{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+.data-table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0}
+.data-table th{background:var(--surface2);color:var(--em2);font-weight:600;text-align:left;padding:12px 16px;border-bottom:2px solid var(--border);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-muted)}
+.data-table tr:hover td{background:var(--surface2);color:var(--text)}
+.badge-em{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:var(--em-dim);border:1px solid rgba(0,201,167,.3);color:var(--em2)}
+.badge-gold{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+.badge-red{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.cdt-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px}
+.cdt-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.cdt-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.cdt-question{font-size:15px;font-weight:500;color:var(--text);padding:14px;background:var(--surface2);border-radius:var(--radius);border-left:3px solid var(--em);margin-bottom:14px;animation:fadeSlideUp .3s ease}
+.cdt-options{display:flex;flex-direction:column;gap:8px}
+.cdt-option{padding:11px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer;font-size:14px;text-align:left;font-family:"DM Sans",sans-serif;transition:all .2s}
+.cdt-option:hover{border-color:var(--em);color:var(--text)}
+.cdt-result{padding:18px;border-radius:var(--radius);background:var(--em-dim);border:1px solid rgba(0,201,167,.3);animation:fadeSlideUp .3s ease;margin-top:8px}
+.cdt-result-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:6px}
+.cdt-result h5{font-size:18px;color:var(--text);margin-bottom:8px;font-family:"Playfair Display",serif}
+.cdt-result p{font-size:13.5px;color:var(--text-muted)}
+.cdt-result ul{list-style:none;padding:0;margin-top:10px}
+.cdt-result li{font-size:13px;color:var(--text-muted);padding:3px 0 3px 16px;position:relative}
+.cdt-result li::before{content:"▸";position:absolute;left:0;color:var(--em);font-size:11px;top:6px}
+.cdt-reset-btn{margin-top:14px;padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:pointer;font-size:13px;font-family:"DM Sans",sans-serif;transition:all .2s}
+.cdt-reset-btn:hover{border-color:var(--em);color:var(--em2)}
+.pir-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px}
+.pir-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.pir-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.pir-dim{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.pir-dim-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.pir-dim-name{font-size:14px;font-weight:600;color:var(--text)}
+.pir-dim-val{font-family:"DM Mono",monospace;font-size:13px;color:var(--em2)}
+.pir-stars{display:flex;gap:5px}
+.pir-star{font-size:22px;cursor:pointer;transition:transform .15s;filter:grayscale(1);opacity:.35}
+.pir-star.lit{filter:none;opacity:1}
+.pir-star:hover{transform:scale(1.2)}
+.pir-go-btn{padding:9px 22px;border-radius:8px;background:var(--em);border:none;color:var(--bg);font-size:13.5px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all .2s;margin-top:4px}
+.pir-go-btn:hover{background:var(--em2)}
+.pir-output{display:none;margin-top:20px}
+.pir-output.show{display:block;animation:fadeSlideUp .3s ease}
+.pir-finding{padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);margin-bottom:8px;font-size:13px}
+.pir-finding.red{border-color:rgba(224,92,92,.3);background:rgba(224,92,92,.06);color:var(--red)}
+.pir-finding.amber{border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.06);color:var(--orange)}
+.pir-finding.good{border-color:rgba(46,213,115,.3);background:rgba(46,213,115,.06);color:var(--green)}
+.mig-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px}
+.mig-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.mig-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.mig-sc-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:6px}
+.mig-sc-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.mig-sc-desc{font-size:13.5px;color:var(--text-muted);margin-bottom:14px}
+.mig-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+@media(max-width:560px){.mig-options{grid-template-columns:1fr}}
+.mig-opt{padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:13px;text-align:left;font-family:"DM Sans",sans-serif;transition:all .2s}
+.mig-opt:hover{border-color:var(--em);color:var(--text)}
+.mig-opt.correct{border-color:var(--green);background:rgba(46,213,115,.07);color:var(--green);pointer-events:none}
+.mig-opt.incorrect{border-color:var(--red);background:rgba(224,92,92,.07);pointer-events:none}
+.mig-opt.reveal{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.04);color:var(--green);pointer-events:none}
+.mig-feedback{font-size:13.5px;display:none;padding:12px;border-radius:var(--radius);margin-top:4px}
+.mig-feedback.show{display:block;animation:fadeSlideUp .3s ease}
+.mig-feedback.correct{background:rgba(46,213,115,.07);border:1px solid rgba(46,213,115,.3);color:var(--green)}
+.mig-feedback.incorrect{background:rgba(224,92,92,.07);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.mig-nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.mig-counter{font-family:"DM Mono",monospace;font-size:12px;color:var(--em2)}
+.mig-next-btn{padding:7px 18px;border-radius:8px;background:var(--em);border:none;color:var(--bg);font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;display:none;transition:all .2s}
+.mig-next-btn:hover{background:var(--em2)}
+.scenario{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px}
+.scenario-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--em2);margin-bottom:12px}
+.scenario h4{font-size:17px;font-weight:600;color:var(--text);margin-bottom:12px}
+.scenario>p{color:var(--text-muted);font-size:14.5px;margin-bottom:16px}
+.scenario-question{font-size:15px;font-weight:500;color:var(--text);margin-bottom:16px}
+.sc-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sc-choice{padding:11px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer;font-size:14px;text-align:left;font-family:"DM Sans",sans-serif;transition:all .2s}
+.sc-choice:hover{border-color:var(--em);color:var(--text)}
+.sc-choice.right{border-color:var(--green);background:rgba(46,213,115,.07);color:var(--green);pointer-events:none}
+.sc-choice.wrong{border-color:var(--red);background:rgba(224,92,92,.07);color:var(--red);pointer-events:none}
+.sc-choice.reveal{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.05);color:var(--green);pointer-events:none}
+.scenario-answer{display:none;border-radius:var(--radius);padding:16px;border:1px solid rgba(0,201,167,.25);background:var(--em-dim)}
+.scenario-answer.show{display:block;animation:fadeSlideUp .3s ease}
+.scenario-answer p{color:var(--text);font-size:14px;margin:0}
+.scenario-answered-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:none}
+.scenario-answered-tag.correct{color:var(--green);display:block}
+.scenario-answered-tag.incorrect{color:var(--red);display:block}
+.glossary-search{width:100%;padding:12px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-family:"DM Sans",sans-serif;margin-bottom:20px;transition:border-color .2s}
+.glossary-search:focus{outline:none;border-color:var(--em)}
+.glossary-search::placeholder{color:var(--text-dim)}
+.glossary-meta{display:flex;gap:16px;margin-bottom:16px;font-size:12px;color:var(--text-muted);flex-wrap:wrap}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.term-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .25s}
+.term-card:hover{border-color:var(--em)}
+.term-card.known{border-color:rgba(46,213,115,.3);opacity:.75}
+.term-card.hidden{display:none}
+.term-front{padding:20px 22px;min-height:90px;position:relative}
+.term-front h4{font-family:"DM Mono",monospace;font-size:14.5px;color:var(--em2);margin-bottom:6px}
+.term-front p{font-size:13px;color:var(--text-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.known-badge{position:absolute;top:10px;right:10px;font-size:10px;background:rgba(46,213,115,.12);color:var(--green);border:1px solid rgba(46,213,115,.25);padding:2px 7px;border-radius:20px;display:none}
+.term-card.known .known-badge{display:inline}
+.term-back{background:var(--em-dim);border-top:1px solid rgba(0,201,167,.2);padding:14px 22px;display:none;animation:fadeIn .25s ease}
+.term-card.flipped .term-back{display:block}
+.term-back p{font-size:13px;color:var(--text);line-height:1.6}
+.term-back .example{font-size:12px;color:var(--em2);margin-top:8px;font-style:italic}
+.term-actions{display:flex;gap:8px;margin-top:12px}
+.term-action-btn{padding:5px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.term-action-btn.know{color:var(--green);border-color:rgba(46,213,115,.3)}
+.term-action-btn.know:hover{background:rgba(46,213,115,.1)}
+.term-action-btn.review{color:var(--text-muted)}
+.term-action-btn.review:hover{border-color:var(--em);color:var(--em2)}
+.quiz-container{max-width:720px}
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:13px}
+.quiz-streak{display:flex;align-items:center;gap:6px;color:var(--em2);font-weight:600;font-family:"DM Mono",monospace}
+.quiz-progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px}
+.quiz-progress-inner{height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:2px;transition:width .4s ease}
+.quiz-qnum{font-size:12px;color:var(--text-muted);margin-bottom:10px;font-family:"DM Mono",monospace}
+.quiz-q{font-size:18px;font-weight:500;color:var(--text);margin-bottom:20px;line-height:1.5}
+.quiz-kb{font-size:11px;color:var(--text-dim);text-align:right;margin-bottom:8px;font-family:"DM Mono",monospace}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.quiz-opt{padding:14px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;text-align:left;font-size:14.5px;transition:all .2s;display:flex;align-items:center;gap:12px;font-family:"DM Sans",sans-serif}
+.quiz-opt:hover{border-color:var(--em);color:var(--text);background:var(--surface2)}
+.quiz-opt.correct{border-color:#2ed573;background:rgba(46,213,115,.07);color:#2ed573}
+.quiz-opt.incorrect{border-color:var(--red);background:rgba(224,92,92,.07);color:var(--red)}
+.opt-letter{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;font-family:"DM Mono",monospace;transition:all .2s}
+.quiz-opt.correct .opt-letter{background:#2ed573;border-color:#2ed573;color:var(--bg)}
+.quiz-opt.incorrect .opt-letter{background:var(--red);border-color:var(--red);color:white}
+.quiz-feedback{padding:14px 18px;border-radius:var(--radius);font-size:14px;display:none;margin-bottom:16px}
+.quiz-feedback.show{display:block;animation:fadeSlideUp .3s ease}
+.quiz-feedback.correct{background:rgba(46,213,115,.08);border:1px solid rgba(46,213,115,.3);color:#2ed573}
+.quiz-feedback.incorrect{background:rgba(224,92,92,.08);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.quiz-timer{position:relative;width:40px;height:40px;flex-shrink:0}
+.quiz-timer svg{transform:rotate(-90deg)}
+.quiz-timer-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:"DM Mono",monospace}
+.btn{padding:10px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:"DM Sans",sans-serif}
+.btn-primary{background:var(--em);color:var(--bg)}
+.btn-primary:hover{background:var(--em2)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+.btn-ghost:hover{border-color:var(--em);color:var(--em2)}
+.score-wrap{text-align:center;padding:48px 20px}
+.score-ring-wrap{width:140px;height:140px;margin:0 auto 24px;position:relative}
+.score-ring-wrap svg{width:140px;height:140px}
+.score-ring-fill{fill:none;stroke:var(--em);stroke-width:8;stroke-linecap:round;stroke-dasharray:358;stroke-dashoffset:358;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.score-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-ring-val .pct{font-family:"Playfair Display",serif;font-size:36px;color:var(--em2);font-weight:700;line-height:1}
+.score-ring-val .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.score-wrap h3{font-family:"Playfair Display",serif;font-size:24px;margin-bottom:8px}
+.score-wrap>p{color:var(--text-muted);margin-bottom:20px}
+.score-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.missed-review{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:24px;text-align:left}
+.missed-review h4{font-family:"Playfair Display",serif;font-size:17px;margin-bottom:14px}
+.missed-item{padding:10px;border-bottom:1px solid var(--border);font-size:13px}
+.missed-item:last-child{border-bottom:none}
+.mi-q{color:var(--text);margin-bottom:4px;font-weight:500}
+.mi-a{color:var(--em2);font-size:12.5px}
+.checklist{display:flex;flex-direction:column;gap:10px}
+.check-item{display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s}
+.check-item:hover{border-color:var(--em)}
+.check-item.checked{border-color:rgba(46,213,115,.3);background:rgba(46,213,115,.03)}
+.check-box{width:22px;height:22px;border-radius:6px;flex-shrink:0;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .25s}
+.check-box.checked{background:var(--em);border-color:var(--em);color:var(--bg)}
+.check-item p{font-size:14px;color:var(--text-muted);flex:1}
+.check-item.checked p{color:var(--text)}
+.float-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:100}
+.float-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;position:relative}
+.float-dot:hover,.float-dot.active{background:var(--em);transform:scale(1.4)}
+.float-dot::before{content:attr(title);position:absolute;right:16px;top:50%;transform:translateY(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:11px;white-space:nowrap;padding:4px 10px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:"DM Sans",sans-serif}
+.float-dot:hover::before{opacity:1}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.app{flex-direction:column}.sidebar{width:100%;min-width:unset;height:auto;position:relative}.hero-content{padding:40px 32px}.section{padding:40px 32px}.float-nav{display:none}}
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="toast-stack" id="toastStack"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="badge">CISA 2025/2026</div>
+    <h2>Domain 3<br/>Acquisition &amp; Dev</h2>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Mastery Progress</span><span id="progressPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <nav class="nav-list">
+    <div class="nav-item active" data-target="s-intro" onclick="scrollToSection('s-intro')"><div class="nav-num"><span>1</span></div>Introduction</div>
+    <div class="nav-item" data-target="s-objectives" onclick="scrollToSection('s-objectives')"><div class="nav-num"><span>2</span></div>Learning Objectives</div>
+    <div class="nav-item" data-target="s-sdlc" onclick="scrollToSection('s-sdlc')"><div class="nav-num"><span>3</span></div>SDLC Phase Explorer</div>
+    <div class="nav-item" data-target="s-methods" onclick="scrollToSection('s-methods')"><div class="nav-num"><span>4</span></div>Dev Methodologies</div>
+    <div class="nav-item" data-target="s-testing" onclick="scrollToSection('s-testing')"><div class="nav-num"><span>5</span></div>Testing &amp; QA</div>
+    <div class="nav-item" data-target="s-change" onclick="scrollToSection('s-change')"><div class="nav-num"><span>6</span></div>Change Management</div>
+    <div class="nav-item" data-target="s-config" onclick="scrollToSection('s-config')"><div class="nav-num"><span>7</span></div>Config &amp; Release Mgmt</div>
+    <div class="nav-item" data-target="s-migration" onclick="scrollToSection('s-migration')"><div class="nav-num"><span>8</span></div>Data Migration &amp; PIR</div>
+    <div class="nav-item" data-target="s-scenarios" onclick="scrollToSection('s-scenarios')"><div class="nav-num"><span>9</span></div>Real-World Scenarios</div>
+    <div class="nav-item" data-target="s-terms" onclick="scrollToSection('s-terms')"><div class="nav-num"><span>10</span></div>Key Terms</div>
+    <div class="nav-item" data-target="s-quiz" onclick="scrollToSection('s-quiz')"><div class="nav-num"><span>11</span></div>Knowledge Check</div>
+    <div class="nav-item" data-target="s-conclusion" onclick="scrollToSection('s-conclusion')"><div class="nav-num"><span>12</span></div>Conclusion</div>
+  </nav>
+  <div class="sidebar-footer">Exam weight: <strong style="color:var(--em2)">12%</strong> &nbsp;|&nbsp; <a href="https://youtube.com/playlist?list=PL7XJSuT7Dq_UffFGcmTvKL7JeHweC5HKU" target="_blank">📺 Source Playlist</a></div>
+</aside>
+<main class="main">
+
+<div class="float-nav" id="floatNav"></div>
+
+<!-- HERO -->
+<section class="section visible" id="s-intro">
+  <div class="hero" style="margin:-64px -64px 40px;padding:0">
+    <div class="hero-grid"></div>
+    <canvas id="particleCanvas" style="position:absolute;inset:0;pointer-events:none"></canvas>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="domain-tag">Domain 3</span>
+        <span class="weight-tag">12% of Exam</span>
+      </div>
+      <h1>IS Acquisition,<br/><span>Development &amp; Implementation</span></h1>
+      <p>Master the auditor's role across the entire system lifecycle — from business case and vendor selection through SDLC controls, testing frameworks, change management, and post-implementation review. This domain tests your ability to identify where controls should exist and evaluate whether they do.</p>
+      <div class="hero-stats">
+        <div><div class="stat-val" id="sv1">0</div><div class="stat-label">SDLC Phases</div></div>
+        <div><div class="stat-val" id="sv2">0</div><div class="stat-label">Testing Types</div></div>
+        <div><div class="stat-val" id="sv3">0</div><div class="stat-label">Key Terms</div></div>
+        <div><div class="stat-val" id="sv4">0</div><div class="stat-label">Quiz Questions</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-header" style="margin-top:0">
+    <div class="section-eyebrow">About This Domain</div>
+    <h2 class="section-title">What Auditors Must Know</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Domain Scope</h3>
+      <p>Domain 3 covers the controls and audit considerations that apply when an organisation acquires, builds, or deploys information systems. It accounts for <strong>12%</strong> of the CISA exam — roughly 18 questions.</p>
+      <ul>
+        <li><strong>System Development Life Cycle (SDLC):</strong> Phase-gate controls from feasibility to retirement</li>
+        <li><strong>Acquisition controls:</strong> Vendor due diligence, RFP, contracts, software escrow</li>
+        <li><strong>Development methodologies:</strong> Waterfall, Agile, DevOps — and how audit approach differs per model</li>
+        <li><strong>Testing types:</strong> Unit, integration, UAT, regression, performance, penetration testing</li>
+        <li><strong>Change &amp; release management:</strong> CAB, emergency changes, SoD controls</li>
+        <li><strong>Configuration management:</strong> CMDB, version control, baseline audits</li>
+        <li><strong>Data migration:</strong> Reconciliation controls, parallel operations, rollback planning</li>
+        <li><strong>Post-implementation review (PIR):</strong> Evaluating whether system met objectives</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>The Auditor Mindset</h3>
+      <p>The CISA exam expects you to think as an auditor evaluating controls — not as a developer building systems. Key mindset shifts:</p>
+      <ul>
+        <li><strong>Phase-gate thinking:</strong> Controls must exist at every transition point, not just at go-live</li>
+        <li><strong>SoD as a red line:</strong> The developer who builds must never be the one who deploys to production</li>
+        <li><strong>UAT ownership:</strong> Business users — not the IT team — must sign off on user acceptance testing</li>
+        <li><strong>Emergency ≠ no controls:</strong> Emergency changes still require approval and mandatory PIR</li>
+        <li><strong>Test environment hygiene:</strong> No production data (especially PII) in test environments</li>
+        <li><strong>CMDB is the baseline:</strong> Any unauthorised deviation from the CMDB is a finding</li>
+        <li><strong>Reconciliation before cutover:</strong> Legacy systems must not be decommissioned until data integrity is confirmed</li>
+      </ul>
+      <div class="tip-box" style="margin-top:16px">
+        <span class="tip-icon">💡</span>
+        <p><strong>Exam tip:</strong> When a question asks "what should the auditor do FIRST?" — the answer almost always involves reviewing controls, policies, or documentation before taking any action.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJECTIVES -->
+<section class="section" id="s-objectives">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 2</div>
+    <h2 class="section-title">Learning Objectives</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Click each objective to mark it complete.</p>
+  </div>
+  <div class="objectives-grid">
+    <div class="obj-card" onclick="markObj(this,'SDLC Controls')"><div class="obj-icon">🔄</div><div class="obj-text"><h4>Evaluate SDLC Controls</h4><p>Identify and assess phase-gate controls at each stage of the system development life cycle.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Acquisition')"><div class="obj-icon">📋</div><div class="obj-text"><h4>Assess Acquisition Processes</h4><p>Evaluate vendor selection, RFP controls, contract terms, and software escrow arrangements.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Methodologies')"><div class="obj-icon">⚙️</div><div class="obj-text"><h4>Audit Dev Methodologies</h4><p>Understand how audit approach differs for Waterfall, Agile/Scrum, and DevOps environments.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Testing')"><div class="obj-icon">🧪</div><div class="obj-text"><h4>Evaluate Testing Frameworks</h4><p>Distinguish testing types, identify who performs each, and assess test environment controls.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Change Management')"><div class="obj-icon">🔀</div><div class="obj-text"><h4>Assess Change Management</h4><p>Evaluate the change control process including CAB, emergency changes, and SoD enforcement.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Configuration')"><div class="obj-icon">🗄️</div><div class="obj-text"><h4>Review Config &amp; Release Mgmt</h4><p>Audit CMDB accuracy, version control, release packages, and rollback capability.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Migration')"><div class="obj-icon">📦</div><div class="obj-text"><h4>Audit Data Migrations</h4><p>Evaluate data mapping, cleansing, reconciliation, and go-live controls for system migrations.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'PIR')"><div class="obj-icon">📊</div><div class="obj-text"><h4>Conduct Post-Implementation Reviews</h4><p>Assess whether systems met business objectives across requirements, performance, and security dimensions.</p></div></div>
+  </div>
+  <div class="obj-progress" style="margin-top:16px">
+    <span id="objCount">0 / 8 complete</span>
+    <div class="obj-progress-bar"><div class="obj-progress-inner" id="objBar"></div></div>
+  </div>
+</section>
+
+<!-- SDLC EXPLORER -->
+<section class="section" id="s-sdlc">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 3</div>
+    <h2 class="section-title">SDLC Phase Explorer</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Click each phase to explore audit controls. Mark phases as audited to track your progress.</p>
+  </div>
+  <div class="sdlc-progress-row">
+    <span>Phases audited:</span>
+    <div class="sdlc-pb"><div class="sdlc-pb-fill" id="sdlcBar"></div></div>
+    <span id="sdlcCount">0 / 7</span>
+  </div>
+  <div class="sdlc-track" id="sdlcTrack">
+    <div class="sdlc-phase" onclick="openPhase(0)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">📋</div><div class="sdlc-label">Planning</div><div class="sdlc-num">Phase 1</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(1)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">📝</div><div class="sdlc-label">Requirements</div><div class="sdlc-num">Phase 2</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(2)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">🏗️</div><div class="sdlc-label">Design</div><div class="sdlc-num">Phase 3</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(3)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">💻</div><div class="sdlc-label">Development</div><div class="sdlc-num">Phase 4</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(4)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">🧪</div><div class="sdlc-label">Testing</div><div class="sdlc-num">Phase 5</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(5)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">🚀</div><div class="sdlc-label">Implementation</div><div class="sdlc-num">Phase 6</div></div></div>
+    <div class="sdlc-phase" onclick="openPhase(6)"><div class="sdlc-phase-inner"><span class="sdlc-check">✓</span><div class="sdlc-icon">🔍</div><div class="sdlc-label">Post-Impl.</div><div class="sdlc-num">Phase 7</div></div></div>
+  </div>
+  <div class="sdlc-detail" id="sdlcDetail"></div>
+  <div class="highlight-box">
+    <div class="hb-label">The Shift-Left Principle</div>
+    <p>Security and controls should be embedded early ("shifted left") into the SDLC — not bolted on at the end. An auditor who only reviews controls at go-live is too late. The cost of fixing a defect multiplies by 10x at each phase: a requirements error caught in design costs 10× less than one caught in testing, and 100× less than one found in production.</p>
+  </div>
+</section>
+
+<!-- METHODOLOGIES -->
+<section class="section" id="s-methods">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 4</div>
+    <h2 class="section-title">Development Methodologies</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Toggle between methodologies to compare audit approach, risks, and key controls.</p>
+  </div>
+  <div class="method-comp">
+    <h4>Methodology Comparator</h4>
+    <p>The audit approach must adapt to the development model. Select each methodology to understand how controls are structured differently.</p>
+    <div class="method-toggle">
+      <button class="meth-btn active" onclick="switchMeth(this,'meth-waterfall')">🌊 Waterfall</button>
+      <button class="meth-btn" onclick="switchMeth(this,'meth-agile')">🔁 Agile / Scrum</button>
+      <button class="meth-btn" onclick="switchMeth(this,'meth-devops')">⚡ DevOps / CI-CD</button>
+    </div>
+    <div class="meth-panel show" id="meth-waterfall">
+      <div class="meth-card"><div class="mc-lbl">Structure</div><h5>Sequential Phases</h5><p>Requirements → Design → Build → Test → Deploy. Each phase completes before the next begins.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Audit Approach</div><h5>Phase-Gate Reviews</h5><p>Auditor reviews documentation and sign-offs at each phase gate before progression is approved.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Key Controls</div><h5>Formal Documentation</h5><p>Feasibility study, requirements spec, design docs, test plans, UAT sign-off, change control log.</p></div>
+      <div class="meth-card risk"><div class="mc-lbl">Key Risks</div><h5>Late Discovery</h5><p>Requirements errors found only in testing. No working software until late. Inflexible to changing business needs.</p></div>
+    </div>
+    <div class="meth-panel" id="meth-agile">
+      <div class="meth-card"><div class="mc-lbl">Structure</div><h5>Iterative Sprints</h5><p>Work delivered in 2–4 week sprints. Requirements evolve. Working software produced continuously.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Audit Approach</div><h5>Sprint-Level Controls</h5><p>Auditor reviews sprint planning, Definition of Done (DoD), backlog management, and retrospective outputs. Attend sprint reviews.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Key Controls</div><h5>DoD &amp; Acceptance Criteria</h5><p>Every user story must have clear acceptance criteria. Definition of Done must include security review and testing gates.</p></div>
+      <div class="meth-card risk"><div class="mc-lbl">Key Risks</div><h5>Documentation Gaps</h5><p>Agile ≠ no documentation. Risk: insufficient audit trail, scope creep, security deprioritised in sprint planning, no formal UAT.</p></div>
+    </div>
+    <div class="meth-panel" id="meth-devops">
+      <div class="meth-card"><div class="mc-lbl">Structure</div><h5>Continuous Delivery</h5><p>Code moves from commit → build → test → deploy automatically. Multiple releases per day possible.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Audit Approach</div><h5>Pipeline Controls</h5><p>Auditor reviews the CI/CD pipeline configuration, automated gate controls, IaC templates, and deployment approval mechanisms.</p></div>
+      <div class="meth-card"><div class="mc-lbl">Key Controls</div><h5>Automated Gates</h5><p>SAST/DAST in pipeline, mandatory code review approvals, automated security scans, environment separation, immutable infrastructure.</p></div>
+      <div class="meth-card risk"><div class="mc-lbl">Key Risks</div><h5>Speed vs. Control</h5><p>Risk of bypassing approval gates, developers deploying directly to production, insufficient testing coverage, no change management process.</p></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Software Acquisition Controls</h3>
+      <p>When an organisation buys rather than builds, the auditor evaluates whether appropriate controls govern the acquisition process.</p>
+      <ul>
+        <li><strong>Feasibility study:</strong> Business case, cost-benefit analysis approved before procurement</li>
+        <li><strong>RFP / vendor evaluation:</strong> Formal scoring criteria, reference checks, financial stability</li>
+        <li><strong>Contract terms:</strong> SLA, IP ownership, data ownership, right-to-audit clause, escrow provisions</li>
+        <li><strong>Software escrow:</strong> Source code deposited with third party — released if vendor goes bankrupt</li>
+        <li><strong>COTS evaluation:</strong> Customisation risks, vendor roadmap alignment, licence compliance</li>
+        <li><strong>Open source risks:</strong> Licence obligations (GPL), vulnerability management, no vendor support</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Outsourced Development Controls</h3>
+      <p>Third-party developers introduce risks around IP, quality, and security that require specific controls.</p>
+      <ul>
+        <li><strong>Background checks:</strong> Vendor staff vetting proportionate to data sensitivity</li>
+        <li><strong>IP ownership clause:</strong> Contract must explicitly assign IP to the client organisation</li>
+        <li><strong>No production access:</strong> Outsourced developers must never access live production data</li>
+        <li><strong>Code review:</strong> Client team must review all code before acceptance — no black-box delivery</li>
+        <li><strong>Non-disclosure agreement:</strong> NDA covering all confidential data and business logic</li>
+        <li><strong>Right-to-audit:</strong> Contract must include auditor's right to inspect the vendor's environment</li>
+        <li><strong>Acceptance testing:</strong> Client (not vendor) defines and executes acceptance tests</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TESTING -->
+<section class="section" id="s-testing">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 5</div>
+    <h2 class="section-title">Testing &amp; Quality Assurance</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Drag each testing type onto the correct scenario description. Then explore the full testing taxonomy below.</p>
+  </div>
+  <div class="test-match-wrap">
+    <h4>🎯 Testing Type Match Challenge</h4>
+    <p>Match each testing type to the scenario it best describes. Drag from the right column onto each row.</p>
+    <div class="test-match-grid">
+      <div class="test-scenarios" id="testScenarios">
+        <div class="ts-row" id="ts0" data-answer="UAT" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTest(event,this)"><div class="ts-prompt">Business users verify the new payroll module processes overtime calculations correctly before go-live.</div><div class="ts-slot" id="ts0s">↓ Drop testing type here</div></div>
+        <div class="ts-row" id="ts1" data-answer="Regression" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTest(event,this)"><div class="ts-prompt">After patching a bug in the invoice module, the team re-runs all existing test cases to confirm nothing else broke.</div><div class="ts-slot" id="ts1s">↓ Drop testing type here</div></div>
+        <div class="ts-row" id="ts2" data-answer="Penetration" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTest(event,this)"><div class="ts-prompt">An ethical hacker attempts to exploit vulnerabilities in the web application using the same tools a real attacker would use.</div><div class="ts-slot" id="ts2s">↓ Drop testing type here</div></div>
+        <div class="ts-row" id="ts3" data-answer="Parallel" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTest(event,this)"><div class="ts-prompt">Both the old and new payroll systems run simultaneously for one pay cycle, and results are compared for discrepancies.</div><div class="ts-slot" id="ts3s">↓ Drop testing type here</div></div>
+        <div class="ts-row" id="ts4" data-answer="Stress" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropTest(event,this)"><div class="ts-prompt">The system is deliberately overloaded beyond its rated capacity to determine its breaking point and failure behaviour.</div><div class="ts-slot" id="ts4s">↓ Drop testing type here</div></div>
+      </div>
+      <div class="test-chips" id="testChips">
+        <div class="test-chip" draggable="true" data-val="UAT" ondragstart="dragStartTest(event,this)">UAT</div>
+        <div class="test-chip" draggable="true" data-val="Regression" ondragstart="dragStartTest(event,this)">Regression</div>
+        <div class="test-chip" draggable="true" data-val="Penetration" ondragstart="dragStartTest(event,this)">Penetration</div>
+        <div class="test-chip" draggable="true" data-val="Parallel" ondragstart="dragStartTest(event,this)">Parallel</div>
+        <div class="test-chip" draggable="true" data-val="Stress" ondragstart="dragStartTest(event,this)">Stress</div>
+        <div class="test-chip" draggable="true" data-val="Integration" ondragstart="dragStartTest(event,this)">Integration</div>
+        <div class="test-chip" draggable="true" data-val="Unit" ondragstart="dragStartTest(event,this)">Unit</div>
+      </div>
+    </div>
+    <button class="check-btn" onclick="checkTestMatch()">Check Answers</button>
+    <div class="match-result" id="testMatchResult"></div>
+  </div>
+  <div class="content-tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'tt-types')">Testing Types</button>
+    <button class="tab-btn" onclick="switchTab(this,'tt-env')">Test Environments</button>
+    <button class="tab-btn" onclick="switchTab(this,'tt-sec')">Security Testing</button>
+  </div>
+  <div class="tab-panel active" id="tt-types">
+    <table class="data-table">
+      <thead><tr><th>Testing Type</th><th>Who Performs</th><th>Purpose</th><th>CISA Key Point</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Unit Testing</strong></td><td>Developer</td><td>Test individual modules/functions in isolation</td><td>Earliest form; catches coding errors before integration</td></tr>
+        <tr><td><strong>Integration Testing</strong></td><td>Dev / QA team</td><td>Test interfaces between modules and systems</td><td>Ensures data flows correctly across components</td></tr>
+        <tr><td><strong>System Testing</strong></td><td>QA team</td><td>End-to-end testing of the complete system</td><td>Validates system meets functional specifications</td></tr>
+        <tr><td><strong>UAT</strong></td><td><span class="badge-em">Business Users</span></td><td>Verify system meets business requirements</td><td>Performed by business — not IT. Sign-off required before go-live</td></tr>
+        <tr><td><strong>Regression Testing</strong></td><td>QA / automated</td><td>Re-run all tests after any change</td><td>Mandatory after every patch, upgrade, or bug fix</td></tr>
+        <tr><td><strong>Performance / Load</strong></td><td>QA / ops team</td><td>Test behaviour under expected peak load</td><td>Validates system meets SLA capacity requirements</td></tr>
+        <tr><td><strong>Stress Testing</strong></td><td>QA / ops team</td><td>Push beyond rated capacity to find breaking point</td><td>Tests failure modes — what happens when system breaks?</td></tr>
+        <tr><td><strong>Parallel Testing</strong></td><td>Business / QA</td><td>Run old and new systems simultaneously, compare output</td><td>Highest assurance for migration; very costly to run</td></tr>
+        <tr><td><strong>Pilot Testing</strong></td><td>Business / IT</td><td>Deploy to small user subset before full rollout</td><td>Limits risk; real-world feedback before full go-live</td></tr>
+        <tr><td><strong>Penetration Testing</strong></td><td><span class="badge-gold">Independent third party</span></td><td>Simulate attacker to find exploitable vulnerabilities</td><td>Must be independent; results are findings — not audit opinion</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box">
+      <div class="hb-label">Critical Exam Distinction</div>
+      <p><strong>UAT is performed by business users — not the auditor and not the IT team.</strong> The auditor reviews whether UAT was performed, whether acceptance criteria were defined, and whether formal sign-off was obtained. The auditor does not perform UAT on behalf of the business.</p>
+    </div>
+  </div>
+  <div class="tab-panel" id="tt-env">
+    <div class="three-col">
+      <div class="info-block">
+        <h3>🔧 Development (DEV)</h3>
+        <p>Where code is written and unit-tested. Must be isolated from production data.</p>
+        <ul>
+          <li>Developers have write access</li>
+          <li>Highly volatile — frequent changes</li>
+          <li>No production data permitted</li>
+          <li>Typically uses mock/synthetic data</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>🧪 Test / Staging (TEST)</h3>
+        <p>Mirrors production as closely as possible for integration, UAT, and performance testing.</p>
+        <ul>
+          <li>Business users access for UAT</li>
+          <li>Should replicate prod configuration</li>
+          <li><strong>No PII / real production data</strong> (GDPR compliance)</li>
+          <li>Change-controlled — stable for testing</li>
+          <li>Use anonymised/masked data only</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>🚀 Production (PROD)</h3>
+        <p>Live environment serving real users. Access is strictly controlled.</p>
+        <ul>
+          <li>Developers must NOT have write access</li>
+          <li>All changes via formal change control</li>
+          <li>Segregation of duties: dev ≠ deploy</li>
+          <li>Access logs reviewed regularly</li>
+          <li>Rollback plan required for all changes</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip-box">
+      <span class="tip-icon">⚠️</span>
+      <p><strong>Common audit finding:</strong> Production data (including PII) used in test environments without masking. This violates GDPR Article 25 (Privacy by Design) and is a reportable finding regardless of whether any actual breach occurred.</p>
+    </div>
+  </div>
+  <div class="tab-panel" id="tt-sec">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>SAST vs DAST</h3>
+        <p>Two complementary approaches to finding security vulnerabilities in applications:</p>
+        <ul>
+          <li><strong>SAST (Static Application Security Testing):</strong> Analyses source code without executing it. White-box testing. Catches issues like SQL injection patterns, hardcoded credentials, insecure functions. Run during development pipeline.</li>
+          <li><strong>DAST (Dynamic Application Security Testing):</strong> Tests the running application from the outside. Black-box testing. Simulates attacker inputs against a live (test) system. Run against deployed app in test environment.</li>
+          <li><strong>SCA (Software Composition Analysis):</strong> Scans third-party dependencies and open-source libraries for known CVEs.</li>
+          <li><strong>IAST (Interactive):</strong> Combines SAST and DAST — agent embedded in running app during testing.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>OWASP Top 10 (2021)</h3>
+        <p>The most critical web application security risks — commonly referenced in CISA exam questions:</p>
+        <ul>
+          <li><strong>A01 — Broken Access Control</strong> (most critical)</li>
+          <li><strong>A02 — Cryptographic Failures</strong> (sensitive data exposure)</li>
+          <li><strong>A03 — Injection</strong> (SQL, NoSQL, command injection)</li>
+          <li><strong>A04 — Insecure Design</strong> (missing threat modelling)</li>
+          <li><strong>A05 — Security Misconfiguration</strong></li>
+          <li><strong>A06 — Vulnerable Components</strong> (unpatched libraries)</li>
+          <li><strong>A07 — Auth Failures</strong> (weak passwords, session management)</li>
+          <li><strong>A08 — Software &amp; Data Integrity Failures</strong></li>
+          <li><strong>A09 — Security Logging Failures</strong></li>
+          <li><strong>A10 — SSRF</strong> (Server-Side Request Forgery)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGE MANAGEMENT -->
+<section class="section" id="s-change">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 6</div>
+    <h2 class="section-title">Change Management</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Use the decision tree to route a change request, then explore the full change control framework.</p>
+  </div>
+  <div class="cdt-wrap">
+    <h4>🔀 Change Routing Decision Tree</h4>
+    <p>Answer each question to determine the correct change category and approval path.</p>
+    <div id="cdtContent"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Change Categories</h3>
+      <ul>
+        <li><strong>Standard Change:</strong> Pre-approved, low-risk, follows documented procedure. No CAB required. E.g., routine password reset, scheduled patch from approved list.</li>
+        <li><strong>Normal Change:</strong> Planned change requiring full CAB review and approval before implementation. Majority of changes fall here.</li>
+        <li><strong>Emergency Change:</strong> Unplanned, urgent fix to restore service or prevent imminent harm. Expedited approval (emergency CAB or designated authority). Mandatory PIR after completion.</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Change Advisory Board (CAB)</h3>
+      <p>The CAB reviews and approves Normal changes. Membership should include representatives from:</p>
+      <ul>
+        <li>IT operations and infrastructure</li>
+        <li>Application development</li>
+        <li>Information security</li>
+        <li>Business stakeholders (affected areas)</li>
+        <li>Service management</li>
+      </ul>
+      <div class="tip-box" style="margin-top:14px">
+        <span class="tip-icon">💡</span>
+        <p><strong>Exam tip:</strong> Emergency changes must still be approved — by a pre-designated emergency authority, not just implemented without oversight. And they always require a mandatory PIR.</p>
+      </div>
+    </div>
+  </div>
+  <div class="info-block">
+    <h3>7-Step Change Control Process</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:8px">
+      <div class="sac"><div class="sac-lbl">Step 1</div><h5>Request &amp; Log</h5><p>Formal RFC submitted with impact assessment, rollback plan, and business justification.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 2</div><h5>Assess &amp; Categorise</h5><p>Change manager classifies as Standard, Normal, or Emergency and assigns priority.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 3</div><h5>CAB Review</h5><p>For Normal changes: CAB evaluates risk, resource requirements, and schedule conflicts.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 4</div><h5>Approve / Reject</h5><p>Formal approval (or rejection with reasons) documented before any implementation work begins.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 5</div><h5>Implement</h5><p>Change implemented in designated maintenance window with rollback plan ready to execute.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 6</div><h5>Test &amp; Verify</h5><p>Post-implementation testing confirms change achieved intended outcome without side effects.</p></div>
+      <div class="sac"><div class="sac-lbl">Step 7</div><h5>Close &amp; Update CMDB</h5><p>RFC closed, CMDB updated to reflect new configuration baseline. For emergency: PIR conducted.</p></div>
+    </div>
+  </div>
+  <div class="info-block">
+    <h3>Segregation of Duties (SoD) in Change Management</h3>
+    <p>SoD is the most critical control in change management. The CISA exam frequently tests SoD violations as audit findings:</p>
+    <table class="data-table" style="margin-top:12px">
+      <thead><tr><th>Role</th><th>Can Do</th><th>Cannot Do</th></tr></thead>
+      <tbody>
+        <tr><td>Developer</td><td>Write code, test in DEV, request change</td><td><span class="badge-red">Deploy to production</span></td></tr>
+        <tr><td>Change Manager</td><td>Approve and schedule changes</td><td><span class="badge-red">Implement changes themselves</span></td></tr>
+        <tr><td>Operations / Release</td><td>Deploy approved changes to production</td><td><span class="badge-red">Modify code being deployed</span></td></tr>
+        <tr><td>Auditor</td><td>Review logs, evidence, approvals</td><td><span class="badge-red">Approve or implement any change</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CONFIG & RELEASE -->
+<section class="section" id="s-config">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 7</div>
+    <h2 class="section-title">Configuration &amp; Release Management</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Configuration Management &amp; CMDB</h3>
+      <p>The Configuration Management Database (CMDB) is the authoritative record of all Configuration Items (CIs) in the IT environment — hardware, software, services, and their relationships.</p>
+      <ul>
+        <li><strong>Baseline configuration:</strong> Approved, documented state of a CI. Any deviation without a change record is a finding.</li>
+        <li><strong>Configuration audit:</strong> Auditor compares actual system state against CMDB — differences indicate unauthorised changes.</li>
+        <li><strong>CI relationships:</strong> CMDB maps dependencies — if server X goes down, which applications are affected?</li>
+        <li><strong>Version control:</strong> All code, scripts, and configurations stored in version control (e.g., Git). Enables rollback to any prior state.</li>
+        <li><strong>CMDB accuracy:</strong> CMDB must be updated at change closure — not "whenever we get around to it." Stale CMDB is a control gap.</li>
+        <li><strong>Automated discovery:</strong> Tools that auto-scan the environment and update CMDB reduce human error.</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Release Management</h3>
+      <p>Release management governs the packaging, scheduling, and deployment of approved changes into production.</p>
+      <ul>
+        <li><strong>Release package:</strong> All code, configuration, scripts, and documentation bundled together for deployment.</li>
+        <li><strong>Release calendar:</strong> Scheduled maintenance windows — protects critical business periods (e.g., month-end close).</li>
+        <li><strong>Go/No-Go decision:</strong> Formal checkpoint where all stakeholders confirm readiness before deployment proceeds.</li>
+        <li><strong>Rollback plan:</strong> Every release must have a tested rollback procedure. "We'll figure it out if it fails" is not acceptable.</li>
+        <li><strong>Deployment verification:</strong> Post-deployment smoke tests confirm the release succeeded before the maintenance window closes.</li>
+        <li><strong>Release notes:</strong> Document what changed, what was tested, who approved, and known issues.</li>
+      </ul>
+      <div class="highlight-box" style="margin-top:14px">
+        <div class="hb-label">Key Audit Question</div>
+        <p>Can the organisation demonstrate, for any given release: who approved it, when it was tested, what the rollback procedure is, and that the CMDB was updated afterward? If any of these cannot be evidenced — that is a finding.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA MIGRATION & PIR -->
+<section class="section" id="s-migration">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 8</div>
+    <h2 class="section-title">Data Migration &amp; Post-Implementation Review</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Test your migration risk judgment, then build your own PIR scorecard.</p>
+  </div>
+  <div class="mig-wrap">
+    <h4>⚠️ Migration Risk Simulator</h4>
+    <p>Read each scenario and select the most appropriate control. Four scenarios total.</p>
+    <div id="migContent"></div>
+  </div>
+  <div class="info-block" style="margin-bottom:20px">
+    <h3>Migration Controls Checklist</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:8px">
+      <div class="sac"><div class="sac-lbl">Pre-Migration</div><h5>Data Mapping &amp; Cleansing</h5><p>Map source fields to target. Cleanse duplicates, nulls, format errors before migration begins.</p></div>
+      <div class="sac"><div class="sac-lbl">Migration</div><h5>Reconciliation Controls</h5><p>Record counts, hash totals, and financial totals must match between source and target exactly.</p></div>
+      <div class="sac"><div class="sac-lbl">Parallel Run</div><h5>Operate Both Systems</h5><p>Run legacy and new system simultaneously for at least one full business cycle to verify outputs.</p></div>
+      <div class="sac"><div class="sac-lbl">Go-Live</div><h5>Sign-Off Before Cutover</h5><p>Business stakeholders formally sign off on migration completeness before legacy is decommissioned.</p></div>
+      <div class="sac"><div class="sac-lbl">Post-Migration</div><h5>Legacy Preservation</h5><p>Keep legacy system accessible (read-only) for historical reporting for an agreed retention period.</p></div>
+      <div class="sac"><div class="sac-lbl">Rollback</div><h5>Tested Rollback Plan</h5><p>Rollback procedure must be tested — not just documented. Know exactly how long rollback takes.</p></div>
+    </div>
+  </div>
+  <div class="pir-wrap">
+    <h4>📊 Post-Implementation Review Scorecard</h4>
+    <p>Rate the system on each PIR dimension (1–5 stars). Click "Generate Report" to see your audit findings.</p>
+    <div id="pirDims">
+      <div class="pir-dim"><div class="pir-dim-row"><span class="pir-dim-name">Requirements Fulfillment</span><span class="pir-dim-val" id="pv0">—</span></div><div class="pir-stars" id="ps0"><span class="pir-star" onclick="ratePIR(0,1)">⭐</span><span class="pir-star" onclick="ratePIR(0,2)">⭐</span><span class="pir-star" onclick="ratePIR(0,3)">⭐</span><span class="pir-star" onclick="ratePIR(0,4)">⭐</span><span class="pir-star" onclick="ratePIR(0,5)">⭐</span></div></div>
+      <div class="pir-dim"><div class="pir-dim-row"><span class="pir-dim-name">System Performance vs. SLA</span><span class="pir-dim-val" id="pv1">—</span></div><div class="pir-stars" id="ps1"><span class="pir-star" onclick="ratePIR(1,1)">⭐</span><span class="pir-star" onclick="ratePIR(1,2)">⭐</span><span class="pir-star" onclick="ratePIR(1,3)">⭐</span><span class="pir-star" onclick="ratePIR(1,4)">⭐</span><span class="pir-star" onclick="ratePIR(1,5)">⭐</span></div></div>
+      <div class="pir-dim"><div class="pir-dim-row"><span class="pir-dim-name">Security Control Implementation</span><span class="pir-dim-val" id="pv2">—</span></div><div class="pir-stars" id="ps2"><span class="pir-star" onclick="ratePIR(2,1)">⭐</span><span class="pir-star" onclick="ratePIR(2,2)">⭐</span><span class="pir-star" onclick="ratePIR(2,3)">⭐</span><span class="pir-star" onclick="ratePIR(2,4)">⭐</span><span class="pir-star" onclick="ratePIR(2,5)">⭐</span></div></div>
+      <div class="pir-dim"><div class="pir-dim-row"><span class="pir-dim-name">User Adoption &amp; Training</span><span class="pir-dim-val" id="pv3">—</span></div><div class="pir-stars" id="ps3"><span class="pir-star" onclick="ratePIR(3,1)">⭐</span><span class="pir-star" onclick="ratePIR(3,2)">⭐</span><span class="pir-star" onclick="ratePIR(3,3)">⭐</span><span class="pir-star" onclick="ratePIR(3,4)">⭐</span><span class="pir-star" onclick="ratePIR(3,5)">⭐</span></div></div>
+      <div class="pir-dim"><div class="pir-dim-row"><span class="pir-dim-name">Documentation Completeness</span><span class="pir-dim-val" id="pv4">—</span></div><div class="pir-stars" id="ps4"><span class="pir-star" onclick="ratePIR(4,1)">⭐</span><span class="pir-star" onclick="ratePIR(4,2)">⭐</span><span class="pir-star" onclick="ratePIR(4,3)">⭐</span><span class="pir-star" onclick="ratePIR(4,4)">⭐</span><span class="pir-star" onclick="ratePIR(4,5)">⭐</span></div></div>
+    </div>
+    <button class="pir-go-btn" onclick="generatePIR()">Generate PIR Report</button>
+    <div class="pir-output" id="pirOutput"></div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="section" id="s-scenarios">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 9</div>
+    <h2 class="section-title">Real-World Scenarios</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Choose the correct auditor response, then read the expert explanation.</p>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 1 — Agile Development</div>
+    <h4>The Missing Acceptance Criteria</h4>
+    <p>During a sprint review, you observe that user stories are being moved to "Done" status without documented acceptance criteria. The Scrum Master argues that "the team knows what done means" and that formal documentation slows them down. The product is handling customer financial data and is subject to PCI-DSS.</p>
+    <div class="scenario-question">What is the auditor's MOST appropriate response?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">Accept the Scrum Master's explanation — agile teams are self-organising and don't require formal acceptance criteria</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns1','scTag1')">Issue a finding: acceptance criteria must be documented for each user story, particularly for a PCI-DSS regulated environment, as undocumented "done" creates an unauditable control gap</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">Recommend the team switch from Agile to Waterfall to ensure proper documentation</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">Raise the issue verbally but take no formal action since Agile is inherently less rigorous</button>
+    </div>
+    <div class="scenario-answer" id="scAns1"><div class="scenario-answered-tag" id="scTag1"></div><p>The auditor must raise a formal finding. <strong>Agile does not mean no controls</strong> — it means different controls. For a PCI-DSS environment specifically, every user story touching cardholder data must have explicit, documented acceptance criteria that can be evidenced to external auditors. The Definition of Done must be formalised and must include security requirements. The Scrum Master's argument that "the team knows" is not auditable and creates a control gap. The auditor should also verify that the Definition of Done includes security review, code review, and testing completion — not just functional delivery. Recommending a methodology switch is outside the auditor's role and scope.</p></div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 2 — Emergency Change</div>
+    <h4>The Midnight Hotfix</h4>
+    <p>A critical production bug is causing transaction failures at 11pm on a Friday. The lead developer patches the production database directly to restore service — no change request was raised, no CAB approval was sought, and no rollback plan was documented. Service is restored within 30 minutes. The development manager argues this was justified given the urgency.</p>
+    <div class="scenario-question">As the IS auditor reviewing this incident, what is your conclusion?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">No finding — the emergency justified bypassing change control entirely, and the outcome was successful</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">Minor finding only — the team should have raised a change request but the urgency is a mitigating factor</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns2','scTag2')">Significant finding: emergency changes require expedited approval (not zero approval), a rollback plan, CMDB update, and a mandatory PIR — none of which occurred. Direct production DB access by a developer is also an SoD violation.</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">Finding only for the missing PIR — the change itself was acceptable given the circumstances</button>
+    </div>
+    <div class="scenario-answer" id="scAns2"><div class="scenario-answered-tag" id="scTag2"></div><p>This scenario contains <strong>multiple findings</strong>: (1) <strong>No approval obtained</strong> — even emergency changes require a pre-authorised emergency approver or emergency CAB sign-off, not zero approval. (2) <strong>SoD violation</strong> — the developer accessed and modified the production database directly. Developers must not have write access to production. (3) <strong>No rollback plan</strong> — if the patch had made things worse, there was no way to recover safely. (4) <strong>CMDB not updated</strong> — the configuration baseline is now inaccurate. (5) <strong>No mandatory PIR</strong> — all emergency changes require a post-implementation review. The successful outcome does not mitigate these control failures — it was simply fortunate. The auditor should recommend that an emergency change process be formally documented, including pre-approved emergency approvers and mandatory PIR triggers.</p></div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 3 — Data Migration</div>
+    <h4>The Premature Decommission</h4>
+    <p>An organisation migrated from a legacy ERP to a new cloud-based system over a weekend. On Monday morning, the legacy system was shut down. Users immediately report that historical purchase orders from the past 3 years cannot be found in the new system. IT confirms the data was "probably migrated" but no reconciliation report was produced before go-live. The legacy system backups were also overwritten during the weekend migration.</p>
+    <div class="scenario-question">What should the auditor identify as the PRIMARY control failure?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">The migration was performed over a weekend — business-hours migrations are always safer</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">The cloud system was not the right choice for this organisation's needs</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns3','scTag3')">The primary failure is migrating and decommissioning the legacy system without a reconciliation report confirming data completeness and integrity — no system should be decommissioned until reconciliation is formally signed off</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">The IT team should have run the migration more slowly to avoid errors</button>
+    </div>
+    <div class="scenario-answer" id="scAns3"><div class="scenario-answered-tag" id="scTag3"></div><p>The primary control failure is <strong>decommissioning the legacy system before reconciliation was completed and signed off</strong>. A data migration must include: (1) Pre-migration data cleansing and mapping, (2) A reconciliation report comparing record counts, key totals, and data integrity checks between source and target, (3) <strong>Business sign-off on reconciliation before the legacy system is decommissioned</strong>, (4) Preservation of the legacy system (at minimum in read-only mode) for a retention period. Additional findings include: overwriting backups before migration was verified (a catastrophic risk), no parallel run period, and no rollback plan. The "probably migrated" comment from IT demonstrates that data completeness was never formally confirmed — a fundamental audit finding. The auditor should recommend data recovery attempts from any available sources and a root cause analysis of the reconciliation failure.</p></div>
+  </div>
+</section>
+
+<!-- KEY TERMS -->
+<section class="section" id="s-terms">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 10</div>
+    <h2 class="section-title">Key Terms Glossary</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Click any card to reveal the definition. Mark terms as known to track your learning.</p>
+  </div>
+  <input class="glossary-search" id="glossarySearch" placeholder="Search terms..." oninput="filterTerms(this.value)"/>
+  <div class="glossary-meta">
+    <span id="termsKnownLbl">Known: 0</span>
+    <span id="termsReviewLbl">Flagged: 0</span>
+    <span id="termsCountLbl">Showing: 14 of 14</span>
+  </div>
+  <div class="glossary-grid" id="glossaryGrid">
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>SDLC</h4><p>The structured process that defines how information systems are planned, created, tested, and deployed.</p></div><div class="term-back"><p>The System Development Life Cycle is the formal process governing all phases of system development — from feasibility and requirements through design, build, test, implementation, and post-implementation review. Each phase has defined deliverables and phase-gate controls.</p><div class="example">🎯 Exam: Auditors review SDLC controls at each phase gate — not just at go-live. The key question at every gate is: was there documented approval before moving to the next phase?</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>UAT (User Acceptance Testing)</h4><p>The final testing phase where business users verify the system meets their requirements before go-live.</p></div><div class="term-back"><p>UAT is performed by the business owners and end users — not by IT or the auditor. Users verify that the system meets the requirements they specified. Formal UAT sign-off documents are required before any system can move to production. UAT must use realistic test scenarios drawn from actual business processes.</p><div class="example">🎯 Exam: If asked who performs UAT — always: business users. If IT performs UAT on behalf of business — that is a finding.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Regression Testing</h4><p>Re-running all existing tests after a change to verify that previously working functionality still works.</p></div><div class="term-back"><p>Every time a system change is made — bug fix, patch, enhancement — regression testing must be performed to ensure the change did not break any existing functionality. This is often automated in CI/CD pipelines. Without regression testing, fixes frequently introduce new defects (known as "regression bugs").</p><div class="example">🎯 Exam: Regression testing is mandatory after every change — not optional. Skipping regression testing to save time is a control weakness, especially in regulated environments.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>CMDB</h4><p>Configuration Management Database — the authoritative record of all IT assets and their configurations.</p></div><div class="term-back"><p>The CMDB stores Configuration Items (CIs) — hardware, software, services, and their relationships. The CMDB represents the approved baseline; any deviation without a corresponding change record is an unauthorised change. Auditors compare the CMDB against actual system state to identify undocumented changes. The CMDB must be updated at the close of every change.</p><div class="example">🎯 Exam: If the CMDB does not match the actual environment — that is a finding regardless of whether the undocumented change was harmful.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>CAB (Change Advisory Board)</h4><p>The cross-functional group that reviews and approves Normal changes before implementation.</p></div><div class="term-back"><p>The CAB includes representatives from IT operations, development, security, and business stakeholders. It evaluates change requests for risk, resource requirements, scheduling conflicts, and business impact before granting approval. Standard changes bypass CAB (pre-approved). Emergency changes use an expedited process (Emergency CAB or designated authority). All changes still require some form of approval.</p><div class="example">🎯 Exam: Know the three change categories and which requires full CAB: Standard (pre-approved, no CAB), Normal (full CAB), Emergency (expedited approval, mandatory PIR after).</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Parallel Testing</h4><p>Running old and new systems simultaneously and comparing outputs to validate the new system's accuracy.</p></div><div class="term-back"><p>Parallel testing provides the highest assurance for data migrations — both systems process the same real transactions and results are compared. Any discrepancy is investigated before cutover. It is expensive (requires double the processing capacity) and operationally complex, but is expected for high-risk system replacements such as financial or ERP systems.</p><div class="example">🎯 Exam: Parallel testing is the MOST reliable migration validation method. It is also the most expensive. The auditor should recommend it for high-risk migrations.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>SAST / DAST</h4><p>Static and dynamic application security testing — two complementary approaches to finding vulnerabilities.</p></div><div class="term-back"><p>SAST (Static) analyses source code without executing it — white-box testing, performed during development. Catches issues like hardcoded credentials, SQL injection patterns, insecure API calls. DAST (Dynamic) tests the running application from the outside — black-box testing, performed against a deployed test environment. Simulates real attacker inputs.</p><div class="example">🎯 Exam: SAST = code review / white-box. DAST = runtime / black-box. Both should be embedded in the CI/CD pipeline. Neither replaces penetration testing by an independent party.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>SoD (Segregation of Duties)</h4><p>No single individual should be able to initiate, approve, and complete a sensitive transaction alone.</p></div><div class="term-back"><p>In the development context: the person who writes code must not be the person who deploys it to production. This prevents a developer from introducing malicious code and deploying it without oversight. SoD also applies to change management: the person who requests a change cannot be the person who approves it.</p><div class="example">🎯 Exam: A developer with production deployment rights is always a finding. Compensating controls (e.g., detailed logging, mandatory management review) can reduce risk but do not eliminate the SoD concern.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>PIR (Post-Implementation Review)</h4><p>A structured evaluation of whether a system or change achieved its intended objectives after go-live.</p></div><div class="term-back"><p>PIR assesses: requirements fulfillment, performance vs. SLA, security control implementation, user adoption and training effectiveness, and documentation completeness. PIR is mandatory after all emergency changes. For major system implementations, PIR typically occurs 30–90 days post go-live to allow enough operational data to evaluate performance.</p><div class="example">🎯 Exam: If a question asks what should happen after an emergency change — the answer always includes a mandatory PIR. PIR is also an auditor's tool for evaluating whether systems met their business case.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Stress Testing</h4><p>Testing a system beyond its rated capacity to determine failure behaviour and breaking point.</p></div><div class="term-back"><p>Stress testing deliberately pushes a system past its designed limits to understand how it fails. The goal is to identify failure modes, data integrity risks during failure, and recovery behaviour. Key questions: Does the system fail gracefully? Does it corrupt data? How long does recovery take? This is different from load/performance testing, which validates behaviour under expected peak load.</p><div class="example">🎯 Exam: Stress testing = beyond capacity limits. Load/performance testing = expected peak load. An auditor reviewing BCP/DRP should confirm stress testing results are used to define recovery time expectations.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Definition of Done (DoD)</h4><p>In Agile, the agreed set of criteria that must be met before a user story is considered complete.</p></div><div class="term-back"><p>The DoD is the Agile equivalent of phase-gate controls. It must include: code review completed, unit tests passing, integration tests passing, security review completed (SAST scan), documentation updated, and acceptance criteria verified by the product owner. An auditor evaluates whether the DoD is formally documented, consistently applied, and includes security requirements — not just functional delivery.</p><div class="example">🎯 Exam: If the DoD does not include security requirements in a regulated environment — that is a finding. "The team knows what done means" is not auditable.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Software Escrow</h4><p>An arrangement where source code is held by a neutral third party, released if the vendor fails.</p></div><div class="term-back"><p>If an organisation relies on vendor-developed software and the vendor goes bankrupt or ceases to support the product, software escrow ensures the organisation can access the source code to maintain or modify it. The escrow agreement specifies: deposit frequency, release conditions, verification procedures (is the code actually compilable?), and who holds the escrow.</p><div class="example">🎯 Exam: Software escrow is a required control for critical vendor-supplied systems. The auditor should verify the escrow exists, is current, and that release conditions are defined and tested.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Data Reconciliation</h4><p>The process of verifying that migrated data in the target system matches the source system exactly.</p></div><div class="term-back"><p>Reconciliation controls include: record count matching (same number of rows), financial total matching (sum of key fields), hash total verification, and spot-check validation of individual records. Reconciliation must be completed and formally signed off before the legacy system is decommissioned. "Probably migrated" is not acceptable evidence.</p><div class="example">🎯 Exam: No legacy system should be decommissioned before reconciliation is formally completed and signed off. This is the most frequently tested migration control in the CISA exam.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Rollback Plan</h4><p>A documented, tested procedure to revert a system or change to its previous state if implementation fails.</p></div><div class="term-back"><p>Every significant change or migration must have a rollback plan that: defines the trigger conditions for rollback, lists all steps to restore the prior state, identifies who authorises the rollback decision, specifies how long rollback takes, and has been tested in the test environment. "We'll figure it out if it fails" is not a rollback plan.</p><div class="example">🎯 Exam: An auditor reviewing a change or migration should always ask: Is there a tested rollback plan? If no — that is a finding regardless of whether the change succeeded.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section" id="s-quiz">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 11</div>
+    <h2 class="section-title">Knowledge Check</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">10 CISA-style questions. Keyboard shortcuts A/B/C/D. 30-second timer per question.</p>
+  </div>
+  <div class="quiz-container" id="quizContainer">
+    <div id="quizActive">
+      <div class="quiz-topbar">
+        <div class="quiz-streak" id="streakDisplay"><span class="fire">🔥</span><span id="streakNum">0</span> streak</div>
+        <div class="quiz-timer" id="timerWrap">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#2a3045" stroke-width="4"/><circle cx="20" cy="20" r="17" fill="none" stroke="var(--em)" stroke-width="4" stroke-linecap="round" stroke-dasharray="106.8" id="timerCircle" style="stroke-dashoffset:0;transition:stroke-dashoffset 1s linear"/></svg>
+          <div class="quiz-timer-text" id="timerText">30</div>
+        </div>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-inner" id="quizProgressInner" style="width:0%"></div></div>
+      <div class="quiz-qnum" id="quizQnum">Question 1 of 10</div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-kb">Keyboard: A B C D</div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" style="display:none">Next Question →</button>
+    </div>
+    <div class="score-wrap" id="scoreWrap" style="display:none">
+      <div class="score-ring-wrap"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="57" fill="none" stroke="#2a3045" stroke-width="8"/><circle cx="70" cy="70" r="57" class="score-ring-fill" id="scoreRingFill"/></svg><div class="score-ring-val"><div class="pct" id="scorePct">0%</div><div class="lbl">Score</div></div></div>
+      <h3 id="scoreTitle"></h3>
+      <p id="scoreMsg"></p>
+      <div class="score-actions">
+        <button class="btn btn-primary" onclick="restartQuiz()">Retake Quiz</button>
+        <button class="btn btn-ghost" onclick="scrollToSection('s-conclusion')">Continue →</button>
+      </div>
+      <div class="missed-review" id="missedReview" style="display:none">
+        <h4>Review Missed Questions</h4>
+        <div id="missedList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="section" id="s-conclusion">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 12</div>
+    <h2 class="section-title">Mastery Checklist</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Confirm your readiness. Click each item to mark it complete.</p>
+  </div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can name all 7 SDLC phases and identify the key audit control at each phase gate.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand how audit approach differs between Waterfall, Agile, and DevOps — and can explain the specific control risks of each.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can distinguish all 10 testing types, identify who performs each, and know when parallel testing is required.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I know the three change categories (Standard, Normal, Emergency) and the correct approval path for each.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can explain the SoD requirement in change management: developers must not deploy to production.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand CMDB as the authoritative configuration baseline and know that any deviation without a change record is a finding.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can identify the key data migration controls: mapping, cleansing, reconciliation, parallel run, sign-off before decommission, rollback plan.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I know that all emergency changes require a mandatory PIR and that "successful outcome" does not excuse bypassing controls.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can explain SAST vs. DAST, and know that no production data (including PII) may be used in test environments.</p></div>
+  </div>
+  <div style="margin-top:32px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)">
+    <div class="section-eyebrow" style="margin-bottom:10px">What Comes Next</div>
+    <p style="color:var(--text-muted)">Domain 3 complete! Next is <strong style="color:var(--text)">Domain 4: Information Systems Operations and Business Resilience</strong> — the largest domain at 28% of the exam. You'll explore IT service management, database administration, BCP/DRP planning, RTO/RPO objectives, cloud operations, and third-party risk. The operational focus built here provides the foundation for understanding what happens after systems are deployed into production.</p>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+// ── GLOBAL STATE ──
+let objDone = 0;
+let sdlcDone = 0;
+let termsKnown = 0;
+let termsReview = 0;
+let quizScore = 0;
+let quizCurrent = 0;
+let quizStreak = 0;
+let quizMissed = [];
+let timerInterval = null;
+let timerVal = 30;
+let pirRatings = [0,0,0,0,0];
+let migCurrent = 0;
+let migScore = 0;
+
+// ── SDLC DATA ──
+const sdlcPhases = [
+  {name:"Planning",icon:"📋",controls:[
+    {lbl:"Feasibility",title:"Feasibility Study",body:"Business case and cost-benefit analysis produced and formally approved by stakeholders before any development resources are committed."},
+    {lbl:"Scope",title:"Scope Definition",body:"Clearly documented project scope prevents scope creep and provides the baseline against which the auditor can measure delivery."},
+    {lbl:"Risk",title:"Risk Assessment",body:"Initial risk assessment identifies security, technical, and business risks. Forms the basis for security-by-design decisions."},
+    {lbl:"Governance",title:"Governance Sign-off",body:"Executive sponsor and steering committee approval obtained. Project charter authorises the initiative and assigns accountability."}
+  ]},
+  {name:"Requirements",icon:"📝",controls:[
+    {lbl:"Functional",title:"Functional Requirements",body:"All business requirements documented, reviewed, and signed off by business owners. Basis for UAT test cases."},
+    {lbl:"Security",title:"Security Requirements",body:"Security requirements defined at this stage — not added later. Includes data classification, access control requirements, and compliance obligations."},
+    {lbl:"Traceability",title:"Requirements Traceability Matrix",body:"RTM maps each requirement to test cases and deliverables. Auditor uses RTM to verify all requirements were tested and met."},
+    {lbl:"Sign-off",title:"Requirements Baseline",body:"Formal sign-off by business owners creates the approved baseline. Changes after sign-off require formal change control."}
+  ]},
+  {name:"Design",icon:"🏗️",controls:[
+    {lbl:"Architecture",title:"Security Architecture Review",body:"System architecture reviewed by security team before construction begins. Identifies design-level vulnerabilities at lowest remediation cost."},
+    {lbl:"Data",title:"Data Flow Diagrams",body:"DFDs document all data inputs, processing, outputs, and storage. Required for privacy impact assessments (PIA) under GDPR."},
+    {lbl:"SoD Design",title:"SoD Built into Design",body:"Access control design must enforce SoD — roles and permissions designed to prevent any single user from having incompatible access rights."},
+    {lbl:"Threat Model",title:"Threat Modelling",body:"STRIDE or similar methodology identifies threats at design stage. Results feed into security requirements and testing scope."}
+  ]},
+  {name:"Development",icon:"💻",controls:[
+    {lbl:"Standards",title:"Coding Standards",body:"All code must comply with documented coding standards. Standards must include security requirements (OWASP Top 10 guidance, input validation, no hardcoded credentials)."},
+    {lbl:"Code Review",title:"Peer Code Review",body:"Independent code review before any code moves to test environment. Four-eyes principle — the author should not be the only reviewer."},
+    {lbl:"Version Ctrl",title:"Version Control",body:"All code committed to version control (e.g., Git). Enables complete audit trail, rollback to any prior state, and branch-based development."},
+    {lbl:"No Prod Access",title:"Developer Access Control",body:"Developers must not have access to the production environment. This is the core SoD control in development. Any exception requires compensating controls and logging."}
+  ]},
+  {name:"Testing",icon:"🧪",controls:[
+    {lbl:"Test Plan",title:"Formal Test Plan",body:"Test plan documents scope, approach, test types, entry/exit criteria, and responsibilities. Approved before testing begins."},
+    {lbl:"UAT",title:"UAT by Business",body:"User Acceptance Testing performed by business users (not IT). UAT test cases trace back to requirements. Formal sign-off required."},
+    {lbl:"No PII",title:"Test Data Controls",body:"No production data (especially PII) in test environments. Test data must be synthetically generated or fully anonymised/masked."},
+    {lbl:"Security",title:"Security Testing",body:"SAST during development, DAST against test environment. Penetration testing by independent party for high-risk systems."}
+  ]},
+  {name:"Implementation",icon:"🚀",controls:[
+    {lbl:"Go/No-Go",title:"Go/No-Go Decision",body:"Formal checkpoint with all stakeholders confirming readiness. All test sign-offs, rollback plan, and support readiness confirmed before deployment begins."},
+    {lbl:"Change Ctrl",title:"Change Control Compliance",body:"All deployments to production must be via approved change requests. No ad-hoc or developer-initiated deployments."},
+    {lbl:"Rollback",title:"Tested Rollback Plan",body:"Rollback plan must exist and have been tested before go-live. The plan must specify trigger conditions, steps, and responsible parties."},
+    {lbl:"CMDB",title:"CMDB Update",body:"CMDB updated to reflect new system configuration at go-live. The baseline is not updated after the fact — it is updated as part of the release process."}
+  ]},
+  {name:"Post-Impl.",icon:"🔍",controls:[
+    {lbl:"PIR",title:"Post-Implementation Review",body:"Formal PIR conducted 30–90 days post go-live. Assesses requirements fulfillment, performance vs. SLA, security, user adoption, and documentation."},
+    {lbl:"Lessons",title:"Lessons Learned",body:"Lessons learned documented and fed back into SDLC process. Key input for future projects and for improving development controls."},
+    {lbl:"Benefits",title:"Benefits Realisation",body:"Were the projected benefits from the business case actually achieved? Benefits realisation tracking is the ultimate measure of project success."},
+    {lbl:"Monitoring",title:"Ongoing Monitoring",body:"Performance metrics, security alerts, and error rates monitored after go-live. Alerts trigger incident management rather than ad-hoc fixes."}
+  ]}
+];
+
+// ── MIGRATION SCENARIOS ──
+const migScenarios = [
+  {
+    lbl:"Scenario 1 of 4",title:"Missing Records",
+    desc:"After migrating 500,000 customer records, the target system shows only 487,000. The migration team says 'some duplicates were probably removed.' What control should have prevented this situation?",
+    opts:["Increase migration server RAM","Formal data reconciliation report comparing source and target record counts before go-live","Run the migration again on Sunday","Ask the business if 13,000 missing records matter"],
+    ans:1,
+    feedback:"A formal reconciliation report comparing record counts, key totals, and sample spot-checks must be produced and signed off before go-live. 'Probably removed duplicates' is not auditable evidence. The reconciliation must account for every record: migrated, intentionally excluded (with documented business reason), and rejected (with error logs)."
+  },
+  {
+    lbl:"Scenario 2 of 4",title:"The Legacy Shutdown",
+    desc:"Go-live was declared successful at 9am Monday. The legacy system was immediately shut down and tapes overwritten. By 10am, users report they cannot access 2 years of historical purchase orders. What was the primary control failure?",
+    opts:["The go-live should have been on a Friday","Legacy system decommissioned before reconciliation was completed and signed off","The new system should have had more storage","Users should have been better trained"],
+    ans:1,
+    feedback:"The legacy system must never be decommissioned until data reconciliation is formally completed and signed off by business stakeholders. Best practice: keep the legacy system in read-only mode for a defined retention period post go-live. Overwriting backup tapes before migration was verified compounded the failure — this destroys the only recovery option."
+  },
+  {
+    lbl:"Scenario 3 of 4",title:"PII in Test",
+    desc:"During testing of the new HR system, you discover the test environment contains real employee names, salaries, and tax IDs copied directly from production. The project manager says 'it's just the test environment — it's not connected to the internet.' What is the auditor's response?",
+    opts:["Accept the explanation — if it's not internet-connected the risk is acceptable","No issue — test data always comes from production","Issue a finding: use of real PII in test environments violates GDPR Article 25 (Privacy by Design) regardless of network connectivity","Recommend a firewall be placed around the test environment"],
+    ans:2,
+    feedback:"This is a GDPR violation regardless of network connectivity. Article 25 (Privacy by Design and by Default) requires that personal data be protected in all processing environments, including test. The organisation must immediately anonymise or replace the test data with synthetically generated data. The finding should note the risk: unauthorised access to the test environment (which typically has weaker controls than production) could expose real employee data."
+  },
+  {
+    lbl:"Scenario 4 of 4",title:"The Unplanned Developer Fix",
+    desc:"At 2am during a migration weekend, a developer notices a data transformation error causing financial values to be rounded incorrectly. They fix the transformation script on the fly without raising a change request. The migration completes successfully. Should this be a finding?",
+    opts:["No — the fix was necessary and the migration succeeded","No — emergency fixes during migrations are always acceptable","Yes — all changes to migration scripts require change control approval, even during the migration window. This is an unauthorised change.","Yes, but only if the rounding error would have caused financial misstatement"],
+    ans:2,
+    feedback:"Yes — this is a finding regardless of outcome. All changes to migration scripts and tooling must go through change control. An unreviewed, unlogged change to a financial transformation script introduces risks that cannot be retroactively assessed. The correct approach would be to stop the migration, escalate to the migration manager, document the issue, obtain approval for the fix (even via emergency procedure), apply the fix, re-test, and resume. The fact that it 'worked' is irrelevant to the control failure."
+  }
+];
+
+// ── QUIZ DATA ──
+const quizData = [
+  {q:"A developer requests access to the production environment to debug a critical live issue. As IS auditor, what is the MOST appropriate recommendation?",opts:["Grant temporary access with time limit and revoke immediately after","Allow read-only production access permanently for senior developers","Deny the request — a senior operations team member should investigate with the developer observing","Approve if the developer's manager authorises it in writing"],ans:2,feedback:"Developers must not have write access to production — this is the core SoD control. Even read-only access should be tightly controlled and logged. The correct approach is to have an operations team member (who has legitimate production access) investigate the issue, with the developer available to advise. If access is temporarily granted in an emergency, it must be logged, time-limited, and reviewed in a mandatory PIR."},
+  {q:"During an Agile project audit, you find that user stories are completed and deployed within each sprint but no formal UAT sign-off is obtained from business users. The product owner participates in sprint reviews. This is BEST described as:",opts:["Acceptable — sprint reviews are the Agile equivalent of formal UAT","A finding — formal UAT sign-off from business users is required regardless of methodology","Acceptable if the product owner is a business representative","Not a finding if the team has a strong Definition of Done"],ans:1,feedback:"Sprint reviews are valuable feedback sessions but do not substitute for formal UAT sign-off. UAT must be a documented process where business users verify that the system meets their requirements, with formal sign-off evidencing acceptance. The product owner participating in reviews is not the same as documented business UAT. The auditor should recommend formalising UAT within the sprint cycle with documented acceptance criteria and business sign-off at each sprint."},
+  {q:"An organisation deploys an ERP system and immediately decommissions its legacy system. Three weeks later, it discovers that 5 years of historical data was not migrated. Which control would have MOST directly prevented this outcome?",opts:["A longer migration timeline","Formal data reconciliation completed and signed off before legacy decommission","User training on the new system","A more experienced migration team"],ans:1,feedback:"Formal reconciliation — comparing record counts, key totals, and data integrity checksums between source and target — must be completed and formally signed off by business stakeholders before the legacy system is decommissioned. This is the primary preventive control for data loss during migration. Best practice also keeps the legacy system in read-only mode for a retention period post go-live."},
+  {q:"Which of the following BEST describes the auditor's role when reviewing a system's User Acceptance Testing (UAT)?",opts:["Performing UAT on behalf of business users who lack the time","Verifying that UAT was performed by business users, acceptance criteria were defined, and formal sign-off was obtained","Designing the UAT test cases to ensure adequate coverage","Approving the UAT sign-off documentation as an independent party"],ans:1,feedback:"The auditor does not perform UAT — that is the business's responsibility. The auditor's role is to verify that UAT was conducted (not skipped), that acceptance criteria existed before testing began, that business users (not IT) performed the testing, and that formal sign-off documentation exists. Performing UAT would compromise the auditor's independence."},
+  {q:"A software vendor notifies your organisation that it will cease support for a critical application in 18 months. Which control should the IS auditor verify is in place?",opts:["The organisation should immediately replace the software","A software escrow agreement exists with current source code deposits","The vendor should be required to continue support indefinitely","The application should be moved to the cloud to extend its life"],ans:1,feedback:"Software escrow ensures the organisation can access the source code if the vendor ceases operations or support. The auditor should verify: the escrow agreement exists, deposits are current (source code is regularly updated), the release conditions are clearly defined, and the deposited code has been verified to be compilable. Immediate replacement may be appropriate but requires a separate business decision — the escrow is the immediate risk mitigation control."},
+  {q:"During a change management audit, you discover that a developer deployed a change to production at midnight without a change request, but with verbal approval from their manager. This is BEST described as:",opts:["Acceptable if documented retrospectively","A minor finding — verbal approval is sufficient for low-risk changes","A significant finding — all production changes require formal approval via change control regardless of urgency or management approval","Not a finding if the change was successful and improved system performance"],ans:2,feedback:"Verbal approval is not acceptable for change control — changes require formal, documented approval through the established change management process. 'Documented retrospectively' is not the same as prior approval and does not satisfy the control requirement. Additionally, developer deployment to production is itself an SoD violation. The auditor should note both findings: inadequate change approval process and SoD violation. The manager's verbal approval does not authorise the bypassing of change control."},
+  {q:"An organisation uses DAST (Dynamic Application Security Testing) but not SAST in its development pipeline. What is the PRIMARY risk of this approach?",opts:["DAST is more expensive than SAST, wasting budget","Vulnerabilities in source code (hardcoded credentials, injection patterns) may not be detected until the application is deployed to test","DAST cannot be automated in a CI/CD pipeline","The application cannot be penetration tested without SAST results"],ans:1,feedback:"SAST analyses source code without executing it, catching issues like hardcoded credentials, SQL injection patterns, and insecure function calls at development time — when remediation is cheapest. DAST tests the running application and cannot see source code. Without SAST, source-code-level vulnerabilities may only be discovered in testing (higher cost to fix) or in production (most expensive). Both SAST and DAST should be embedded in the pipeline as complementary controls."},
+  {q:"What is the PRIMARY purpose of maintaining a software Configuration Management Database (CMDB)?",opts:["To track software licence costs and vendor contracts","To serve as the authoritative baseline of IT assets and configurations, enabling detection of unauthorised changes","To manage the IT project portfolio and resource allocation","To document user access rights and authentication credentials"],ans:1,feedback:"The CMDB is the authoritative record of what the IT environment should look like. By comparing actual system configurations against the CMDB baseline, auditors and operations teams can identify unauthorised changes — deviations from the approved configuration. The CMDB must be updated at the close of every approved change. Any discrepancy between CMDB and actual configuration is a finding, whether or not it caused harm."},
+  {q:"An emergency change was implemented at 3am to fix a critical production outage. Service was restored in 45 minutes. What should happen NEXT according to change management best practice?",opts:["Close the change record and return to normal operations — the issue is resolved","Document a post-implementation review (PIR) and retrospectively raise a formal change request","Update the CMDB only","Report the incident to regulators as a breach of change control policy"],ans:1,feedback:"All emergency changes require two mandatory actions after service restoration: (1) A formal change request must be raised retrospectively documenting what was changed, who approved it, and what was done, and (2) A mandatory PIR must be conducted to analyse the root cause, assess whether the change was effective, and identify preventive measures. The CMDB must also be updated. The PIR is not optional — it is the core learning mechanism that prevents recurrence."},
+  {q:"Which testing type provides the HIGHEST assurance that a data migration preserved the integrity of financial records?",opts:["Unit testing of the migration scripts","Penetration testing of the new system","Parallel testing — running both old and new systems simultaneously and comparing outputs","System testing of the new application's core functions"],ans:2,feedback:"Parallel testing provides the highest assurance by running both the legacy and new systems simultaneously on the same real transactions and comparing outputs. Any discrepancy is identified and investigated before cutover. It is the most expensive and operationally complex approach, but for financial systems where data integrity is critical, it is the recommended standard. Unit testing checks scripts in isolation; system testing checks application function — neither confirms that historical data was migrated accurately."}
+];
+
+// ── PROGRESS ──
+function updateProgress() {
+  const boxes = document.querySelectorAll(".check-box");
+  const checked = document.querySelectorAll(".check-box.checked");
+  const pct = boxes.length ? Math.round((checked.length / boxes.length) * 100) : 0;
+  document.getElementById("progressFill").style.width = pct + "%";
+  document.getElementById("progressPct").textContent = pct + "%";
+  if (pct === 100) triggerConfetti();
+}
+
+// ── TOAST ──
+function showToast(icon, msg, type="") {
+  const stack = document.getElementById("toastStack");
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.innerHTML = `<span class="toast-icon">${icon}</span><span>${msg}</span>`;
+  stack.appendChild(t);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add("show")));
+  setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+// ── PARTICLES ──
+(function initParticles() {
+  const canvas = document.getElementById("particleCanvas");
+  if (!canvas) return;
+  const hero = canvas.closest(".hero");
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+  function resize() { canvas.width = hero.offsetWidth; canvas.height = hero.offsetHeight; }
+  resize();
+  window.addEventListener("resize", resize);
+  for (let i = 0; i < 40; i++) particles.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3, r:Math.random()*1.5+.5, a:Math.random()*.4+.1 });
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>canvas.width)p.vx*=-1;
+      if(p.y<0||p.y>canvas.height)p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,201,167,${p.a})`; ctx.fill();
+    });
+    for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++) {
+      const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<80) { ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=`rgba(0,201,167,${.08*(1-d/80)})`; ctx.stroke(); }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── STAT COUNTERS ──
+function animateCount(id, target, suffix="") {
+  let val=0; const el=document.getElementById(id); if(!el) return;
+  const step=Math.ceil(target/40);
+  const t=setInterval(()=>{ val=Math.min(val+step,target); el.textContent=val+(suffix); if(val>=target)clearInterval(t); },40);
+}
+setTimeout(()=>{ animateCount("sv1",7); animateCount("sv2",10); animateCount("sv3",14); animateCount("sv4",10); },400);
+
+// ── FLOATING NAV ──
+const sections=["s-intro","s-objectives","s-sdlc","s-methods","s-testing","s-change","s-config","s-migration","s-scenarios","s-terms","s-quiz","s-conclusion"];
+const secLabels=["Intro","Objectives","SDLC","Methodologies","Testing","Change Mgmt","Config & Release","Migration & PIR","Scenarios","Key Terms","Quiz","Conclusion"];
+(function buildFloatNav(){
+  const nav=document.getElementById("floatNav");
+  sections.forEach((id,i)=>{ const d=document.createElement("div"); d.className="float-dot"; d.title=secLabels[i]; d.onclick=()=>scrollToSection(id); nav.appendChild(d); });
+})();
+
+// ── SCROLL SPY ──
+window.addEventListener("scroll",()=>{
+  const scrollPos=window.scrollY+200;
+  sections.forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el) return;
+    const top=el.offsetTop, bot=top+el.offsetHeight;
+    const dot=document.querySelectorAll(".float-dot")[i];
+    const navItem=document.querySelector(`.nav-item[data-target="${id}"]`);
+    const active=scrollPos>=top&&scrollPos<bot;
+    if(dot) dot.classList.toggle("active",active);
+    if(navItem) navItem.classList.toggle("active",active);
+  });
+  document.querySelectorAll(".section").forEach(s=>{ if(s.getBoundingClientRect().top<window.innerHeight*.85) s.classList.add("visible"); });
+});
+
+function scrollToSection(id) {
+  const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:"smooth"});
+}
+function markNavVisited(id) {
+  const ni=document.querySelector(`.nav-item[data-target="${id}"]`); if(ni) ni.classList.add("visited");
+}
+
+// ── OBJECTIVES ──
+function markObj(card, name) {
+  if(card.classList.contains("done")) return;
+  card.classList.add("done");
+  objDone++;
+  showToast("✅", name + " — objective complete", "green");
+  const pct=Math.round((objDone/8)*100);
+  document.getElementById("objCount").textContent=objDone+" / 8 complete";
+  document.getElementById("objBar").style.width=pct+"%";
+  markNavVisited("s-objectives");
+  updateProgress();
+}
+
+// ── SDLC ──
+let openPhaseIdx=-1;
+function openPhase(i) {
+  const detail=document.getElementById("sdlcDetail");
+  const phases=document.querySelectorAll(".sdlc-phase");
+  if(openPhaseIdx===i) { detail.classList.remove("show"); phases[i].classList.remove("open"); openPhaseIdx=-1; return; }
+  phases.forEach(p=>p.classList.remove("open"));
+  phases[i].classList.add("open");
+  openPhaseIdx=i;
+  const ph=sdlcPhases[i];
+  detail.innerHTML=`<div class="sdlc-detail-title">${ph.icon} Phase ${i+1}: ${ph.name}</div>
+    <div class="sdlc-audit-cards">${ph.controls.map(c=>`<div class="sac"><div class="sac-lbl">${c.lbl}</div><h5>${c.title}</h5><p>${c.body}</p></div>`).join("")}</div>
+    <button class="sdlc-mark-btn${phases[i].classList.contains("audited")?" done":""}" onclick="markPhase(${i},this)">${phases[i].classList.contains("audited")?"✓ Phase Audited":"Mark Phase as Audited"}</button>`;
+  detail.classList.add("show");
+  markNavVisited("s-sdlc");
+}
+function markPhase(i,btn) {
+  const phases=document.querySelectorAll(".sdlc-phase");
+  if(phases[i].classList.contains("audited")) return;
+  phases[i].classList.add("audited");
+  btn.textContent="✓ Phase Audited"; btn.classList.add("done");
+  sdlcDone++;
+  document.getElementById("sdlcCount").textContent=sdlcDone+" / 7";
+  document.getElementById("sdlcBar").style.width=Math.round((sdlcDone/7)*100)+"%";
+  if(sdlcDone===7) showToast("🎯","All SDLC phases audited!","green");
+  updateProgress();
+}
+
+// ── TABS ──
+function switchTab(btn, panelId) {
+  const group=btn.closest(".section")||btn.closest(".info-block")||document;
+  group.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  group.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  btn.classList.add("active");
+  const panel=document.getElementById(panelId); if(panel) panel.classList.add("active");
+}
+
+// ── METHODOLOGY ──
+function switchMeth(btn, panelId) {
+  document.querySelectorAll(".meth-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".meth-panel").forEach(p=>p.classList.remove("show"));
+  btn.classList.add("active");
+  document.getElementById(panelId).classList.add("show");
+  markNavVisited("s-methods");
+}
+
+// ── TEST DRAG MATCH ──
+let draggedChip=null;
+function dragStartTest(e,chip) { draggedChip=chip; chip.classList.add("dragging"); e.dataTransfer.setData("text",chip.dataset.val); }
+document.addEventListener("dragend",()=>{ if(draggedChip){draggedChip.classList.remove("dragging");draggedChip=null;} });
+function dropTest(e,row) {
+  e.preventDefault(); row.classList.remove("drag-over");
+  if(!draggedChip) return;
+  const val=draggedChip.dataset.val;
+  const slot=row.querySelector(".ts-slot");
+  slot.innerHTML=`<span class="ts-placed">${val}</span>`;
+  row.dataset.placed=val;
+  draggedChip.classList.add("used");
+}
+function checkTestMatch() {
+  const rows=document.querySelectorAll(".ts-row");
+  let correct=0;
+  rows.forEach(row=>{
+    const placed=row.dataset.placed||"";
+    const answer=row.dataset.answer;
+    row.classList.remove("correct","incorrect");
+    if(placed===answer){row.classList.add("correct");correct++;}
+    else if(placed){row.classList.add("incorrect");}
+  });
+  const res=document.getElementById("testMatchResult");
+  res.style.display="block"; res.classList.add("show");
+  if(correct===5){res.className="match-result show all-correct";res.textContent="🎯 Perfect! All 5 testing types correctly matched. Well done!";showToast("🎯","Testing types mastered!","green");markNavVisited("s-testing");}
+  else{res.className="match-result show partial";res.textContent=`${correct}/5 correct. Review the incorrect rows — the correct answer is shown in the scenario description.`;}
+}
+
+// ── CHANGE DECISION TREE ──
+const cdtTree = {
+  q:"Is the change in response to an unplanned production issue requiring immediate action?",
+  yes:{result:{lbl:"Emergency Change",title:"Emergency Change",desc:"Expedited approval required — not zero approval. Designated emergency authority or Emergency CAB must approve before or immediately after implementation.",steps:["Notify designated emergency approver","Implement with minimal delay","Document all actions taken","Raise formal change request retrospectively","Mandatory PIR within 5 business days","Update CMDB"]}},
+  no:{q:"Is this a routine, pre-approved change following a documented standard procedure (e.g., scheduled patch from approved list)?",
+    yes:{result:{lbl:"Standard Change",title:"Standard Change",desc:"Pre-approved. No CAB review required. Implementation can proceed following the documented standard procedure.",steps:["Follow documented standard procedure","Log the change in the change register","Update CMDB after completion","No PIR required unless issues arose"]}},
+    no:{result:{lbl:"Normal Change",title:"Normal Change",desc:"Full CAB review and approval required before implementation. Cannot proceed without documented CAB approval.",steps:["Submit formal RFC with impact assessment and rollback plan","CAB review at next scheduled meeting","Obtain documented CAB approval","Schedule in maintenance window","Implement and verify","Close RFC and update CMDB"]}}
+  }
+};
+let cdtState=cdtTree;
+function buildCDT(node) {
+  const wrap=document.getElementById("cdtContent");
+  wrap.innerHTML="";
+  if(node.result){
+    const r=node.result;
+    wrap.innerHTML=`<div class="cdt-result"><div class="cdt-result-lbl">${r.lbl}</div><h5>${r.title}</h5><p>${r.desc}</p><ul>${r.steps.map(s=>`<li>${s}</li>`).join("")}</ul><button class="cdt-reset-btn" onclick="resetCDT()">↩ Start Over</button></div>`;
+    markNavVisited("s-change");
+    return;
+  }
+  wrap.innerHTML=`<div class="cdt-question">${node.q}</div><div class="cdt-options"><button class="cdt-option" onclick="cdtAnswer(true)">Yes</button><button class="cdt-option" onclick="cdtAnswer(false)">No</button></div>`;
+  cdtState=node;
+}
+function cdtAnswer(yes) { buildCDT(yes?cdtState.yes:cdtState.no); }
+function resetCDT() { buildCDT(cdtTree); }
+
+// ── PIR SCORECARD ──
+const pirDimNames=["Requirements Fulfillment","Performance vs. SLA","Security Controls","User Adoption","Documentation"];
+function ratePIR(dim, val) {
+  pirRatings[dim]=val;
+  const stars=document.querySelectorAll(`#ps${dim} .pir-star`);
+  stars.forEach((s,i)=>s.classList.toggle("lit",i<val));
+  const labels=["—","Poor","Fair","Adequate","Good","Excellent"];
+  document.getElementById("pv"+dim).textContent=labels[val];
+}
+function generatePIR() {
+  if(pirRatings.some(r=>r===0)){showToast("⚠️","Please rate all 5 dimensions first","");return;}
+  const output=document.getElementById("pirOutput");
+  const labels=["—","Poor — Critical finding","Fair — Significant finding","Adequate — Observation","Good — Minor opportunity","Excellent — No finding"];
+  const dimColors=["red","red","amber","good","good"];
+  let html="<h5 style='font-family:Playfair Display,serif;font-size:17px;color:var(--text);margin-bottom:12px'>PIR Findings Report</h5>";
+  pirRatings.forEach((r,i)=>{
+    const color=dimColors[r-1];
+    html+=`<div class="pir-finding ${color}"><strong>${pirDimNames[i]}:</strong> ${labels[r]}</div>`;
+  });
+  const avg=pirRatings.reduce((a,b)=>a+b,0)/5;
+  const overall=avg>=4?"Overall: System meets business objectives — minor improvements identified":avg>=3?"Overall: System partially meets objectives — significant findings require management action":"Overall: System does not meet business objectives — critical remediation required";
+  html+=`<div class="pir-finding ${avg>=4?"good":avg>=3?"amber":"red"}" style="margin-top:8px;font-weight:600">${overall}</div>`;
+  output.innerHTML=html;
+  output.classList.add("show");
+  markNavVisited("s-migration");
+  showToast("📊","PIR report generated","em");
+}
+
+// ── MIGRATION SIMULATOR ──
+function buildMigScenario() {
+  const sc=migScenarios[migCurrent];
+  const wrap=document.getElementById("migContent");
+  wrap.innerHTML=`<div class="mig-sc-lbl">${sc.lbl}</div>
+    <div class="mig-sc-title">${sc.title}</div>
+    <div class="mig-sc-desc">${sc.desc}</div>
+    <div class="mig-options">${sc.opts.map((o,i)=>`<button class="mig-opt" onclick="pickMig(this,${i})">${o}</button>`).join("")}</div>
+    <div class="mig-feedback" id="migFb"></div>
+    <div class="mig-nav"><span class="mig-counter">${migCurrent+1} / ${migScenarios.length}</span><button class="mig-next-btn" id="migNext" onclick="nextMig()">Next →</button></div>`;
+}
+function pickMig(btn, i) {
+  const sc=migScenarios[migCurrent];
+  const opts=document.querySelectorAll(".mig-opt");
+  opts.forEach(o=>o.style.pointerEvents="none");
+  const fb=document.getElementById("migFb");
+  if(i===sc.ans){
+    btn.classList.add("correct"); fb.className="mig-feedback show correct";
+    fb.textContent="✓ Correct! "+sc.feedback; migScore++;
+    showToast("✅","Correct!","green");
+  } else {
+    btn.classList.add("incorrect"); opts[sc.ans].classList.add("reveal");
+    fb.className="mig-feedback show incorrect"; fb.textContent="✗ "+sc.feedback;
+  }
+  const next=document.getElementById("migNext"); if(next) next.style.display="block";
+  markNavVisited("s-migration");
+}
+function nextMig() {
+  migCurrent++;
+  if(migCurrent>=migScenarios.length){
+    document.getElementById("migContent").innerHTML=`<div style="padding:20px;text-align:center"><div style="font-family:Playfair Display,serif;font-size:22px;color:var(--text);margin-bottom:8px">Migration Simulator Complete</div><div style="font-size:15px;color:var(--em2);font-family:DM Mono,monospace">${migScore} / ${migScenarios.length} correct</div><button class="mig-next-btn" style="display:inline-block;margin-top:14px" onclick="resetMig()">Restart</button></div>`;
+    if(migScore===migScenarios.length)showToast("🏆","Perfect migration score!","green");
+    return;
+  }
+  buildMigScenario();
+}
+function resetMig(){migCurrent=0;migScore=0;buildMigScenario();}
+
+// ── SCENARIOS ──
+function pickScenario(btn, type, ansId, tagId) {
+  const choices=btn.closest(".sc-choices").querySelectorAll(".sc-choice");
+  choices.forEach(c=>c.style.pointerEvents="none");
+  const ans=document.getElementById(ansId); ans.classList.add("show");
+  const tag=document.getElementById(tagId);
+  if(type==="right"){btn.classList.add("right");tag.textContent="✅ Correct! Here is the expert explanation:";tag.className="scenario-answered-tag correct";showToast("✅","Correct answer!","green");}
+  else{btn.classList.add("wrong");choices.forEach(c=>{if(c.textContent.includes("formal")&&type!=="right"){}});tag.textContent="✗ Not quite — here is the expert explanation:";tag.className="scenario-answered-tag incorrect";
+  // reveal correct
+  choices.forEach(c=>{if(!c.classList.contains("wrong"))c.classList.add("reveal");});}
+  markNavVisited("s-scenarios");
+}
+
+// ── GLOSSARY ──
+function flipTerm(card) { card.classList.toggle("flipped"); markNavVisited("s-terms"); }
+function markTerm(e, card, type) {
+  e.stopPropagation();
+  if(type==="known"){card.classList.add("known","flipped"); termsKnown++; showToast("✓","Term marked as known","green");}
+  else{card.classList.remove("known"); termsReview++; showToast("🔁","Flagged for review","em");}
+  document.getElementById("termsKnownLbl").textContent="Known: "+termsKnown;
+  document.getElementById("termsReviewLbl").textContent="Flagged: "+termsReview;
+  updateProgress();
+}
+function filterTerms(q) {
+  const cards=document.querySelectorAll(".term-card");
+  let visible=0;
+  cards.forEach(c=>{ const match=c.textContent.toLowerCase().includes(q.toLowerCase()); c.classList.toggle("hidden",!match); if(match)visible++; });
+  document.getElementById("termsCountLbl").textContent=`Showing: ${visible} of ${cards.length}`;
+}
+
+// ── QUIZ ──
+function startQuiz() {
+  quizCurrent=0; quizScore=0; quizStreak=0; quizMissed=[];
+  document.getElementById("scoreWrap").style.display="none";
+  document.getElementById("quizActive").style.display="block";
+  renderQuestion();
+}
+function renderQuestion() {
+  clearInterval(timerInterval); timerVal=30;
+  const q=quizData[quizCurrent];
+  document.getElementById("quizQnum").textContent=`Question ${quizCurrent+1} of ${quizData.length}`;
+  document.getElementById("quizProgressInner").style.width=(quizCurrent/quizData.length*100)+"%";
+  document.getElementById("quizQ").textContent=q.q;
+  document.getElementById("streakNum").textContent=quizStreak;
+  document.getElementById("quizFeedback").className="quiz-feedback";
+  document.getElementById("quizNextBtn").style.display="none";
+  const letters=["A","B","C","D"];
+  document.getElementById("quizOpts").innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})" data-idx="${i}"><span class="opt-letter">${letters[i]}</span>${o}</button>`).join("");
+  startTimer();
+}
+function startTimer() {
+  const circle=document.getElementById("timerCircle"); const text=document.getElementById("timerText");
+  const total=106.8;
+  timerInterval=setInterval(()=>{
+    timerVal--;
+    text.textContent=timerVal;
+    circle.style.strokeDashoffset=total*(1-timerVal/30);
+    if(timerVal<=0){clearInterval(timerInterval);autoAnswerQuiz();}
+  },1000);
+}
+function autoAnswerQuiz(){
+  clearInterval(timerInterval);
+  const q=quizData[quizCurrent];
+  quizStreak=0; quizMissed.push({q:q.q,a:q.opts[q.ans]});
+  const opts=document.querySelectorAll(".quiz-opt");
+  opts.forEach(o=>o.style.pointerEvents="none");
+  opts[q.ans].classList.add("correct");
+  const fb=document.getElementById("quizFeedback");
+  fb.className="quiz-feedback show incorrect"; fb.textContent="⏱ Time's up! "+q.feedback;
+  document.getElementById("quizNextBtn").style.display="block";
+}
+function answerQuiz(chosen) {
+  clearInterval(timerInterval);
+  const q=quizData[quizCurrent];
+  const opts=document.querySelectorAll(".quiz-opt");
+  opts.forEach(o=>o.style.pointerEvents="none");
+  const fb=document.getElementById("quizFeedback");
+  if(chosen===q.ans){
+    opts[chosen].classList.add("correct"); quizScore++; quizStreak++;
+    fb.className="quiz-feedback show correct";
+    fb.textContent="✓ Correct! "+q.feedback;
+    showToast("✅","Correct!","green");
+  } else {
+    opts[chosen].classList.add("incorrect"); opts[q.ans].classList.add("correct");
+    quizStreak=0; quizMissed.push({q:q.q,a:q.opts[q.ans]});
+    fb.className="quiz-feedback show incorrect";
+    fb.textContent="✗ Incorrect. "+q.feedback;
+  }
+  document.getElementById("quizNextBtn").style.display="block";
+  document.getElementById("streakNum").textContent=quizStreak;
+}
+function nextQuestion() {
+  quizCurrent++;
+  if(quizCurrent<quizData.length){renderQuestion();}
+  else{showScore();}
+}
+function showScore() {
+  document.getElementById("quizActive").style.display="none";
+  document.getElementById("scoreWrap").style.display="block";
+  const pct=Math.round((quizScore/quizData.length)*100);
+  document.getElementById("scorePct").textContent=pct+"%";
+  document.getElementById("scoreTitle").textContent=pct>=80?"Strong Performance!":pct>=60?"Good Progress":"Keep Studying";
+  document.getElementById("scoreMsg").textContent=pct>=80?"You are well prepared for Domain 3 questions.":pct>=60?"Review the explanations for questions you missed.":"Revisit the content sections and try again.";
+  setTimeout(()=>{ const ring=document.getElementById("scoreRingFill"); if(ring) ring.style.strokeDashoffset=358*(1-pct/100); },200);
+  if(pct===100)triggerConfetti();
+  if(quizMissed.length){
+    const mr=document.getElementById("missedReview"); mr.style.display="block";
+    document.getElementById("missedList").innerHTML=quizMissed.map(m=>`<div class="missed-item"><div class="mi-q">${m.q}</div><div class="mi-a">✓ ${m.a}</div></div>`).join("");
+  }
+  markNavVisited("s-quiz");
+  updateProgress();
+}
+function restartQuiz(){startQuiz();}
+
+// ── KEYBOARD SHORTCUTS ──
+document.addEventListener("keydown",e=>{
+  if(document.getElementById("quizActive")&&document.getElementById("quizActive").style.display!=="none"){
+    const map={a:0,b:1,c:2,d:3};
+    if(map[e.key.toLowerCase()]!==undefined){
+      const opts=document.querySelectorAll(".quiz-opt");
+      if(opts.length&&opts[0].style.pointerEvents!=="none") answerQuiz(map[e.key.toLowerCase()]);
+    }
+    if(e.key==="Enter"&&document.getElementById("quizNextBtn").style.display!=="none") nextQuestion();
+  }
+});
+
+// ── CHECKLIST ──
+function toggleCheck(item) {
+  item.classList.toggle("checked");
+  const box=item.querySelector(".check-box");
+  box.classList.toggle("checked");
+  if(box.classList.contains("checked")) box.textContent="✓"; else box.textContent="";
+  markNavVisited("s-conclusion");
+  updateProgress();
+}
+
+// ── CONFETTI ──
+function triggerConfetti() {
+  const canvas=document.getElementById("confetti-canvas");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  const pieces=Array.from({length:120},()=>({x:Math.random()*canvas.width,y:-10,w:Math.random()*10+5,h:Math.random()*6+4,r:Math.random()*Math.PI*2,vy:Math.random()*3+2,vx:(Math.random()-.5)*2,vr:Math.random()*.1-.05,color:["#00c9a7","#4ee8cc","#c9a84c","#2ed573","#e8eaf0"][Math.floor(Math.random()*5)]}));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});
+    frame++;
+    if(frame<180)requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+  showToast("🎉","Domain 3 mastered!","green");
+}
+
+// ── INIT ──
+buildCDT(cdtTree);
+buildMigScenario();
+startQuiz();
+setTimeout(()=>{ document.querySelectorAll(".section").forEach(s=>{ if(s.getBoundingClientRect().top<window.innerHeight) s.classList.add("visible"); }); },100);
+setTimeout(()=>showToast("🏗️","Welcome to Domain 3 — IS Acquisition, Development & Implementation","em"),800);
+</script>
+</body>
+</html>
