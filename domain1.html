@@ -33,8 +33,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px}
 .progress-bar{height:4px;background:var(--border);border-radius:2px}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;width:0%;transition:width .6s ease}
-.xp-display{padding:8px 24px 0;font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;display:flex;justify-content:space-between}
-.xp-val{color:var(--gold);font-weight:600}
+
+
 .nav-list{padding:12px 0;flex:1}
 .nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;font-size:13.5px;color:var(--text-muted);transition:all .2s;border-left:3px solid transparent;position:relative}
 .nav-item:hover{color:var(--text);background:var(--surface2)}
@@ -427,19 +427,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="progress-label"><span>Mastery Progress</span><span id="progressPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
-  <div class="xp-display"><span>XP Earned</span><span class="xp-val" id="xpDisplay">0 XP</span></div>
   <nav class="nav-list">
-    <div class="nav-item active" data-target="s-intro" onclick="scrollTo('s-intro')"><div class="nav-num"><span>1</span></div> Introduction</div>
-    <div class="nav-item" data-target="s-objectives" onclick="scrollTo('s-objectives')"><div class="nav-num"><span>2</span></div> Learning Objectives</div>
-    <div class="nav-item" data-target="s-planning" onclick="scrollTo('s-planning')"><div class="nav-num"><span>3</span></div> Audit Planning</div>
-    <div class="nav-item" data-target="s-risk" onclick="scrollTo('s-risk')"><div class="nav-num"><span>4</span></div> Risk &amp; Materiality</div>
-    <div class="nav-item" data-target="s-evidence" onclick="scrollTo('s-evidence')"><div class="nav-num"><span>5</span></div> Evidence &amp; Sampling</div>
-    <div class="nav-item" data-target="s-execution" onclick="scrollTo('s-execution')"><div class="nav-num"><span>6</span></div> Audit Execution</div>
-    <div class="nav-item" data-target="s-reporting" onclick="scrollTo('s-reporting')"><div class="nav-num"><span>7</span></div> Reporting</div>
-    <div class="nav-item" data-target="s-scenarios" onclick="scrollTo('s-scenarios')"><div class="nav-num"><span>8</span></div> Real-World Scenarios</div>
-    <div class="nav-item" data-target="s-terms" onclick="scrollTo('s-terms')"><div class="nav-num"><span>9</span></div> Key Terms</div>
-    <div class="nav-item" data-target="s-quiz" onclick="scrollTo('s-quiz')"><div class="nav-num"><span>10</span></div> Knowledge Check</div>
-    <div class="nav-item" data-target="s-conclusion" onclick="scrollTo('s-conclusion')"><div class="nav-num"><span>11</span></div> Conclusion</div>
+    <div class="nav-item active" data-target="s-intro" onclick="scrollToSection('s-intro')"><div class="nav-num"><span>1</span></div> Introduction</div>
+    <div class="nav-item" data-target="s-objectives" onclick="scrollToSection('s-objectives')"><div class="nav-num"><span>2</span></div> Learning Objectives</div>
+    <div class="nav-item" data-target="s-planning" onclick="scrollToSection('s-planning')"><div class="nav-num"><span>3</span></div> Audit Planning</div>
+    <div class="nav-item" data-target="s-risk" onclick="scrollToSection('s-risk')"><div class="nav-num"><span>4</span></div> Risk &amp; Materiality</div>
+    <div class="nav-item" data-target="s-evidence" onclick="scrollToSection('s-evidence')"><div class="nav-num"><span>5</span></div> Evidence &amp; Sampling</div>
+    <div class="nav-item" data-target="s-execution" onclick="scrollToSection('s-execution')"><div class="nav-num"><span>6</span></div> Audit Execution</div>
+    <div class="nav-item" data-target="s-reporting" onclick="scrollToSection('s-reporting')"><div class="nav-num"><span>7</span></div> Reporting</div>
+    <div class="nav-item" data-target="s-scenarios" onclick="scrollToSection('s-scenarios')"><div class="nav-num"><span>8</span></div> Real-World Scenarios</div>
+    <div class="nav-item" data-target="s-terms" onclick="scrollToSection('s-terms')"><div class="nav-num"><span>9</span></div> Key Terms</div>
+    <div class="nav-item" data-target="s-quiz" onclick="scrollToSection('s-quiz')"><div class="nav-num"><span>10</span></div> Knowledge Check</div>
+    <div class="nav-item" data-target="s-conclusion" onclick="scrollToSection('s-conclusion')"><div class="nav-num"><span>11</span></div> Conclusion</div>
   </nav>
   <div class="sidebar-footer">Exam weight: <strong style="color:var(--gold)">17%</strong> &nbsp;|&nbsp; <a href="https://youtube.com/playlist?list=PL7XJSuT7Dq_UffFGcmTvKL7JeHweC5HKU" target="_blank">📺 Video Playlist</a></div>
 </aside>
@@ -479,7 +478,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="section-eyebrow">Section 02</div>
     <h2 class="section-title">Learning Objectives</h2>
     <div class="divider"></div>
-    <p class="section-subtitle">Click each objective to mark it complete and earn XP.</p>
+    <p class="section-subtitle">Click each objective to mark it complete.</p>
   </div>
   <div class="objectives-grid" id="objGrid">
     <div class="obj-card" onclick="markObjective(this,'Develop Audit Charters')"><div class="obj-icon">📋</div><div class="obj-text"><h4>Develop Audit Charters</h4><p>Define the authority, objectives, scope, and responsibilities of an IS audit engagement.</p></div></div>
@@ -1075,7 +1074,6 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 // ══════════════════════════════════════════════
 // GLOBAL STATE
 // ══════════════════════════════════════════════
-let xp = 0;
 let objDone = 0;
 let stepsDone = 0;
 let termsKnown = 0;
@@ -1086,13 +1084,6 @@ let timerInterval = null;
 let timerVal = 30;
 
 // ══════════════════════════════════════════════
-// XP & PROGRESS
-// ══════════════════════════════════════════════
-function addXP(amount, label) {
-  xp += amount;
-  document.getElementById('xpDisplay').textContent = xp + ' XP';
-  showToast('⚡', '+' + amount + ' XP — ' + label, 'gold');
-}
 
 function updateProgress() {
   const checks = document.querySelectorAll('.check-box').length;
@@ -1196,7 +1187,6 @@ function markObjective(card, name) {
   const bar = document.getElementById('objBar');
   bar.style.width = (objDone/8*100)+'%';
   document.getElementById('objCount').textContent = objDone+'/8';
-  addXP(10, name + ' objective complete');
   if (objDone === 8) showToast('🎯','All objectives marked! Well done.','teal');
 }
 
@@ -1305,7 +1295,6 @@ function checkRanking() {
   res.className = 'rank-result show ' + (correct === 5 ? 'correct' : 'partial');
   if (correct === 5) {
     res.innerHTML = '✅ Perfect! Re-performance → External Inspection → Observation → Analytical → Inquiry';
-    addXP(20, 'Evidence ranking mastered');
   } else {
     res.innerHTML = `You got ${correct}/5 correct. Correct order: <br/>1. Re-performance &nbsp; 2. External Inspection &nbsp; 3. Observation &nbsp; 4. Analytical &nbsp; 5. Inquiry`;
   }
@@ -1348,7 +1337,6 @@ function renderDT(node) {
   const el = document.getElementById('dtContent');
   if (node.result) {
     el.innerHTML = `<div class="dt-step"><div class="dt-result"><div class="dt-result-label">Recommended Technique</div><h5>${node.result.name}</h5><p>${node.result.desc}</p></div><button class="dt-reset" onclick="renderDT(dtTree)">↩ Start Over</button></div>`;
-    addXP(5, 'Sampling decision made');
     return;
   }
   el.innerHTML = `<div class="dt-step"><div class="dt-question">${node.q}</div><div class="dt-options">${node.opts.map((o,i)=>`<button class="dt-opt" onclick="dtChoose(${i})">${o.label}</button>`).join('')}</div></div>`;
@@ -1381,7 +1369,6 @@ function completeStep(e, btn) {
   const pct = stepsDone/7*100;
   document.getElementById('stepsBar').style.width = pct+'%';
   document.getElementById('stepsCount').textContent = stepsDone+'/7';
-  addXP(5, 'Fieldwork step completed');
   if (stepsDone === 7) {
     showToast('🏅','All fieldwork steps complete! Excellent work.','green');
     markNavVisited('s-execution');
@@ -1426,7 +1413,6 @@ function pickScenario(btn, type) {
     btn.classList.add('chosen-right');
     document.getElementById(tagId).textContent = '✅ Correct! Here\'s the expert explanation:';
     document.getElementById(tagId).className = 'scenario-answered-tag correct';
-    addXP(15, 'Scenario answered correctly');
   } else {
     btn.classList.add('chosen-wrong');
     // highlight correct
@@ -1468,7 +1454,6 @@ function markTerm(e, card, type) {
       card.classList.add('known');
       termsKnown++;
       document.getElementById('termKnown').textContent = termsKnown;
-      addXP(5, card.dataset.term + ' mastered');
       if (termsKnown === 12) { showToast('📚','All terms mastered! Outstanding.','gold'); markNavVisited('s-terms'); }
     }
   } else {
@@ -1518,7 +1503,7 @@ function renderQuiz() {
       <div id="missedSection"></div>
     </div>`;
     document.getElementById('quizBar').style.width='100%';
-    setTimeout(()=>{ animateScoreRing(pct); addXP(score*10,'Quiz completed'); if(pct===100) showToast('🏆','Perfect score! Incredible!','gold'); markNavVisited('s-quiz'); },200);
+    setTimeout(()=>{ animateScoreRing(pct); if(pct===100) showToast('🏆','Perfect score! Incredible!','gold'); markNavVisited('s-quiz'); },200);
     return;
   }
   startTimer();
@@ -1633,7 +1618,7 @@ function toggleCheck(item) {
   box.classList.toggle('checked');
   item.classList.toggle('checked');
   box.textContent = box.classList.contains('checked') ? '✓' : '';
-  if (!wasChecked) addXP(10, 'Mastery item confirmed');
+  if (!wasChecked)
   updateProgress();
   const done = document.querySelectorAll('.check-box.checked').length;
   const total = document.querySelectorAll('.check-box').length;
@@ -1727,9 +1712,7 @@ initDragRank();
 setRisk('ir','med',document.querySelectorAll('#s-risk .risk-level-btn.med')[0]);
 
 // Welcome toast
-setTimeout(()=>showToast('👋','Welcome to Domain 1! Interact with every section to earn XP.','teal'),1000);
+setTimeout(()=>showToast('👋','Welcome to Domain 1! Work through every section to master the content.','teal'),1000);
 </script>
 </body>
 </html>
-
-
