@@ -32,8 +32,8 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px}
 .progress-bar{height:4px;background:var(--border);border-radius:2px}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--violet),var(--violet-light));border-radius:2px;width:0%;transition:width .6s ease}
-.xp-display{padding:8px 24px 0;font-size:11px;color:var(--text-dim);font-family:'DM Mono',monospace;display:flex;justify-content:space-between}
-.xp-val{color:var(--violet-light);font-weight:600}
+
+
 .nav-list{padding:12px 0;flex:1}
 .nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;font-size:13.5px;color:var(--text-muted);transition:all .2s;border-left:3px solid transparent}
 .nav-item:hover{color:var(--text);background:var(--surface2)}
@@ -419,20 +419,19 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="progress-label"><span>Mastery Progress</span><span id="progressPct">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
-  <div class="xp-display"><span>XP Earned</span><span class="xp-val" id="xpDisplay">0 XP</span></div>
   <nav class="nav-list">
-    <div class="nav-item active" data-target="s-intro" onclick="scrollTo('s-intro')"><div class="nav-num"><span>1</span></div>Introduction</div>
-    <div class="nav-item" data-target="s-objectives" onclick="scrollTo('s-objectives')"><div class="nav-num"><span>2</span></div>Learning Objectives</div>
-    <div class="nav-item" data-target="s-frameworks" onclick="scrollTo('s-frameworks')"><div class="nav-num"><span>3</span></div>IT Governance Frameworks</div>
-    <div class="nav-item" data-target="s-structure" onclick="scrollTo('s-structure')"><div class="nav-num"><span>4</span></div>Org Structure &amp; Strategy</div>
-    <div class="nav-item" data-target="s-erm" onclick="scrollTo('s-erm')"><div class="nav-num"><span>5</span></div>Enterprise Risk Mgmt</div>
-    <div class="nav-item" data-target="s-ea" onclick="scrollTo('s-ea')"><div class="nav-num"><span>6</span></div>Enterprise Architecture</div>
-    <div class="nav-item" data-target="s-privacy" onclick="scrollTo('s-privacy')"><div class="nav-num"><span>7</span></div>Privacy &amp; Data Governance</div>
-    <div class="nav-item" data-target="s-policies" onclick="scrollTo('s-policies')"><div class="nav-num"><span>8</span></div>Policies &amp; Compliance</div>
-    <div class="nav-item" data-target="s-scenarios" onclick="scrollTo('s-scenarios')"><div class="nav-num"><span>9</span></div>Real-World Scenarios</div>
-    <div class="nav-item" data-target="s-terms" onclick="scrollTo('s-terms')"><div class="nav-num"><span>10</span></div>Key Terms</div>
-    <div class="nav-item" data-target="s-quiz" onclick="scrollTo('s-quiz')"><div class="nav-num"><span>11</span></div>Knowledge Check</div>
-    <div class="nav-item" data-target="s-conclusion" onclick="scrollTo('s-conclusion')"><div class="nav-num"><span>12</span></div>Conclusion</div>
+    <div class="nav-item active" data-target="s-intro" onclick="scrollToSection('s-intro')"><div class="nav-num"><span>1</span></div>Introduction</div>
+    <div class="nav-item" data-target="s-objectives" onclick="scrollToSection('s-objectives')"><div class="nav-num"><span>2</span></div>Learning Objectives</div>
+    <div class="nav-item" data-target="s-frameworks" onclick="scrollToSection('s-frameworks')"><div class="nav-num"><span>3</span></div>IT Governance Frameworks</div>
+    <div class="nav-item" data-target="s-structure" onclick="scrollToSection('s-structure')"><div class="nav-num"><span>4</span></div>Org Structure &amp; Strategy</div>
+    <div class="nav-item" data-target="s-erm" onclick="scrollToSection('s-erm')"><div class="nav-num"><span>5</span></div>Enterprise Risk Mgmt</div>
+    <div class="nav-item" data-target="s-ea" onclick="scrollToSection('s-ea')"><div class="nav-num"><span>6</span></div>Enterprise Architecture</div>
+    <div class="nav-item" data-target="s-privacy" onclick="scrollToSection('s-privacy')"><div class="nav-num"><span>7</span></div>Privacy &amp; Data Governance</div>
+    <div class="nav-item" data-target="s-policies" onclick="scrollToSection('s-policies')"><div class="nav-num"><span>8</span></div>Policies &amp; Compliance</div>
+    <div class="nav-item" data-target="s-scenarios" onclick="scrollToSection('s-scenarios')"><div class="nav-num"><span>9</span></div>Real-World Scenarios</div>
+    <div class="nav-item" data-target="s-terms" onclick="scrollToSection('s-terms')"><div class="nav-num"><span>10</span></div>Key Terms</div>
+    <div class="nav-item" data-target="s-quiz" onclick="scrollToSection('s-quiz')"><div class="nav-num"><span>11</span></div>Knowledge Check</div>
+    <div class="nav-item" data-target="s-conclusion" onclick="scrollToSection('s-conclusion')"><div class="nav-num"><span>12</span></div>Conclusion</div>
   </nav>
   <div class="sidebar-footer">Exam weight: <strong style="color:var(--violet-light)">18%</strong> &nbsp;|&nbsp; <a href="https://youtube.com/playlist?list=PL7XJSuT7Dq_UffFGcmTvKL7JeHweC5HKU" target="_blank">📺 Video Playlist</a></div>
 </aside>
@@ -483,7 +482,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
     <div class="section-eyebrow">Section 02</div>
     <h2 class="section-title">Learning Objectives</h2>
     <div class="divider"></div>
-    <p class="section-subtitle">Click each objective to mark it complete and earn XP.</p>
+    <p class="section-subtitle">Click each objective to mark it complete and track your progress.</p>
   </div>
   <div class="objectives-grid">
     <div class="obj-card" onclick="markObjective(this,'Evaluate IT Governance Frameworks')"><div class="obj-icon">🏛️</div><div class="obj-text"><h4>Evaluate IT Governance Frameworks</h4><p>Assess the design and effectiveness of COBIT, ITIL, ISO 38500, and related frameworks.</p></div></div>
@@ -1134,7 +1133,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 
 <script>
 // ══ GLOBAL STATE ══
-let xp=0,objDone=0,stepsDone=0,termsKnown=0,termsReview=0;
+let objDone=0,stepsDone=0,termsKnown=0,termsReview=0;
 let streak=0,missedQ=[],currentQ=0,score=0,answered=false;
 let timerSec=30,timerInterval=null;
 let gaugeVals=[0,0,0,0];
@@ -1142,8 +1141,6 @@ let ermIdx=0,ermScore=0;
 let regActive={gdpr:true,ccpa:true,hipaa:true,pipeda:false};
 let dragActive=null;
 
-// ══ XP & TOASTS ══
-function addXP(amt,lbl){xp+=amt;document.getElementById('xpDisplay').textContent=xp+' XP';showToast('⚡','+'+amt+' XP — '+lbl,'violet')}
 function showToast(icon,msg,type=''){
   const s=document.getElementById('toastStack'),t=document.createElement('div');
   t.className='toast '+type;t.innerHTML=`<span class="toast-icon">${icon}</span><span>${msg}</span>`;
@@ -1189,7 +1186,6 @@ function markObjective(card,name){
   card.classList.add('done');objDone++;
   document.getElementById('objBar').style.width=(objDone/8*100)+'%';
   document.getElementById('objCount').textContent=objDone+'/8';
-  addXP(10,name+' objective complete');
   if(objDone===8)showToast('🎯','All Domain 2 objectives marked!','teal');
 }
 
@@ -1218,7 +1214,6 @@ function showCobit(domain){
     <p style="font-size:12px;color:var(--violet-light);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Key Objectives</p>
     <ul>${d.domains.map(o=>`<li>${o}</li>`).join('')}</ul>
     <div class="highlight-box" style="margin-top:12px"><div class="hb-label">Auditor Focus</div><p>${d.audit}</p></div>`;
-  addXP(3,'COBIT '+domain+' explored');
 }
 
 // ══ GOVERNANCE VS MANAGEMENT DRAG ══
@@ -1255,7 +1250,7 @@ function checkDragSort(){
   });
   const res=document.getElementById('dragResult');
   res.className='drag-result show '+(correct===8?'correct':'partial');
-  if(correct===8){res.innerHTML='✅ Perfect! You clearly understand the governance vs. management distinction.';addXP(25,'Governance vs Management mastered');}
+  if(correct===8){res.innerHTML='✅ Perfect! You clearly understand the governance vs. management distinction.';}
   else{res.innerHTML=`You sorted ${correct}/8 correctly. Governance = board evaluation, direction, oversight. Management = execution and operations. Review misplaced items.`;}
 }
 
@@ -1287,7 +1282,6 @@ function calcGauge(){
   const descs={high:'Strong strategic alignment. Auditor would likely rate governance as effective. Recommend maintaining current practices and enhancing KRI monitoring.',med:'Moderate alignment. Significant opportunities for improvement. Auditor would recommend formalizing the IT steering committee and improving investment prioritization processes.',low:'Weak strategic alignment. Governance gaps are present. Auditor would likely report material weaknesses in IT governance. Immediate remediation recommended: formal strategy documentation, board-approved IT risk appetite, and structured oversight mechanisms.'};
   document.getElementById('gaugeDesc').textContent=pct>=70?descs.high:pct>=45?descs.med:descs.low;
   document.getElementById('gaugeLabel').textContent=pct>=70?'Strong Alignment ✅':pct>=45?'Moderate Alignment ⚠️':'Weak Alignment ❌';
-  addXP(10,'Strategy alignment assessed');
 }
 
 // ══ ERM SIMULATOR ══
@@ -1312,7 +1306,7 @@ function selectERM(i){
   const fb=document.getElementById('ermFeedback');
   fb.className='erm-feedback show '+(i===sc.ans?'correct':'incorrect');
   fb.innerHTML=(i===sc.ans?'✅ ':'❌ ')+sc.feedback;
-  if(i===sc.ans){ermScore++;addXP(15,'ERM response correct');}
+  if(i===sc.ans){ermScore++;}
   document.getElementById('ermNext').style.display='inline-block';
 }
 function nextERM(){
@@ -1339,7 +1333,6 @@ function completeStep(e,btn){
   const stepEl=btn.closest('.process-step');stepEl.querySelector('.step-num').textContent='✓';stepEl.classList.add('completed');
   stepsDone++;const pct=stepsDone/6*100;
   document.getElementById('stepsBar').style.width=pct+'%';document.getElementById('stepsCount').textContent=stepsDone+'/6';
-  addXP(5,'ERM step completed');
   if(stepsDone===6){showToast('🏅','ERM process mastered!','green');markNavVisited('s-erm');}
 }
 
@@ -1351,7 +1344,7 @@ function pickScenario(btn,type){
   else{btn.classList.add('chosen-wrong');sc.querySelectorAll('.sc-choice').forEach(c=>{if(c.getAttribute('onclick').includes("'right'"))c.classList.add('reveal-right');});}
   const ans=sc.querySelector('.scenario-answer');
   const tag=sc.querySelector('.scenario-answered-tag');
-  if(type==='right'){tag.textContent='✅ Correct! Expert explanation:';tag.className='scenario-answered-tag correct';addXP(15,'Scenario correct');}
+  if(type==='right'){tag.textContent='✅ Correct! Expert explanation:';tag.className='scenario-answered-tag correct';}
   else{tag.textContent='❌ Not quite — here\'s why:';tag.className='scenario-answered-tag incorrect';}
   ans.classList.add('show');
 }
@@ -1369,7 +1362,7 @@ function filterGlossary(val){
 function flipTerm(e,card){if(e.target.classList.contains('term-action-btn'))return;card.classList.toggle('flipped');}
 function markTerm(e,card,type){
   e.stopPropagation();
-  if(type==='known'){if(!card.classList.contains('known')){card.classList.add('known');termsKnown++;document.getElementById('termKnown').textContent=termsKnown;addXP(5,card.dataset.term+' mastered');if(termsKnown===14){showToast('📚','All Domain 2 terms mastered!','gold');markNavVisited('s-terms');}}}
+  if(type==='known'){if(!card.classList.contains('known')){card.classList.add('known');termsKnown++;document.getElementById('termKnown').textContent=termsKnown;if(termsKnown===14){showToast('📚','All Domain 2 terms mastered!','gold');markNavVisited('s-terms');}}}
   else{card.classList.remove('known');if(termsKnown>0)termsKnown--;document.getElementById('termKnown').textContent=termsKnown;termsReview++;document.getElementById('termReview').textContent=termsReview;}
 }
 
@@ -1402,7 +1395,7 @@ function renderQuiz(){
         ${missedQ.length?`<button class="btn btn-ghost" onclick="showMissed()">Review Missed (${missedQ.length})</button>`:''}
       </div><div id="missedSection"></div></div>`;
     document.getElementById('quizBar').style.width='100%';
-    setTimeout(()=>{animScoreRing(pct);addXP(score*10,'Quiz completed');if(pct===100)showToast('🏆','Perfect score on Domain 2!','gold');markNavVisited('s-quiz');},200);
+    setTimeout(()=>{animScoreRing(pct);if(pct===100)showToast('🏆','Perfect score on Domain 2!','gold');markNavVisited('s-quiz');},200);
     return;
   }
   startTimer();
@@ -1472,7 +1465,7 @@ function toggleCheck(item){
   const was=box.classList.contains('checked');
   box.classList.toggle('checked');item.classList.toggle('checked');
   box.textContent=box.classList.contains('checked')?'✓':'';
-  if(!was)addXP(10,'Mastery item confirmed');
+  if(!was)
   updateProgress();
   const done=document.querySelectorAll('.check-box.checked').length;
   if(done===document.querySelectorAll('.check-box').length){showToast('🏆','Domain 2 mastery complete!','gold');triggerConfetti();markNavVisited('s-conclusion');}
@@ -1513,9 +1506,8 @@ document.getElementById('s-intro').classList.add('visible');
 initDragChips();
 renderERM();
 renderQuiz();
-setTimeout(()=>showToast('👋','Welcome to Domain 2! Interact with every section to earn XP.','violet'),800);
+setTimeout(()=>showToast('👋','Welcome to Domain 2! Interact with every section to track your progress.','violet'),800);
+function scrollToSection(id){ document.getElementById(id).scrollIntoView({behavior:"smooth"}); }
 </script>
 </body>
 </html>
-
-
