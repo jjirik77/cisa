@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CISA Domain 5 — Information Asset Protection</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f14;--surface:#161920;--surface2:#1e2330;--border:#2a3045;
+  --em:#e05578;--em2:#ff8fab;--em-dim:rgba(224,85,120,.13);
+  --gold:#c9a84c;--gold-dim:rgba(201,168,76,.12);
+  --red:#e05c5c;--orange:#f5a623;--green:#2ed573;--blue:#4f8ef7;
+  --text:#e8eaf0;--text-muted:#7a859a;--text-dim:#4a5568;
+  --radius:12px;--radius-lg:20px;--shadow:0 8px 40px rgba(0,0,0,.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:280px;min-width:280px;background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.main{flex:1;overflow-x:hidden}
+.sidebar-logo{padding:24px 24px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo .badge{background:var(--em-dim);border:1px solid var(--em);color:var(--em2);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.sidebar-logo h2{font-family:"Playfair Display",serif;font-size:18px;color:var(--text);line-height:1.3}
+.progress-wrap{padding:16px 24px;border-bottom:1px solid var(--border)}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:8px}
+.progress-bar{height:4px;background:var(--border);border-radius:2px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:2px;width:0%;transition:width .6s ease}
+.nav-list{padding:12px 0;flex:1}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 24px;cursor:pointer;font-size:13.5px;color:var(--text-muted);transition:all .2s;border-left:3px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--em2);background:var(--em-dim);border-left-color:var(--em)}
+.nav-item .nav-num{width:22px;height:22px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:"DM Mono",monospace;flex-shrink:0;transition:all .3s}
+.nav-item.active .nav-num{background:var(--em);color:var(--bg);border-color:var(--em)}
+.nav-item.visited .nav-num{background:rgba(224,85,120,.15);border-color:rgba(224,85,120,.4);color:var(--em2);font-size:10px}
+.nav-item.visited .nav-num::after{content:"✓"}
+.nav-item.visited .nav-num span{display:none}
+.sidebar-footer{padding:16px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim)}
+.sidebar-footer a{color:var(--em2);text-decoration:none}
+.toast-stack{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text);transform:translateX(120%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);max-width:320px;box-shadow:var(--shadow)}
+.toast.show{transform:translateX(0)}
+.toast.em{border-color:rgba(224,85,120,.4);background:rgba(224,85,120,.07)}
+.toast.green{border-color:rgba(46,213,115,.3);background:rgba(46,213,115,.06)}
+.toast-icon{font-size:18px;flex-shrink:0}
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998}
+.hero{min-height:480px;position:relative;overflow:hidden;display:flex;align-items:center;background:radial-gradient(ellipse at 30% 50%,#1a0d12 0%,var(--bg) 70%);border-bottom:1px solid var(--border)}
+.hero-grid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(var(--em) 1px,transparent 1px),linear-gradient(90deg,var(--em) 1px,transparent 1px);background-size:40px 40px}
+.hero-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(224,85,120,.12),transparent 70%);top:-100px;right:-100px;animation:glow-pulse 4s ease-in-out infinite}
+@keyframes glow-pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.hero-content{position:relative;padding:60px 64px;max-width:800px}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.domain-tag{background:var(--em-dim);border:1px solid var(--em);color:var(--em2);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:20px}
+.weight-tag{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-size:12px;font-weight:500;padding:5px 14px;border-radius:20px}
+.hero h1{font-family:"Playfair Display",serif;font-size:clamp(32px,5vw,52px);font-weight:900;line-height:1.15;margin-bottom:20px}
+.hero h1 span{color:var(--em2)}
+.hero p{font-size:17px;color:var(--text-muted);max-width:560px;margin-bottom:32px;line-height:1.75}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat-val{font-family:"Playfair Display",serif;font-size:28px;color:var(--em2);font-weight:700}
+.stat-label{font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.section{padding:64px;border-bottom:1px solid var(--border);opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section:last-child{border-bottom:none}
+.section-header{margin-bottom:40px}
+.section-eyebrow{font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--em2);margin-bottom:10px}
+.section-title{font-family:"Playfair Display",serif;font-size:32px;font-weight:700;color:var(--text);line-height:1.25}
+.section-subtitle{font-size:16px;color:var(--text-muted);margin-top:8px}
+.divider{width:60px;height:3px;background:linear-gradient(90deg,var(--em),transparent);margin:14px 0 0}
+.info-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:20px}
+.info-block h3{font-family:"Playfair Display",serif;font-size:22px;color:var(--text);margin-bottom:16px}
+.info-block p{color:var(--text-muted);margin-bottom:12px}
+.info-block ul{list-style:none;padding:0}
+.info-block li{padding:6px 0 6px 20px;position:relative;color:var(--text-muted);font-size:14.5px;border-bottom:1px solid var(--border)}
+.info-block li:last-child{border-bottom:none}
+.info-block li::before{content:"▸";position:absolute;left:0;color:var(--em);font-size:12px;top:9px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:760px){.two-col,.three-col{grid-template-columns:1fr}}
+.highlight-box{background:linear-gradient(135deg,rgba(224,85,120,.08),rgba(224,85,120,.02));border:1px solid rgba(224,85,120,.25);border-radius:var(--radius);padding:20px 24px;margin:16px 0}
+.highlight-box .hb-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--em2);margin-bottom:8px}
+.highlight-box p{color:var(--text);font-size:14.5px;margin:0}
+.tip-box{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:var(--radius);padding:16px 20px;margin:16px 0;display:flex;gap:12px}
+.tip-icon{font-size:20px;flex-shrink:0}
+.tip-box p{color:var(--text-muted);font-size:14px;margin:0}
+.tip-box strong{color:var(--gold)}
+.content-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.tab-btn{padding:8px 18px;border-radius:8px;font-size:13.5px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.tab-btn:hover{border-color:var(--em);color:var(--em2)}
+.tab-btn.active{background:var(--em);border-color:var(--em);color:var(--bg)}
+.tab-panel{display:none;animation:fadeSlideUp .3s ease}
+.tab-panel.active{display:block}
+.objectives-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.obj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;cursor:pointer;position:relative}
+.obj-card:hover{border-color:var(--em);transform:translateY(-2px)}
+.obj-card.done{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.04)}
+.obj-card.done::before{content:"✓";position:absolute;top:10px;right:12px;color:var(--green);font-size:14px;font-weight:700}
+.obj-icon{width:38px;height:38px;border-radius:8px;flex-shrink:0;background:var(--em-dim);border:1px solid rgba(224,85,120,.3);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform .3s}
+.obj-card:hover .obj-icon{transform:rotate(-8deg) scale(1.1)}
+.obj-text h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.obj-text p{font-size:13px;color:var(--text-muted);line-height:1.5}
+.obj-progress{margin-top:16px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-muted)}
+.obj-progress-bar{height:3px;background:var(--border);border-radius:2px;flex:1;margin:0 8px}
+.obj-progress-inner{height:100%;background:var(--em);border-radius:2px;width:0%;transition:width .5s ease}
+.data-table{width:100%;border-collapse:collapse;font-size:14px;margin:16px 0}
+.data-table th{background:var(--surface2);color:var(--em2);font-weight:600;text-align:left;padding:12px 16px;border-bottom:2px solid var(--border);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.data-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-muted)}
+.data-table tr:hover td{background:var(--surface2);color:var(--text)}
+.badge-em{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:var(--em-dim);border:1px solid rgba(224,85,120,.3);color:var(--em2)}
+.badge-gold{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:var(--gold-dim);border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+.badge-red{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:rgba(224,92,92,.1);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.badge-green{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:rgba(46,213,115,.1);border:1px solid rgba(46,213,115,.3);color:var(--green)}
+.badge-blue{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.3);color:var(--blue)}
+.sac{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.sac-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:5px}
+.sac h5{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.sac p{font-size:12.5px;color:var(--text-muted);margin:0}
+/* CRYPTO COMPARATOR */
+.crypto-toggle{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;width:fit-content;margin-bottom:20px}
+.crypto-btn{padding:10px 24px;background:var(--surface2);color:var(--text-muted);border:none;cursor:pointer;font-size:13.5px;font-weight:600;font-family:"DM Sans",sans-serif;transition:all .2s}
+.crypto-btn.active{background:var(--em);color:var(--bg)}
+.crypto-panel{display:none;animation:fadeSlideUp .3s ease}
+.crypto-panel.show{display:block}
+/* ACCESS CONTROL BUILDER */
+.acb-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px}
+.acb-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.acb-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.acb-scenario{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.acb-sc-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:6px}
+.acb-sc-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.acb-sc-desc{font-size:13.5px;color:var(--text-muted);margin-bottom:14px}
+.acb-opts{display:flex;flex-direction:column;gap:8px}
+.acb-opt{padding:11px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:13.5px;text-align:left;font-family:"DM Sans",sans-serif;transition:all .2s}
+.acb-opt:hover{border-color:var(--em);color:var(--text)}
+.acb-opt.correct{border-color:var(--green);background:rgba(46,213,115,.07);color:var(--green);pointer-events:none}
+.acb-opt.incorrect{border-color:var(--red);background:rgba(224,92,92,.07);pointer-events:none}
+.acb-opt.reveal{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.04);color:var(--green);pointer-events:none}
+.acb-feedback{font-size:13.5px;display:none;padding:12px;border-radius:var(--radius);margin-top:8px}
+.acb-feedback.show{display:block;animation:fadeSlideUp .3s ease}
+.acb-feedback.correct{background:rgba(46,213,115,.07);border:1px solid rgba(46,213,120,.3);color:var(--green)}
+.acb-feedback.incorrect{background:rgba(224,92,92,.07);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.acb-nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.acb-counter{font-family:"DM Mono",monospace;font-size:12px;color:var(--em2)}
+.acb-next-btn{padding:7px 18px;border-radius:8px;background:var(--em);border:none;color:var(--bg);font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;display:none;transition:all .2s}
+.acb-next-btn:hover{background:var(--em2)}
+/* THREAT HUNT */
+.hunt-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:24px}
+.hunt-wrap h4{font-family:"Playfair Display",serif;font-size:20px;color:var(--text);margin-bottom:6px}
+.hunt-wrap>p{font-size:13.5px;color:var(--text-muted);margin-bottom:20px}
+.hunt-timeline{display:flex;flex-direction:column;gap:8px}
+.hunt-event{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;transition:all .2s}
+.hunt-event:hover{border-color:var(--em)}
+.hunt-event.flagged{border-color:rgba(224,92,92,.45);background:rgba(224,92,92,.06)}
+.hunt-event.safe{border-color:rgba(46,213,115,.35);background:rgba(46,213,115,.04)}
+.hunt-time{font-family:"DM Mono",monospace;font-size:11px;color:var(--text-dim);flex-shrink:0;padding-top:2px;min-width:50px}
+.hunt-detail{flex:1}
+.hunt-source{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:3px}
+.hunt-msg{font-size:13.5px;color:var(--text)}
+.hunt-flag{font-size:11px;color:var(--red);margin-top:4px;display:none;font-weight:600}
+.hunt-event.flagged .hunt-flag{display:block}
+.hunt-safe-msg{font-size:11px;color:var(--green);margin-top:4px;display:none;font-weight:600}
+.hunt-event.safe .hunt-safe-msg{display:block}
+.hunt-score{margin-top:16px;padding:14px;border-radius:var(--radius);display:none}
+.hunt-score.show{display:block;animation:fadeSlideUp .3s ease}
+.hunt-score.great{background:rgba(46,213,115,.07);border:1px solid rgba(46,213,115,.3);color:var(--green)}
+.hunt-score.partial{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.3);color:var(--gold)}
+/* SCENARIOS */
+.scenario{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px}
+.scenario-label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--em2);margin-bottom:12px}
+.scenario h4{font-size:17px;font-weight:600;color:var(--text);margin-bottom:12px}
+.scenario>p{color:var(--text-muted);font-size:14.5px;margin-bottom:16px}
+.scenario-question{font-size:15px;font-weight:500;color:var(--text);margin-bottom:16px}
+.sc-choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sc-choice{padding:11px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer;font-size:14px;text-align:left;font-family:"DM Sans",sans-serif;transition:all .2s}
+.sc-choice:hover{border-color:var(--em);color:var(--text)}
+.sc-choice.right{border-color:var(--green);background:rgba(46,213,115,.07);color:var(--green);pointer-events:none}
+.sc-choice.wrong{border-color:var(--red);background:rgba(224,92,92,.07);color:var(--red);pointer-events:none}
+.sc-choice.reveal{border-color:rgba(46,213,115,.4);background:rgba(46,213,115,.05);color:var(--green);pointer-events:none}
+.scenario-answer{display:none;border-radius:var(--radius);padding:16px;border:1px solid rgba(224,85,120,.25);background:var(--em-dim)}
+.scenario-answer.show{display:block;animation:fadeSlideUp .3s ease}
+.scenario-answer p{color:var(--text);font-size:14px;margin:0}
+.scenario-answered-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:none}
+.scenario-answered-tag.correct{color:var(--green);display:block}
+.scenario-answered-tag.incorrect{color:var(--red);display:block}
+/* GLOSSARY */
+.glossary-search{width:100%;padding:12px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-family:"DM Sans",sans-serif;margin-bottom:20px;transition:border-color .2s}
+.glossary-search:focus{outline:none;border-color:var(--em)}
+.glossary-search::placeholder{color:var(--text-dim)}
+.glossary-meta{display:flex;gap:16px;margin-bottom:16px;font-size:12px;color:var(--text-muted);flex-wrap:wrap}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.term-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .25s}
+.term-card:hover{border-color:var(--em)}
+.term-card.known{border-color:rgba(46,213,115,.3);opacity:.75}
+.term-card.hidden{display:none}
+.term-front{padding:20px 22px;min-height:90px;position:relative}
+.term-front h4{font-family:"DM Mono",monospace;font-size:14.5px;color:var(--em2);margin-bottom:6px}
+.term-front p{font-size:13px;color:var(--text-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.known-badge{position:absolute;top:10px;right:10px;font-size:10px;background:rgba(46,213,115,.12);color:var(--green);border:1px solid rgba(46,213,115,.25);padding:2px 7px;border-radius:20px;display:none}
+.term-card.known .known-badge{display:inline}
+.term-back{background:var(--em-dim);border-top:1px solid rgba(224,85,120,.2);padding:14px 22px;display:none;animation:fadeIn .25s ease}
+.term-card.flipped .term-back{display:block}
+.term-back p{font-size:13px;color:var(--text);line-height:1.6}
+.term-back .example{font-size:12px;color:var(--em2);margin-top:8px;font-style:italic}
+.term-actions{display:flex;gap:8px;margin-top:12px}
+.term-action-btn{padding:5px 12px;border-radius:8px;font-size:12px;border:1px solid var(--border);background:transparent;cursor:pointer;transition:all .2s;font-family:"DM Sans",sans-serif}
+.term-action-btn.know{color:var(--green);border-color:rgba(46,213,115,.3)}
+.term-action-btn.know:hover{background:rgba(46,213,115,.1)}
+.term-action-btn.review{color:var(--text-muted)}
+.term-action-btn.review:hover{border-color:var(--em);color:var(--em2)}
+/* QUIZ */
+.quiz-container{max-width:720px}
+.quiz-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;font-size:13px}
+.quiz-streak{display:flex;align-items:center;gap:6px;color:var(--em2);font-weight:600;font-family:"DM Mono",monospace}
+.quiz-progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px}
+.quiz-progress-inner{height:100%;background:linear-gradient(90deg,var(--em),var(--em2));border-radius:2px;transition:width .4s ease}
+.quiz-qnum{font-size:12px;color:var(--text-muted);margin-bottom:10px;font-family:"DM Mono",monospace}
+.quiz-q{font-size:18px;font-weight:500;color:var(--text);margin-bottom:20px;line-height:1.5}
+.quiz-kb{font-size:11px;color:var(--text-dim);text-align:right;margin-bottom:8px;font-family:"DM Mono",monospace}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.quiz-opt{padding:14px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;text-align:left;font-size:14.5px;transition:all .2s;display:flex;align-items:center;gap:12px;font-family:"DM Sans",sans-serif}
+.quiz-opt:hover{border-color:var(--em);color:var(--text);background:var(--surface2)}
+.quiz-opt.correct{border-color:#2ed573;background:rgba(46,213,115,.07);color:#2ed573}
+.quiz-opt.incorrect{border-color:var(--red);background:rgba(224,92,92,.07);color:var(--red)}
+.opt-letter{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;font-family:"DM Mono",monospace;transition:all .2s}
+.quiz-opt.correct .opt-letter{background:#2ed573;border-color:#2ed573;color:var(--bg)}
+.quiz-opt.incorrect .opt-letter{background:var(--red);border-color:var(--red);color:white}
+.quiz-feedback{padding:14px 18px;border-radius:var(--radius);font-size:14px;display:none;margin-bottom:16px}
+.quiz-feedback.show{display:block;animation:fadeSlideUp .3s ease}
+.quiz-feedback.correct{background:rgba(46,213,115,.08);border:1px solid rgba(46,213,115,.3);color:#2ed573}
+.quiz-feedback.incorrect{background:rgba(224,92,92,.08);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.quiz-timer{position:relative;width:40px;height:40px;flex-shrink:0}
+.quiz-timer svg{transform:rotate(-90deg)}
+.quiz-timer-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:"DM Mono",monospace}
+.btn{padding:10px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:"DM Sans",sans-serif}
+.btn-primary{background:var(--em);color:var(--bg)}
+.btn-primary:hover{background:var(--em2)}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+.btn-ghost:hover{border-color:var(--em);color:var(--em2)}
+.score-wrap{text-align:center;padding:48px 20px}
+.score-ring-wrap{width:140px;height:140px;margin:0 auto 24px;position:relative}
+.score-ring-wrap svg{width:140px;height:140px}
+.score-ring-fill{fill:none;stroke:var(--em);stroke-width:8;stroke-linecap:round;stroke-dasharray:358;stroke-dashoffset:358;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.score-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-ring-val .pct{font-family:"Playfair Display",serif;font-size:36px;color:var(--em2);font-weight:700;line-height:1}
+.score-ring-val .lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.score-wrap h3{font-family:"Playfair Display",serif;font-size:24px;margin-bottom:8px}
+.score-wrap>p{color:var(--text-muted);margin-bottom:20px}
+.score-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.missed-review{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-top:24px;text-align:left}
+.missed-review h4{font-family:"Playfair Display",serif;font-size:17px;margin-bottom:14px}
+.missed-item{padding:10px;border-bottom:1px solid var(--border);font-size:13px}
+.missed-item:last-child{border-bottom:none}
+.mi-q{color:var(--text);margin-bottom:4px;font-weight:500}
+.mi-a{color:var(--em2);font-size:12.5px}
+.checklist{display:flex;flex-direction:column;gap:10px}
+.check-item{display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s}
+.check-item:hover{border-color:var(--em)}
+.check-item.checked{border-color:rgba(46,213,115,.3);background:rgba(46,213,115,.03)}
+.check-box{width:22px;height:22px;border-radius:6px;flex-shrink:0;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .25px}
+.check-box.checked{background:var(--em);border-color:var(--em);color:var(--bg)}
+.check-item p{font-size:14px;color:var(--text-muted);flex:1}
+.check-item.checked p{color:var(--text)}
+.float-nav{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:100}
+.float-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .2s;position:relative}
+.float-dot:hover,.float-dot.active{background:var(--em);transform:scale(1.4)}
+.float-dot::before{content:attr(title);position:absolute;right:16px;top:50%;transform:translateY(-50%);background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:11px;white-space:nowrap;padding:4px 10px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s;font-family:"DM Sans",sans-serif}
+.float-dot:hover::before{opacity:1}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.app{flex-direction:column}.sidebar{width:100%;min-width:unset;height:auto;position:relative}.hero-content{padding:40px 32px}.section{padding:40px 32px}.float-nav{display:none}}
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="toast-stack" id="toastStack"></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="badge">CISA 2025/2026</div>
+    <h2>Domain 5<br/>Asset Protection</h2>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Mastery Progress</span><span id="progressPct">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <nav class="nav-list">
+    <div class="nav-item active" data-target="s-intro" onclick="scrollToSection('s-intro')"><div class="nav-num"><span>1</span></div>Introduction</div>
+    <div class="nav-item" data-target="s-objectives" onclick="scrollToSection('s-objectives')"><div class="nav-num"><span>2</span></div>Learning Objectives</div>
+    <div class="nav-item" data-target="s-access" onclick="scrollToSection('s-access')"><div class="nav-num"><span>3</span></div>Access Control</div>
+    <div class="nav-item" data-target="s-crypto" onclick="scrollToSection('s-crypto')"><div class="nav-num"><span>4</span></div>Cryptography</div>
+    <div class="nav-item" data-target="s-network" onclick="scrollToSection('s-network')"><div class="nav-num"><span>5</span></div>Network Security</div>
+    <div class="nav-item" data-target="s-physical" onclick="scrollToSection('s-physical')"><div class="nav-num"><span>6</span></div>Physical Security</div>
+    <div class="nav-item" data-target="s-incident" onclick="scrollToSection('s-incident')"><div class="nav-num"><span>7</span></div>Incident Response</div>
+    <div class="nav-item" data-target="s-forensics" onclick="scrollToSection('s-forensics')"><div class="nav-num"><span>8</span></div>Digital Forensics</div>
+    <div class="nav-item" data-target="s-hunt" onclick="scrollToSection('s-hunt')"><div class="nav-num"><span>9</span></div>Threat Hunt Exercise</div>
+    <div class="nav-item" data-target="s-scenarios" onclick="scrollToSection('s-scenarios')"><div class="nav-num"><span>10</span></div>Real-World Scenarios</div>
+    <div class="nav-item" data-target="s-terms" onclick="scrollToSection('s-terms')"><div class="nav-num"><span>11</span></div>Key Terms</div>
+    <div class="nav-item" data-target="s-quiz" onclick="scrollToSection('s-quiz')"><div class="nav-num"><span>12</span></div>Knowledge Check</div>
+    <div class="nav-item" data-target="s-conclusion" onclick="scrollToSection('s-conclusion')"><div class="nav-num"><span>13</span></div>Conclusion &amp; Course Wrap</div>
+  </nav>
+  <div class="sidebar-footer">Exam weight: <strong style="color:var(--em2)">25%</strong> &nbsp;|&nbsp; <a href="https://youtube.com/playlist?list=PL7XJSuT7Dq_UffFGcmTvKL7JeHweC5HKU" target="_blank">📺 Source Playlist</a></div>
+</aside>
+<main class="main">
+<div class="float-nav" id="floatNav"></div>
+
+<!-- HERO -->
+<section class="section visible" id="s-intro">
+  <div class="hero" style="margin:-64px -64px 40px;padding:0">
+    <div class="hero-grid"></div>
+    <canvas id="particleCanvas" style="position:absolute;inset:0;pointer-events:none"></canvas>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="domain-tag">Domain 5</span>
+        <span class="weight-tag">25% of Exam — Final Domain</span>
+      </div>
+      <h1>Information<br/><span>Asset Protection</span></h1>
+      <p>The final CISA domain covers how organisations protect information assets through access controls, cryptography, network security, physical security, and incident response. Master the frameworks auditors use to evaluate security posture: Zero Trust, IAM/PAM, PKI, SIEM/SOAR, and digital forensics.</p>
+      <div class="hero-stats">
+        <div><div class="stat-val" id="sv1">0</div><div class="stat-label">Exam Questions (~)</div></div>
+        <div><div class="stat-val" id="sv2">0</div><div class="stat-label">Crypto Algorithms</div></div>
+        <div><div class="stat-val" id="sv3">0</div><div class="stat-label">Key Terms</div></div>
+        <div><div class="stat-val" id="sv4">0</div><div class="stat-label">Quiz Questions</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section-header" style="margin-top:0">
+    <div class="section-eyebrow">About This Domain</div>
+    <h2 class="section-title">What Auditors Must Know</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Domain Scope</h3>
+      <p>Domain 5 accounts for <strong>25%</strong> of the CISA exam — roughly 38 questions. It is the most technically demanding domain and covers the full security control landscape.</p>
+      <ul>
+        <li><strong>Access Controls:</strong> IAM, PAM, authentication factors, authorisation models (RBAC, ABAC, MAC, DAC)</li>
+        <li><strong>Cryptography:</strong> Symmetric vs. asymmetric, PKI, digital signatures, key management, hashing</li>
+        <li><strong>Network Security:</strong> Firewalls, IDS/IPS, VPN, Zero Trust, network segmentation, DMZ</li>
+        <li><strong>Physical Security:</strong> Data centre controls, environmental controls, visitor management</li>
+        <li><strong>Incident Response:</strong> IR lifecycle, SIEM/SOAR, threat intelligence, deception technologies</li>
+        <li><strong>Digital Forensics:</strong> Chain of custody, evidence preservation, forensic investigation process</li>
+        <li><strong>Emerging Threats:</strong> Ransomware, supply chain attacks, social engineering, insider threats</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>The Auditor Mindset for Domain 5</h3>
+      <p>Security auditing evaluates whether controls are adequate, operating effectively, and proportionate to risk. Key principles:</p>
+      <ul>
+        <li><strong>Controls are layered:</strong> No single control is sufficient. The auditor evaluates defence in depth — the combination of preventive, detective, and corrective controls.</li>
+        <li><strong>Authentication ≠ Authorisation:</strong> Verifying who someone is (authentication) is separate from what they can do (authorisation). Both must be evaluated.</li>
+        <li><strong>Encryption alone is not security:</strong> Encrypting data with weak key management, insecure algorithms, or poor certificate practices creates a false sense of security.</li>
+        <li><strong>Forensic integrity is paramount:</strong> Evidence handling errors can make digital evidence inadmissible. The auditor evaluates chain of custody, not just findings.</li>
+        <li><strong>Zero Trust means verify always:</strong> "Never trust, always verify" — location inside the network does not grant inherent trust.</li>
+        <li><strong>SIEM without response is theatre:</strong> Detection without documented response procedures and trained personnel is an incomplete control.</li>
+      </ul>
+      <div class="tip-box" style="margin-top:16px">
+        <span class="tip-icon">💡</span>
+        <p><strong>Exam tip:</strong> Domain 5 questions often test the auditor's <em>validation role</em> — not whether the organisation has security tools, but whether those tools are correctly configured, monitored, and integrated into a coherent security programme.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJECTIVES -->
+<section class="section" id="s-objectives">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 2</div>
+    <h2 class="section-title">Learning Objectives</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Click each objective to mark it complete.</p>
+  </div>
+  <div class="objectives-grid">
+    <div class="obj-card" onclick="markObj(this,'Access Controls')"><div class="obj-icon">🔐</div><div class="obj-text"><h4>Evaluate Access Control Systems</h4><p>Assess IAM, PAM, MFA, and authorisation models against least privilege and need-to-know principles.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Cryptography')"><div class="obj-icon">🔑</div><div class="obj-text"><h4>Audit Cryptographic Controls</h4><p>Evaluate algorithm selection, key management, PKI, digital signatures, and certificate lifecycle management.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Network Security')"><div class="obj-icon">🌐</div><div class="obj-text"><h4>Review Network Security Architecture</h4><p>Assess firewall rules, IDS/IPS, Zero Trust implementation, DMZ design, and VPN controls.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Physical Security')"><div class="obj-icon">🏢</div><div class="obj-text"><h4>Assess Physical Security Controls</h4><p>Evaluate data centre access, environmental controls, visitor management, and media disposal.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Incident Response')"><div class="obj-icon">🚨</div><div class="obj-text"><h4>Evaluate Incident Response Capability</h4><p>Assess IR plan completeness, SIEM/SOAR integration, tabletop testing, and response metrics.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Digital Forensics')"><div class="obj-icon">🔬</div><div class="obj-text"><h4>Understand Digital Forensics</h4><p>Evaluate chain of custody, evidence acquisition, forensic investigation process, and admissibility requirements.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Threat Intelligence')"><div class="obj-icon">🕵️</div><div class="obj-text"><h4>Assess Threat Intelligence Integration</h4><p>Evaluate threat feeds, deception technologies (honeypots), and threat-informed defence practices.</p></div></div>
+    <div class="obj-card" onclick="markObj(this,'Zero Trust')"><div class="obj-icon">🛡️</div><div class="obj-text"><h4>Apply Zero Trust Principles</h4><p>Evaluate micro-segmentation, continuous verification, least-privilege access, and assume-breach posture.</p></div></div>
+  </div>
+  <div class="obj-progress" style="margin-top:16px">
+    <span id="objCount">0 / 8 complete</span>
+    <div class="obj-progress-bar"><div class="obj-progress-inner" id="objBar"></div></div>
+  </div>
+</section>
+
+<!-- ACCESS CONTROL -->
+<section class="section" id="s-access">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 3</div>
+    <h2 class="section-title">Access Control</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="content-tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'ac-iam')">IAM &amp; PAM</button>
+    <button class="tab-btn" onclick="switchTab(this,'ac-authn')">Authentication</button>
+    <button class="tab-btn" onclick="switchTab(this,'ac-authz')">Authorisation Models</button>
+    <button class="tab-btn" onclick="switchTab(this,'ac-builder')">Access Review Scenarios</button>
+  </div>
+  <div class="tab-panel active" id="ac-iam">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Identity &amp; Access Management (IAM)</h3>
+        <p>IAM governs who has access to what, when, and under what conditions. The auditor evaluates the full identity lifecycle.</p>
+        <ul>
+          <li><strong>Joiner:</strong> Provisioning — access granted based on role, with manager approval; principle of least privilege applied from day one</li>
+          <li><strong>Mover:</strong> Re-provisioning — when role changes, old access revoked before new access granted; cumulative access (privilege creep) is a finding</li>
+          <li><strong>Leaver:</strong> De-provisioning — access revoked on termination date, not weeks later; emergency revocation process for involuntary terminations</li>
+          <li><strong>Orphan accounts:</strong> Active accounts with no associated active employee — critical finding; common after M&amp;A, restructuring</li>
+          <li><strong>Access recertification:</strong> Periodic review (quarterly for privileged, annual for standard) where managers certify each employee's access is still appropriate</li>
+          <li><strong>SoD enforcement:</strong> IAM system must enforce Segregation of Duties — user cannot be assigned conflicting roles (e.g., payment initiation + payment approval)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Privileged Access Management (PAM)</h3>
+        <p>PAM controls the highest-risk accounts in the environment — administrators, DBAs, system accounts, and service accounts with elevated permissions.</p>
+        <ul>
+          <li><strong>Just-in-time (JIT) access:</strong> Privileged access granted for a specific task window, then automatically revoked — no standing admin accounts</li>
+          <li><strong>Privileged session recording:</strong> All privileged sessions recorded and stored securely — DBA and admin activity fully auditable</li>
+          <li><strong>Password vaulting:</strong> Privileged credentials stored in a PAM vault, rotated automatically after each use — no shared admin passwords</li>
+          <li><strong>Break-glass accounts:</strong> Emergency admin accounts with dual-key activation (two people required), immediate alert on use, mandatory PIR</li>
+          <li><strong>Service account governance:</strong> Non-human accounts must have an owner, documented purpose, and periodic review</li>
+          <li><strong>Auditor check:</strong> Can admins access the PAM vault logs? If yes — critical finding (self-auditing)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="ac-authn">
+    <div class="info-block">
+      <h3>Authentication Factors &amp; MFA</h3>
+      <table class="data-table">
+        <thead><tr><th>Factor Type</th><th>What It Is</th><th>Examples</th><th>Weakness</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Something You Know</strong></td><td>Knowledge factor</td><td>Password, PIN, security questions</td><td>Can be stolen, guessed, phished</td></tr>
+          <tr><td><strong>Something You Have</strong></td><td>Possession factor</td><td>Hardware token, smart card, authenticator app, SMS OTP</td><td>Can be lost, stolen, SIM-swapped</td></tr>
+          <tr><td><strong>Something You Are</strong></td><td>Inherence factor</td><td>Fingerprint, face scan, iris scan, voice recognition</td><td>Cannot be changed if compromised; false positive/negative rates</td></tr>
+          <tr><td><strong>Somewhere You Are</strong></td><td>Location factor</td><td>Geolocation, IP range, network location</td><td>VPNs and proxies can spoof location</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two-col">
+      <div class="info-block">
+        <h3>MFA Requirements</h3>
+        <ul>
+          <li><strong>Two different factor types:</strong> Two passwords ≠ MFA. Must combine factors from different categories (e.g., password + authenticator app)</li>
+          <li><strong>SMS OTP risk:</strong> SMS is the weakest MFA method — vulnerable to SIM-swapping. TOTP authenticator apps or hardware tokens preferred</li>
+          <li><strong>Phishing-resistant MFA:</strong> FIDO2/WebAuthn hardware keys are immune to credential phishing — recommended for privileged accounts</li>
+          <li><strong>Adaptive MFA:</strong> Risk-based authentication that triggers additional factors based on anomalous signals (new device, unusual location, off-hours)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Single Sign-On (SSO) &amp; Federation</h3>
+        <ul>
+          <li><strong>SSO:</strong> One authentication grants access to multiple applications — reduces password fatigue and enables central de-provisioning</li>
+          <li><strong>Federation:</strong> SAML, OAuth 2.0, and OpenID Connect enable identity to be asserted across organisational boundaries</li>
+          <li><strong>SSO risk:</strong> Single point of failure — compromise of IdP compromises all connected applications; MFA on the IdP is essential</li>
+          <li><strong>Auditor check:</strong> Are all applications connected to SSO, or do some maintain separate credentials (shadow accounts)?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="ac-authz">
+    <div class="info-block">
+      <h3>Authorisation Models</h3>
+      <table class="data-table">
+        <thead><tr><th>Model</th><th>How It Works</th><th>Used For</th><th>Key Characteristic</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DAC</strong> (Discretionary)</td><td>Resource owner decides who can access — sets permissions on their own files/objects</td><td>File systems, shared drives</td><td>Flexible but inconsistent; owner can inadvertently over-share</td></tr>
+          <tr><td><strong>MAC</strong> (Mandatory)</td><td>System enforces access based on security labels (classification levels) assigned to subjects and objects</td><td>Military, government, high-security environments</td><td>Rigid and consistent; user cannot override system-enforced labels</td></tr>
+          <tr><td><strong>RBAC</strong> (Role-Based)</td><td>Permissions assigned to roles; users assigned to roles. Users inherit permissions of their role</td><td>Enterprise systems, most corporate environments</td><td>Scalable and manageable; risk of role explosion over time</td></tr>
+          <tr><td><strong>ABAC</strong> (Attribute-Based)</td><td>Access decisions based on attributes of user, resource, and environment (e.g., department=HR AND classification=internal AND time=business-hours)</td><td>Cloud, APIs, fine-grained policy enforcement</td><td>Most flexible; complex to implement and audit</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box" style="margin-top:12px">
+        <span class="tip-icon">💡</span>
+        <p><strong>Exam tip:</strong> RBAC is the most common model in enterprise environments. The auditor evaluates whether roles are properly defined, whether SoD is enforced across roles, and whether access recertification is performed. <strong>Privilege creep</strong> (accumulating access from multiple roles over time without removing old access) is the most common RBAC finding.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="ac-builder">
+    <div class="acb-wrap">
+      <h4>🔐 Access Control Review Scenarios</h4>
+      <p>As the auditor, identify the correct finding or recommendation for each access control scenario.</p>
+      <div id="acbContent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CRYPTOGRAPHY -->
+<section class="section" id="s-crypto">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 4</div>
+    <h2 class="section-title">Cryptography</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Toggle between encryption paradigms and explore PKI controls.</p>
+  </div>
+  <div class="crypto-toggle">
+    <button class="crypto-btn active" onclick="showCrypto('sym',this)">Symmetric</button>
+    <button class="crypto-btn" onclick="showCrypto('asym',this)">Asymmetric</button>
+    <button class="crypto-btn" onclick="showCrypto('hash',this)">Hashing</button>
+    <button class="crypto-btn" onclick="showCrypto('pki',this)">PKI &amp; Certificates</button>
+  </div>
+  <div class="crypto-panel show" id="crypto-sym">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Symmetric Encryption</h3>
+        <p>Same key used to encrypt and decrypt. Fast and efficient for bulk data encryption.</p>
+        <ul>
+          <li><strong>AES-256:</strong> Current standard — approved by NIST, used by US government for classified data. Block cipher, 256-bit key.</li>
+          <li><strong>AES-128:</strong> Also secure for most purposes — faster than AES-256 with minimal practical security difference</li>
+          <li><strong>3DES (Triple DES):</strong> Legacy — applying DES three times. Deprecated by NIST in 2023; should not be used in new systems</li>
+          <li><strong>DES:</strong> Broken — 56-bit key, cracked in under 24 hours with modern hardware. Never use.</li>
+          <li><strong>Key distribution problem:</strong> How do you securely share the secret key? Solved by using asymmetric encryption to exchange the symmetric key (hybrid encryption)</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Symmetric — Audit Checklist</h3>
+        <ul>
+          <li>Is AES-256 (or AES-128 minimum) used for data at rest?</li>
+          <li>Are deprecated algorithms (3DES, DES, RC4) still in use? — finding if yes</li>
+          <li>Are encryption keys stored separately from the data they protect?</li>
+          <li>Is there a documented key rotation schedule?</li>
+          <li>Are keys protected in a Hardware Security Module (HSM) or key management system?</li>
+          <li>Is data encrypted in transit AND at rest — or only one?</li>
+          <li>Are encryption standards formally documented in a cryptography policy?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="crypto-panel" id="crypto-asym">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Asymmetric Encryption</h3>
+        <p>Key pair: public key (share freely) + private key (keep secret). Solves the key distribution problem.</p>
+        <ul>
+          <li><strong>RSA:</strong> Most widely used asymmetric algorithm. Minimum 2048-bit key; 4096-bit recommended for long-term security. Based on difficulty of factoring large primes.</li>
+          <li><strong>ECC (Elliptic Curve):</strong> Provides equivalent security to RSA with much shorter keys (256-bit ECC ≈ 3072-bit RSA). Used in TLS 1.3, mobile devices.</li>
+          <li><strong>Encrypt with public key → decrypt with private key:</strong> Only the key holder can decrypt. Used for secure key exchange and TLS.</li>
+          <li><strong>Sign with private key → verify with public key:</strong> Proves the message came from the key holder. Used for digital signatures.</li>
+          <li><strong>Hybrid encryption:</strong> Asymmetric encrypts the symmetric session key; symmetric encrypts the bulk data — combines both paradigm strengths.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Digital Signatures</h3>
+        <p>A digital signature provides authentication, integrity, and non-repudiation.</p>
+        <ul>
+          <li><strong>Process:</strong> Sender hashes the message → encrypts hash with private key → attaches as signature</li>
+          <li><strong>Verification:</strong> Receiver decrypts signature with sender's public key → independently hashes message → compares hashes</li>
+          <li><strong>Authentication:</strong> Only the private key holder could have signed — proves identity</li>
+          <li><strong>Integrity:</strong> Any modification to the message changes the hash — signature verification fails</li>
+          <li><strong>Non-repudiation:</strong> Signer cannot deny having signed — private key ownership is provable</li>
+          <li><strong>Audit finding:</strong> Signing with MD5 or SHA-1 is a finding — both are cryptographically broken; SHA-256 minimum required</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="crypto-panel" id="crypto-hash">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Cryptographic Hashing</h3>
+        <p>One-way function producing a fixed-length digest. Used for integrity verification, password storage, and digital signatures.</p>
+        <ul>
+          <li><strong>SHA-256:</strong> Current standard — 256-bit output, collision-resistant, approved for all security applications</li>
+          <li><strong>SHA-3:</strong> Alternative to SHA-2 family — different design basis, equally secure, used where SHA-2 diversity is desired</li>
+          <li><strong>SHA-1:</strong> Broken — practical collision attacks demonstrated. Finding if still in use for any security purpose</li>
+          <li><strong>MD5:</strong> Broken — widely exploited. Finding in any security context including password storage, certificate signing, file integrity</li>
+          <li><strong>bcrypt / Argon2:</strong> Password hashing — deliberately slow to resist brute-force, includes salt to prevent rainbow tables. SHA-256 is NOT suitable for password storage.</li>
+          <li><strong>HMAC:</strong> Hash-based Message Authentication Code — combines hashing with a secret key to provide both integrity and authentication</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Hashing — Audit Checklist</h3>
+        <ul>
+          <li>Are passwords stored as salted hashes using bcrypt, Argon2, or PBKDF2? (Plaintext or unsalted = critical finding)</li>
+          <li>Is SHA-1 or MD5 used anywhere for security purposes? — finding</li>
+          <li>Are file integrity checks using SHA-256 or better?</li>
+          <li>Is HMAC used for API message authentication — not just plain hashing?</li>
+          <li>Are TLS certificates signed with SHA-256 or better?</li>
+          <li>Is there a cryptography inventory identifying all algorithms in use across systems?</li>
+        </ul>
+        <div class="highlight-box" style="margin-top:12px">
+          <div class="hb-label">Critical Distinction</div>
+          <p>Hashing is NOT encryption. A hash cannot be reversed. Use hashing for integrity and password storage. Use encryption when data must be decrypted later.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="crypto-panel" id="crypto-pki">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Public Key Infrastructure (PKI)</h3>
+        <p>PKI is the framework of policies, procedures, and technology that manages digital certificates and public keys.</p>
+        <ul>
+          <li><strong>CA (Certificate Authority):</strong> Issues and signs digital certificates — vouches for the binding of a public key to an identity</li>
+          <li><strong>Root CA:</strong> The trust anchor. Typically kept offline (air-gapped) and used only to sign Intermediate CAs</li>
+          <li><strong>Intermediate CA:</strong> Online CA that issues end-entity certificates — compromise is severe but contained; Root CA revokes and reissues</li>
+          <li><strong>Certificate:</strong> Binds a public key to an identity (X.509 format). Contains: subject, public key, validity period, issuing CA, serial number, signature</li>
+          <li><strong>CRL (Certificate Revocation List):</strong> Published list of revoked certificates — must be checked before trusting a certificate</li>
+          <li><strong>OCSP (Online Certificate Status Protocol):</strong> Real-time certificate status check — faster than CRL, preferred for high-assurance environments</li>
+          <li><strong>Certificate Transparency (CT):</strong> Public log of all issued certificates — enables detection of misissued or fraudulent certificates</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>PKI — Audit Checklist</h3>
+        <ul>
+          <li>Is the Root CA kept offline and physically secured?</li>
+          <li>Are certificate validity periods appropriate? (TLS max 398 days per CA/Browser Forum)</li>
+          <li>Is there a certificate inventory — does anyone know what certificates exist and when they expire?</li>
+          <li>Is there an automated certificate renewal process? (Manual renewal = expiry risk)</li>
+          <li>Are expired or self-signed certificates in use in production? — finding</li>
+          <li>Is CRL or OCSP validation enabled on all systems that trust external certificates?</li>
+          <li>Are private keys stored in HSMs — not in software keystore files?</li>
+          <li>Is there a defined process for certificate revocation and re-issuance when a key is compromised?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NETWORK SECURITY -->
+<section class="section" id="s-network">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 5</div>
+    <h2 class="section-title">Network Security</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="content-tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'net-arch')">Architecture &amp; DMZ</button>
+    <button class="tab-btn" onclick="switchTab(this,'net-fw')">Firewalls &amp; IDS/IPS</button>
+    <button class="tab-btn" onclick="switchTab(this,'net-zt')">Zero Trust</button>
+    <button class="tab-btn" onclick="switchTab(this,'net-vpn')">VPN &amp; Remote Access</button>
+  </div>
+  <div class="tab-panel active" id="net-arch">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Network Segmentation &amp; DMZ</h3>
+        <p>Network segmentation isolates systems to contain the blast radius of a breach. The DMZ (Demilitarised Zone) is a perimeter network for publicly accessible services.</p>
+        <ul>
+          <li><strong>DMZ:</strong> Sits between the external internet and the internal network — hosts web servers, email gateways, DNS. Compromise of a DMZ system does not automatically grant internal network access.</li>
+          <li><strong>Micro-segmentation:</strong> Granular segmentation within internal networks — east-west traffic between servers is controlled, not just north-south traffic at the perimeter</li>
+          <li><strong>VLAN:</strong> Virtual LAN — logical network segmentation at Layer 2. Limits broadcast domains and contains lateral movement</li>
+          <li><strong>Network zones:</strong> Internet → DMZ → Internal → Restricted (e.g., PCI zone). Each boundary controlled by a firewall or ACL</li>
+          <li><strong>Flat network finding:</strong> All systems on the same subnet with no segmentation — a breach of any system enables lateral movement to all systems. Critical finding.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Network Security — Audit Questions</h3>
+        <ul>
+          <li>Is there a current, accurate network diagram showing all zones and traffic flows?</li>
+          <li>Are firewall rules reviewed and recertified at least annually?</li>
+          <li>Are there any "any-to-any" or "any port" firewall rules? — finding</li>
+          <li>Is the internal network flat, or is there segmentation between business units and sensitive systems?</li>
+          <li>Are production, development, and test environments on separate network segments?</li>
+          <li>Are there controls preventing sensitive data from leaving the network (DLP)?</li>
+          <li>Is network traffic encrypted on internal segments carrying sensitive data?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="net-fw">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Firewall Types</h3>
+        <ul>
+          <li><strong>Packet filtering:</strong> Inspects IP headers only — source/destination IP and port. Fast but cannot inspect payload or track connection state.</li>
+          <li><strong>Stateful inspection:</strong> Tracks connection state — knows whether a packet is part of an established session. Most common perimeter firewall type.</li>
+          <li><strong>Application-layer (WAF):</strong> Inspects HTTP/HTTPS payload — detects SQL injection, XSS, OWASP Top 10 attacks at Layer 7. Required for web applications.</li>
+          <li><strong>NGFW (Next-Generation):</strong> Combines stateful + application awareness + IPS + SSL inspection + threat intelligence feeds.</li>
+          <li><strong>Implicit deny:</strong> All traffic blocked unless explicitly permitted — the correct default stance. "Permit all, deny specific" is a finding.</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>IDS vs. IPS</h3>
+        <ul>
+          <li><strong>IDS (Intrusion Detection System):</strong> Detects and alerts — passive monitoring. Does not block traffic. Out-of-band deployment.</li>
+          <li><strong>IPS (Intrusion Prevention System):</strong> Detects and blocks — active inline. Can drop malicious traffic in real time.</li>
+          <li><strong>Signature-based:</strong> Matches traffic against known attack patterns. Fast, low false positive, cannot detect zero-day attacks.</li>
+          <li><strong>Anomaly-based:</strong> Detects deviations from baseline behaviour. Can detect novel attacks but higher false positive rate.</li>
+          <li><strong>Placement:</strong> IDS/IPS placed at network boundaries AND between internal segments for east-west visibility.</li>
+          <li><strong>Auditor check:</strong> Are IPS signatures updated? When were they last updated? Outdated signatures = effectively no detection.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="net-zt">
+    <div class="info-block">
+      <h3>Zero Trust Architecture</h3>
+      <p>Zero Trust replaces the traditional perimeter model with continuous verification. The principle: <strong>"Never trust, always verify."</strong> Being inside the network does not grant implicit trust.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0">
+        <div class="sac"><div class="sac-lbl">Verify Explicitly</div><h5>Always Authenticate &amp; Authorise</h5><p>Every access request is authenticated and authorised regardless of network location. No implicit trust from being on-site or VPN-connected.</p></div>
+        <div class="sac"><div class="sac-lbl">Least Privilege</div><h5>Minimum Access Required</h5><p>Access granted to the minimum resources needed for the specific task. JIT access for elevated permissions. Time-limited access grants.</p></div>
+        <div class="sac"><div class="sac-lbl">Assume Breach</div><h5>Design for Compromise</h5><p>Assume attackers are already inside. Micro-segmentation limits blast radius. End-to-end encryption even on internal networks. Continuous monitoring.</p></div>
+        <div class="sac"><div class="sac-lbl">Device Trust</div><h5>Verify Device Health</h5><p>Device compliance checked before granting access — patch level, AV status, certificate. Unmanaged or non-compliant devices quarantined.</p></div>
+        <div class="sac"><div class="sac-lbl">Micro-segmentation</div><h5>Control East-West Traffic</h5><p>Workloads isolated — even within the internal network, lateral movement requires explicit authorisation. Database cannot be reached from a compromised web server.</p></div>
+        <div class="sac"><div class="sac-lbl">Continuous Monitoring</div><h5>Log &amp; Inspect Everything</h5><p>All traffic inspected and logged. Anomalies detected in real time. Session behaviour analysed continuously — not just at authentication time.</p></div>
+      </div>
+    </div>
+    <div class="tip-box">
+      <span class="tip-icon">💡</span>
+      <p><strong>Exam tip:</strong> Zero Trust is a design philosophy, not a product. An organisation can purchase a "Zero Trust" product and still have a poor Zero Trust posture if implementation is incomplete. The auditor evaluates the actual controls — micro-segmentation, MFA, device health verification, continuous monitoring — not just the vendor's marketing claims.</p>
+    </div>
+  </div>
+  <div class="tab-panel" id="net-vpn">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>VPN Controls</h3>
+        <ul>
+          <li><strong>IPsec VPN:</strong> Network-layer encryption — encrypts all traffic between sites or between device and gateway. Used for site-to-site connectivity.</li>
+          <li><strong>TLS/SSL VPN:</strong> Application-layer — accessed via browser or thin client. More flexible, easier to manage for remote users.</li>
+          <li><strong>Split tunnelling:</strong> Only corporate traffic goes through VPN; internet traffic goes direct. Risk: device may be exposed to threats on local network while connected to corporate resources.</li>
+          <li><strong>Full tunnel:</strong> All traffic routed through VPN — more secure but higher bandwidth demand on corporate infrastructure.</li>
+          <li><strong>MFA on VPN:</strong> Mandatory. Credential-only VPN authentication is insufficient — remote access is a primary target for credential-based attacks.</li>
+          <li><strong>VPN access reviews:</strong> Who has VPN access? Is it scoped to necessary resources? Are inactive VPN accounts disabled?</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>Remote Access Audit Controls</h3>
+        <ul>
+          <li><strong>Device posture assessment:</strong> Only managed, compliant devices granted VPN/remote access — not personal devices without controls</li>
+          <li><strong>Session timeout:</strong> Idle remote sessions automatically terminated — prevents unattended sessions from being hijacked</li>
+          <li><strong>Privileged remote access:</strong> Admin access over remote sessions must use PAM-gated connections — no direct RDP/SSH with shared credentials</li>
+          <li><strong>Third-party remote access:</strong> Vendor remote connections must be time-limited, monitored, and scoped to minimum required systems</li>
+          <li><strong>Audit logging:</strong> All remote sessions logged — who, from where, when, what systems accessed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHYSICAL SECURITY -->
+<section class="section" id="s-physical">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 6</div>
+    <h2 class="section-title">Physical Security</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Data Centre Physical Controls</h3>
+      <p>Physical security is the foundation of all other security controls — a physically accessible server cannot be protected by logical controls alone.</p>
+      <ul>
+        <li><strong>Perimeter security:</strong> Fencing, security guards, CCTV covering all entry/exit points and aisles. CCTV footage retained minimum 90 days.</li>
+        <li><strong>Mantrap / airlock:</strong> Double-door entry system — first door must close before second opens. Prevents tailgating. Used at data centre entrances.</li>
+        <li><strong>Multi-factor physical access:</strong> Badge + PIN, or badge + biometric — prevents badge cloning from granting full access</li>
+        <li><strong>Visitor management:</strong> All visitors logged, escorted at all times, never left alone in server areas. No exceptions for "trusted" vendors.</li>
+        <li><strong>Rack-level access:</strong> Individual server racks locked — access logged. Even data centre staff should not have access to racks outside their responsibility.</li>
+        <li><strong>Two-person integrity:</strong> Sensitive operations (e.g., hardware removal, tape handling) require two authorised people — prevents insider theft</li>
+        <li><strong>Clean desk / clear screen:</strong> Sensitive documents not left unattended; workstations lock after inactivity</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Environmental &amp; Media Controls</h3>
+      <ul>
+        <li><strong>Temperature/humidity:</strong> Servers operate in narrow temperature/humidity range — monitoring with automated alerts, redundant cooling (N+1 minimum)</li>
+        <li><strong>UPS (Uninterruptible Power Supply):</strong> Battery backup for clean power during outages — buys time for generators to start</li>
+        <li><strong>Generator:</strong> Extended power backup — tested under load quarterly. Fuel supply and delivery contract audited.</li>
+        <li><strong>Fire suppression:</strong> Clean agent systems (FM-200, Novec) safe for electronics — not water. CO₂ rooms require evacuation warning before discharge.</li>
+        <li><strong>Flood/water detection:</strong> Sensors under raised floors and around cooling units — alert before water reaches equipment</li>
+        <li><strong>Media sanitisation:</strong> Data bearing media destroyed or degaussed before disposal. Certificate of destruction obtained from vendors. NIST SP 800-88 guidance.</li>
+        <li><strong>Tape/backup media:</strong> Encrypted before leaving the building. Chain of custody maintained for offsite storage and retrieval.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- INCIDENT RESPONSE -->
+<section class="section" id="s-incident">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 7</div>
+    <h2 class="section-title">Incident Response</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="content-tabs">
+    <button class="tab-btn active" onclick="switchTab(this,'ir-lifecycle')">IR Lifecycle</button>
+    <button class="tab-btn" onclick="switchTab(this,'ir-siem')">SIEM &amp; SOAR</button>
+    <button class="tab-btn" onclick="switchTab(this,'ir-threat')">Threat Intelligence</button>
+    <button class="tab-btn" onclick="switchTab(this,'ir-ransom')">Ransomware Response</button>
+  </div>
+  <div class="tab-panel active" id="ir-lifecycle">
+    <div class="info-block">
+      <h3>Incident Response Lifecycle (NIST SP 800-61)</h3>
+      <table class="data-table">
+        <thead><tr><th>Phase</th><th>Key Activities</th><th>Auditor Evaluation Points</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1. Preparation</strong></td><td>IR plan documented, team trained, tools in place, contacts established, tabletop exercises conducted</td><td>Is the plan current? Was it tested in the last 12 months? Does the team know their roles?</td></tr>
+          <tr><td><strong>2. Detection &amp; Analysis</strong></td><td>SIEM alerts reviewed, incident classified by severity, scope determined, initial evidence preserved</td><td>Is SIEM monitored 24/7? Are alert response times within SLA? Are all logs retained?</td></tr>
+          <tr><td><strong>3. Containment</strong></td><td>Short-term containment (isolate system), long-term containment (patching, hardening), evidence preserved before system changes</td><td>Is evidence preserved before containment actions? Are containment decisions documented?</td></tr>
+          <tr><td><strong>4. Eradication</strong></td><td>Root cause identified, malware removed, vulnerabilities patched, threat indicators removed from environment</td><td>Was root cause formally identified? Were all affected systems identified and cleaned?</td></tr>
+          <tr><td><strong>5. Recovery</strong></td><td>Systems restored from clean backup, operations resumed, enhanced monitoring applied, stakeholders notified</td><td>Were systems validated clean before restoration? Was backup integrity verified? Were regulators notified within required timeframes?</td></tr>
+          <tr><td><strong>6. Post-Incident Review</strong></td><td>Timeline reconstructed, lessons learned documented, process improvements identified, metrics captured</td><td>Was a PIR conducted? Are action items tracked to closure? Were root cause findings addressed?</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="tab-panel" id="ir-siem">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>SIEM — Security Information &amp; Event Management</h3>
+        <p>SIEM aggregates and correlates security events from across the environment to detect threats that no single source would reveal.</p>
+        <ul>
+          <li><strong>Log aggregation:</strong> Centralises logs from firewalls, servers, endpoints, identity systems, applications, cloud platforms</li>
+          <li><strong>Correlation rules:</strong> Detects multi-step attacks — e.g., failed login from IP X, then successful login from IP X, then large file transfer</li>
+          <li><strong>Alert management:</strong> High-fidelity alerts require tuning — too many false positives leads to alert fatigue and missed real incidents</li>
+          <li><strong>Retention:</strong> Minimum 12 months online, 7 years archive for regulated industries</li>
+          <li><strong>Tamper protection:</strong> SIEM logs must be write-protected — systems cannot delete or modify their own log entries in the SIEM</li>
+          <li><strong>Auditor question:</strong> Are SIEM alerts reviewed within SLA? By whom? What is the escalation path for unreviewed alerts?</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>SOAR — Security Orchestration, Automation &amp; Response</h3>
+        <p>SOAR automates repetitive incident response tasks, enabling the security team to focus on complex investigations.</p>
+        <ul>
+          <li><strong>Playbooks:</strong> Automated, predefined response workflows triggered by SIEM alerts — e.g., phishing email detected → block sender, quarantine email, notify user, pull email headers, check URL in threat intel</li>
+          <li><strong>Enrichment:</strong> Automatically enriches alerts with context — IP reputation, user risk score, asset criticality, threat intelligence</li>
+          <li><strong>Orchestration:</strong> Coordinates actions across tools — firewall block, endpoint isolation, ticketing system creation, management notification — in seconds</li>
+          <li><strong>Metrics:</strong> SOAR enables measurement of MTTR (Mean Time to Respond) and MTTC (Mean Time to Contain)</li>
+          <li><strong>Auditor check:</strong> Are SOAR playbooks reviewed and tested? Can they be triggered incorrectly — causing false positive containment of legitimate traffic?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="ir-threat">
+    <div class="two-col">
+      <div class="info-block">
+        <h3>Threat Intelligence</h3>
+        <p>Threat intelligence enables organisations to anticipate, detect, and respond to threats relevant to their environment and industry.</p>
+        <ul>
+          <li><strong>Strategic intelligence:</strong> High-level — threat actor motivations, geopolitical context, industry-level trends. Used by CISO and board for risk decisions.</li>
+          <li><strong>Tactical intelligence:</strong> TTPs (Tactics, Techniques, Procedures) used by threat actors. MITRE ATT&amp;CK framework maps known adversary behaviours.</li>
+          <li><strong>Operational intelligence:</strong> Active campaigns and specific attack details. Shared in ISACs (Information Sharing and Analysis Centers) for sector-specific threats.</li>
+          <li><strong>Technical intelligence:</strong> IOCs (Indicators of Compromise) — specific IPs, domains, file hashes, signatures. Directly actionable in SIEM and EDR.</li>
+          <li><strong>Deception technologies:</strong> Honeypots (fake systems), honeytokens (fake credentials), canary files — attract attackers and generate high-confidence alerts when accessed</li>
+          <li><strong>Honeypot audit value:</strong> A honeypot access event = near-certain malicious activity — high-fidelity detection with almost no false positives</li>
+        </ul>
+      </div>
+      <div class="info-block">
+        <h3>MITRE ATT&amp;CK Framework</h3>
+        <p>The MITRE ATT&amp;CK framework catalogues adversary tactics and techniques observed in real-world attacks. Auditors use it to assess detection coverage.</p>
+        <ul>
+          <li><strong>Tactics:</strong> The "why" — adversary goals (Initial Access, Execution, Persistence, Privilege Escalation, Defense Evasion, Credential Access, Discovery, Lateral Movement, Exfiltration, Impact)</li>
+          <li><strong>Techniques:</strong> The "how" — specific methods used to achieve each tactic (e.g., T1566 Phishing for Initial Access)</li>
+          <li><strong>Audit use:</strong> Map existing detection rules against ATT&amp;CK — identify which techniques have no detection coverage ("detection gaps")</li>
+          <li><strong>Red team alignment:</strong> Penetration testers use ATT&amp;CK to simulate realistic adversary behaviour — results identify actual gaps vs. theoretical coverage</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="ir-ransom">
+    <div class="info-block">
+      <h3>Ransomware — Auditor Evaluation Points</h3>
+      <p>Ransomware is the dominant threat for most organisations. The auditor evaluates pre-incident controls, detection capability, and response readiness.</p>
+      <table class="data-table">
+        <thead><tr><th>Control Area</th><th>What to Audit</th><th>Key Finding if Absent</th></tr></thead>
+        <tbody>
+          <tr><td>Backup integrity</td><td>Are backups offline/air-gapped? Can ransomware reach backup storage?</td><td>Online backups encrypted by ransomware → no recovery path → ransom payment or total loss</td></tr>
+          <tr><td>Backup testing</td><td>When was the last full restore test? How long does restore take vs. RTO?</td><td>Untested backup may fail during recovery — discovered at the worst possible time</td></tr>
+          <tr><td>Email security</td><td>Anti-phishing, sandboxing, DMARC/DKIM/SPF, attachment scanning</td><td>Phishing is the #1 ransomware delivery vector — email controls are prevention layer 1</td></tr>
+          <tr><td>Endpoint protection</td><td>EDR deployed on all endpoints? Behaviour-based detection enabled?</td><td>Signature-only AV misses novel ransomware variants — EDR behavioural detection required</td></tr>
+          <tr><td>Lateral movement prevention</td><td>Network segmentation, credential hygiene, SMB signing enabled?</td><td>Flat network = ransomware propagates to all systems from single patient-zero endpoint</td></tr>
+          <tr><td>IR plan coverage</td><td>Does the IR plan specifically address ransomware? Is a cyber insurer notified?</td><td>Generic IR plan may miss ransomware-specific steps (legal counsel, insurer, ransom negotiation policy)</td></tr>
+          <tr><td>Ransom payment policy</td><td>Is there a board-approved policy on ransomware payment decisions?</td><td>No policy = ad hoc decision under stress, potential sanctions violations (OFAC)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- DIGITAL FORENSICS -->
+<section class="section" id="s-forensics">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 8</div>
+    <h2 class="section-title">Digital Forensics</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="two-col">
+    <div class="info-block">
+      <h3>Forensic Investigation Principles</h3>
+      <p>Digital forensics produces evidence that may be used in legal proceedings or disciplinary actions. Procedure errors can render evidence inadmissible.</p>
+      <ul>
+        <li><strong>Locard's Exchange Principle:</strong> Every contact leaves a trace — even accessing a system to investigate changes it. Forensic tools minimise write operations.</li>
+        <li><strong>Order of volatility:</strong> Collect most volatile evidence first — registers/cache → RAM → running processes → network connections → disk → backups. RAM is lost when system powers off.</li>
+        <li><strong>Write blockers:</strong> Hardware devices that prevent any write operations to the evidence drive during imaging — preserve original state</li>
+        <li><strong>Forensic image:</strong> Bit-for-bit copy of entire storage media — including deleted files, slack space, unallocated clusters. NOT just a file copy.</li>
+        <li><strong>Hash verification:</strong> SHA-256 hash of original and image must match — proves copy is exact and unaltered</li>
+        <li><strong>Working copy:</strong> All analysis conducted on a copy — original evidence never touched during analysis</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Chain of Custody</h3>
+      <p>Chain of custody documents the complete chronological record of who had access to evidence and what was done with it. Breaks in chain of custody can invalidate evidence.</p>
+      <ul>
+        <li><strong>Evidence documentation:</strong> Each piece of evidence labelled with: case number, date/time collected, collector identity, description, hash values</li>
+        <li><strong>Tamper-evident sealing:</strong> Evidence bags or containers sealed with tamper-evident tape — any breach is visible</li>
+        <li><strong>Transfer log:</strong> Every transfer of custody documented — signature from both parties, date, time, reason</li>
+        <li><strong>Secure storage:</strong> Evidence stored in locked, access-controlled location — access log maintained</li>
+        <li><strong>Admissibility risk:</strong> Unaccounted gaps in chain of custody allow defence to argue evidence was tampered with — potential dismissal of case</li>
+        <li><strong>Auditor note:</strong> Even internal investigations should follow chain of custody — disciplinary cases may later become criminal proceedings</li>
+      </ul>
+    </div>
+  </div>
+  <div class="highlight-box">
+    <div class="hb-label">Forensics Investigation Process</div>
+    <p><strong>1. Identification</strong> — Identify potential evidence sources (devices, cloud, logs) &nbsp;→&nbsp; <strong>2. Preservation</strong> — Secure and freeze evidence, prevent modification &nbsp;→&nbsp; <strong>3. Collection</strong> — Acquire forensic image with hash verification &nbsp;→&nbsp; <strong>4. Examination</strong> — Apply forensic tools to extract relevant data &nbsp;→&nbsp; <strong>5. Analysis</strong> — Interpret findings in context of the investigation &nbsp;→&nbsp; <strong>6. Reporting</strong> — Document findings in a clear, defensible report suitable for legal or disciplinary proceedings</p>
+  </div>
+</section>
+
+<!-- THREAT HUNT EXERCISE -->
+<section class="section" id="s-hunt">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 9</div>
+    <h2 class="section-title">Threat Hunt Exercise</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Review the SIEM log timeline and click to flag suspicious events. Find all the indicators of compromise.</p>
+  </div>
+  <div class="hunt-wrap">
+    <h4>🕵️ SIEM Log Analysis — Identify the Attack</h4>
+    <p>Click each log event to flag it as suspicious (red) or mark it as normal (green). Find all <strong id="huntMalCount">5</strong> malicious events in the timeline.</p>
+    <div class="hunt-timeline" id="huntTimeline"></div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="checkHunt()" style="padding:9px 20px;font-size:13px">Analyse Selections</button>
+      <button class="btn btn-ghost" onclick="resetHunt()" style="padding:9px 20px;font-size:13px">Reset</button>
+    </div>
+    <div class="hunt-score" id="huntScore"></div>
+  </div>
+</section>
+
+<!-- SCENARIOS -->
+<section class="section" id="s-scenarios">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 10</div>
+    <h2 class="section-title">Real-World Scenarios</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Choose the correct auditor response, then read the expert explanation.</p>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 1 — Access Controls</div>
+    <h4>The Finance Director's Privileges</h4>
+    <p>During an access control audit, you discover the Finance Director has accumulated system permissions across six financial applications over eight years of role changes — including permissions from her previous roles as an Accounts Payable Clerk and Payroll Analyst. She now has the ability to: create suppliers, process payments, approve payments, and view payroll data — all in the same systems.</p>
+    <div class="scenario-question">What is the auditor's PRIMARY finding and recommended action?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">The finding is minor — as Finance Director, she likely needs broad access to oversee all finance functions</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns1','scTag1')">Critical finding: privilege creep combined with Segregation of Duties violation — a single user can create suppliers, initiate payments, and approve those same payments, enabling fraudulent payment without any second approval</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">The finding is limited to the payroll data access — the other permissions are appropriate for her role</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns1','scTag1')">Recommend implementing MFA — this will compensate for the excessive privileges</button>
+    </div>
+    <div class="scenario-answer" id="scAns1"><div class="scenario-answered-tag" id="scTag1"></div><p>This is a <strong>critical finding</strong> combining two issues: (1) <strong>Privilege creep</strong> — accumulated permissions from past roles that should have been revoked during each role transition. This is the most common access control finding in enterprise environments. (2) <strong>SoD violation</strong> — the ability to create suppliers AND initiate AND approve payments in the same system is the classic fraud-enabling permission combination. This combination enables a single person to create a fictitious vendor, submit fraudulent invoices, and approve their own payments with no requirement for any other person's involvement. The auditor should recommend: immediate revocation of permissions from prior roles, formal access recertification process, SoD matrix defining conflicting permissions, and quarterly access reviews with manager certification. MFA does not compensate for SoD violations — it authenticates who the user is, but does not prevent abuse of legitimately authenticated sessions.</p></div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 2 — Cryptography</div>
+    <h4>The Certificate Situation</h4>
+    <p>Your organisation's IT team uses self-signed certificates on all internal web applications. They argue this is acceptable because "these are internal systems, not internet-facing, so certificate authority trust doesn't matter." Additionally, the customer-facing web application uses a certificate with SHA-1 signing and a validity period of 3 years. The DBA confirms database connections use an old SSL 3.0 configuration that "has always worked."</p>
+    <div class="scenario-question">How many distinct findings does this situation contain?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">One — only the public-facing SHA-1 certificate is a finding; internal systems are out of scope</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">Two — SHA-1 certificates and SSL 3.0 are both deprecated protocol findings</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns2','scTag2')">Four — self-signed internal certificates, SHA-1 signing, 3-year validity exceeding CA/Browser Forum limits, and SSL 3.0 (deprecated/broken protocol) are all separate findings</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns2','scTag2')">Zero — all of these configurations are standard practice and acceptable for enterprise environments</button>
+    </div>
+    <div class="scenario-answer" id="scAns2"><div class="scenario-answered-tag" id="scTag2"></div><p>There are <strong>four distinct findings</strong>: (1) <strong>Self-signed certificates on internal systems</strong> — self-signed certificates cannot be validated against a trusted CA. Users and systems must bypass certificate warnings, training users to ignore security alerts. Internal PKI (an internal CA) should be used instead. (2) <strong>SHA-1 certificate signing</strong> — SHA-1 is cryptographically broken; practical collision attacks have been demonstrated. All certificates must use SHA-256 minimum. (3) <strong>3-year certificate validity</strong> — the CA/Browser Forum maximum for public TLS certificates is 398 days (~13 months). A 3-year certificate likely predates the current standard and may not support modern certificate features. (4) <strong>SSL 3.0 on database connections</strong> — SSL 3.0 was deprecated in 2015 (RFC 7568) due to the POODLE vulnerability. TLS 1.2 minimum, TLS 1.3 preferred. "It has always worked" is not a security justification — it means the vulnerability has been present for years.</p></div>
+  </div>
+  <div class="scenario">
+    <div class="scenario-label">Scenario 3 — Incident Response</div>
+    <h4>The Breach Notification Dilemma</h4>
+    <p>A penetration tester discovers a database containing 50,000 EU customer records is exposed on a public-facing server with no authentication — it has been publicly accessible for an unknown period. The IT manager says: "We don't know if anyone actually accessed the data, so there's no confirmed breach, and we don't need to notify anyone until we have evidence of actual access." It is now Day 2 since discovery. The organisation is subject to GDPR.</p>
+    <div class="scenario-question">What should the auditor advise?</div>
+    <div class="sc-choices">
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">The IT manager is correct — GDPR notification is only required if there is confirmed evidence of data exfiltration</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">Notification should be deferred until a forensic investigation is complete, which may take several weeks</button>
+      <button class="sc-choice" onclick="pickScenario(this,'right','scAns3','scTag3')">GDPR requires notification to the supervisory authority within 72 hours of becoming aware of a breach — the organisation is already at Day 2 and the clock is running. An exposed, unauthenticated database IS a breach; confirmed exfiltration is not a prerequisite for notification.</button>
+      <button class="sc-choice" onclick="pickScenario(this,'wrong','scAns3','scTag3')">Only notify customers — regulatory notification is optional unless customer data was definitely accessed</button>
+    </div>
+    <div class="scenario-answer" id="scAns3"><div class="scenario-answered-tag" id="scTag3"></div><p>Under <strong>GDPR Article 33</strong>, the supervisory authority must be notified within 72 hours of the organisation <em>becoming aware</em> of a personal data breach — this is already Day 2 of that 72-hour window. Key points: (1) <strong>Availability breach = personal data breach.</strong> GDPR defines a personal data breach as any breach of security leading to accidental or unlawful destruction, loss, alteration, unauthorised disclosure of, or access to personal data. An unauthenticated, publicly accessible database is an unauthorised disclosure risk — the breach is the lack of access control, not necessarily proven exfiltration. (2) <strong>Unknown access period increases severity.</strong> The unknown exposure window means the organisation cannot rule out access — this typically triggers notification obligations. (3) <strong>The auditor should escalate immediately</strong> to DPO and legal counsel — notification must be submitted within the remaining window, and data subject notification may also be required (GDPR Article 34) if the breach is likely to result in high risk to individuals. Waiting for complete forensic certainty before notifying has resulted in significant GDPR fines.</p></div>
+  </div>
+</section>
+
+<!-- KEY TERMS -->
+<section class="section" id="s-terms">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 11</div>
+    <h2 class="section-title">Key Terms Glossary</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Click any card to reveal the definition. Mark terms as known to track your mastery.</p>
+  </div>
+  <input class="glossary-search" id="glossarySearch" placeholder="Search terms..." oninput="filterTerms(this.value)"/>
+  <div class="glossary-meta">
+    <span id="termsKnownLbl">Known: 0</span>
+    <span id="termsReviewLbl">Flagged: 0</span>
+    <span id="termsCountLbl">Showing: 14 of 14</span>
+  </div>
+  <div class="glossary-grid" id="glossaryGrid">
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>IAM / PAM</h4><p>Identity &amp; Access Management / Privileged Access Management — governing who has access and protecting the highest-risk accounts.</p></div><div class="term-back"><p>IAM manages the full identity lifecycle (joiner/mover/leaver), access provisioning, recertification, and SoD enforcement. PAM specifically controls privileged accounts (admins, DBAs) through password vaulting, just-in-time access, session recording, and break-glass procedures. Both are evaluated by auditors for every significant IT audit.</p><div class="example">🎯 Exam: Privilege creep (accumulated excess access) and orphan accounts (active accounts with no owner) are the most common IAM findings. PAM key finding: admins who can access their own session recordings or PAM logs.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Zero Trust</h4><p>"Never trust, always verify" — security model eliminating implicit trust based on network location.</p></div><div class="term-back"><p>Zero Trust requires continuous verification of identity, device health, and request context for every access attempt — regardless of whether the request comes from inside or outside the network. Core pillars: verify explicitly, use least privilege, assume breach. Implemented through micro-segmentation, MFA everywhere, continuous monitoring, and device posture assessment.</p><div class="example">🎯 Exam: Zero Trust is a philosophy and architecture, not a product. The auditor evaluates actual controls (MFA, segmentation, monitoring) not vendor claims. Being on the corporate network does not grant trust in a Zero Trust model.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Symmetric vs. Asymmetric Encryption</h4><p>Symmetric: same key for encrypt/decrypt. Asymmetric: key pair (public/private) for different operations.</p></div><div class="term-back"><p>Symmetric (AES): fast, efficient for bulk data, key distribution is the challenge. Asymmetric (RSA, ECC): slower, solves key distribution, enables digital signatures. Hybrid: asymmetric exchanges the symmetric session key; symmetric encrypts the data — combines strengths of both. AES-256 and RSA-2048 (minimum) are current standards. DES, 3DES, RC4 are deprecated findings.</p><div class="example">🎯 Exam: AES-256 for data at rest and in transit. RSA-2048 minimum for asymmetric. DES/3DES = finding. SHA-256 minimum for hashing. MD5/SHA-1 = finding in any security context.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>PKI / CRL / OCSP</h4><p>Public Key Infrastructure — framework for managing digital certificates, certificate revocation, and trust.</p></div><div class="term-back"><p>PKI: CA hierarchy (Root CA offline → Intermediate CA → End-entity certificates). CRL: published list of revoked certificates — must be checked before trusting. OCSP: real-time certificate status check — preferred over CRL. Certificate Transparency: public log enabling detection of fraudulent certificates. Audit focus: Root CA offline, certificate inventory, automated renewal, no self-signed in production, private keys in HSM.</p><div class="example">🎯 Exam: Self-signed certificates = finding. Expired certificates = finding. SHA-1 signed certificates = finding. Root CA online and connected = critical finding. CRL/OCSP not validated = finding.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>MFA</h4><p>Multi-Factor Authentication — combining two or more different factor types to verify identity.</p></div><div class="term-back"><p>Factors: something you know (password), something you have (authenticator app, hardware key), something you are (biometric). Two different types required — two passwords is NOT MFA. SMS OTP is weakest (SIM-swap vulnerable). FIDO2/WebAuthn hardware keys are phishing-resistant and strongest. Adaptive MFA triggers additional factors based on risk signals. MFA is mandatory for privileged accounts, VPN, and any internet-facing access.</p><div class="example">🎯 Exam: Password + SMS = MFA (though weak). Password + second password = NOT MFA. The auditor checks MFA covers privileged accounts, remote access, and admin consoles — not just general user logins.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>RBAC / DAC / MAC / ABAC</h4><p>Four access control models governing how authorisation decisions are made.</p></div><div class="term-back"><p>DAC: owner-controlled — flexible but inconsistent. MAC: system-enforced labels — rigid, government/military. RBAC: roles define permissions, users assigned to roles — most common enterprise model, privilege creep risk. ABAC: attribute-based policy — most flexible and fine-grained, complex to audit. The auditor evaluates whether the chosen model is consistently applied, whether SoD is enforced, and whether access recertification is performed.</p><div class="example">🎯 Exam: RBAC is the most tested model. Privilege creep = most common finding. SoD enforcement within RBAC is critical for financial systems. MAC is used for classified government information — rigid, not user-configurable.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Chain of Custody</h4><p>Documented chronological record of who possessed evidence, when, and what was done with it.</p></div><div class="term-back"><p>Chain of custody ensures digital evidence is legally admissible. Every transfer of evidence requires signed documentation from both parties. Evidence must be stored in tamper-evident, access-controlled conditions. Hash verification (SHA-256) confirms the forensic image matches the original. Any gap in chain of custody — missing signatures, undocumented transfers, unsecured storage — allows defence to challenge evidence integrity and seek dismissal.</p><div class="example">🎯 Exam: Internal investigations should still follow chain of custody — disciplinary matters can become criminal proceedings. The auditor does not touch original evidence — all analysis on forensic copy. Order of volatility: collect RAM before disk before logs.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Honeypot / Honeytoken</h4><p>Deception technologies that attract attackers and generate high-confidence alerts on access.</p></div><div class="term-back"><p>Honeypot: fake system (server, workstation) with no legitimate use — any connection is suspicious. Honeytoken: fake credential (username/password, API key, file) — any use triggers an alert. Canary file: a file that alerts when accessed. These are high-fidelity detection tools — legitimate users never interact with them, so any access is near-certain attacker activity. Auditors evaluate whether these are deployed and whether alerts are actively monitored.</p><div class="example">🎯 Exam: Honeypots detect, they do not prevent. They are a detective control. Access to a honeypot = near-certain indicator of compromise with minimal false positives — highest confidence detection in most security programmes.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>SIEM / SOAR</h4><p>SIEM: centralised security log correlation and alerting. SOAR: automated incident response orchestration.</p></div><div class="term-back"><p>SIEM aggregates logs from across the environment, correlates events to detect threats, and generates alerts. SOAR automates response through playbooks — enriches alerts, orchestrates tool actions, measures MTTR. Key audit questions: Are SIEM alerts monitored 24/7? Are response SLAs defined and measured? Are SOAR playbooks tested? Can systems delete their own log entries in the SIEM? (If yes — critical finding.) A SIEM with no alert review process is not a security control.</p><div class="example">🎯 Exam: SIEM = detection. SOAR = automated response. Both require operational effectiveness assessment — the tool existing is not sufficient; the auditor evaluates whether alerts are reviewed, actioned, and tracked to resolution.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Defence in Depth</h4><p>Layered security approach — multiple independent controls so no single failure creates total compromise.</p></div><div class="term-back"><p>Defence in depth implements security at multiple layers: physical → network → host → application → data. If the perimeter firewall is breached, network segmentation contains lateral movement. If a server is compromised, encryption protects data at rest. If credentials are stolen, MFA prevents authentication. The auditor evaluates whether critical assets have layered controls — not just perimeter protection with a soft interior (the "M&amp;M" anti-pattern).</p><div class="example">🎯 Exam: Defence in depth is the principle behind requiring controls at multiple layers. A flat network with strong perimeter = NOT defence in depth. Any question about compensating controls or layered security maps to this principle.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Digital Signature</h4><p>Cryptographic mechanism providing authentication, integrity, and non-repudiation for digital content.</p></div><div class="term-back"><p>Process: hash the message → encrypt hash with sender's private key → attach as signature. Verification: decrypt signature with sender's public key → independently hash message → compare hashes. If they match: message is authentic (only private key holder could sign), unmodified (hash mismatch detects any change), and non-repudiable (signer cannot deny — private key ownership is provable). Used in email signing (S/MIME), code signing, document signing, TLS certificates.</p><div class="example">🎯 Exam: Sign with PRIVATE key, verify with PUBLIC key. Encrypt with PUBLIC key, decrypt with PRIVATE key. These are reversed from each other — a very common exam distractor. SHA-256 minimum for signature hashing; SHA-1/MD5 = finding.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Privilege Creep</h4><p>Gradual accumulation of access rights beyond what is necessary, typically through role changes without access revocation.</p></div><div class="term-back"><p>Privilege creep occurs when employees change roles and new access is granted without revoking old access. Over time, individuals accumulate permissions far exceeding their current job requirements. Mitigated by: access recertification (periodic manager review), role-based provisioning with automatic revocation on role change, joiner/mover/leaver processes. Privilege creep is the most common access control finding and directly enables insider threat and SoD violations.</p><div class="example">🎯 Exam: Any scenario where someone has accumulated access from multiple past roles = privilege creep finding. The remedy is not just removing current excess access — it requires a process fix to prevent recurrence (automated de-provisioning on role change, periodic recertification).</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Penetration Testing</h4><p>Authorised simulation of real-world attacks to identify exploitable vulnerabilities before attackers do.</p></div><div class="term-back"><p>Penetration testing (pen testing) goes beyond vulnerability scanning — a human tester attempts to actively exploit vulnerabilities, chain them together, and achieve defined objectives (e.g., access to sensitive data, domain admin). Types: Black box (no prior knowledge), White box (full system knowledge), Grey box (partial knowledge — most common). Scope and rules of engagement must be formally documented. Results drive remediation priority. The auditor evaluates pen test scope (comprehensive?), frequency (annual minimum), and whether findings are remediated and verified.</p><div class="example">🎯 Exam: Pen testing ≠ vulnerability scanning. Vulnerability scanning identifies potential weaknesses; pen testing validates whether they are actually exploitable and what the business impact would be. Pen test results with no remediation tracking = finding.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+    <div class="term-card" onclick="flipTerm(this)"><div class="term-front"><span class="known-badge">✓ Known</span><h4>Media Sanitisation</h4><p>Secure destruction or sanitisation of data-bearing media before disposal or reuse to prevent data recovery.</p></div><div class="term-back"><p>Methods (per NIST SP 800-88): Clear (logical overwrite — sufficient for non-sensitive data reuse), Purge (cryptographic erase or degaussing — for sensitive data, renders recovery infeasible with state-of-the-art techniques), Destroy (physical destruction — shredding, disintegration, incineration — for classified or highly sensitive data). Certificate of destruction required from third-party vendors. SSDs require cryptographic erase (overwrite is insufficient due to wear-levelling). The auditor verifies that a media disposal policy exists and is followed — and that certificates of destruction are retained.</p><div class="example">🎯 Exam: Simply deleting files or formatting a drive is NOT secure sanitisation. NIST SP 800-88 is the reference standard. Certificate of destruction from vendor = required for outsourced disposal. SSD overwrite is insufficient — use cryptographic erase.</div><div class="term-actions"><button class="term-action-btn know" onclick="markTerm(event,this.closest('.term-card'),'known')">✓ I Know This</button><button class="term-action-btn review" onclick="markTerm(event,this.closest('.term-card'),'review')">🔁 Review Again</button></div></div></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="section" id="s-quiz">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 12</div>
+    <h2 class="section-title">Knowledge Check</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">10 CISA-style questions. Keyboard shortcuts A/B/C/D. 30-second timer per question.</p>
+  </div>
+  <div class="quiz-container" id="quizContainer">
+    <div id="quizActive">
+      <div class="quiz-topbar">
+        <div class="quiz-streak" id="streakDisplay"><span>🔥</span><span id="streakNum">0</span> streak</div>
+        <div class="quiz-timer" id="timerWrap">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="#2a3045" stroke-width="4"/><circle cx="20" cy="20" r="17" fill="none" stroke="var(--em)" stroke-width="4" stroke-linecap="round" stroke-dasharray="106.8" id="timerCircle" style="stroke-dashoffset:0;transition:stroke-dashoffset 1s linear"/></svg>
+          <div class="quiz-timer-text" id="timerText">30</div>
+        </div>
+      </div>
+      <div class="quiz-progress-bar"><div class="quiz-progress-inner" id="quizProgressInner" style="width:0%"></div></div>
+      <div class="quiz-qnum" id="quizQnum">Question 1 of 10</div>
+      <div class="quiz-q" id="quizQ"></div>
+      <div class="quiz-kb">Keyboard: A B C D</div>
+      <div class="quiz-options" id="quizOpts"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="btn btn-primary" id="quizNextBtn" onclick="nextQuestion()" style="display:none">Next Question →</button>
+    </div>
+    <div class="score-wrap" id="scoreWrap" style="display:none">
+      <div class="score-ring-wrap"><svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="57" fill="none" stroke="#2a3045" stroke-width="8"/><circle cx="70" cy="70" r="57" class="score-ring-fill" id="scoreRingFill"/></svg><div class="score-ring-val"><div class="pct" id="scorePct">0%</div><div class="lbl">Score</div></div></div>
+      <h3 id="scoreTitle"></h3>
+      <p id="scoreMsg"></p>
+      <div class="score-actions">
+        <button class="btn btn-primary" onclick="restartQuiz()">Retake Quiz</button>
+        <button class="btn btn-ghost" onclick="scrollToSection('s-conclusion')">Finish Course →</button>
+      </div>
+      <div class="missed-review" id="missedReview" style="display:none">
+        <h4>Review Missed Questions</h4>
+        <div id="missedList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section class="section" id="s-conclusion">
+  <div class="section-header">
+    <div class="section-eyebrow">Section 13 — Final</div>
+    <h2 class="section-title">Mastery Checklist &amp; Course Complete</h2>
+    <div class="divider"></div>
+    <p class="section-subtitle">Confirm your Domain 5 readiness — then celebrate completing all five CISA domains.</p>
+  </div>
+  <div class="checklist">
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can evaluate IAM controls: joiner/mover/leaver processes, access recertification, privilege creep, orphan accounts, and SoD enforcement.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand PAM controls: just-in-time access, password vaulting, session recording, and break-glass account procedures.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can distinguish symmetric (AES) from asymmetric (RSA/ECC) encryption and identify deprecated algorithms (DES, 3DES, MD5, SHA-1) as audit findings.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand PKI: CA hierarchy, certificate lifecycle, CRL/OCSP revocation, and why self-signed certificates are a finding.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can explain Zero Trust principles: verify explicitly, least privilege, assume breach, micro-segmentation, and continuous monitoring.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand digital forensics: chain of custody, order of volatility, forensic imaging, hash verification, and write blockers.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I can assess incident response capability: IR lifecycle phases, SIEM/SOAR roles, breach notification timelines (GDPR 72 hours), and post-incident review requirements.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I know the four authorisation models (DAC, MAC, RBAC, ABAC) and can identify privilege creep as the most common RBAC finding.</p></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><p>I understand deception technologies (honeypots, honeytokens) as high-fidelity detective controls with near-zero false positives.</p></div>
+  </div>
+
+  <!-- COURSE COMPLETE BANNER -->
+  <div style="margin-top:40px;padding:40px;background:linear-gradient(135deg,rgba(224,85,120,.1),rgba(224,85,120,.03));border:1px solid rgba(224,85,120,.3);border-radius:var(--radius-lg);text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🎓</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:32px;color:var(--text);margin-bottom:12px">All Five Domains Complete</h2>
+    <p style="color:var(--text-muted);font-size:16px;max-width:600px;margin:0 auto 24px">You have worked through the complete CISA 2025/2026 curriculum. You are now equipped with the knowledge, terminology, and auditor mindset needed to approach the CISA exam with confidence.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;max-width:700px;margin:0 auto 28px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#c9a84c;margin-bottom:4px">Domain 1 — 17%</div><div style="font-size:13px;color:var(--text)">IS Auditing Process</div></div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#a78bfa;margin-bottom:4px">Domain 2 — 18%</div><div style="font-size:13px;color:var(--text)">Governance &amp; IT Mgmt</div></div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#00c9a7;margin-bottom:4px">Domain 3 — 12%</div><div style="font-size:13px;color:var(--text)">Acquisition &amp; Dev</div></div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#f5a623;margin-bottom:4px">Domain 4 — 28%</div><div style="font-size:13px;color:var(--text)">Operations &amp; Resilience</div></div>
+      <div style="background:linear-gradient(135deg,rgba(224,85,120,.15),rgba(224,85,120,.05));border:1px solid rgba(224,85,120,.35);border-radius:var(--radius);padding:14px"><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--em2);margin-bottom:4px">Domain 5 — 25%</div><div style="font-size:13px;color:var(--text)">Asset Protection ✓</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="triggerConfetti()" style="font-size:15px;padding:12px 32px">🎉 Celebrate!</button>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+// ── GLOBAL STATE ──
+let objDone=0,termsKnown=0,termsReview=0;
+let quizScore=0,quizCurrent=0,quizStreak=0,quizMissed=[];
+let timerInterval=null,timerVal=30;
+
+// ── ACCESS CONTROL SCENARIOS ──
+const acbScenarios=[
+  {lbl:"Scenario A",title:"The Shared Admin Account",desc:"The database team uses a single shared 'dbadmin' account for all DBA activities. They argue this is more efficient than individual accounts.",opts:["Acceptable — shared accounts are a common and efficient practice for admin tasks","Critical finding — shared accounts prevent individual accountability; all DBA actions appear as a single generic user in audit logs, making forensic investigation impossible","Minor finding — recommend adding a PIN to the shared account to differentiate users","Acceptable if the team logs their individual work in a separate spreadsheet"],ans:1,feedback:"Shared admin accounts are a critical finding in any audit. Individual accountability is a foundational access control principle — every action must be traceable to a specific person. With a shared account: you cannot determine who made a change that caused an outage, you cannot attribute security incidents to an individual, and you cannot enforce non-repudiation. Each DBA must have their own individual account with personal credentials. The 'efficiency' argument is never acceptable as a compensating control for accountability."},
+  {lbl:"Scenario B",title:"The Terminated Employee",desc:"An employee was terminated 3 weeks ago. During an access review, you find their Active Directory account is still active and was used to log into the VPN last week. HR says they 'haven't gotten around to telling IT yet.'",opts:["Minor finding — three weeks is a reasonable timeframe for offboarding","Critical finding — active accounts for terminated employees create insider threat and external breach risk; the VPN login 3 weeks post-termination suggests either credential theft or the former employee still accessing systems","Acceptable finding — recommend improving the HR-IT communication process at next annual review","Low risk — the account is likely just used for email forwarding"],ans:1,feedback:"This is a critical finding with potential active security incident. Three points: (1) The terminated employee account should have been disabled on their last day — HR-IT communication failures are a common control gap but the severity is high for privileged or sensitive employees. (2) A VPN login 3 weeks after termination is an active security incident — either the credentials were stolen and used externally, or the former employee is still accessing the organisation's network without authorisation. This requires immediate escalation and investigation. (3) The process control failure (HR not notifying IT) requires immediate remediation — most organisations implement automated de-provisioning triggered directly from the HR system, not manual communication."},
+  {lbl:"Scenario C",title:"The Quarterly Access Review",desc:"The system shows 450 user access records need manager recertification. The access review report shows 99% of access was approved — managers clicked 'Approve All' for their entire teams in under 2 minutes.",opts:["Excellent outcome — 99% approval rate shows access is well-controlled","The access review is a rubber-stamp exercise and provides no assurance — mass approval without individual review is equivalent to no review at all","Acceptable — managers know their teams and rapid approval shows efficiency","Recommend reducing the number of items in the review to make it more manageable"],ans:1,feedback:"Rubber-stamp access reviews are a pervasive and serious control failure. If a manager reviews 450 access records in under 2 minutes, they spent an average of 0.27 seconds per record — clearly no meaningful review occurred. The access recertification is a key compensating control for privilege creep and SoD violations. If the process is not meaningful, the control is not effective. The auditor should find: (1) The access review process is ineffective — mass approval without individual consideration. (2) Recommend redesigning the review: risk-based prioritisation (sensitive systems first), manager prompted with context about what each permission does, escalation path for questionable access, and audit monitoring of review behaviour patterns (unusually fast bulk approvals flagged for follow-up)."}
+];
+let acbCurrent=0;
+
+// ── HUNT DATA ──
+const huntEvents=[
+  {time:"01:14",source:"FIREWALL",msg:"Inbound connection from 203.0.113.42 blocked — port 445 (SMB). Attempt repeated 847 times in 10 minutes.",isMal:true,flag:"🚨 Port scanning / SMB brute force — 847 rapid connection attempts is automated attack behaviour targeting SMB."},
+  {time:"01:22",source:"AD",msg:"User jsmith authenticated to domain controller DC01. Normal working hours login from registered workstation.",isMal:false,safe:"✓ Normal — user login from registered device during business hours."},
+  {time:"02:15",source:"VPN",msg:"User mwilson authenticated via VPN from IP 203.0.113.42. Location: Eastern Europe. User's registered location: Chicago, IL.",isMal:true,flag:"🚨 Impossible travel / suspicious IP — same IP that was port-scanning the firewall 61 minutes earlier. VPN auth from different country than user's registered location."},
+  {time:"02:18",source:"AD",msg:"mwilson account used to enumerate Active Directory — LDAP query for all domain admins and service accounts returned 847 objects.",isMal:true,flag:"🚨 Credential-based recon — 3 minutes after VPN authentication, enumerating all privileged accounts. Classic post-compromise discovery behaviour."},
+  {time:"02:31",source:"ENDPOINT",msg:"Process 'mimikatz.exe' executed on WORKSTATION-14 under mwilson credentials. Process terminated by EDR.",isMal:true,flag:"🚨 Credential dumping tool — Mimikatz is a well-known credential harvesting tool. EDR terminated the process but credentials may have already been captured."},
+  {time:"02:45",source:"FILE",msg:"Scheduled backup job completed. 2.3TB backed up to NAS storage share \\backup01\daily. Job duration: 42 minutes.",isMal:false,safe:"✓ Normal — routine scheduled backup within expected duration and destination."},
+  {time:"03:12",source:"DLP",msg:"User mwilson uploaded 4.7GB archive file 'data.zip' to personal Dropbox account from WORKSTATION-14.",isMal:true,flag:"🚨 Data exfiltration — large archive uploaded to personal cloud storage 54 minutes after credential dumping tool was blocked. High-confidence exfiltration event."},
+  {time:"08:00",source:"EMAIL",msg:"Automated daily security digest delivered to security@company.com. Previous day's summary: 12 blocked phishing emails, 3 malware quarantines.",isMal:false,safe:"✓ Normal — routine automated report delivery."}
+];
+let huntSelections=new Array(huntEvents.length).fill(null);
+
+// ── QUIZ DATA ──
+const quizData=[
+  {q:"An IS auditor discovers that a finance application uses RBAC, but an employee has accumulated roles from three previous positions in addition to her current role. She can now both initiate and approve payments. This BEST describes:",opts:["An acceptable configuration if her manager has approved all her roles","Privilege creep combined with a Segregation of Duties violation — she has accumulated excessive access and can execute a complete transaction without any second approver","A minor finding requiring the removal of one of her historical roles","An acceptable risk because RBAC is inherently secure"],ans:1,feedback:"This is the classic privilege creep + SoD violation combination. Privilege creep: access from previous roles was never revoked, resulting in accumulated permissions beyond her current role's requirements. SoD violation: the ability to both initiate and approve the same payment means a single person can execute a complete financial transaction with no second approver — the fundamental fraud-enabling access combination. Both issues require remediation: immediate revocation of prior-role permissions, and a process fix to automatically de-provision old access when roles change."},
+  {q:"Which encryption algorithm should an auditor flag as a finding when found in use for protecting sensitive data at rest?",opts:["AES-256","RSA-2048","Triple DES (3DES)","ECC-256"],ans:2,feedback:"3DES (Triple DES) was deprecated by NIST in 2023. While more secure than original DES, it is significantly weaker than AES and has known vulnerabilities including Sweet32 (birthday attack on 64-bit block ciphers). AES-256, RSA-2048, and ECC-256 are all current standards appropriate for their respective use cases. DES is even more critically broken — crackable in under 24 hours with modern hardware — and should always be flagged as a critical finding."},
+  {q:"A digital certificate is presented by a server, but you notice it was issued by an internal CA and was signed using SHA-1. The certificate expires in 18 months. Which of these is a finding?",opts:["The internal CA issuance — only public CAs are acceptable","The SHA-1 signing — SHA-1 is cryptographically broken and must be replaced with SHA-256 minimum","The 18-month validity period — this exceeds the 12-month maximum","Both the internal CA and SHA-1 are findings — neither is acceptable in any context"],ans:1,feedback:"SHA-1 is cryptographically broken — practical collision attacks have been demonstrated. All certificate signing must use SHA-256 minimum. Internal CA issuance is acceptable and often preferred for internal systems (using an internal PKI rather than self-signed certificates). 18-month validity is applicable to TLS certificates on the public internet (CA/Browser Forum maximum is ~13 months), but for internal certificates, 18 months may be within policy — the auditor should check the organisation's certificate policy. The SHA-1 finding is unambiguous."},
+  {q:"During a network security audit, you discover that all systems across the organisation are on a single /16 network with no internal segmentation. Servers, workstations, and IoT devices all share the same subnet. This is BEST described as:",opts:["An efficient network design that simplifies management","A flat network creating a single point of lateral movement — compromise of any device enables unrestricted access to all other devices","Acceptable if all devices have local firewalls installed","A finding only if the organisation processes regulated data"],ans:1,feedback:"A flat network is a critical architectural finding regardless of data type. Network segmentation is a fundamental defence-in-depth control: it limits the blast radius of a breach by containing lateral movement. When a ransomware payload or attacker compromises one device on a flat network, they can freely scan and attack every other device on the same subnet. The fix: implement network segmentation (VLANs minimum, micro-segmentation preferred) separating at minimum: user workstations, servers, IoT/OT devices, and any PCI/sensitive data environments."},
+  {q:"Which of the following BEST describes the difference between an IDS and an IPS?",opts:["IDS blocks traffic; IPS only alerts","IDS detects and alerts (passive); IPS detects and blocks (active inline)","IDS uses signatures; IPS uses anomaly detection","IDS operates at Layer 7; IPS operates at Layer 3"],ans:1,feedback:"IDS (Intrusion Detection System): passive — monitors traffic out-of-band, generates alerts, does not block. IPS (Intrusion Prevention System): active inline — sits in the traffic path, can drop malicious packets in real time. Both can use signature-based AND anomaly-based detection. Both can operate at multiple layers. The key audit distinction: an IDS without a monitored alert process is not a control; an IPS must be carefully tuned to avoid blocking legitimate traffic (false positive blocking = DoS)."},
+  {q:"An employee was terminated yesterday under hostile circumstances. As the IS auditor, what is the MOST critical immediate action to recommend?",opts:["Conduct an exit interview to document all systems the employee had access to","Immediately disable all access credentials (AD account, VPN, application accounts, physical badges, email) on the termination date — not after a grace period","Change all shared passwords the employee knew","Retain all the employee's email for 30 days before disabling the account"],ans:1,feedback:"For hostile terminations, the risk of sabotage, data theft, or continued unauthorised access begins at the moment the employee is notified of termination — or earlier if they suspect it. All access must be revoked simultaneously and immediately: Active Directory (prevents login to all SSO-connected systems), VPN (remote access), physical access badges, application-specific accounts not connected to SSO, and email. 'Immediately' means on the termination date — or before the conversation if sabotage risk is high. A grace period of any kind is unacceptable for hostile terminations. The auditor should verify that the HR-IT de-provisioning process has a 'hostile termination' fast-path with same-day execution."},
+  {q:"What does the Zero Trust principle 'Assume Breach' require an organisation to do?",opts:["Assume that all current security controls have failed and immediately replace them","Design security controls as if attackers are already inside the perimeter — implement micro-segmentation, encrypt internal traffic, and monitor east-west network traffic to limit lateral movement","Assume that all employees are potential threats and monitor all communications","Notify regulators of a breach before investigation is complete"],ans:1,feedback:"'Assume Breach' is a design philosophy, not an operational posture of panic. It means: don't design security assuming the perimeter will hold — design it so that when (not if) a perimeter breach occurs, the attacker's ability to move and access data is severely constrained. Practical implementations: micro-segmentation (lateral movement requires explicit authorisation between segments), encryption of internal traffic (attacker can't read data even if on the network), end-to-end encryption of data at rest, continuous monitoring of internal east-west traffic (not just perimeter), and privilege controls preventing one compromised account from accessing all systems."},
+  {q:"A forensic investigator arrives at a scene where a suspected insider threat used a workstation to exfiltrate data. The workstation is still powered on. What should happen FIRST?",opts:["Power off the workstation immediately to preserve disk state","Capture the contents of RAM (volatile memory) before any other action — RAM is lost when the system powers off and may contain encryption keys, running process data, and network connections not visible on disk","Image the hard drive first as it contains permanent evidence","Log in with admin credentials to check currently running processes"],ans:1,feedback:"The order of volatility dictates that RAM is collected first — it is the most volatile evidence and is permanently lost when the system powers off. RAM may contain: encryption keys for encrypted volumes, running process memory, active network connections, recently typed passwords, and evidence of tools that have not been written to disk. Only after RAM is captured should the investigator consider disk imaging. The write blocker principle applies to disk imaging — use forensic tools that prevent any write operations to the evidence drive. Logging in with admin credentials would modify the system and potentially destroy evidence."},
+  {q:"A SIEM alert fires at 2am. No action is taken until 9am when the on-call analyst arrives at work. The SIEM vendor's documentation shows the alert has a 98% true-positive rate. What should the auditor conclude?",opts:["The SIEM is functioning correctly — alerts are reviewed within a reasonable business-hours timeframe","There is a 7-hour detection-to-response gap for high-confidence security events — this is a critical finding; critical SIEM alerts require 24/7 monitoring and defined response SLAs","The SIEM needs to be reconfigured to only fire alerts during business hours","The 2% false positive rate means this finding is low risk"],ans:1,feedback:"A 98% true-positive SIEM alert with a 7-hour response gap is a critical finding. Security incidents evolve rapidly — a ransomware event that begins at 2am can encrypt an entire environment before 9am. The auditor's finding: 24/7 SOC coverage is required for any SIEM alert that triggers on potential incidents (not just low-priority informational alerts). This means either: 24/7 internal SOC, on-call rotation with defined response SLAs, or outsourced Managed Detection and Response (MDR) provider. The 2% false positive rate is irrelevant to the response gap finding — even a 50% false positive alert requires timely triage to determine which 50% are real."},
+  {q:"An organisation stores customer PII encrypted with AES-256. The encryption key is stored in the same database table as the encrypted data, in a field named 'encryption_key'. This is BEST described as:",opts:["Acceptable — AES-256 is a strong algorithm that protects the data even if the key is nearby","A critical finding — storing the encryption key in the same location as the encrypted data eliminates the security value of encryption; anyone who can access the data can also access the key","A minor finding — recommend moving the key to a separate column in a different table","Acceptable if the database itself is encrypted at rest"],ans:1,feedback:"Encryption keys must be stored separately from the data they protect — this is a fundamental key management principle. Storing the key in the same database table as the encrypted data is equivalent to hiding a house key under the doormat: anyone who accesses the data can immediately decrypt it. This makes the encryption completely ineffective as a security control. Correct approach: keys stored in a dedicated Key Management System (KMS) or Hardware Security Module (HSM), accessible only through an authenticated API, with the encrypted data referencing a key identifier — never the actual key value. Database-level encryption at rest does not mitigate this finding — if the database is compromised, both the data and the key are simultaneously accessible."  }
+];
+
+// ── PROGRESS ──
+function updateProgress(){const boxes=document.querySelectorAll(".check-box"),checked=document.querySelectorAll(".check-box.checked");const pct=boxes.length?Math.round((checked.length/boxes.length)*100):0;document.getElementById("progressFill").style.width=pct+"%";document.getElementById("progressPct").textContent=pct+"%";if(pct===100)triggerConfetti();}
+
+// ── TOAST ──
+function showToast(icon,msg,type=""){const stack=document.getElementById("toastStack");const t=document.createElement("div");t.className="toast "+type;t.innerHTML=`<span class="toast-icon">${icon}</span><span>${msg}</span>`;stack.appendChild(t);requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add("show")));setTimeout(()=>{t.classList.remove("show");setTimeout(()=>t.remove(),400);},3200);}
+
+// ── PARTICLES ──
+(function(){const canvas=document.getElementById("particleCanvas");if(!canvas)return;const hero=canvas.closest(".hero"),ctx=canvas.getContext("2d");let particles=[];function resize(){canvas.width=hero.offsetWidth;canvas.height=hero.offsetHeight;}resize();window.addEventListener("resize",resize);for(let i=0;i<40;i++)particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()*.4+.1});function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(224,85,120,${p.a})`;ctx.fill();});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<80){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(224,85,120,${.07*(1-d/80)})`;ctx.stroke();}}requestAnimationFrame(draw);}draw();})();
+
+// ── STAT COUNTERS ──
+function animateCount(id,target){let v=0;const el=document.getElementById(id);if(!el)return;const s=Math.ceil(target/40);const t=setInterval(()=>{v=Math.min(v+s,target);el.textContent=v;if(v>=target)clearInterval(t);},40);}
+setTimeout(()=>{animateCount("sv1",38);animateCount("sv2",8);animateCount("sv3",14);animateCount("sv4",10);},400);
+
+// ── FLOAT NAV ──
+const sections=["s-intro","s-objectives","s-access","s-crypto","s-network","s-physical","s-incident","s-forensics","s-hunt","s-scenarios","s-terms","s-quiz","s-conclusion"];
+const secLabels=["Intro","Objectives","Access","Crypto","Network","Physical","IR","Forensics","Hunt","Scenarios","Terms","Quiz","Conclusion"];
+(function(){const nav=document.getElementById("floatNav");sections.forEach((id,i)=>{const d=document.createElement("div");d.className="float-dot";d.title=secLabels[i];d.onclick=()=>scrollToSection(id);nav.appendChild(d);});})();
+
+// ── SCROLL SPY ──
+window.addEventListener("scroll",()=>{const sp=window.scrollY+200;sections.forEach((id,i)=>{const el=document.getElementById(id);if(!el)return;const top=el.offsetTop,bot=top+el.offsetHeight;const dot=document.querySelectorAll(".float-dot")[i];const ni=document.querySelector(`.nav-item[data-target="${id}"]`);const active=sp>=top&&sp<bot;if(dot)dot.classList.toggle("active",active);if(ni)ni.classList.toggle("active",active);});document.querySelectorAll(".section").forEach(s=>{if(s.getBoundingClientRect().top<window.innerHeight*.85)s.classList.add("visible");});});
+
+function scrollToSection(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});}
+function markNavVisited(id){const ni=document.querySelector(`.nav-item[data-target="${id}"]`);if(ni)ni.classList.add("visited");}
+
+// ── OBJECTIVES ──
+function markObj(card,name){if(card.classList.contains("done"))return;card.classList.add("done");objDone++;showToast("✅",name+" — objective complete","green");const pct=Math.round((objDone/8)*100);document.getElementById("objCount").textContent=objDone+" / 8 complete";document.getElementById("objBar").style.width=pct+"%";markNavVisited("s-objectives");updateProgress();}
+
+// ── TABS ──
+function switchTab(btn,panelId){const group=btn.closest(".section")||document;group.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));group.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));btn.classList.add("active");const panel=document.getElementById(panelId);if(panel)panel.classList.add("active");}
+
+// ── CRYPTO TOGGLE ──
+function showCrypto(mode,btn){document.querySelectorAll(".crypto-btn").forEach(b=>b.classList.remove("active"));document.querySelectorAll(".crypto-panel").forEach(p=>p.classList.remove("show"));btn.classList.add("active");document.getElementById("crypto-"+mode).classList.add("show");markNavVisited("s-crypto");}
+
+// ── ACCESS CONTROL BUILDER ──
+function buildACBScenario(){const sc=acbScenarios[acbCurrent];const wrap=document.getElementById("acbContent");if(!wrap)return;wrap.innerHTML=`<div class="acb-scenario"><div class="acb-sc-lbl">${sc.lbl}</div><div class="acb-sc-title">${sc.title}</div><div class="acb-sc-desc">${sc.desc}</div><div class="acb-opts">${sc.opts.map((o,i)=>`<button class="acb-opt" onclick="pickACB(this,${i})">${o}</button>`).join("")}</div><div class="acb-feedback" id="acbFb"></div><div class="acb-nav"><span class="acb-counter">${acbCurrent+1} / ${acbScenarios.length}</span><button class="acb-next-btn" id="acbNext" onclick="nextACB()">Next →</button></div></div>`;}
+function pickACB(btn,i){const sc=acbScenarios[acbCurrent];document.querySelectorAll(".acb-opt").forEach(o=>o.style.pointerEvents="none");const fb=document.getElementById("acbFb");if(i===sc.ans){btn.classList.add("correct");fb.className="acb-feedback show correct";fb.textContent="✓ Correct! "+sc.feedback;showToast("✅","Correct!","green");}else{btn.classList.add("incorrect");document.querySelectorAll(".acb-opt")[sc.ans].classList.add("reveal");fb.className="acb-feedback show incorrect";fb.textContent="✗ "+sc.feedback;}const nb=document.getElementById("acbNext");if(nb)nb.style.display=acbCurrent+1<acbScenarios.length?"block":"none";markNavVisited("s-access");}
+function nextACB(){acbCurrent++;if(acbCurrent<acbScenarios.length)buildACBScenario();else{document.getElementById("acbContent").innerHTML=`<div style="padding:16px;text-align:center;color:var(--em2)">✓ All ${acbScenarios.length} access control scenarios complete!</div>`;}}
+
+// ── THREAT HUNT ──
+(function buildHunt(){const tl=document.getElementById("huntTimeline");if(!tl)return;huntEvents.forEach((e,i)=>{const div=document.createElement("div");div.className="hunt-event";div.onclick=()=>toggleHuntEvent(i,div);div.innerHTML=`<div class="hunt-time">${e.time}</div><div class="hunt-detail"><div class="hunt-source">${e.source}</div><div class="hunt-msg">${e.msg}</div><div class="hunt-flag">${e.isMal?e.flag:""}</div><div class="hunt-safe-msg">${!e.isMal&&e.safe?e.safe:""}</div></div>`;tl.appendChild(div);});})();
+function toggleHuntEvent(i,div){if(huntSelections[i]==="flagged"){huntSelections[i]=null;div.classList.remove("flagged");}else{huntSelections[i]="flagged";div.classList.add("flagged");}const sc=document.getElementById("huntScore");sc.classList.remove("show");}
+function checkHunt(){const malIndices=huntEvents.map((e,i)=>e.isMal?i:-1).filter(i=>i>=0);const flagged=huntEvents.map((e,i)=>huntSelections[i]==="flagged"?i:-1).filter(i=>i>=0);const correct=malIndices.filter(i=>flagged.includes(i)).length;const fp=flagged.filter(i=>!malIndices.includes(i)).length;const sc=document.getElementById("huntScore");sc.classList.add("show");if(correct===malIndices.length&&fp===0){sc.className="hunt-score show great";sc.innerHTML=`<strong>🎯 Perfect analysis!</strong> You correctly identified all ${malIndices.length} malicious events with no false positives. The attack chain: port scan → VPN credential stuffing → AD recon → credential dumping tool → data exfiltration.`;}else{sc.className="hunt-score show partial";sc.innerHTML=`<strong>Analysis result:</strong> ${correct} of ${malIndices.length} malicious events identified correctly. ${fp} false positive(s) flagged. Missed events: ${malIndices.filter(i=>!flagged.includes(i)).map(i=>huntEvents[i].time+" "+huntEvents[i].source).join(", ")||"None"}. Review the flagged items and try again.`;}markNavVisited("s-hunt");}
+function resetHunt(){huntSelections.fill(null);document.querySelectorAll(".hunt-event").forEach(e=>{e.classList.remove("flagged","safe");});document.getElementById("huntScore").classList.remove("show");}
+
+// ── SCENARIOS ──
+function pickScenario(btn,type,ansId,tagId){const choices=btn.closest(".sc-choices").querySelectorAll(".sc-choice");choices.forEach(c=>c.style.pointerEvents="none");const ans=document.getElementById(ansId);ans.classList.add("show");const tag=document.getElementById(tagId);if(type==="right"){btn.classList.add("right");tag.textContent="✅ Correct!";tag.className="scenario-answered-tag correct";showToast("✅","Correct!","green");}else{btn.classList.add("wrong");choices.forEach(c=>{if(!c.classList.contains("wrong"))c.classList.add("reveal");});tag.textContent="✗ Not quite — see explanation:";tag.className="scenario-answered-tag incorrect";}markNavVisited("s-scenarios");}
+
+// ── GLOSSARY ──
+function flipTerm(card){card.classList.toggle("flipped");markNavVisited("s-terms");}
+function markTerm(e,card,type){e.stopPropagation();if(type==="known"){card.classList.add("known","flipped");termsKnown++;showToast("✓","Term marked as known","green");}else{card.classList.remove("known");termsReview++;showToast("🔁","Flagged for review","em");}document.getElementById("termsKnownLbl").textContent="Known: "+termsKnown;document.getElementById("termsReviewLbl").textContent="Flagged: "+termsReview;updateProgress();}
+function filterTerms(q){const cards=document.querySelectorAll(".term-card");let v=0;cards.forEach(c=>{const match=c.textContent.toLowerCase().includes(q.toLowerCase());c.classList.toggle("hidden",!match);if(match)v++;});document.getElementById("termsCountLbl").textContent=`Showing: ${v} of ${cards.length}`;}
+
+// ── QUIZ ──
+function startQuiz(){quizCurrent=0;quizScore=0;quizStreak=0;quizMissed=[];document.getElementById("scoreWrap").style.display="none";document.getElementById("quizActive").style.display="block";renderQuestion();}
+function renderQuestion(){clearInterval(timerInterval);timerVal=30;const q=quizData[quizCurrent];document.getElementById("quizQnum").textContent=`Question ${quizCurrent+1} of ${quizData.length}`;document.getElementById("quizProgressInner").style.width=(quizCurrent/quizData.length*100)+"%";document.getElementById("quizQ").textContent=q.q;document.getElementById("streakNum").textContent=quizStreak;document.getElementById("quizFeedback").className="quiz-feedback";document.getElementById("quizNextBtn").style.display="none";const letters=["A","B","C","D"];document.getElementById("quizOpts").innerHTML=q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})" data-idx="${i}"><span class="opt-letter">${letters[i]}</span>${o}</button>`).join("");startTimer();}
+function startTimer(){const circle=document.getElementById("timerCircle"),text=document.getElementById("timerText");timerInterval=setInterval(()=>{timerVal--;text.textContent=timerVal;circle.style.strokeDashoffset=106.8*(1-timerVal/30);if(timerVal<=0){clearInterval(timerInterval);autoAnswer();}},1000);}
+function autoAnswer(){clearInterval(timerInterval);const q=quizData[quizCurrent];quizStreak=0;quizMissed.push({q:q.q,a:q.opts[q.ans]});const opts=document.querySelectorAll(".quiz-opt");opts.forEach(o=>o.style.pointerEvents="none");opts[q.ans].classList.add("correct");const fb=document.getElementById("quizFeedback");fb.className="quiz-feedback show incorrect";fb.textContent="⏱ Time's up! "+q.feedback;document.getElementById("quizNextBtn").style.display="block";}
+function answerQuiz(chosen){clearInterval(timerInterval);const q=quizData[quizCurrent];const opts=document.querySelectorAll(".quiz-opt");opts.forEach(o=>o.style.pointerEvents="none");const fb=document.getElementById("quizFeedback");if(chosen===q.ans){opts[chosen].classList.add("correct");quizScore++;quizStreak++;fb.className="quiz-feedback show correct";fb.textContent="✓ Correct! "+q.feedback;showToast("✅","Correct!","green");}else{opts[chosen].classList.add("incorrect");opts[q.ans].classList.add("correct");quizStreak=0;quizMissed.push({q:q.q,a:q.opts[q.ans]});fb.className="quiz-feedback show incorrect";fb.textContent="✗ Incorrect. "+q.feedback;}document.getElementById("quizNextBtn").style.display="block";document.getElementById("streakNum").textContent=quizStreak;}
+function nextQuestion(){quizCurrent++;if(quizCurrent<quizData.length)renderQuestion();else showScore();}
+function showScore(){document.getElementById("quizActive").style.display="none";document.getElementById("scoreWrap").style.display="block";const pct=Math.round((quizScore/quizData.length)*100);document.getElementById("scorePct").textContent=pct+"%";document.getElementById("scoreTitle").textContent=pct>=80?"Domain 5 Mastered!":pct>=60?"Good Progress — Keep Going":"Review Needed";document.getElementById("scoreMsg").textContent=pct>=80?"Outstanding. You have completed the full CISA curriculum.":pct>=60?"Focus on the cryptography and access control sections.":"Revisit the key terms and scenarios sections before the exam.";setTimeout(()=>{const r=document.getElementById("scoreRingFill");if(r)r.style.strokeDashoffset=358*(1-pct/100);},200);if(pct===100)triggerConfetti();if(quizMissed.length){const mr=document.getElementById("missedReview");mr.style.display="block";document.getElementById("missedList").innerHTML=quizMissed.map(m=>`<div class="missed-item"><div class="mi-q">${m.q}</div><div class="mi-a">✓ ${m.a}</div></div>`).join("");}markNavVisited("s-quiz");updateProgress();}
+function restartQuiz(){startQuiz();}
+
+// ── KEYBOARD ──
+document.addEventListener("keydown",e=>{if(document.getElementById("quizActive")&&document.getElementById("quizActive").style.display!=="none"){const map={a:0,b:1,c:2,d:3};if(map[e.key.toLowerCase()]!==undefined){const opts=document.querySelectorAll(".quiz-opt");if(opts.length&&opts[0].style.pointerEvents!=="none")answerQuiz(map[e.key.toLowerCase()]);}if(e.key==="Enter"&&document.getElementById("quizNextBtn").style.display!=="none")nextQuestion();}});
+
+// ── CHECKLIST ──
+function toggleCheck(item){item.classList.toggle("checked");const box=item.querySelector(".check-box");box.classList.toggle("checked");box.textContent=box.classList.contains("checked")?"✓":"";markNavVisited("s-conclusion");updateProgress();}
+
+// ── CONFETTI ──
+function triggerConfetti(){const canvas=document.getElementById("confetti-canvas");const ctx=canvas.getContext("2d");canvas.width=window.innerWidth;canvas.height=window.innerHeight;const cols=["#e05578","#ff8fab","#c9a84c","#2ed573","#4f8ef7","#a78bfa","#00c9a7","#f5a623","#e8eaf0"];const pieces=Array.from({length:160},()=>({x:Math.random()*canvas.width,y:-10,w:Math.random()*10+5,h:Math.random()*6+4,r:Math.random()*Math.PI*2,vy:Math.random()*3+2,vx:(Math.random()-.5)*2,vr:Math.random()*.1-.05,color:cols[Math.floor(Math.random()*cols.length)]}));let frame=0;function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(p=>{p.y+=p.vy;p.x+=p.vx;p.r+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();});frame++;if(frame<220)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);}draw();showToast("🎓","CISA Course Complete — All 5 Domains Mastered!","green");}
+
+// ── INIT ──
+buildACBScenario();
+startQuiz();
+setTimeout(()=>{document.querySelectorAll(".section").forEach(s=>{if(s.getBoundingClientRect().top<window.innerHeight)s.classList.add("visible");});},100);
+setTimeout(()=>showToast("🛡️","Welcome to Domain 5 — Information Asset Protection","em"),800);
+</script>
+</body>
+</html>
