@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hands-On Audit Labs | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<style>
+  .lab-intro { background: var(--blue-pale); border: 1px solid var(--blue-pale-border); border-radius: 8px; padding: 1.1rem 1.3rem; margin-bottom: 1.6rem; }
+  .lab-intro p { font-family: Arial, sans-serif; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+  .lab-intro b { color: var(--text-primary); }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.6rem; }
+  .filter-bar button { font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 900; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-secondary); background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 0.4rem 0.9rem; cursor: pointer; transition: all 0.15s; }
+  .filter-bar button:hover { border-color: var(--gold); }
+  .filter-bar button.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+
+  .lab { background: var(--card-bg); border: 1px solid var(--border); border-top: 3px solid var(--gold); border-radius: 6px; padding: 1.4rem 1.5rem; margin-bottom: 1.4rem; }
+  .lab-head { display: flex; gap: 1rem; align-items: baseline; margin-bottom: 0.9rem; }
+  .lab-num { font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 900; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); flex-shrink: 0; padding-top: 0.15rem; }
+  .lab-title { font-family: Georgia, serif; font-size: 1.18rem; color: var(--text-primary); margin: 0 0 0.5rem; line-height: 1.25; }
+  .lab-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag { font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.16rem 0.55rem; border-radius: 3px; }
+  .tag-dom { background: var(--navy); color: #fff; }
+  .tag-diff { background: var(--blue-pale); color: var(--text-secondary); border: 1px solid var(--blue-pale-border); }
+  .tag-time { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+
+  .lab-sec { margin: 0.7rem 0; }
+  .lab-sec-label { display: inline-block; font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 900; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.15rem; }
+  .lab-sec p, .lab-sec li { font-family: Arial, sans-serif; font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6; margin: 0.2rem 0; }
+  .lab-sec b { color: var(--text-primary); }
+  .lab table.mini { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-family: Arial, sans-serif; font-size: 0.82rem; }
+  .lab table.mini th { background: var(--navy); color: #fff; text-align: left; padding: 0.35rem 0.55rem; }
+  .lab table.mini td { padding: 0.35rem 0.55rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+
+  .lab-debrief { margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 0.7rem; }
+  .lab-debrief summary { font-family: 'Arial Narrow', Arial, sans-serif; font-weight: 900; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .lab-debrief summary::-webkit-details-marker { display: none; }
+  .lab-debrief summary::before { content: "\25B8"; transition: transform 0.15s; display: inline-block; }
+  .lab-debrief[open] summary::before { transform: rotate(90deg); }
+  .debrief-body { margin-top: 0.7rem; background: var(--blue-pale); border-left: 4px solid var(--gold); border-radius: 0 6px 6px 0; padding: 0.9rem 1.1rem; }
+  .debrief-body p, .debrief-body li { font-family: Arial, sans-serif; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.62; margin: 0.35rem 0; }
+  .debrief-body b { color: var(--text-primary); }
+  .debrief-body ol { margin: 0.4rem 0 0.4rem 1.1rem; padding: 0; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#resources">Resources</a> &nbsp;&rsaquo;&nbsp; <span>Hands-On Labs</span></p>
+    <span class="lesson-badge-lg">Hands-On Practice</span>
+    <h1>Hands-On <span>Audit Labs</span></h1>
+    <p class="lesson-lede">Ten scenario-based exercises that put the auditor mindset to work &mdash; read the situation, do the task, produce the deliverable, then reveal the auditor&rsquo;s debrief to check your reasoning. Weighted to the exam blueprint and tagged by domain for targeted practice or classroom assignment.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="block">
+    <p class="eyebrow">Practice</p>
+    <h2 class="h2">Work the labs</h2>
+    <div class="rule"></div>
+
+    <div class="lab-intro">
+      <p><b>How to use:</b> Each lab is self-contained &mdash; a realistic scenario, a defined auditor task, and a deliverable to produce. Attempt it first, then open <b>&ldquo;Reveal the auditor&rsquo;s debrief&rdquo;</b> for the model answer and the exam-relevant reasoning. Faculty can assign a lab as graded work (deliverable submitted) or self-study (reveal to self-check). Filter by domain below.</p>
+    </div>
+
+    <div class="filter-bar" role="group" aria-label="Filter labs by domain">
+      <button class="on" onclick="filterLabs('all',this)">All 10</button>
+      <button onclick="filterLabs('D1',this)">D1 &middot; Auditing</button>
+      <button onclick="filterLabs('D2',this)">D2 &middot; Governance</button>
+      <button onclick="filterLabs('D3',this)">D3 &middot; Acquisition</button>
+      <button onclick="filterLabs('D4',this)">D4 &middot; Operations</button>
+      <button onclick="filterLabs('D5',this)">D5 &middot; Protection</button>
+    </div>
+
+    <!-- LAB 1 -->
+    <article class="lab" data-domain="D1">
+      <div class="lab-head"><span class="lab-num">Lab 1</span><div>
+        <h3 class="lab-title">Risk-Based Audit-Plan Ranking</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D1 &middot; IS Auditing Process</span><span class="tag tag-diff">Foundational</span><span class="tag tag-time">&#9201; ~30 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>You are the new IS audit manager. Your audit universe has six auditable entities, but you have capacity for only <b>three</b> engagements this year.</p>
+        <table class="mini"><thead><tr><th>Entity</th><th>Inherent risk</th><th>Control maturity</th><th>Months since last audit</th><th>Regulatory exposure</th></tr></thead><tbody>
+        <tr><td>Payment processing</td><td>High</td><td>Moderate</td><td>26</td><td>High (PCI)</td></tr>
+        <tr><td>Customer web app</td><td>High</td><td>Weak</td><td>14</td><td>High (GDPR)</td></tr>
+        <tr><td>HR / payroll</td><td>Medium</td><td>Strong</td><td>10</td><td>Medium</td></tr>
+        <tr><td>Data-center facilities</td><td>Medium</td><td>Moderate</td><td>30</td><td>Low</td></tr>
+        <tr><td>Internal wiki</td><td>Low</td><td>Weak</td><td>40</td><td>Low</td></tr>
+        <tr><td>Procurement system</td><td>Medium</td><td>Moderate</td><td>12</td><td>Medium</td></tr>
+        </tbody></table></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Assign each entity a residual-risk score (impact &times; likelihood, adjusted for control maturity, regulatory exposure, and time since last audit), rank them, and select the three for the annual plan.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A ranked table with a score per entity and a two-to-three-sentence justification for your top three.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p>Score each entity numerically: rate impact and likelihood (say 1&ndash;5), then adjust upward for weak control maturity, high regulatory exposure, and long time since last audit. A defensible ranking: <b>(1) Customer web app</b> &mdash; high inherent risk, <em>weak</em> controls, GDPR exposure; <b>(2) Payment processing</b> &mdash; high risk, PCI exposure, 26 months unaudited; <b>(3) Data-center facilities</b> or <b>Procurement</b> &mdash; the highest-scoring medium.</p>
+        <p><b>The point:</b> the plan covers the highest <em>residual</em> risk &mdash; not the most recently audited, not what management prefers, and not the most technically interesting. If a material new risk emerged mid-year (e.g., a breach), you&rsquo;d update the plan to include it. The scoring criteria and weights should be documented and approved by the audit committee so the ranking is defensible, not subjective.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 2 -->
+    <article class="lab" data-domain="D1">
+      <div class="lab-head"><span class="lab-num">Lab 2</span><div>
+        <h3 class="lab-title">Sampling &amp; Tolerable Deviation</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D1 &middot; IS Auditing Process</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~25 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>You are testing a user-access recertification control over a population of 1,200 accounts. At planning you set a <b>tolerable deviation rate of 5%</b>. You pull a sample of <b>40</b> items and find <b>4 deviations</b> (accounts never recertified).</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Compute the sample deviation rate, conclude on the control&rsquo;s effectiveness, and state the correct next step.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A one-paragraph conclusion with the rate, the effectiveness judgment, and the action.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p>Sample deviation rate = 4 / 40 = <b>10%</b>, which <b>exceeds</b> the 5% tolerable rate. Conclude the control is <b>ineffective</b> and report the finding with the supporting evidence.</p>
+        <p><b>Traps to avoid:</b> don&rsquo;t increase the sample and re-test until the rate falls within tolerance (result-shopping); don&rsquo;t lower the tolerable rate to match the result (rationalizing the failure). Additional inquiry of management may add context on <em>why</em> the deviations occurred, but it does not change the fact that the tested control failed against the pre-set criterion.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 3 -->
+    <article class="lab" data-domain="D2">
+      <div class="lab-head"><span class="lab-num">Lab 3</span><div>
+        <h3 class="lab-title">COBIT: Governance vs. Management Sort</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D2 &middot; Governance &amp; Mgmt of IT</span><span class="tag tag-diff">Foundational</span><span class="tag tag-time">&#9201; ~20 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>You are mapping activities to COBIT 2019. Sort each of the following into <b>Governance (Evaluate, Direct, Monitor)</b> or <b>Management (plan / build / run / monitor)</b>:</p>
+        <p>a) The board sets the enterprise risk appetite &nbsp;&middot;&nbsp; b) IT deploys and configures a SIEM &nbsp;&middot;&nbsp; c) The audit committee evaluates the value delivered by an IT investment &nbsp;&middot;&nbsp; d) Management monitors control performance against KPIs &nbsp;&middot;&nbsp; e) The board directs the security strategy &nbsp;&middot;&nbsp; f) IT operations applies the monthly patch cycle</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Label each a&ndash;f as Governance or Management, and state the one-line rule that decides it.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>The six labels plus your decision rule.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p><b>Governance (EDM):</b> a (sets appetite), c (evaluates value), e (directs strategy). <b>Management:</b> b (builds/configures), d (runs and monitors execution), f (runs operations).</p>
+        <p><b>The rule:</b> governance <em>evaluates, directs, and monitors</em> &mdash; the governing body sets direction, risk appetite, and oversight. Management <em>plans, builds, runs, and monitors</em> the execution of that direction. If the actor is the board / steering committee setting direction or judging value, it&rsquo;s governance; if the actor is executing or operating, it&rsquo;s management. (Note that both governance and management &ldquo;monitor&rdquo; &mdash; the difference is <em>oversight</em> vs. <em>operational</em> monitoring.)</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 4 -->
+    <article class="lab" data-domain="D2">
+      <div class="lab-head"><span class="lab-num">Lab 4</span><div>
+        <h3 class="lab-title">SOC 2 Report Analysis &amp; CUEC Verification</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D2 &middot; Governance &amp; Mgmt of IT</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~35 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>A critical SaaS vendor gives you its <b>SOC 2 Type II</b> report to support your reliance. You note: (1) two exceptions in the logical-access control area; (2) three complementary user entity controls (CUECs), including &ldquo;the customer must review privileged access quarterly&rdquo;; (3) the report period ended <b>four months</b> before your reliance date; (4) the vendor&rsquo;s cloud subservice provider is <b>carved out</b> of scope.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Identify what you must evaluate or obtain before relying on this report.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A list of the reliance limitations and the follow-up actions for each.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <ol>
+          <li><b>Exceptions</b> in logical access &mdash; assess their nature and whether they affect the controls you rely on; a Type II reports operating effectiveness <em>over the period</em>, so exceptions matter.</li>
+          <li><b>CUECs are your responsibility</b>, not the vendor&rsquo;s. Verify your organization actually performs the quarterly privileged-access review &mdash; an untested CUEC is an unverified control.</li>
+          <li><b>Four-month gap</b> between period-end and your reliance date &mdash; obtain a bridge (gap) letter or perform additional procedures over the intervening period.</li>
+          <li><b>Carved-out subservice provider</b> &mdash; those controls are not covered by this report; obtain separate assurance (e.g., the subservice provider&rsquo;s own SOC report).</li>
+        </ol>
+      </div></details>
+    </article>
+
+    <!-- LAB 5 -->
+    <article class="lab" data-domain="D3">
+      <div class="lab-head"><span class="lab-num">Lab 5</span><div>
+        <h3 class="lab-title">Auditing Change Control in Agile / DevSecOps</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D3 &middot; Acquisition &amp; Development</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~30 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>An organization releases to production every two weeks through a CI/CD pipeline. There is no single &ldquo;test then deploy&rdquo; event to sample, and the team points you to sprint retrospectives as evidence of control.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Design a risk-based sampling approach across sprints, and list the control evidence you would test for each sampled release.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A sampling plan (what the population is, how you select) plus a per-release evidence checklist.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p>The <b>population is the flow of releases over the period</b>, not one milestone. Take a <b>risk-based sample of user stories / releases across several sprints</b>. For each sampled release, test that it carried the required controls: security acceptance criteria met; code review and automated pipeline gates (<b>SAST / DAST / SCA</b>) passed; deployment approval enforced before code reached production; and documentation maintained.</p>
+        <p>Sprint <em>retrospectives</em> improve the team but are <b>not</b> a substitute for the requirements baseline and control documentation an audit relies on. Agile is not inherently insecure &mdash; the auditor&rsquo;s concern is whether the audit checkpoints and controls are <em>adapted to the sprint cycle</em> rather than assumed absent.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 6 -->
+    <article class="lab" data-domain="D4">
+      <div class="lab-head"><span class="lab-num">Lab 6</span><div>
+        <h3 class="lab-title">Patch-Management SLA Compliance</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D4 &middot; Operations &amp; Resilience</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~25 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>Policy requires critical patches within <b>30 days</b>. Your sample of 15 critical patches shows four deployed late (37, 45, 52, and 60 days); management attributes the delays to testing backlogs and notes &ldquo;we&rsquo;re at 73% compliance, which beats the industry average.&rdquo;</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>State your conclusion and the correct recommendation.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A finding with the root-cause direction and a recommendation.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p>73% compliance against a critical-patch SLA is a <b>control failure, not a pass</b> &mdash; the testing process is creating unacceptable risk by delaying critical patches beyond policy. Investigate the <b>root cause</b> and either improve / parallelize testing or formally revise the SLA with documented risk acceptance by the business.</p>
+        <p><b>Don&rsquo;t</b> simply rush the four late patches into production (that treats the symptom), and don&rsquo;t accept &ldquo;beats the industry average&rdquo; as a pass. Classic patch findings: no SLA for critical patches, patching production without testing, no tracking of non-compliant systems, and end-of-life systems without compensating controls.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 7 -->
+    <article class="lab" data-domain="D4">
+      <div class="lab-head"><span class="lab-num">Lab 7</span><div>
+        <h3 class="lab-title">BIA &rarr; RTO / RPO Gap Analysis</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D4 &middot; Operations &amp; Resilience</span><span class="tag tag-diff">Advanced</span><span class="tag tag-time">&#9201; ~35 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>The BIA sets the order-management system at <b>RTO = 4 hours</b> and <b>RPO = 1 hour</b>. The DR arrangement is a <b>warm site</b> fed by <b>nightly</b> off-site backups (restore takes ~8 hours; recovered data can be up to ~24 hours old). Repeated DR tests recover the system in <b>10&ndash;12 hours</b>.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Identify the gaps between the DR capability and the BIA requirements, and recommend.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A gap table (RTO gap, RPO gap) with recommendations.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p><b>RTO gap:</b> tested recovery of 10&ndash;12 hours vs. the 4-hour requirement &mdash; a <b>critical finding</b>. <b>RPO gap:</b> nightly backups permit up to ~24 hours of data loss vs. the 1-hour requirement &mdash; the recovery-point objective cannot be met with this backup cadence.</p>
+        <p><b>The principle:</b> the <b>BIA drives the objectives; the DRP must be built and funded to meet them</b> &mdash; you don&rsquo;t revise the BIA upward to fit the DRP&rsquo;s current capability. Recommend a higher-tier strategy for this system (e.g., a hot site with synchronous / near-synchronous replication), or a documented business decision to accept a lower objective. A DRP whose tested capability doesn&rsquo;t meet the BIA is a finding, not reassurance.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 8 -->
+    <article class="lab" data-domain="D5">
+      <div class="lab-head"><span class="lab-num">Lab 8</span><div>
+        <h3 class="lab-title">IAM Access-Recertification Review</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D5 &middot; Protection of Info Assets</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~25 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>Annual access recertification is performed by the <b>IT security team</b>, who review system-generated access reports and &ldquo;confirm everything looks reasonable.&rdquo; You find three terminated employees with still-active accounts, and a finance analyst who retains administrator rights from a role she left 18 months ago.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Identify the deficiencies and describe the correct recertification design.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A findings list plus the recommended control design.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <ol>
+          <li><b>Wrong reviewer.</b> Recertification should be performed by the <b>business managers</b> who know whether each user&rsquo;s access is appropriate for their current role &mdash; the IT security team can&rsquo;t judge business need. The system reports are fine; the reviewer is the problem.</li>
+          <li><b>Terminated accounts still active</b> &mdash; a provisioning / <em>deprovisioning</em> gap; deprovisioning should be triggered by HR on termination.</li>
+          <li><b>Access creep</b> (admin rights retained after a role change) &mdash; least privilege isn&rsquo;t enforced on role transitions.</li>
+        </ol>
+        <p>Recommend business-owner recertification, HR-triggered deprovisioning, and periodic least-privilege / role-change reviews.</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 9 -->
+    <article class="lab" data-domain="D5">
+      <div class="lab-head"><span class="lab-num">Lab 9</span><div>
+        <h3 class="lab-title">Defense-in-Depth &amp; Key-Management Findings</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D5 &middot; Protection of Info Assets</span><span class="tag tag-diff">Intermediate</span><span class="tag tag-time">&#9201; ~30 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>A review of a data center finds: the server room&rsquo;s only access control is a <b>single badge-reader door</b>; data is encrypted with <b>AES-256</b> at rest and <b>TLS 1.2</b> in transit, but the <b>encryption keys are stored on the same database server</b> as the encrypted data; and <b>IoT environmental sensors share the production network segment</b>.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Identify and prioritize the most significant findings across physical, cryptographic, and network controls.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>A prioritized findings list with the reasoning.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <ol>
+          <li><b>Keys stored with the data</b> undermine the entire encryption control &mdash; the most common encryption finding is weak <b>key management</b>, not a weak algorithm (AES-256 and TLS 1.2 are acceptable). Keys must be stored separately, rotated, and revocable (ideally in an HSM).</li>
+          <li><b>Single badge door = no defense in depth</b> &mdash; each security zone should be protected by multiple independent layers; one control is one layer.</li>
+          <li><b>IoT on the production segment</b> is a network-segmentation gap; isolate the IoT devices from production systems.</li>
+        </ol>
+        <p>The through-line: no single layer is trusted alone, and a strong control (encryption) is only as good as its weakest supporting practice (key management).</p>
+      </div></details>
+    </article>
+
+    <!-- LAB 10 -->
+    <article class="lab" data-domain="D5">
+      <div class="lab-head"><span class="lab-num">Lab 10</span><div>
+        <h3 class="lab-title">Incident-Response Sequencing &amp; Order of Volatility</h3>
+        <div class="lab-tags"><span class="tag tag-dom">D5 &middot; Protection of Info Assets</span><span class="tag tag-diff">Advanced</span><span class="tag tag-time">&#9201; ~35 min</span></div>
+      </div></div>
+      <div class="lab-sec"><span class="lab-sec-label">Scenario</span><p>During a malware outbreak, the response team took these actions (as logged): eradicated the malware from three hosts; <b>powered off</b> the compromised server &ldquo;to stop the damage&rdquo;; began <b>restoring from backup</b>; isolated the affected systems from the network; and collected disk images. Memory was never captured.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Your task</span><p>Put the response into the correct lifecycle order, identify the mistakes, and state what evidence should have been captured first.</p></div>
+      <div class="lab-sec"><span class="lab-sec-label">Deliverable</span><p>The correct sequence, the errors made, and an order-of-volatility note.</p></div>
+      <details class="lab-debrief"><summary>Reveal the auditor&rsquo;s debrief</summary><div class="debrief-body">
+        <p><b>Correct lifecycle:</b> Preparation &rarr; Detection &amp; Analysis &rarr; <b>Containment</b> &rarr; Eradication &rarr; Recovery &rarr; Post-Incident Activity.</p>
+        <p><b>Errors:</b> eradicating <em>before</em> containing risks the malware spreading during cleanup; <b>powering off</b> the server destroyed volatile evidence and broke chain of custody before the cause was understood; restoring from backup <em>before</em> eradication can reintroduce the threat. <b>Contain first, then eradicate.</b></p>
+        <p><b>Order of volatility</b> &mdash; capture the most perishable evidence first: CPU registers &amp; cache &rarr; <b>RAM / memory and active network connections</b> &rarr; disk &rarr; archival media. Powering off the server threw away the memory and network state that should have been imaged first.</p>
+      </div></details>
+    </article>
+
+  </section>
+</main>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. Lab scenarios are illustrative and should be reviewed for accuracy before instructional use.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+<script>
+  function filterLabs(d, btn){
+    document.querySelectorAll('.filter-bar button').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('.lab').forEach(l=>{
+      l.style.display = (d==='all' || l.dataset.domain===d) ? '' : 'none';
+    });
+  }
+</script>
+</body>
+</html>

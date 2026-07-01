@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4 — Domain 3: Acquisition, Development &amp; Implementation | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 4</span></p>
+    <span class="lesson-badge-lg">Day 3 &mdash; Morning &middot; Domain 3</span>
+    <h1>IS Acquisition, Development &amp; <span>Implementation</span></h1>
+    <p class="lesson-lede">Every new system brings new risk. Domain 3 equips IS auditors to evaluate the controls built into how technology is planned, procured, built, and deployed &mdash; before it's too late to fix the design. We cover the full path: acquisition and development (3A), then testing, release, migration, and post-implementation review (3B).</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Morning, Day 3</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>12% (~18 Qs)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Controls are cheapest to build in, costliest to bolt on</h2>
+    <div class="rule"></div>
+    <p class="lead">Domain 3 is 12% of the exam, and its through-line is timing: the IS auditor's value is highest <em>early</em>, when controls can still be designed into a system rather than retrofitted after go-live. This lesson follows a project from business case and methodology choice (Waterfall, Agile, DevSecOps) through control design, testing, change and release management, data migration, and the post-implementation review. The recurring exam themes are <strong>independence</strong> (the auditor advises, never decides or builds) and <strong>evidence</strong> (verify benefits and validate migrations &mdash; don't accept assertions).</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Evaluate</strong> project governance and management practices for IS acquisition and development projects. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> the adequacy of business case and feasibility analysis for IT investments. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Compare</strong> system development methodologies and identify the control implications of each. <em class="bloom-tag">Bloom: Analyze</em></span></li>
+      <li><span><strong>Identify</strong> and evaluate control design in new or modified information systems. <em class="bloom-tag">Bloom: Remember</em></span></li>
+      <li><span><strong>Assess</strong> system readiness, testing, and configuration management prior to implementation. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> post-implementation review processes for completeness and effectiveness. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SDLC</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The structured process for planning, creating, testing, and deploying an information system, from feasibility through maintenance and retirement.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Agile Methodology</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An iterative development approach that delivers working software in short cycles (sprints), emphasizing collaboration and adaptability over rigid planning.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">DevSecOps</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A development philosophy that integrates security practices into the DevOps continuous integration / continuous delivery pipeline.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Feasibility Study</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An analysis evaluating whether a proposed IT project is technically, financially, and operationally viable before committing resources.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Business Case</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A formal document justifying an IT investment by comparing expected benefits against costs, risks, and strategic alignment.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">UAT (User Acceptance Testing)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Testing performed by end users to validate that a system meets business requirements before production deployment.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Change Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Formal procedures governing the approval, testing, and implementation of changes to production systems or applications.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Release Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The process of planning, scheduling, and controlling the movement of changes and releases to production environments.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Data Conversion</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Migrating data from a legacy system to a new system, including mapping, transformation, validation, and reconciliation.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Post-Implementation Review (PIR)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A formal assessment after deployment to determine whether objectives were met, controls are effective, and lessons can be learned.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Parallel Run</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A migration strategy in which old and new systems operate simultaneously to validate that outputs match before decommissioning the old system.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">COTS</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Commercial off-the-shelf software purchased from a vendor rather than custom-developed; introduces third-party risk and limits source-code review.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Project Governance</a></li>
+          <li><a href="#s2">2. Business Case &amp; Feasibility</a></li>
+          <li><a href="#s3">3. Development Methodologies</a></li>
+          <li><a href="#s4">4. Control Design</a></li>
+          <li><a href="#s5">5. Readiness &amp; Testing</a></li>
+          <li><a href="#s6">6. Configuration &amp; Release</a></li>
+          <li><a href="#s7">7. Migration &amp; Conversion</a></li>
+          <li><a href="#s8">8. Post-Implementation Review</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>Project Governance &amp; Management</h3></div>
+          <p>An acquisition or development effort is a project, and projects need governance: clear sponsorship, defined roles, and oversight that can say no. The auditor's independence boundary is critical here.</p>
+          <ul class="detail">
+            <li><strong>Roles:</strong> project steering committee (oversight, go/no-go), sponsor (business owner accountable for benefits), project manager (scope/schedule/budget/risk), PMO (standards, methodology, portfolio).</li>
+            <li><strong>Standards:</strong> PMBOK, PRINCE2, Agile (Scrum, SAFe).</li>
+            <li><strong>Project risk register:</strong> scope creep, budget overrun, resource attrition, technology failure.</li>
+            <li><strong>Auditor checks:</strong> project charter, executive sponsorship, status reporting cadence, independent project QA, formal change control.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>An IS auditor may <strong>advise</strong> on control requirements during a project &mdash; that's encouraged. Joining the implementation team and making design decisions creates a <strong>self-review threat</strong>. Auditors advise; they do not decide or build.</div>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Business Case &amp; Feasibility Analysis</h3></div>
+          <p>Before money is committed, a business case should justify the investment and a feasibility study should confirm it is viable. The auditor checks that benefits are real, measurable, and later verified.</p>
+          <ul class="detail">
+            <li><strong>Business case:</strong> problem/opportunity, solution options (including a &ldquo;do nothing&rdquo; baseline), cost-benefit analysis, ROI and payback, risk, and a recommendation.</li>
+            <li><strong>Feasibility dimensions:</strong> technical, financial, operational, legal/regulatory, and schedule.</li>
+            <li><strong>Benefits realization</strong> is tracked after go-live to confirm projected benefits were achieved.</li>
+            <li><strong>Auditor:</strong> case approved by proper authority; benefits quantified and measurable; assumptions documented and validated; a plan to measure benefits exists.</li>
+          </ul>
+          <h4>Acquisition &amp; regulated-system controls</h4>
+          <ul class="detail">
+            <li><strong>Software escrow:</strong> for licensed/COTS software, an escrow agreement deposits source code and build instructions with a third party, released to the licensee on defined triggers (vendor insolvency, acquisition, or failure to support) &mdash; protecting a business-critical system. The auditor verifies the agreement exists, is funded, names release triggers, and that deposits are current and periodically verified.</li>
+            <li><strong>Validated systems (FDA 21&nbsp;CFR Part&nbsp;11):</strong> in regulated industries (pharma, medical devices, healthcare), systems handling electronic records and signatures must be <em>validated</em> &mdash; documented IQ/OQ/PQ, secure audit trails, access controls, and signature integrity. The auditor confirms validation evidence exists and that change control preserves the validated state.</li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>System Development Methodologies</h3></div>
+          <p>The methodology shapes where and how controls must be applied. None is inherently insecure &mdash; the question is whether controls are adapted to how the team actually works.</p>
+          <ul class="detail">
+            <li><strong>Waterfall:</strong> sequential phase gates; predictable for stable requirements but inflexible and tests late.</li>
+            <li><strong>Agile</strong> (Scrum, Kanban, SAFe): short sprints; audit per sprint, keep security requirements in the backlog, maintain documentation.</li>
+            <li><strong>Agile audit nuance:</strong> sprint <em>retrospective</em> notes improve the team but are <em>not</em> a substitute for the requirements baseline and control documentation an audit relies on &mdash; don't accept retrospectives as workpaper-equivalent.</li>
+            <li><strong>DevOps / DevSecOps:</strong> CI/CD pipelines with SAST, DAST, SCA, and container scanning; infrastructure as code; control pipeline access and production-deploy approvals.</li>
+            <li><strong>RAD</strong> (prototype-based) and <strong>COTS</strong> (source-code escrow, software composition analysis, contractual security terms).</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Agile is not inherently insecure. The auditor's concern is that <strong>audit checkpoints adapt to the sprint cycle</strong>, security requirements live in the backlog from the start, and documentation is maintained even when teams prioritize working software.</div>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Iterative delivery has no single test-and-deploy event to sample, so the auditor samples <strong>across sprints</strong>: take a risk-based selection of user stories and releases over several iterations and test that each carried the required controls &mdash; security acceptance criteria met, code review and pipeline gates (SAST/DAST) passed, and deployment approved. The population is the flow of releases over the period, not one milestone.</p></div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Control Identification &amp; Design</h3></div>
+          <p>Controls are cheapest and most effective when designed in during requirements and design &mdash; not bolted on after deployment.</p>
+          <ul class="detail">
+            <li><strong>Application controls:</strong> input (validation, range, format, existence, reasonableness), processing (batch/hash totals, record counts, completeness), output (distribution, balancing, exception reporting).</li>
+            <li><strong>Access design:</strong> role-based access by job function, least privilege, and SoD in the workflow.</li>
+            <li><strong>Audit trail:</strong> which events are logged, log retention, tamper-evident logging.</li>
+            <li><strong>Threat modeling:</strong> STRIDE (Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege).</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A system whose requirements never mentioned logging or access control will be expensive to fix after launch. The auditor's highest-value moment is reviewing the requirements &mdash; not the finished product.</p></div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Cybersecurity Design Principles</strong> &mdash; the secure-by-design fundamentals that belong in requirements and design.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/design/cybersecuritydesignprinciples.html" target="_blank" rel="noopener noreferrer">Design Principles <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>System Readiness &amp; Implementation Testing</h3></div>
+          <p>Testing produces the evidence that a system is fit to deploy. The auditor's eye is on coverage and, above all, independence.</p>
+          <ul class="detail">
+            <li><strong>Levels:</strong> unit &rarr; integration &rarr; system &rarr; user acceptance (UAT) &rarr; performance/load &rarr; <strong>regression</strong> (confirms existing functionality still works after changes) &rarr; security (SAST, DAST, penetration).</li>
+            <li><strong>UAT</strong> must be performed by real business users, not developers.</li>
+            <li><strong>Source-code review</strong> &mdash; manual peer review plus automated static analysis (SAST) &mdash; is a recognized audit technique for assessing control and security quality in custom-developed code.</li>
+            <li><strong>Auditor:</strong> review the test plan for completeness and independence; confirm results documented and signed off; verify defects tracked and resolved before go-live.</li>
+            <li><strong>Go/no-go:</strong> critical and high defects resolved, UAT sign-off, security findings remediated, data migration validated, rollback plan tested.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>On testing questions, check <strong>independence</strong>: who tests and who approves. Developers testing their own code without independent review, or a manager approving their own team's UAT, compromises independence &mdash; a finding.</div>
+        </article>
+
+        <article class="content-section" id="s6">
+          <div class="cs-head"><span class="cs-num">6</span><h3>Implementation, Configuration &amp; Release Management</h3></div>
+          <p>Once a system is live, every change is a risk. Change, release, and configuration management keep that risk controlled and traceable.</p>
+          <ul class="detail">
+            <li><strong>Change types:</strong> standard (pre-approved), normal (full Change Advisory Board review), emergency (expedited path).</li>
+            <li><strong>Release management:</strong> major/minor/patch releases, release windows, deployment (smoke) testing.</li>
+            <li><strong>Configuration management:</strong> the CMDB as the authoritative record, configuration baselines, and drift detection.</li>
+            <li><strong>Auditor:</strong> every production change has a record; changes approved by an independent authority; emergency changes get a post-implementation review; CMDB reconciled to reality; separation between who develops and who deploys.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Emergency changes should have an <strong>expedited but documented</strong> approval process and a post-implementation review after every one. Emergency changes that bypass all controls entirely are a finding &mdash; not an acceptable exception.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Configuration Management</strong> &mdash; an interactive module on baselines, patching, and change control.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/ConfigMgmt/ConfigMgmt.html" target="_blank" rel="noopener noreferrer">Config Management <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s7">
+          <div class="cs-head"><span class="cs-num">7</span><h3>Migration, Deployment &amp; Data Conversion</h3></div>
+          <p>Moving to a new system is where data integrity is most at risk. The controls here are about proving that what arrived matches what left.</p>
+          <ul class="detail">
+            <li><strong>Strategies:</strong> big-bang cutover (high risk, low cost), parallel run (low risk, high cost), phased migration, pilot implementation.</li>
+            <li><strong>Data conversion:</strong> mapping, cleansing, then validation.</li>
+            <li><strong>Validation controls:</strong> record-count reconciliation, aggregate-value reconciliation, sample comparison, exception reporting &mdash; with business-owner sign-off.</li>
+            <li><strong>Infrastructure:</strong> environment parity, infrastructure as code, network segmentation, certificate and key management.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A 2% drop in record count after migration isn't automatically acceptable &ldquo;because it's small.&rdquo; The auditor wants evidence that the missing records were identified, reviewed, and authorized for removal.</p></div>
+        </article>
+
+        <article class="content-section" id="s8">
+          <div class="cs-head"><span class="cs-num">8</span><h3>Post-Implementation Review</h3></div>
+          <p>The project isn't over at go-live. A post-implementation review closes the loop on whether the investment actually delivered.</p>
+          <ul class="detail">
+            <li>Conducted ~3&ndash;6 months after go-live, once operational issues surface.</li>
+            <li><strong>Scope:</strong> benefits realization, control effectiveness, user adoption and satisfaction, performance against SLAs, outstanding defects.</li>
+            <li>The auditor may perform the PIR independently or evaluate management's PIR process.</li>
+            <li>Lessons learned are documented for future projects.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An ERP delivered on time and on budget but never reviewed leaves one question unanswered: did it deliver the benefits that justified it? Without a PIR, nobody actually knows.</p></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 3 judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale for every item. Watch the independence and evidence themes.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>An IS auditor is asked to join a project implementation team for a new core banking system, contributing control requirements to the system design. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Participate fully as requested, since auditor input improves control quality.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Participate as an advisor, providing guidance on control requirements, but not making design decisions.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> Decline all involvement to preserve independence for the eventual post-implementation audit.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> Participate only in UAT testing as an independent observer.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Auditors may advise on control requirements without impairing independence &mdash; provided they don't make design decisions. Full participation as a team member (A) impairs future independence; complete non-participation (C) forgoes a chance to improve controls at the lowest cost. <b>Why the others fall short:</b> <b>A</b> making design decisions impairs later audit independence; <b>C</b> declining all involvement forfeits advice the auditor may properly give; <b>D</b> UAT-only observation understates the appropriate advisory role.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q2.</span>During a data migration audit, the record count in the new system is 2% fewer than in the legacy system. Management says the difference represents duplicates removed during conversion. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> Accept the explanation since a 2% variance is within acceptable tolerance.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> Request evidence documenting the identification, review, and authorization of the removed records.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> Expand audit scope to cover all records in the legacy system.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> Issue a qualified opinion since 100% data completeness was not achieved.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The auditor must verify the explanation with evidence. A 2% shortfall requires documentation of the identification, authorization, and validation of removed records. Accepting a verbal explanation without evidence violates professional skepticism. <b>Why the others fall short:</b> <b>A</b> accepting the variance on management&rsquo;s word skips verification; <b>C</b> expanding to the full population is premature before reviewing the evidence; <b>D</b> a qualified opinion is premature before evaluating the explanation.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>An organization using Agile releases to production every two weeks through a CI/CD pipeline. An auditor evaluating change management should FIRST verify:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Whether the waterfall SDLC was properly adapted for Agile.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> Whether automated pipeline controls enforce required approvals before code reaches production.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> Whether a PMO oversees the sprints.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Whether the development team receives annual security awareness training.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> In CI/CD pipelines, automated controls that enforce approvals (code-review sign-off, security-scan passage, manager approval) before code reaches production are the primary change-management control &mdash; the Agile equivalent of a CAB review. <b>Why the others fall short:</b> <b>A</b> &lsquo;adapting waterfall&rsquo; misframes a CI/CD environment; <b>C</b> PMO oversight isn&rsquo;t the deployment-control question; <b>D</b> awareness training is unrelated to whether approvals gate production.</div>
+        </div>
+
+        <div class="q" data-answer="A">
+          <p class="q-stem"><span class="qn">Q4.</span>An auditor reviewing a large ERP implementation notes the project was delivered on time and within budget, but no post-implementation review was conducted. The MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> There is no evidence that projected business benefits have been verified as achieved.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> The vendor may have grounds for a warranty claim against the organization.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> On-time delivery shows the project process was effective and no PIR is needed.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> The absence of a PIR violates ISACA audit standards.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: A.</b> Without a PIR, there is no formal verification that the ERP delivered its promised benefits. On-time and on-budget delivery does not mean objectives were met &mdash; benefits realization is a governance accountability. <b>Why the others fall short:</b> <b>B</b> vendor warranty isn&rsquo;t the significance of a missing PIR; <b>C</b> on-time/on-budget doesn&rsquo;t prove benefits were realized &mdash; that&rsquo;s what a PIR checks; <b>D</b> the concern is unverified benefits, not a standards &lsquo;violation.&rsquo;</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>A new payroll application went live after a parallel run showed a 0.3% variance between old and new outputs. Management approved cutover, accepting the variance as immaterial. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Agree that the variance is immaterial and requires no further evaluation.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Determine whether the 0.3% variance was investigated, documented, and its root cause understood before approval.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Require the systems run in parallel for an additional 30 days.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Escalate the variance to the external auditor as a potential misstatement.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The auditor should verify the variance was investigated and understood &mdash; not simply accepted. Any variance in a financial system, even one deemed immaterial, should be explained and documented, with the root cause determined and the acceptance decision authorized. <b>Why the others fall short:</b> <b>A</b> agreeing it&rsquo;s &lsquo;immaterial&rsquo; skips whether the variance was understood; <b>C</b> another 30-day parallel run is disproportionate before inquiry; <b>D</b> escalating to the external auditor is premature.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson03.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 3 &mdash; Management of IT (Part B)</span></a>
+    <a href="lesson05.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 5 &mdash; IS Operations (Part A)</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

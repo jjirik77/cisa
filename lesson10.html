@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teaching CISA — Faculty PD Guide | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<style>
+  /* distinct "Faculty PD / Bonus" accent so this reads as supplementary, not part of the exam sequence */
+  .pd-badge { display:inline-block; background:#0f7a6e; color:#fff; font-family:'Arial Narrow',Arial,sans-serif; font-weight:900; font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.3rem 0.8rem; border-radius:3px; margin-bottom:0.9rem; }
+  .aud-box { background: var(--blue-pale); border:1px solid var(--blue-pale-border); border-left:4px solid #0f7a6e; border-radius:0 6px 6px 0; padding:1rem 1.25rem; margin:1.1rem 0; }
+  .aud-box .ab-label { font-family:'Arial Narrow',Arial,sans-serif; font-weight:900; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:#0f7a6e; }
+  .aud-box ul { margin:0.5rem 0 0; padding-left:1.1rem; }
+  .aud-box li { font-family:Arial,sans-serif; font-size:0.9rem; color:var(--text-secondary); line-height:1.55; margin:0.25rem 0; }
+  .model { background:var(--card-bg); border:1px solid var(--border); border-top:3px solid #0f7a6e; border-radius:6px; padding:1.2rem 1.35rem; margin-bottom:1.1rem; }
+  .model h4 { font-family:Georgia,serif; font-size:1.08rem; color:var(--text-primary); margin:0 0 0.5rem; }
+  .model p, .model li { font-family:Arial,sans-serif; font-size:0.9rem; color:var(--text-secondary); line-height:1.6; }
+  .model .best { font-family:Arial,sans-serif; font-size:0.86rem; color:var(--text-primary); background:var(--blue-pale); border-radius:4px; padding:0.5rem 0.7rem; margin-top:0.6rem; }
+  .wf { margin:0 0 1.1rem; }
+  .wf ol { margin:0.4rem 0 0 1.1rem; }
+  .wf li { font-family:Arial,sans-serif; font-size:0.9rem; color:var(--text-secondary); line-height:1.6; margin:0.2rem 0; }
+  .return-home { text-align:center; margin:2rem 0 0; }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#resources">Resources</a> &nbsp;&rsaquo;&nbsp; <span>Faculty PD Guide</span></p>
+    <span class="pd-badge">Bonus &middot; Faculty PD</span>
+    <h1>Teaching CISA <span>&mdash; A Faculty Professional-Development Guide</span></h1>
+    <p class="lesson-lede">You have mastered the exam. Now teach what it means. This bonus guide is for faculty, instructional designers, and program developers who have worked Lessons&nbsp;0&ndash;9 and want to translate CISA domain knowledge into curriculum &mdash; mapping every domain to courses you may already teach, using the workshop&rsquo;s AI-assisted tools to build activities and assessments, and deploying anything from a single guest lecture to a full CISA-pathway certificate.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Bonus &mdash; Faculty &amp; Curriculum Use</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs self-paced</strong></span>
+      <span class="meta-chip">Audience: <strong>Faculty &amp; IDs</strong></span>
+      <span class="meta-chip">Not an exam lesson</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">A curriculum toolkit, not an exam lesson</h2>
+    <div class="rule"></div>
+    <p class="lead">This is a <strong>supplementary</strong> guide, deliberately outside the numbered 5-day exam sequence. It does three things: it <strong>maps</strong> every CISA domain to courses you may already teach; it <strong>shows how to use</strong> the workshop&rsquo;s AI-assisted tools to build new activities, cases, and assessments; and it gives you a <strong>deployment model</strong> &mdash; from a single guest lecture to a stackable certificate program.</p>
+    <div class="tip"><span class="tip-label">&#8505;&#65039; Independence Notice</span>This is an <strong>independent</strong> educational resource &mdash; not affiliated with, endorsed by, or sponsored by ISACA, and it does not confer ISACA eligibility or certification. CISA&#174; is a registered trademark of ISACA. Align any program to ISACA&rsquo;s official Job Practice and verify details at isaca.org.</div>
+    <div class="aud-box">
+      <span class="ab-label">Who this is for</span>
+      <ul>
+        <li>Community-college faculty in IT, cybersecurity, networking, or business</li>
+        <li>University faculty in MIS, IS audit, IT governance, or information security</li>
+        <li>Workforce-development coordinators building stackable credentials</li>
+        <li>Instructional designers creating LMS-based cybersecurity curriculum</li>
+      </ul>
+    </div>
+    <ul class="objectives">
+      <li><span><strong>Map</strong> CISA domains and lessons to existing courses and program units. <em class="bloom-tag">Bloom: Analyze</em></span></li>
+      <li><span><strong>Apply</strong> the workshop&rsquo;s AI tools to build activities, cases, graphics, and content. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Design</strong> a deployment model &mdash; single module, semester sequence, or certificate. <em class="bloom-tag">Bloom: Create</em></span></li>
+      <li><span><strong>Evaluate</strong> AI-generated materials for accuracy before classroom use. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <!-- SECTION 1: MAPPING MATRIX -->
+  <section class="block">
+    <p class="eyebrow">1 &middot; Course Mapping</p>
+    <h2 class="h2">Where each domain fits your catalog</h2>
+    <div class="rule"></div>
+    <p>The most immediately actionable section: every lesson mapped to common courses, with a concrete instructional use.</p>
+    <div class="table-wrap" style="margin:1.1rem 0">
+      <table class="data"><thead><tr><th style="width:20%">Lesson / Domain</th><th style="width:34%">Maps to</th><th>Use it for</th></tr></thead><tbody>
+        <tr><td><strong>L0</strong> &mdash; Orientation &amp; auditor mindset</td><td>Any cybersecurity intro course</td><td>First-day framing: &ldquo;we learn to <em>evaluate</em> controls, not just build them&rdquo;</td></tr>
+        <tr><td><strong>L1</strong> &mdash; IS Auditing Process (D1)</td><td>IT Audit, Cybersecurity Capstone, Internal Controls</td><td>Risk-based planning module; an audit-finding-structure assignment (criteria, condition, cause, effect, recommendation); a sampling lab</td></tr>
+        <tr><td><strong>L2</strong> &mdash; Governance of IT (D2A)</td><td>IT Governance, COBIT, Corporate IT, Risk Management</td><td>Regulatory-landscape week; a COBIT governance-vs-management lecture</td></tr>
+        <tr><td><strong>L3</strong> &mdash; Management of IT (D2B)</td><td>IT Service Management, Vendor Risk, IT Leadership</td><td>SOC-report analysis; a segregation-of-duties case; a CMMI maturity lab</td></tr>
+        <tr><td><strong>L4</strong> &mdash; Acquisition &amp; Development (D3)</td><td>SDLC, Systems Analysis, Software Engineering, DevOps</td><td>Agile audit-controls module; a post-implementation-review assignment; a change-management lab</td></tr>
+        <tr><td><strong>L5</strong> &mdash; IS Operations (D4A)</td><td>IT Operations, Network/Sys Admin, Cloud</td><td>Patch-SLA lab; a CMDB activity; an end-user-computing risk case</td></tr>
+        <tr><td><strong>L6</strong> &mdash; Business Resilience (D4B)</td><td>Business Continuity, Disaster Recovery, IT Risk</td><td>BIA/RTO/RPO scenario lab; a DRP-testing assessment; a supply-chain case</td></tr>
+        <tr><td><strong>L7</strong> &mdash; Protection of Info Assets (D5A)</td><td>Security+, CISSP-adjacent, IAM, Network Security</td><td>IAM recertification lab; a defense-in-depth scenario; a CSF-mapping activity</td></tr>
+        <tr><td><strong>L8</strong> &mdash; Security Event Management (D5B)</td><td>Incident Response, Digital Forensics, SOC Operations</td><td>IR-lifecycle sequencing lab; an order-of-volatility forensics exercise</td></tr>
+        <tr><td><strong>L9</strong> &mdash; Final Review (capstone)</td><td>Capstone course, CISA pathway, senior seminar</td><td>Cross-domain cases as a semester capstone; a trap-pattern exam debrief</td></tr>
+      </tbody></table>
+    </div>
+    <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>The <a href="labs.html">Hands-On Labs</a> are already domain-tagged, so you can drop a specific lab straight into the matching unit &mdash; e.g., the <em>Patch-SLA</em> lab into an IT-Operations course, or the <em>BIA&rarr;RTO/RPO gap</em> lab into a Business-Continuity course.</p></div>
+  </section>
+
+  <!-- SECTION 2: BLOOM ARC -->
+  <section class="block">
+    <p class="eyebrow">2 &middot; Cognitive Arc</p>
+    <h2 class="h2">How rigor escalates across the five days</h2>
+    <div class="rule"></div>
+    <p>Each day&rsquo;s <em>dominant</em> Bloom level rises across the arc &mdash; useful for designing your own domain-based intensive. (These are the leading levels, not the only ones; L1 auditing already demands analysis and evaluation.)</p>
+    <div class="table-wrap" style="margin:1.1rem 0">
+      <table class="data"><thead><tr><th style="width:16%">Day</th><th style="width:30%">Dominant level</th><th>Design implication</th></tr></thead><tbody>
+        <tr><td><strong>Day 1</strong> (L0&ndash;L1)</td><td>Remember / Understand</td><td>Exam architecture, ethics, audit standards &mdash; lecture, flashcards, conceptual scenarios</td></tr>
+        <tr><td><strong>Day 2</strong> (L2&ndash;L3)</td><td>Understand / Apply</td><td>Governance frameworks, regulation, management processes &mdash; framework analysis, compliance-gap ID, SoD scenario</td></tr>
+        <tr><td><strong>Day 3</strong> (L4&ndash;L5)</td><td>Apply / Analyze</td><td>SDLC controls, operations, change &mdash; control mapping, sprint-audit simulation, change-management lab</td></tr>
+        <tr><td><strong>Day 4</strong> (L6&ndash;L7)</td><td>Analyze / Evaluate</td><td>Resilience gaps, control adequacy vs. effectiveness &mdash; RTO/RPO gap analysis, access-review scenario, framework-selection justification</td></tr>
+        <tr><td><strong>Day 5</strong> (L8&ndash;L9)</td><td>Evaluate / Create</td><td>IR sequencing, cross-domain synthesis, study-plan design &mdash; multi-domain case, IR debrief, personal study-plan creation</td></tr>
+      </tbody></table>
+    </div>
+    <p>Every lesson&rsquo;s learning objectives in this workshop are already tagged with their Bloom level (look for the small <em class="bloom-tag">Bloom</em> chips), so you can lift them directly into a course syllabus.</p>
+  </section>
+
+  <!-- SECTION 3: TOOL WORKFLOWS -->
+  <section class="block">
+    <p class="eyebrow">3 &middot; Tool Workflows</p>
+    <h2 class="h2">Build materials with the workshop&rsquo;s AI tools</h2>
+    <div class="rule"></div>
+    <p>The <a href="index.html#resources">Resources</a> section includes seven builders. Each produces a copy-paste prompt (or a timed exam) you take into your AI platform. Three end-to-end examples:</p>
+
+    <div class="wf">
+      <h4 style="font-family:Georgia,serif;color:var(--text-primary)">Workflow A &mdash; a single interactive activity (~30 min)</h4>
+      <ol>
+        <li>Open <a href="gen-activity.html">Generate Workshop Activities</a>.</li>
+        <li>Select the domain (e.g., D4B &mdash; Business Resilience), the mechanic (branching scenario), and the options (learner picks a recovery site &rarr; consequence branches).</li>
+        <li>Copy the generated prompt into Claude, Gemini, or ChatGPT.</li>
+        <li>Receive a self-contained HTML5 file; drop it into Canvas as an ungraded practice item or a graded assignment.</li>
+        <li><strong>Verify first:</strong> confirm RTO/RPO values are accurate, check that vocabulary matches ISACA terminology, and remove any institution-specific data.</li>
+      </ol>
+    </div>
+
+    <div class="wf">
+      <h4 style="font-family:Georgia,serif;color:var(--text-primary)">Workflow B &mdash; a flipped-classroom podcast (~20 min)</h4>
+      <ol>
+        <li>Open <a href="gen-podcast.html">Generate Audio Files</a>.</li>
+        <li>Select the domain and sub-topic (e.g., D1 &mdash; Risk-Based Audit Planning) and generate the ~10-minute script.</li>
+        <li>Record it with any tool (Audacity, a phone) or a TTS platform.</li>
+        <li>Post it as pre-class listening; design class time around <em>applying</em> the concept rather than delivering it.</li>
+      </ol>
+    </div>
+
+    <div class="wf">
+      <h4 style="font-family:Georgia,serif;color:var(--text-primary)">Workflow C &mdash; a capstone case study (~45 min)</h4>
+      <ol>
+        <li>Open <a href="gen-case.html">Case Study Generation</a>.</li>
+        <li>For a capstone, choose <em>Mixed / Cross-Domain</em>; set industry, organization size, and the challenge to foreground.</li>
+        <li>Generate the case narrative with risk factors, control environment, and questions; enable the answer key, rubric, and domain mapping.</li>
+        <li>Deploy in Canvas as a group discussion, individual written analysis, or oral-presentation assessment.</li>
+      </ol>
+    </div>
+
+    <div class="in-practice"><span class="ip-label">&#9989; AI verification checklist</span><p>Before any AI-generated material reaches a classroom: (1) cross-check domain terminology against ISACA&rsquo;s publicly available Job Practice; (2) verify regulatory details (breach-notification windows, framework requirements) against primary sources; (3) confirm framework versions (<strong>COBIT 2019, NIST CSF 2.0, ISO/IEC 27001:2022</strong>); (4) never enter student names, institutional data, or proprietary information into AI prompts; (5) review scenarios for inadvertent technical inaccuracies.</p></div>
+  </section>
+
+  <!-- SECTION 4: PROGRAM MODELS -->
+  <section class="block">
+    <p class="eyebrow">4 &middot; Program Design</p>
+    <h2 class="h2">Three deployment models</h2>
+    <div class="rule"></div>
+
+    <div class="model">
+      <h4>Model 1 &mdash; Single-Module Injection (1&ndash;2 sessions)</h4>
+      <p>Pick one domain lesson. Assign it as pre-reading; use the knowledge check as a graded pre-discussion quiz; run the &ldquo;In Practice&rdquo; scenarios as small-group discussion; use the linked interactive module (Ethics &amp; Conduct, Risk Management, Controls&hellip;) or a <a href="labs.html">Hands-On Lab</a> as the activity. Prep: 2&ndash;3 hours.</p>
+      <div class="best"><strong>Best for:</strong> faculty adding audit-perspective content to an existing Security+, IT-governance, or systems-analysis course without redesigning it.</div>
+    </div>
+
+    <div class="model">
+      <h4>Model 2 &mdash; Domain-Based Module Sequence (5&ndash;8 weeks)</h4>
+      <p>Map one CISA domain to one course unit. Use the corresponding lesson as the content spine; add one <a href="labs.html">lab</a> per unit; use the knowledge check as a unit quiz; assign a case (via the <a href="gen-case.html">Case Study</a> tool) as the unit project; use the Lesson&nbsp;9 cross-domain scenarios as the final.</p>
+      <div class="best"><strong>Best for:</strong> a dedicated IT-audit, IT-governance, or cybersecurity-management course at the community-college or university level.</div>
+    </div>
+
+    <div class="model">
+      <h4>Model 3 &mdash; Full CISA Pathway (2&ndash;4 courses)</h4>
+      <p><strong>Course 1:</strong> Audit Process &amp; Governance (D1&ndash;2, L0&ndash;3) &middot; <strong>Course 2:</strong> Acquisition, Operations &amp; Resilience (D3&ndash;4, L4&ndash;6) &middot; <strong>Course 3:</strong> Information-Asset Protection (D5, L7&ndash;8) &middot; <strong>Course 4:</strong> Exam-Prep Capstone (L9 + practice exam + 30/60/90-day plan). Each course maps to a domain cluster, uses the workshop&rsquo;s tools for assessment, and culminates in the <a href="gen-test.html">Practice Exam</a> as a summative. Because Domains&nbsp;4&ndash;5 are 52% of the exam, weight course credit toward them rather than splitting evenly.</p>
+      <div class="best"><strong>Note on eligibility:</strong> completing coursework <em>prepares</em> students to <strong>sit</strong> the exam (ISACA lets any candidate register). <strong>Certification</strong> additionally requires ISACA&rsquo;s work-experience requirement (five years of IS-audit/control/security experience, with defined waivers) &mdash; coursework does not by itself confer eligibility. State this plainly to students.</p></div>
+      <div class="best"><strong>Best for:</strong> workforce-development programs, university continuing education, or corporate L&amp;D building a formal IS-audit track.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: PD FLASHCARDS -->
+  <section class="block">
+    <p class="eyebrow">5 &middot; Key Terms (Faculty Edition)</p>
+    <h2 class="h2">Instructional-design vocabulary</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; The ID terms behind this guide &mdash; distinct from the exam vocabulary in Lessons&nbsp;0&ndash;9. Click a card to flip.</p>
+    <div class="vocab-grid">
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Bloom&rsquo;s Taxonomy</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A hierarchy of cognitive levels (Remember &rarr; Understand &rarr; Apply &rarr; Analyze &rarr; Evaluate &rarr; Create) used to write objectives and calibrate rigor.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Learning Objective</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A measurable statement of what a learner will be able to do, written with an observable action verb.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Formative Assessment</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Low-stakes, in-progress checks that give feedback to guide learning &mdash; e.g., the lesson knowledge checks.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Summative Assessment</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An end-of-unit measure of achievement &mdash; e.g., the Practice Exam used as a course final.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Authentic Assessment</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A task mirroring real professional work &mdash; e.g., producing an audit finding from a case scenario.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Course Mapping Matrix</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A table aligning content units to courses or standards and their intended instructional use.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Competency-Based Education</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Progression based on demonstrated mastery of competencies rather than seat time.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Stackable Credential</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A certificate that builds toward a larger qualification &mdash; e.g., a CISA-pathway course sequence.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Prior Learning Assessment</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Awarding academic credit for verified prior knowledge or professional experience (PLA).</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Universal Design for Learning</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Designing content with multiple means of representation, engagement, and expression so it works for all learners (UDL).</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">LMS Integration</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Deploying content into an LMS (Canvas, Blackboard, Google Classroom) as files, links, or standards-based packages.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SCORM / xAPI</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Packaging standards that let an LMS track completion and interaction data from learning content.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Flipped Classroom</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Learners absorb content before class (e.g., the podcasts) so class time is spent on applied practice.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Case-Based Learning</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Teaching through realistic scenarios that require analysis and judgment rather than recall.</div></div></div></button>
+      <button type="button" class="flip-card vocab" aria-pressed="false"><div class="flip-inner"><div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Backward Design</div><span class="flip-hint">&#8634; Definition</span></div><div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Planning from the desired outcomes and assessments first, then designing the learning activities to reach them.</div></div></div></button>
+    </div>
+  </section>
+
+  <!-- SECTION 6: PD KNOWLEDGE CHECK -->
+  <section class="block">
+    <p class="eyebrow">6 &middot; Knowledge Check</p>
+    <h2 class="h2">Faculty reflection (5 questions)</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">These are instructional-design questions &mdash; not CISA exam items. Choose the best answer, then submit for your score and the rationale for every option.</p>
+    <form id="quiz">
+
+      <div class="q" data-answer="B">
+        <p class="q-stem"><span class="qn">Q1.</span>A faculty member wants to use Domain&nbsp;1 content in an existing Security+ course. The MOST appropriate integration strategy is:</p>
+        <fieldset class="opts"><legend class="sr-only">Select one answer</legend>
+          <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Replace the Security+ content with CISA Domain 1 content.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Add audit-perspective framing to existing control topics (&ldquo;evaluate whether this control is adequate and effective&rdquo;) without restructuring the course.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> Assign the full lesson as required reading and test on all ten sub-topics.</span></label>
+          <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> Create a separate audit elective before integrating any Domain 1 content.</span></label>
+        </fieldset>
+        <div class="rationale"><b>Correct: B.</b> Single-module injection adds the audit lens to what&rsquo;s already taught &mdash; the lowest-friction, highest-value integration. <b>Why the others fall short:</b> <b>A</b> discards working Security+ content; <b>C</b> over-loads a course not designed around the domain; <b>D</b> defers the value behind a whole new course that may never be built.</div>
+      </div>
+
+      <div class="q" data-answer="B">
+        <p class="q-stem"><span class="qn">Q2.</span>A faculty member generates a case study with the AI tool and wants to use it in class. Before deploying it, the FIRST step should be to:</p>
+        <fieldset class="opts"><legend class="sr-only">Select one answer</legend>
+          <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> Share it with students for feedback on realism.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> Verify domain terminology and regulatory details against primary sources.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> Submit it to the department chair for approval.</span></label>
+          <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> Run it through plagiarism-detection software.</span></label>
+        </fieldset>
+        <div class="rationale"><b>Correct: B.</b> AI output can contain subtle inaccuracies; verifying terminology and regulatory facts against primary sources is the essential first gate. <b>Why the others fall short:</b> <b>A</b> exposes students to unverified content; <b>C</b> is a process step, not an accuracy check; <b>D</b> addresses originality, not correctness.</div>
+      </div>
+
+      <div class="q" data-answer="C">
+        <p class="q-stem"><span class="qn">Q3.</span>Which Bloom&rsquo;s level is BEST represented by an assessment asking students to &ldquo;<em>compare</em> the control implications of Waterfall vs. Agile SDLC from an IS-audit perspective&rdquo;?</p>
+        <fieldset class="opts"><legend class="sr-only">Select one answer</legend>
+          <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Remember</span></label>
+          <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> Apply</span></label>
+          <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> Analyze</span></label>
+          <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Create</span></label>
+        </fieldset>
+        <div class="rationale"><b>Correct: C.</b> &ldquo;Compare&rdquo; requires distinguishing and relating two methodologies &mdash; the hallmark of <b>Analyze</b>. <b>Why the others fall short:</b> <b>A</b> is recall of facts; <b>B</b> is using a procedure in a single situation; <b>D</b> would require producing something new (e.g., designing a control framework), a step beyond comparison.</div>
+      </div>
+
+      <div class="q" data-answer="C">
+        <p class="q-stem"><span class="qn">Q4.</span>A faculty member is designing a four-course CISA pathway. Domains&nbsp;4 and 5 together are 52% of the exam. The MOST appropriate allocation of course credit is to:</p>
+        <fieldset class="opts"><legend class="sr-only">Select one answer</legend>
+          <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> Give one credit hour per domain (five total).</span></label>
+          <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Give equal credit to all four courses regardless of domain weight.</span></label>
+          <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Weight credit more heavily toward the courses covering Domains 4 and 5.</span></label>
+          <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Cover all domains in a single 3-credit course.</span></label>
+        </fieldset>
+        <div class="rationale"><b>Correct: C.</b> Instructional time should track exam weight and depth &mdash; the heavier Domains&nbsp;4&ndash;5 warrant more credit. <b>Why the others fall short:</b> <b>A</b> ignores the 12&ndash;26% spread across domains; <b>B</b> under-serves the highest-yield material; <b>D</b> can&rsquo;t give a 52%-weighted body of content adequate depth.</div>
+      </div>
+
+      <div class="q" data-answer="B">
+        <p class="q-stem"><span class="qn">Q5.</span>A student in a Domain&nbsp;4B module argues their organization&rsquo;s BCP is effective because the board approved it and it&rsquo;s stored in SharePoint. The BEST faculty response, grounded in the auditor mindset, is:</p>
+        <fieldset class="opts"><legend class="sr-only">Select one answer</legend>
+          <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Yes &mdash; board approval and document storage confirm effectiveness.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Approval and storage confirm the plan <em>exists</em>, not that it <em>works</em>; effectiveness requires documented test results showing recovery meets the BIA-defined RTO/RPO.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Effectiveness is confirmed once the BCP team reviews the plan annually.</span></label>
+          <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Storage in a resilient system like SharePoint is sufficient evidence of recoverability.</span></label>
+        </fieldset>
+        <div class="rationale"><b>Correct: B.</b> Adequacy (a plan exists, approved) is not effectiveness (it works) &mdash; only <b>documented test results</b> meeting the BIA-defined RTO/RPO demonstrate that. <b>Why the others fall short:</b> <b>A</b> conflates approval with proof of recovery; <b>C</b> a review confirms the plan is current, not that recovery works; <b>D</b> where the file lives says nothing about whether the organization can actually recover.</div>
+      </div>
+
+      <div class="quiz-actions">
+        <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+        <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+        <span class="score" id="score" aria-live="polite"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- SECTION 7: RESOURCES -->
+  <section class="block">
+    <p class="eyebrow">7 &middot; Resources</p>
+    <h2 class="h2">Tools &amp; further reading</h2>
+    <div class="rule"></div>
+    <div class="table-wrap" style="margin:1.1rem 0">
+      <table class="data"><thead><tr><th style="width:34%">Tool</th><th>Faculty use</th></tr></thead><tbody>
+        <tr><td><a href="gen-activity.html">Generate Workshop Activities</a></td><td>Build interactive HTML5 labs for any domain</td></tr>
+        <tr><td><a href="gen-podcast.html">Generate Audio Files</a></td><td>Create flipped-classroom pre-class podcasts</td></tr>
+        <tr><td><a href="gen-case.html">Case Study Generation</a></td><td>Build cross-domain capstone cases with answer keys</td></tr>
+        <tr><td><a href="gen-graphics.html">Graphics Generation</a></td><td>Generate process flows and governance diagrams for slides</td></tr>
+        <tr><td><a href="gen-content.html">Content Generation</a></td><td>Draft lesson text, discussion prompts, and quiz items</td></tr>
+        <tr><td><a href="labs.html">Hands-On Labs</a></td><td>Assign domain-tagged scenario labs as graded or self-study work</td></tr>
+        <tr><td><a href="gen-test.html">CISA Practice Exam</a></td><td>Use as a summative assessment in pathway courses</td></tr>
+      </tbody></table>
+    </div>
+    <h4>External references for course alignment</h4>
+    <ul class="detail">
+      <li><strong>ISACA CISA Job Practice</strong> (isaca.org) &mdash; the official blueprint; align all course outcomes to it and verify currency.</li>
+      <li><strong>NIST NICE Cybersecurity Workforce Framework</strong> &mdash; maps CISA-adjacent skills to workforce roles.</li>
+      <li><strong>ACM/IEEE Computing Curricula</strong> &mdash; for aligning content to CS/IS degree programs.</li>
+      <li><strong>AACC Workforce-Development resources</strong> &mdash; for certificate-program and stackable-credential design.</li>
+    </ul>
+  </section>
+
+  <div class="return-home">
+    <a href="index.html" class="btn">&larr; Return to Workshop Home</a>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. This faculty guide does not confer ISACA eligibility or certification; align programs to the current CISA Job Practice at isaca.org.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

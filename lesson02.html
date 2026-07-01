@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 — Domain 2: Governance of IT (Part A) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<!-- LESSON HERO -->
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 2</span></p>
+    <span class="lesson-badge-lg">Day 2 &mdash; Morning &middot; Domain 2A</span>
+    <h1>Governance of IT <span>&mdash; Part A</span></h1>
+    <p class="lesson-lede">Governance is the force that aligns IT with business strategy, manages risk, and ensures accountability. An IS auditor who doesn't understand governance will misread the very controls they are testing. Part A covers the legal landscape, governance structures and strategy, policies, enterprise architecture, enterprise risk management, privacy, and data governance.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Morning, Day 2</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>18%</strong> (Domain 2)</span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Governance sets the direction the auditor measures against</h2>
+    <div class="rule"></div>
+    <p class="lead">Domain 2 is worth 18% of the exam and splits across two lessons. Part A is about <strong>governance</strong> &mdash; the leadership, structures, and processes that ensure IT serves the business and that risk is owned at the right level. The recurring exam theme: governance questions test <em>accountability and oversight</em>, not just whether IT is efficient. Your job as auditor is to evaluate whether the structures exist, whether decisions are reviewed at the appropriate level, and whether the organization can demonstrate &mdash; with evidence &mdash; that it does what it claims.</p>
+  </section>
+
+  <!-- OBJECTIVES -->
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Explain</strong> how laws, regulations, and industry standards shape the IS audit framework. <em class="bloom-tag">Bloom: Understand</em></span></li>
+      <li><span><strong>Assess</strong> the adequacy of organizational IT governance structures, policies, and strategic alignment. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> enterprise architecture decisions from a risk and control perspective. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Apply</strong> enterprise risk management concepts to IT governance assessments. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Identify</strong> privacy program requirements and their implications for IS auditors. <em class="bloom-tag">Bloom: Remember</em></span></li>
+      <li><span><strong>Assess</strong> data governance and classification programs for adequacy and effectiveness. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <!-- KEY TERMS (FLASHCARDS) -->
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IT Governance</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The leadership, organizational structures, and processes that ensure IT sustains and extends the organization's strategies and objectives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">COBIT</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Control Objectives for Information and Related Technologies &mdash; ISACA's primary framework for IT governance and management, currently COBIT 2019.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Enterprise Risk Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A board-level process for identifying, assessing, responding to, and monitoring risks across the entire organization.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IT Strategy</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A plan that defines how IT capabilities will support business objectives over a defined planning horizon.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Data Classification</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Categorizing data by sensitivity, criticality, and regulatory requirements to determine appropriate handling, protection, and retention.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Privacy by Design</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An approach to systems engineering that incorporates privacy considerations from the outset rather than as an afterthought.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Enterprise Architecture</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A structured representation of an organization's business processes, information, technology, and infrastructure to guide strategic decision-making.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">TOGAF</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The Open Group Architecture Framework; a widely used enterprise architecture framework and methodology.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Risk Appetite</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The amount and type of risk an organization is willing to accept in pursuit of its objectives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Segregation of Duties</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The principle that no single individual should control all aspects of a critical transaction or process, reducing the risk of error or fraud.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IT Steering Committee</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A governance body that provides direction, prioritization, and oversight for IT investments and initiatives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">GDPR</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">General Data Protection Regulation; EU regulation governing the collection, processing, and protection of personal data.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- LESSON CONTENT -->
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+
+    <div class="lesson-content">
+
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Laws, Regulations &amp; Standards</a></li>
+          <li><a href="#s2">2. IT Governance &amp; Strategy</a></li>
+          <li><a href="#s3">3. Policies, Standards &amp; Procedures</a></li>
+          <li><a href="#s4">4. Enterprise Architecture</a></li>
+          <li><a href="#s5">5. Enterprise Risk Management</a></li>
+          <li><a href="#s6">6. Privacy Program</a></li>
+          <li><a href="#s7">7. Data Governance &amp; Classification</a></li>
+        </ul>
+      </nav>
+
+      <div class="content-main">
+
+        <!-- 1 -->
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>Laws, Regulations &amp; Industry Standards</h3></div>
+          <p>Non-compliance is itself an auditable risk, and regulatory requirements drive control requirements. The auditor does not need to be a lawyer &mdash; but must know which regimes apply to the organization and evaluate whether controls actually meet them.</p>
+          <h4>Financial &amp; corporate governance</h4>
+          <ul class="detail">
+            <li><strong>SOX</strong> &mdash; Section 302 (CEO/CFO certification of controls), Section 404 (management and auditor attestation on internal control over financial reporting), PCAOB AS 2201 (IT general controls).</li>
+            <li><strong>GLBA</strong> Safeguards Rule (financial institutions must run an information-security program); <strong>Basel III</strong> (operational-risk implications for banks).</li>
+          </ul>
+          <h4>Sector regulations</h4>
+          <ul class="detail">
+            <li><strong>Healthcare:</strong> HIPAA (Privacy, Security, and Breach Notification Rules); HITECH extends enforcement to business associates.</li>
+            <li><strong>Payment card:</strong> PCI DSS &mdash; 12 requirements across 6 goals; applies to any entity that stores, processes, or transmits cardholder data.</li>
+            <li><strong>Privacy:</strong> GDPR (lawful basis, data-subject rights, 72-hour breach notice, DPO), CCPA/CPRA, PIPEDA.</li>
+            <li><strong>PIPEDA (Canada):</strong> consent-based collection, the ten fair-information principles, and mandatory breach reporting to the Privacy Commissioner where there is a <em>real risk of significant harm</em> &mdash; frequently relevant to cross-border data flows involving Canadian personal data.</li>
+            <li><strong>Government:</strong> FISMA (NIST framework for federal agencies); FedRAMP (cloud authorization for U.S. federal use).</li>
+          </ul>
+          <h4>Industry standards (adopted, not legally mandated)</h4>
+          <ul class="detail">
+            <li>ISO/IEC 27001/27002, NIST CSF (Identify, Protect, Detect, Respond, Recover), ITIL 4, and COBIT 2019.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>When management says "we're PCI compliant," that is a claim to <strong>verify with evidence</strong> &mdash; an Attestation of Compliance, current scan reports, scope documentation &mdash; not something to accept at face value.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Regulation questions test the auditor's <strong>role</strong>, not regulatory recall. The auditor evaluates whether controls meet requirements and whether compliance monitoring is effective &mdash; and verifies management's compliance claims with evidence.</div>
+        </article>
+
+        <!-- 2 -->
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Organizational Structure, IT Governance &amp; Strategy</h3></div>
+          <p>Governance is fundamentally about <strong>accountability and oversight</strong>. COBIT 2019 draws a clear line between <em>governance</em> (the board's job) and <em>management</em> (running IT day to day), and the auditor's task is to confirm the right bodies exist and actually exercise oversight.</p>
+          <h4>COBIT 2019 governance system</h4>
+          <ul class="detail">
+            <li><strong>Governance &mdash; EDM domain</strong> (Evaluate, Direct, Monitor): board and executive level.</li>
+            <li><strong>Management &mdash; APO, BAI, DSS, MEA</strong> (Plan, Build, Run, Monitor): management level.</li>
+            <li>Val IT (value delivery) and Risk IT (IT-specific risk) are now integrated into COBIT&nbsp;2019 &mdash; but ISACA still references them by name in some CISA material, so you may encounter both the integrated and the standalone terms.</li>
+          </ul>
+          <h4>Governance bodies &amp; structure</h4>
+          <ul class="detail">
+            <li>Board (oversight, risk appetite, IT policy), audit committee, <strong>IT steering committee</strong> (cross-functional governance of IT investments), CIO/CISO (execution).</li>
+            <li>Centralized vs. decentralized governance trade-offs; matrix accountability challenges; the IT reporting line (CIO to CEO/CFO/COO) has independence implications.</li>
+            <li>IT strategic planning: align IT strategy to business strategy; portfolio management (run-the-business vs. change-the-business); investment prioritization with business cases.</li>
+          </ul>
+          <p>The auditor asks: does an IT steering committee exist and meet regularly? Is there a board-approved IT strategy? Are IT performance metrics reported to the board/audit committee? Are IT risks rolled into enterprise risk reporting?</p>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An IT project that came in on time and on budget but was never reviewed by the steering committee or board is <em>still</em> a governance deficiency. A successful outcome does not excuse the absence of oversight.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Governance questions test <strong>accountability and oversight</strong>, not just efficiency. IT making major investment decisions without board review or audit-committee visibility is a governance deficiency &mdash; even if the project succeeds.</div>
+        </article>
+
+        <!-- 3 -->
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>IT Policies, Standards, Procedures &amp; Practices</h3></div>
+          <p>The documentation hierarchy is how management intent becomes enforceable specifics. Auditors evaluate not just whether documents exist, but whether they are approved, communicated, current, and acknowledged.</p>
+          <h4>The hierarchy</h4>
+          <ul class="detail">
+            <li><strong>Policy</strong> (high-level management intent) &gt; <strong>standard</strong> (mandatory specification, e.g. minimum password length) &gt; <strong>procedure</strong> (step-by-step instructions) &gt; <strong>guideline</strong> (recommended, non-mandatory) &gt; <strong>baseline</strong> (minimum secure configuration for a system type).</li>
+            <li><strong>Lifecycle:</strong> draft &rarr; review &rarr; approve &rarr; publish &rarr; awareness &rarr; periodic review &rarr; retirement.</li>
+          </ul>
+          <h4>What the auditor evaluates</h4>
+          <ul class="detail">
+            <li>Documented and formally approved by the appropriate authority; communicated to all affected parties; reviewed and updated on a defined cycle; aligned with applicable law; and acknowledged/understood by employees.</li>
+            <li>Common policies to audit: AUP, Information Security, Access Control, Change Management, Data Classification &amp; Handling, Incident Response, Business Continuity, Vendor Management.</li>
+            <li>Policy exceptions must be requested, approved, documented, and monitored.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A beautifully written policy that nobody has acknowledged &mdash; or that hasn't been reviewed in five years &mdash; is a finding. Existence is not effectiveness.</p></div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Policies, Standards, Procedures &amp; Guidelines</strong> &mdash; an interactive walk-through of the governance documentation hierarchy.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/PSPG/PSPG.html" target="_blank" rel="noopener noreferrer">Policies &amp; Standards <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4 -->
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Enterprise Architecture</h3></div>
+          <p>Enterprise architecture is the blueprint that links business, data, application, and technology layers to strategy. Security and control belong <em>in</em> the architecture &mdash; and systems that operate outside EA governance (shadow IT) are control gaps by definition.</p>
+          <ul class="detail">
+            <li><strong>Frameworks:</strong> TOGAF (with its iterative Architecture Development Method), Zachman (a classification schema), SABSA (security-specific), FEAF (U.S. government).</li>
+            <li><strong>Four EA domains:</strong> business architecture, data/information architecture, application architecture, technology architecture.</li>
+            <li><strong>Auditor evaluation:</strong> documented current and target state; security and control requirements integrated into architectural decisions; a governance process that reviews deviations; legacy systems identified and risk-assessed; EA supports regulatory compliance.</li>
+            <li><strong>Shadow IT</strong> &mdash; unauthorized systems outside EA governance &mdash; represents an uncontrolled gap.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A new system deployed without architecture review isn't simply "insecure." It's a <strong>governance finding</strong>: the EA governance process failed to detect or prevent an unauthorized deployment.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>A system deployed without an architecture or security review is a <strong>governance finding</strong> &mdash; architectural controls and governance processes failed &mdash; not merely a technical "the system is insecure" finding.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Cybersecurity Design Principles</strong> &mdash; the security-architecture fundamentals that should be built into EA decisions.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/design/cybersecuritydesignprinciples.html" target="_blank" rel="noopener noreferrer">Design Principles <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Enterprise Risk Management</h3></div>
+          <p>ERM identifies, assesses, responds to, and monitors risk across the whole organization &mdash; IT risk included. Critically, the auditor sits in the <strong>third line</strong>: independent assurance, not risk owner and not control designer.</p>
+          <h4>Frameworks &amp; process</h4>
+          <ul class="detail">
+            <li><strong>COSO ERM (2017)</strong> components: Governance &amp; Culture; Strategy &amp; Objective-Setting; Performance; Review &amp; Revision; Information, Communication &amp; Reporting. Also <strong>ISO 31000</strong> and ISACA <strong>Risk IT</strong>.</li>
+            <li><strong>Process:</strong> identify &rarr; assess (likelihood &times; impact) &rarr; respond &rarr; monitor residual risk.</li>
+            <li><strong>Risk responses:</strong> accept/tolerate (within appetite), mitigate/reduce (controls), transfer/share (insurance, outsourcing), avoid/terminate (stop the activity).</li>
+            <li><strong>IT risk taxonomy:</strong> strategic, operational, compliance, information-security risk. Captured in a <strong>risk register</strong> with named owners, against a board-approved <strong>risk appetite</strong>.</li>
+          </ul>
+          <figure class="diagram">
+            <svg viewBox="0 0 520 462" role="img" aria-label="A five by five risk heat map. The horizontal axis is likelihood from rare to almost certain; the vertical axis is impact from insignificant to severe. Cells are shaded from green (low) through yellow and orange to red (extreme) by the product of likelihood and impact. An example risk with likely likelihood and major impact is plotted in the red extreme zone.">
+              <text x="22" y="192" text-anchor="middle" transform="rotate(-90 22 192)" class="dg-text-muted" font-size="12" font-weight="700" letter-spacing="1">IMPACT &#8594;</text>
+              <rect x="112" y="30" width="69" height="61" rx="4" class="hz-med"/><text x="146" y="64" text-anchor="middle" font-size="12" fill="#14311f">5</text><rect x="184" y="30" width="69" height="61" rx="4" class="hz-high"/><text x="218" y="64" text-anchor="middle" font-size="12" fill="#ffffff">10</text><rect x="256" y="30" width="69" height="61" rx="4" class="hz-ext"/><text x="290" y="64" text-anchor="middle" font-size="12" fill="#ffffff">15</text><rect x="328" y="30" width="69" height="61" rx="4" class="hz-ext"/><text x="362" y="64" text-anchor="middle" font-size="12" fill="#ffffff">20</text><rect x="400" y="30" width="69" height="61" rx="4" class="hz-ext"/><text x="434" y="64" text-anchor="middle" font-size="12" fill="#ffffff">25</text><rect x="112" y="94" width="69" height="61" rx="4" class="hz-low"/><text x="146" y="128" text-anchor="middle" font-size="12" fill="#14311f">4</text><rect x="184" y="94" width="69" height="61" rx="4" class="hz-med"/><text x="218" y="128" text-anchor="middle" font-size="12" fill="#14311f">8</text><rect x="256" y="94" width="69" height="61" rx="4" class="hz-high"/><text x="290" y="128" text-anchor="middle" font-size="12" fill="#ffffff">12</text><rect x="328" y="94" width="69" height="61" rx="4" class="hz-ext"/><text x="362" y="128" text-anchor="middle" font-size="12" fill="#ffffff">16</text><rect x="400" y="94" width="69" height="61" rx="4" class="hz-ext"/><text x="434" y="128" text-anchor="middle" font-size="12" fill="#ffffff">20</text><rect x="112" y="158" width="69" height="61" rx="4" class="hz-low"/><text x="146" y="192" text-anchor="middle" font-size="12" fill="#14311f">3</text><rect x="184" y="158" width="69" height="61" rx="4" class="hz-med"/><text x="218" y="192" text-anchor="middle" font-size="12" fill="#14311f">6</text><rect x="256" y="158" width="69" height="61" rx="4" class="hz-med"/><text x="290" y="192" text-anchor="middle" font-size="12" fill="#14311f">9</text><rect x="328" y="158" width="69" height="61" rx="4" class="hz-high"/><text x="362" y="192" text-anchor="middle" font-size="12" fill="#ffffff">12</text><rect x="400" y="158" width="69" height="61" rx="4" class="hz-ext"/><text x="434" y="192" text-anchor="middle" font-size="12" fill="#ffffff">15</text><rect x="112" y="222" width="69" height="61" rx="4" class="hz-low"/><text x="146" y="256" text-anchor="middle" font-size="12" fill="#14311f">2</text><rect x="184" y="222" width="69" height="61" rx="4" class="hz-low"/><text x="218" y="256" text-anchor="middle" font-size="12" fill="#14311f">4</text><rect x="256" y="222" width="69" height="61" rx="4" class="hz-med"/><text x="290" y="256" text-anchor="middle" font-size="12" fill="#14311f">6</text><rect x="328" y="222" width="69" height="61" rx="4" class="hz-med"/><text x="362" y="256" text-anchor="middle" font-size="12" fill="#14311f">8</text><rect x="400" y="222" width="69" height="61" rx="4" class="hz-high"/><text x="434" y="256" text-anchor="middle" font-size="12" fill="#ffffff">10</text><rect x="112" y="286" width="69" height="61" rx="4" class="hz-low"/><text x="146" y="320" text-anchor="middle" font-size="12" fill="#14311f">1</text><rect x="184" y="286" width="69" height="61" rx="4" class="hz-low"/><text x="218" y="320" text-anchor="middle" font-size="12" fill="#14311f">2</text><rect x="256" y="286" width="69" height="61" rx="4" class="hz-low"/><text x="290" y="320" text-anchor="middle" font-size="12" fill="#14311f">3</text><rect x="328" y="286" width="69" height="61" rx="4" class="hz-low"/><text x="362" y="320" text-anchor="middle" font-size="12" fill="#14311f">4</text><rect x="400" y="286" width="69" height="61" rx="4" class="hz-med"/><text x="434" y="320" text-anchor="middle" font-size="12" fill="#14311f">5</text>
+              <text x="104" y="67" text-anchor="end" class="dg-text" font-size="11">Severe</text><text x="104" y="131" text-anchor="end" class="dg-text" font-size="11">Major</text><text x="104" y="195" text-anchor="end" class="dg-text" font-size="11">Moderate</text><text x="104" y="259" text-anchor="end" class="dg-text" font-size="11">Minor</text><text x="104" y="323" text-anchor="end" class="dg-text" font-size="11">Insignificant</text>
+              <text x="146" y="366" text-anchor="middle" class="dg-text" font-size="11">Rare</text><text x="218" y="366" text-anchor="middle" class="dg-text" font-size="11">Unlikely</text><text x="290" y="366" text-anchor="middle" class="dg-text" font-size="11">Possible</text><text x="362" y="366" text-anchor="middle" class="dg-text" font-size="11">Likely</text><text x="434" y="366" text-anchor="middle" class="dg-text" font-size="11">Almost</text><text x="434" y="380" text-anchor="middle" class="dg-text" font-size="11">Certain</text>
+              <text x="292" y="404" text-anchor="middle" class="dg-text-muted" font-size="12" font-weight="700" letter-spacing="1">LIKELIHOOD &#8594;</text>
+              <circle cx="362" cy="124" r="13" class="dg-marker"/>
+              <text x="362" y="128" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">!</text>
+              <rect x="46" y="428" width="15" height="15" rx="3" class="hz-low"/><text x="67" y="440" class="dg-text" font-size="11">Low</text><rect x="164" y="428" width="15" height="15" rx="3" class="hz-med"/><text x="185" y="440" class="dg-text" font-size="11">Medium</text><rect x="282" y="428" width="15" height="15" rx="3" class="hz-high"/><text x="303" y="440" class="dg-text" font-size="11">High</text><rect x="400" y="428" width="15" height="15" rx="3" class="hz-ext"/><text x="421" y="440" class="dg-text" font-size="11">Extreme</text>
+            </svg>
+            <figcaption>A qualitative risk is rated by <strong>likelihood &times; impact</strong>, and where it lands sets the priority. The plotted example &mdash; a <em>likely</em> event with <em>major</em> impact &mdash; sits in the <strong>extreme</strong> zone: it demands treatment, not acceptance.</figcaption>
+          </figure>
+          <h4>The Three Lines Model</h4>
+          <ul class="detail">
+            <li><strong>First line:</strong> operational management (owns and manages risk). <strong>Second line:</strong> risk and compliance functions (oversight and monitoring). <strong>Third line:</strong> internal audit (independent assurance).</li>
+          </ul>
+          <figure class="diagram">
+            <svg viewBox="0 0 720 284" role="img" aria-label="The three lines model. A governing body or board sits on top. Below are three columns: first line operational management owns and manages risk; second line risk and compliance provides oversight; third line internal audit provides independent assurance. The IS auditor sits in the third line."><rect x="40" y="24" width="640" height="42" rx="8" class="dg-box"/><text x="360.0" y="50.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Governing Body / Board &#8212; accountability &amp; oversight</text><line x1="140" y1="66" x2="140" y2="104" class="dg-arrow-line" stroke-width="1.5"/><line x1="360" y1="66" x2="360" y2="104" class="dg-arrow-line" stroke-width="1.5"/><line x1="580" y1="66" x2="580" y2="104" class="dg-arrow-line" stroke-width="1.5"/><rect x="40" y="104" width="200" height="150" rx="8" class="dg-box-soft"/><text x="140" y="134" text-anchor="middle" class="dg-text" font-size="13.5" font-weight="700">First Line</text><text x="140" y="160" text-anchor="middle" class="dg-text" font-size="12" font-weight="600">Operational Management</text><text x="140" y="182" text-anchor="middle" class="dg-text-muted" font-size="10.8">Owns &amp; manages risk;</text><text x="140" y="197" text-anchor="middle" class="dg-text-muted" font-size="10.8">runs the controls</text><rect x="260" y="104" width="200" height="150" rx="8" class="dg-box-soft"/><text x="360" y="134" text-anchor="middle" class="dg-text" font-size="13.5" font-weight="700">Second Line</text><text x="360" y="160" text-anchor="middle" class="dg-text" font-size="12" font-weight="600">Risk &amp; Compliance</text><text x="360" y="182" text-anchor="middle" class="dg-text-muted" font-size="10.8">Sets policy, oversees</text><text x="360" y="197" text-anchor="middle" class="dg-text-muted" font-size="10.8">and monitors</text><rect x="480" y="104" width="200" height="150" rx="8" class="dg-box-soft"/><rect x="480" y="104" width="200" height="150" rx="8" class="dg-stroke-accent" stroke-width="2.5"/><text x="580" y="134" text-anchor="middle" class="dg-text-accent" font-size="13.5" font-weight="700">Third Line</text><text x="580" y="160" text-anchor="middle" class="dg-text" font-size="12" font-weight="600">Internal Audit</text><text x="580" y="182" text-anchor="middle" class="dg-text-muted" font-size="10.8">Independent</text><text x="580" y="197" text-anchor="middle" class="dg-text-muted" font-size="10.8">assurance</text><text x="580" y="228" text-anchor="middle" class="dg-text-accent" font-size="11" font-weight="700">&#9668; the IS auditor</text><text x="580" y="243" text-anchor="middle" class="dg-text-accent" font-size="11" font-weight="700">sits here</text></svg>
+            <figcaption>The <strong>three lines model</strong> keeps risk ownership separate from assurance: the <strong>first line</strong> owns and runs controls, the <strong>second line</strong> sets policy and monitors, and the <strong>third line</strong> &mdash; internal audit, where the IS auditor sits &mdash; provides <em>independent</em> assurance. Answers that put the auditor in the first or second line are testing this boundary.</figcaption>
+          </figure>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A board that formally accepts a specific risk that's within its stated appetite, without adding controls, has chosen <strong>risk acceptance</strong> &mdash; a legitimate, documented response, not a deficiency.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>The IS auditor is the <strong>third line</strong> (independent assurance). The auditor does not own or manage risk (first line) or design controls (second line). Answers that ask the auditor to "help management implement" a response are testing this boundary.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Risk Management</strong> &amp; <strong>Risk Analysis</strong> &mdash; interactive modules on the formal risk-reduction process and on assessing threats and vulnerabilities.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/risk_management/risk_management.html" target="_blank" rel="noopener noreferrer">Risk Mgmt <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/risk_analysis/risk_analysis.html" target="_blank" rel="noopener noreferrer">Risk Analysis <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6 -->
+        <article class="content-section" id="s6">
+          <div class="cs-head"><span class="cs-num">6</span><h3>Privacy Program &amp; Principles</h3></div>
+          <p>Privacy and security are not the same thing. <strong>Security</strong> protects data from unauthorized access; <strong>privacy</strong> ensures data is collected, used, retained, and shared appropriately. An organization can have excellent security and still violate privacy.</p>
+          <ul class="detail">
+            <li><strong>Frameworks:</strong> OECD Privacy Principles (8), GAPP (10, AICPA/CPA Canada), and the GDPR principles (lawfulness/fairness/transparency, purpose limitation, data minimization, accuracy, storage limitation, integrity &amp; confidentiality, accountability).</li>
+            <li><strong>Program components:</strong> privacy policy and notices, consent management, data-subject rights (access, erasure, portability, objection), privacy impact assessments (PIAs), the Data Protection Officer role, breach detection and notification, and cross-border transfer mechanisms (SCCs, BCRs, adequacy decisions).</li>
+            <li><strong>Auditor evaluation:</strong> PIAs before new processing begins; a documented inventory of personal-data flows; data-subject requests fulfilled within required timeframes; breach notification within regulatory windows; data-processing agreements with third-party processors.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A company can encrypt everything and still violate privacy &mdash; for example, by using customer data for a marketing purpose the customer never consented to. Security controls don't answer the privacy question.</p></div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Privacy Tenets</strong> &mdash; an interactive primer on personal-data protection principles.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/privacy/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Tenets <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7 -->
+        <article class="content-section" id="s7">
+          <div class="cs-head"><span class="cs-num">7</span><h3>Data Governance &amp; Classification</h3></div>
+          <p>Data is a strategic asset that needs ownership and accountability. The distinction the exam loves: the <strong>data owner</strong> (business) classifies data and sets access requirements; the <strong>data custodian</strong> (IT) implements the technical controls.</p>
+          <ul class="detail">
+            <li><strong>Roles:</strong> owner (business, accountable for the asset), steward (operational quality and compliance), custodian (IT storage, security, availability). Plus data-quality management, master data management, and data catalog/lineage.</li>
+            <li><strong>Classification:</strong> typical tiers Public, Internal, Confidential, Restricted/Secret; regulatory-driven categories such as PHI, PCI data, PII, and classified government data.</li>
+            <li><strong>Data lifecycle:</strong> creation &rarr; storage &rarr; use &rarr; sharing &rarr; archival &rarr; destruction.</li>
+            <li><strong>Retention &amp; disposal:</strong> schedules aligned to legal/regulatory/business needs; secure disposal via cryptographic erasure, physical destruction, or degaussing; media-sanitization standard NIST SP 800-88.</li>
+            <li><strong>Auditor evaluation:</strong> data owners formally designated; a documented and enforced classification policy; labels consistently applied; retention schedules followed; a verified secure-disposal process. <span class="xref">(also <a href="lesson05.html">Lesson&nbsp;5</a> &mdash; operational log retention)</span></li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>When marketing staff can freely read customer financial data, the root cause is usually not the IAM system &mdash; it's that the <strong>data owner never defined access requirements</strong>. The access gap is a downstream symptom of the governance failure.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Data governance questions test <strong>accountability</strong>: the <strong>owner</strong> (business) classifies and sets access; the <strong>custodian</strong> (IT) implements technical controls. The auditor evaluates whether this structure exists and works.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Data Roles</strong> &mdash; an interactive module on owner, custodian, and processor responsibilities.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/DataRoles/dataroles.html" target="_blank" rel="noopener noreferrer">Data Roles <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- KNOWLEDGE CHECK -->
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 2A judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale for every item. Think governance: accountability, oversight, and evidence.</p>
+
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>An IS auditor finds that the CIO makes all significant IT investment decisions without formal review by an IT steering committee or the board. The MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> IT costs may not be optimized because steering-committee oversight reduces waste.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> There is inadequate accountability and oversight of IT investments relative to business strategy.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> The CIO may not have sufficient technical knowledge to make investment decisions.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> IT projects may not align with the current enterprise architecture.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The primary governance concern is lack of accountability and oversight &mdash; not just cost or alignment. When a single executive makes all investment decisions without board-level oversight, the governance structure is deficient. <b>Why the others fall short:</b> <b>A</b> cost waste is a symptom, not the core governance concern; <b>C</b> the issue is oversight structure, not the CIO&rsquo;s technical skill; <b>D</b> architecture alignment is narrower than the missing accountability.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q2.</span>During a data governance audit, employees in marketing routinely access customer financial data despite no business need, and the data owner has never formally set access requirements. The PRIMARY finding is:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> An access-control deficiency in the IAM system.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> A data classification and data ownership deficiency &mdash; the owner failed to define access requirements.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> A violation of the acceptable use policy by marketing employees.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> An IT operations deficiency in provisioning and recertification.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The root cause is that the data owner never defined access requirements &mdash; a data ownership/classification governance failure. The access-control gap (A) and provisioning gap (D) are downstream consequences. <b>Why the others fall short:</b> <b>A</b> the IAM gap is downstream &mdash; the owner never defined requirements; <b>C</b> blaming users misses the root ownership failure; <b>D</b> provisioning issues stem from the undefined ownership, not vice versa.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q3.</span>An organization subject to GDPR suffers a breach of customer personal data at 6:00 PM Friday. The DPO becomes aware at 8:00 AM Saturday. By when must the supervisory authority be notified?</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Within 24 hours of the DPO becoming aware.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> Within 72 hours of the DPO becoming aware (Tuesday 8:00 AM).</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> Within 72 hours of the organization becoming aware (6:00 PM Friday), by 6:00 PM Monday.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Within 5 business days of confirming personal data was affected.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> GDPR Article 33 requires notification within 72 hours of the controller (organization) becoming aware. The organization became aware at 6:00 PM Friday; the deadline is 6:00 PM Monday. <b>Why the others fall short:</b> <b>A</b> 24 hours isn&rsquo;t the GDPR window; <b>B</b> the clock starts at the organization&rsquo;s awareness, not the DPO&rsquo;s; <b>D</b> five business days is not the rule.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q4.</span>Management states that IT risks are handled by the IT department and need not appear in the enterprise risk register. The IS auditor should conclude that:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> This is acceptable if IT-risk documentation exists within the IT department.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> This is an ERM deficiency; IT risks belong in the enterprise risk register with business-level owners.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> This is best practice; separating IT risk from ERM reduces complexity.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> This is acceptable if IT risks are below the risk-appetite threshold.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> ERM requires that all material risks &mdash; including IT risks &mdash; be captured in the enterprise risk register with business-accountable owners. Siloing IT risks within IT undermines board-level visibility and accountability. <b>Why the others fall short:</b> <b>A</b> siloing IT-risk documents inside IT keeps them out of enterprise view; <b>C</b> separating IT risk from ERM fragments oversight rather than simplifying it; <b>D</b> risks within appetite still belong on the register.</div>
+        </div>
+
+        <div class="q" data-answer="D">
+          <p class="q-stem"><span class="qn">Q5.</span>Under COSO ERM, the board formally accepts a specific IT security risk without implementing additional controls; the risk is within the stated risk appetite. This represents which risk response?</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Risk mitigation.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Risk avoidance.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Risk transfer.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Risk acceptance.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: D.</b> Formally accepting a risk within the approved risk appetite, without additional controls, is risk acceptance &mdash; a valid and appropriate response when residual risk is within appetite. <b>Why the others fall short:</b> <b>A</b> mitigation would add controls, but none were added; <b>B</b> avoidance would end the activity, which continues; <b>C</b> transfer would shift the risk to a third party, which didn&rsquo;t happen.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- PAGER -->
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson01.html" class="prev">
+      <span class="pager-dir">&#8592; Previous</span>
+      <span class="pager-name">Lesson 1 &mdash; IS Auditing Process</span>
+    </a>
+    <a href="lesson03.html" class="next">
+      <span class="pager-dir">Next &#8594;</span>
+      <span class="pager-name">Lesson 3 &mdash; Management of IT (Part B)</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

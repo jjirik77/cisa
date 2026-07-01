@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5 — Domain 4: IS Operations (Part A) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 5</span></p>
+    <span class="lesson-badge-lg">Day 3 &mdash; Afternoon &middot; Domain 4A</span>
+    <h1>IS Operations <span>&mdash; Part A</span></h1>
+    <p class="lesson-lede">IS operations is where IT governance meets reality. Domain 4A covers the components, processes, and daily management of the IT environment &mdash; and the controls that keep it running reliably. Domain 4 is the joint-largest domain at 26%.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Afternoon, Day 3</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>26% (Domain 4)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">The daily machinery of IT &mdash; and the controls that keep it honest</h2>
+    <div class="rule"></div>
+    <p class="lead"><strong>This is the daily machinery of IT &mdash; and the controls that keep it honest.</strong> Domain 4 is worth 26% of the exam (tied with Domain 5 for the heaviest weight), and Part A is the operations half. It runs from knowing what you operate (components and assets) through how work gets done (batch jobs, interfaces), how services stay available (capacity, SLAs), and how the environment is kept under control (incident, problem, change, patch, log, and database management). The through-lines: a <em>complete inventory</em>, <em>reconciliation</em> of data and licenses, and <em>independence</em> &mdash; especially for the DBA. You can't audit, control, or recover what you can't see.</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Identify and assess</strong> IT components across hardware, software, network, and cloud categories.</span></li>
+      <li><span><strong>Evaluate</strong> IT asset management programs for completeness, accuracy, and lifecycle coverage. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> job scheduling, automation, and system-interface controls for completeness and error handling. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Identify and assess</strong> risks associated with shadow IT and end-user computing.</span></li>
+      <li><span><strong>Evaluate</strong> systems availability, capacity management, and IT service-level management. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> incident, problem, change, patch, log, and database management processes. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Configuration Management Database (CMDB)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A centralized repository of IT components (configuration items) and their relationships, used to support IT operations and change management.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Shadow IT</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Technology systems or services used within an organization without explicit IT department knowledge or approval.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">End-User Computing (EUC)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Systems, applications, or tools created and maintained by business users outside formal IT development and governance (e.g., spreadsheets, Access databases).</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">ITSM</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">IT Service Management &mdash; policies and practices for implementing, delivering, and managing IT services to meet business needs; ITIL is the leading framework.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Incident</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An unplanned interruption or reduction in quality of an IT service, or an event that has the potential to impair service.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Problem</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The underlying cause of one or more incidents; problem management identifies and eliminates root causes.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Change Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Formal procedures for reviewing, approving, and implementing changes to the production IT environment to minimize risk.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Patch Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The process of identifying, acquiring, testing, approving, and deploying software fixes to production systems.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Mean Time to Restore (MTTR)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The average time to restore a failed service to normal operation; lower is better.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Mean Time Between Failures (MTBF)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The average time between failures for a system or component; higher is better.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Capacity Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Ensuring IT resources (compute, storage, network) are sufficient to meet current and future demand at acceptable cost.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Database Administrator (DBA)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The person responsible for installation, configuration, maintenance, security, performance, and backup of database systems.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. IT Components</a></li>
+          <li><a href="#s2">2. IT Asset Management</a></li>
+          <li><a href="#s3">3. Job Scheduling &amp; Interfaces</a></li>
+          <li><a href="#s4">4. Shadow IT &amp; EUC</a></li>
+          <li><a href="#s5">5. Availability, Capacity &amp; SLAs</a></li>
+          <li><a href="#s6">6. Incident &amp; Problem Mgmt</a></li>
+          <li><a href="#s7">7. Change &amp; Patch Mgmt</a></li>
+          <li><a href="#s8">8. Log Management</a></li>
+          <li><a href="#s9">9. Database Management</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>IT Components</h3></div>
+          <p>IS operations begins with knowing what you run. Auditors expect a complete, current inventory of every component, because you can't control or recover what you haven't inventoried.</p>
+          <ul class="detail">
+            <li><strong>Hardware:</strong> servers, storage (SAN/NAS/DAS/cloud), network gear (routers, switches, firewalls, load balancers), end-user devices, data-center infrastructure (power, cooling).</li>
+            <li><strong>Software:</strong> operating systems, DBMS (RDBMS and NoSQL), middleware/APIs/ESB/queues, applications (ERP, CRM, custom).</li>
+            <li><strong>Network:</strong> segmentation (DMZ, production vs. development), topology (LAN/WAN/SD-WAN), DNS/DHCP.</li>
+            <li><strong>Cloud:</strong> IaaS/PaaS/SaaS shared-responsibility implications; hybrid and multi-cloud.</li>
+            <li><strong>Auditor:</strong> comprehensive inventory; configurations compared to baselines; end-of-life/end-of-support components identified and risk-assessed.</li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>IT Asset Management</h3></div>
+          <p>Asset management tracks each component through its lifecycle &mdash; and two of its controls (license compliance and secure disposal) are frequent exam material.</p>
+          <ul class="detail">
+            <li><strong>Hardware lifecycle:</strong> procurement &rarr; deployment &rarr; maintenance &rarr; refresh &rarr; decommission &rarr; disposal.</li>
+            <li><strong>Software asset management:</strong> license inventory and reconciliation, deployment tracking, unauthorized-software detection.</li>
+            <li><strong>Asset register:</strong> owner, location, classification, lifecycle stage, support status.</li>
+            <li><strong>Disposal controls:</strong> media sanitization (NIST SP 800-88), certificates of destruction, chain of custody for media.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Software license compliance is both a financial and a legal risk. Over-deployment exposes the organization to vendor audits and penalties; unused licenses are wasted spend. Auditors look for regular reconciliation between installed software and licensed entitlements.</div>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>Job Scheduling &amp; System Interfaces</h3></div>
+          <p>Much production work runs unattended &mdash; batch jobs and system-to-system interfaces. The controls here ensure work completes and that data moving between systems is complete and accurate.</p>
+          <h4>Job scheduling</h4>
+          <ul class="detail">
+            <li>Batch processing of grouped transactions; enterprise schedulers manage dependencies and execution windows.</li>
+            <li><strong>Controls:</strong> job authorization (only approved jobs in production), monitoring (failure/late-start alerts), restart/recovery procedures, exception reports to business users.</li>
+            <li><strong>Auditor:</strong> execution log with completion status; failures detected and resolved; schedule changes under change management; production separated from dev/test.</li>
+          </ul>
+          <h4>System interfaces</h4>
+          <ul class="detail">
+            <li><strong>Types:</strong> file transfer (SFTP/FTP), API (REST/SOAP), message queue (MQ/Kafka), real-time (ESB).</li>
+            <li><strong>Controls:</strong> completeness (record counts, hash totals), accuracy (field validation), timeliness, authorization, error handling (log, queue for reprocessing, investigate).</li>
+            <li><strong>API security:</strong> OAuth 2.0/API keys, role-based authorization, rate limiting, TLS 1.2+.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Interface reconciliation is a common topic. Watch for data transferred between systems with <strong>no reconciliation</strong> &mdash; errors could pass through undetected. The auditor's concern is completeness and accuracy of the transfer, not just connectivity.</div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Shadow IT &amp; End-User Computing</h3></div>
+          <p>When technology operates outside IT's governance &mdash; unsanctioned cloud tools, or business-built spreadsheets running critical calculations &mdash; control gaps multiply.</p>
+          <ul class="detail">
+            <li><strong>Shadow IT risks:</strong> no change control, backup, or security review; regulated data in unauthorized cloud services; key-person single points of failure.</li>
+            <li><strong>EUC risks:</strong> critical spreadsheets without version or access controls; no audit trail for formula changes; manual-entry integrity risk.</li>
+            <li><strong>Controls:</strong> inventory critical EUCs; version control for critical spreadsheets; access controls and change logs; independent validation of EUC outputs.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Shadow IT findings often span domains. A department using an unknown cloud tool that stores customer data is simultaneously a <strong>governance</strong> (policy), <strong>privacy</strong> (uncontrolled data), and <strong>operations</strong> (no backup/recovery) finding.</div>
+        </article>
+
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Availability, Capacity &amp; Service-Level Management</h3></div>
+          <p>Operations exists to keep services available, performing, and within agreed service levels &mdash; and to see trouble coming before it lands.</p>
+          <ul class="detail">
+            <li><strong>Availability</strong> = Uptime / (Uptime + Downtime). &ldquo;Five nines&rdquo; (99.999%) &asymp; 5 minutes of downtime per year. Eliminate single points of failure with clustering, load balancing, and failover.</li>
+            <li><strong>Capacity management:</strong> planning, thresholds and alerts, performance trending to catch degradation early.</li>
+            <li><strong>Service-level management:</strong> SLAs (availability, performance, support hours, priorities, penalties), plus OLAs and underpinning contracts.</li>
+            <li><strong>Auditor:</strong> SLAs documented and signed; metrics monitored continuously (not just reported after the fact); breaches documented and remediated; capacity plans reviewed at least annually; SPOFs in the risk register.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An ERP reporting 99.7% availability &ldquo;above SLA&rdquo; can still mislead if planned-maintenance downtime is excluded. The auditor checks whether the SLA actually defines that exclusion &mdash; and whether it reflects real business impact.</p></div>
+        </article>
+
+        <article class="content-section" id="s6">
+          <div class="cs-head"><span class="cs-num">6</span><h3>Incident &amp; Problem Management</h3></div>
+          <p>ITIL draws a sharp line: incident management restores service fast; problem management eliminates the root cause so it doesn't recur.</p>
+          <ul class="detail">
+            <li><strong>Incident</strong> (reactive): detect &rarr; log &rarr; categorize &rarr; prioritize &rarr; diagnose &rarr; resolve &rarr; close.</li>
+            <li><strong>Problem</strong> (proactive): identify &rarr; log &rarr; investigate &rarr; root-cause analysis &rarr; known-error documentation &rarr; resolve &rarr; close.</li>
+            <li><strong>Escalation:</strong> functional (to higher technical skill) vs. hierarchical (to management for severe or prolonged incidents).</li>
+            <li><strong>Major incident management:</strong> a documented P1 process, war room, and post-incident review.</li>
+            <li><strong>Auditor:</strong> all incidents logged and categorized; SLA timeframes met; repeat incidents trigger problem management; post-incident reviews for major incidents.</li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s7">
+          <div class="cs-head"><span class="cs-num">7</span><h3>Change, Configuration &amp; Patch Management</h3></div>
+          <p>In operations, change and patch management are where availability and security risk concentrate. Patch management in particular is one of Domain 4's highest-frequency topics.</p>
+          <ul class="detail">
+            <li><strong>Change (operations view):</strong> change-freeze periods (month-end, year-end); high emergency-change volume is a quality signal of poor planning.</li>
+            <li><strong>Emergency change:</strong> a legitimate but controlled path &mdash; expedited approval (a designated approver or emergency CAB), the change still <em>documented</em>, and a mandatory <strong>post-implementation review</strong> to retro-validate and record it. &ldquo;No time, so no process&rdquo; is never acceptable; the auditor samples emergency changes for after-the-fact approval and review. <span class="xref">(see <a href="lesson09.html">Lesson&nbsp;9</a> &mdash; the emergency-change trap)</span></li>
+            <li><strong>Patch management:</strong> discovery (vendor bulletins, CISA KEV, NVD), risk assessment (CVSS, business impact), testing before production, deployment windows and approval, compliance monitoring.</li>
+            <li><strong>Auditor:</strong> a defined patch policy with SLAs by severity; patches tested before production; compliance tracked and reported; exceptions documented with compensating controls; end-of-support systems risk-managed.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Classic patch-management findings: (1) no SLA for critical patches, (2) patching production without testing, (3) no tracking of non-compliant systems, (4) end-of-life systems with no compensating controls. Any one of these is a finding.</div>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p><strong>Cloud shifts who patches what.</strong> Under the shared-responsibility model, in <strong>IaaS</strong> the customer still patches the guest OS and apps; in <strong>PaaS</strong> the provider patches the platform and the customer owns code and configuration; in <strong>SaaS</strong> the provider patches almost everything. Because <em>misconfiguration</em> &mdash; not a missing patch &mdash; is the dominant cloud risk, operations rely on <strong>configuration baselines</strong> and <strong>CSPM</strong> (Cloud Security Posture Management) to detect drift. The auditor confirms responsibilities are documented per service model and that CSPM findings are triaged and remediated.</p></div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Configuration Management</strong> &mdash; an interactive module on baselines, patching, and change control.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/ConfigMgmt/ConfigMgmt.html" target="_blank" rel="noopener noreferrer">Config Management <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s8">
+          <div class="cs-head"><span class="cs-num">8</span><h3>Operational Log Management</h3></div>
+          <p>Logs are the operational and forensic memory of the environment. Their value depends on completeness, integrity, retention, and actual review.</p>
+          <ul class="detail">
+            <li><strong>Log types:</strong> security events, system/application, network (firewall, IDS/IPS, NetFlow), database audit, user activity.</li>
+            <li><strong>Requirements:</strong> completeness (required events captured), integrity (tamper-evident &mdash; subjects of logging can't alter their own logs), retention (regulatory/forensic), availability for investigation.</li>
+            <li><strong>SIEM:</strong> centralized collection and correlation, alerting on use cases (impossible travel, brute force, privilege escalation), long-term search.</li>
+            <li><strong>Auditor:</strong> critical logs captured and retained; administrators can't modify or delete logs undetected; logs reviewed regularly with documented follow-up; retention meets regulation. <span class="xref">(also <a href="lesson02.html">Lesson&nbsp;2</a> &mdash; data-retention &amp; classification governance)</span></li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s9">
+          <div class="cs-head"><span class="cs-num">9</span><h3>Database Management</h3></div>
+          <p>Databases hold the crown jewels, and the DBA holds the keys. The recurring exam control: the DBA may have the <em>ability</em> to access production data but should not routinely do so &mdash; and their access must be independently reviewed.</p>
+          <ul class="detail">
+            <li><strong>DBMS types:</strong> RDBMS (Oracle, SQL Server, PostgreSQL, MySQL), NoSQL (document, column, key-value, graph), NewSQL.</li>
+            <li><strong>DBA responsibilities:</strong> schema, performance tuning, backup/recovery, access management, security configuration.</li>
+            <li><strong>Security controls:</strong> least-privilege access to objects, separation of DBA from application-user access, database activity monitoring, encryption at rest, preventing direct production DBA access to application data.</li>
+            <li><strong>Auditor:</strong> DBA activities logged and independently reviewed; least-privilege production accounts; application users can't bypass app controls via direct DB access; backups verified by restoration testing; sensitive data encrypted at rest.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>DBA independence is a classic topic. The DBA should be able to access production data but not routinely do so for business purposes. Key control: DBA access is logged, and those logs are reviewed by <strong>someone other than the DBA</strong>. If the DBA reviews their own logs, the control is ineffective.</div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 4A judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale for every item. Watch the completeness, reconciliation, and independence themes.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>A patch policy requires critical patches within 30 days. A sample of 15 critical patches shows 4 were deployed late; management cites testing delays. The MOST appropriate conclusion is:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> The program is effective since 73% compliance exceeds the industry average.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> The testing process is creating unacceptable risk by delaying critical patches beyond policy; root cause should be investigated and the SLA revised or testing improved.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> The policy is unrealistic; 30 days is insufficient to test critical patches.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> The four non-compliant patches should be deployed immediately to restore compliance.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Non-compliance with patch SLAs is a finding requiring root-cause analysis. The auditor identifies the control failure and its cause &mdash; not whether a 30-day policy is reasonable (that's a management decision), and not remediation (also management's role). <b>Why the others fall short:</b> <b>A</b> calling 73% a pass reframes a control failure as success; <b>C</b> declaring the policy unrealistic accepts the breach instead of investigating it; <b>D</b> rushing the four patches treats the symptom, not the process.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q2.</span>In a financial system's batch processing, job-failure alerts go to a shared inbox that has not been monitored for six months. This MOST directly represents:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> Unauthorized access to batch processing results.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> Batch job failures may not be detected, investigated, or corrected, resulting in incomplete or inaccurate processing.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> The batch scheduler is not configured to security baselines.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> Batch output reports may be distributed to unauthorized individuals.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> An unmonitored alert inbox means failures go undetected. The primary risk is incomplete or inaccurate processing from unresolved job failures &mdash; a direct threat to data integrity and completeness. <b>Why the others fall short:</b> <b>A</b> this isn&rsquo;t primarily an access issue; <b>C</b> the failure is unmonitored alerts, not baseline configuration; <b>D</b> the risk is undetected job failures, not report distribution.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>A business analyst maintains a spreadsheet that calculates customer pricing for thousands of transactions monthly, with no version control, access controls, or review. This BEST represents:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> An acceptable practice since spreadsheets are legitimate analytical tools.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> An end-user computing risk requiring a formal inventory, controls, and independent validation.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> A data governance finding since the pricing data is not properly classified.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> A change management finding since the spreadsheet changes are not reviewed by the CAB.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> A critical business process running in an uncontrolled spreadsheet is an EUC risk. The finding addresses the lack of inventory, version control, access controls, and independent validation &mdash; the hallmarks of a mature EUC control framework. <b>Why the others fall short:</b> <b>A</b> spreadsheets being legitimate ignores the missing controls around a critical one; <b>C</b> classification is one aspect, not the core EUC gap; <b>D</b> CAB change control doesn&rsquo;t fit an end-user spreadsheet.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q4.</span>The DBA account for a core banking system has direct SELECT access to the customer account-balance table; the DBA says it's needed for performance tuning. The MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> The DBA may lack the knowledge to interpret financial data.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Direct DBA access to sensitive financial data is not subject to application-level controls and audit trails.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Performance tuning should be done by the application development team.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Read-only SELECT access presents no security risk since data cannot be modified.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The issue isn't what the DBA claims to need &mdash; it's that direct database access bypasses application-level controls (access logging, transaction limits, approval workflows) and may exceed what the application audit trail captures. This is a control-environment concern. <b>Why the others fall short:</b> <b>A</b> the DBA&rsquo;s data-interpretation skill isn&rsquo;t the control concern; <b>C</b> who performs tuning is secondary to the bypassed controls; <b>D</b> read-only access still exposes confidential data and evades application logging.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>IT operations reports 99.7% monthly availability (SLA: 99.5%). The auditor finds planned maintenance windows are excluded from the calculation. The MOST appropriate action is:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Accept the measurement since excluding planned maintenance is an industry-standard practice.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Determine whether the SLA explicitly defines planned maintenance as excluded, and evaluate whether the exclusion reflects the business impact of downtime.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Require all maintenance windows to be included in the calculation.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Report the finding as a misrepresentation of actual availability.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The auditor first determines whether the SLA contract explicitly permits the exclusion. If it does, the measurement may be contractually correct yet not reflect actual business availability. The finding depends on whether the methodology matches the contractual definition &mdash; and whether that definition serves the business. <b>Why the others fall short:</b> <b>A</b> assuming the exclusion is &lsquo;standard&rsquo; accepts a possibly misleading metric; <b>C</b> forcing all maintenance in is as arbitrary as excluding it &mdash; it depends on the SLA and business impact; <b>D</b> calling it misrepresentation prejudges before checking the SLA definition.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson04.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 4 &mdash; Acquisition, Development &amp; Implementation</span></a>
+    <a href="lesson06.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 6 &mdash; Business Resilience (Part B)</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

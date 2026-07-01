@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 7 — Domain 5: Protection of Information Assets (Part A) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 7</span></p>
+    <span class="lesson-badge-lg">Day 4 &mdash; Afternoon &middot; Domain 5A</span>
+    <h1>Protection of Information Assets <span>&mdash; Part A</span></h1>
+    <p class="lesson-lede">Domain 5 is the largest and most technically rich domain &mdash; where IS audit meets cybersecurity most directly. Part A, Asset Security &amp; Control, covers the frameworks and the protective controls: physical and environmental, identity and access, network and endpoint, encryption and PKI, data loss prevention, and the cloud/mobile/IoT surface.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Afternoon, Day 4</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>26% (Domain 5)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">The controls that protect information assets</h2>
+    <div class="rule"></div>
+    <p class="lead">Domain 5 is tied for the heaviest weight at 26%, so it splits naturally across two lessons. Part A is about the controls that <em>protect</em> assets: choosing a framework, hardening the facility, governing identity and access, defending the network and endpoints, encrypting data (and managing the keys), preventing data loss, and securing the cloud/mobile/IoT surface. The lens stays the auditor's &mdash; evaluate whether the right controls exist, suit the risk, and actually work. The recurring themes are <strong>defense in depth</strong>, <strong>independent access review</strong>, and the <strong>key management</strong> behind encryption.</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Evaluate</strong> information security frameworks, standards, and their application to the IS audit. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> physical and environmental controls for adequacy and effectiveness. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> identity and access management programs for completeness and control quality. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> network, endpoint, encryption, PKI, and data-loss-prevention controls. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> cloud, virtualization, mobile, wireless, and IoT security controls. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">ISMS</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Information Security Management System &mdash; a systematic approach to managing sensitive information (people, processes, IT) following ISO/IEC 27001.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IAM</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Identity and Access Management &mdash; the policies and technologies ensuring the right individuals access the right resources at the right times for the right reasons.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">MFA</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Multi-Factor Authentication &mdash; authentication requiring two or more factors from different categories: something you know, have, or are.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">PKI</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Public Key Infrastructure &mdash; the hardware, software, policies, and procedures for creating, managing, distributing, and revoking digital certificates.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">DLP</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Data Loss Prevention &mdash; technologies and processes to detect and prevent unauthorized transmission, copying, or deletion of sensitive data.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Zero Trust Architecture</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A security model that eliminates implicit trust and continuously validates every user, device, and transaction, regardless of network location.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Security Frameworks</a></li>
+          <li><a href="#s2">2. Physical &amp; Environmental</a></li>
+          <li><a href="#s3">3. Identity &amp; Access Mgmt</a></li>
+          <li><a href="#s4">4. Network &amp; Endpoint</a></li>
+          <li><a href="#s5">5. Encryption &amp; PKI</a></li>
+          <li><a href="#s6">6. Data Loss Prevention</a></li>
+          <li><a href="#s7">7. Cloud, Mobile &amp; IoT</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>Security Frameworks, Standards &amp; Guidelines</h3></div>
+          <p>Domain 5 protects information assets, and it starts with the frameworks that define what &ldquo;secure&rdquo; means. The auditor checks that a framework was deliberately chosen and that its controls are documented, implemented, and monitored.</p>
+          <ul class="detail">
+            <li><strong>ISO/IEC 27001</strong> (ISMS; Plan-Do-Check-Act; Annex A controls &mdash; 93 controls in 4 themes in the 2022 update) and <strong>ISO/IEC 27002</strong> (implementation guidance).</li>
+            <li><strong>NIST CSF:</strong> under CSF 1.1, five functions &mdash; Identify, Protect, Detect, Respond, Recover. <strong>CSF 2.0</strong> (2024) adds a sixth function, <strong>Govern</strong>, and ISACA content is moving to reflect it &mdash; know both and note which version a question assumes.</li>
+            <li><strong>NIST SP 800-53</strong> (comprehensive control catalog); <strong>CIS Controls</strong> (18 controls; Implementation Groups IG1&ndash;IG3); <strong>COBIT 2019</strong> security objectives (APO13, DSS05).</li>
+            <li><strong>Auditor:</strong> a framework formally adopted; appropriate to size, industry, and risk; controls documented, implemented, monitored; a gap analysis exists.</li>
+          </ul>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>The Five Pillars</strong> &mdash; the CIA triad plus authenticity and non-repudiation, the foundation of every framework.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/FivePillars/FivePillars.html" target="_blank" rel="noopener noreferrer">Five Pillars <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Physical &amp; Environmental Controls</h3></div>
+          <p>Physical and environmental controls protect the facilities that house information assets &mdash; and the exam tests them through the lens of defense in depth.</p>
+          <ul class="detail">
+            <li><strong>Layers:</strong> perimeter (fencing, CCTV, guards), building (reception, badge access, visitor logs), data center (mantraps, biometrics, anti-tailgating), racks (locked cabinets).</li>
+            <li><strong>Environmental:</strong> temperature/humidity monitoring (ASHRAE), precision cooling, raised flooring, fire suppression (clean agent FM-200/Novec 1230; VESDA early warning), water-leak detection.</li>
+            <li><strong>Power:</strong> UPS, PDUs, generators (with fuel management and testing), dual utility feeds.</li>
+            <li><strong>Auditor:</strong> access logs reviewed and reconciled; visitor logs and escorts; environmental alerts tested; fire suppression inspected and certified; generator tests documented.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Physical security hinges on <strong>defense in depth</strong> &mdash; multiple independent layers so one failure doesn't expose the asset. A single locked door is not defense in depth; look for at least two independent controls at each security-zone boundary.</div>
+          <figure class="diagram">
+            <svg viewBox="0 0 620 352" role="img" aria-label="Defense in depth shown as nested layers: policies and awareness on the outside, then physical security, network and perimeter, host and endpoint, application, and data at the centre. An attacker must defeat every layer."><rect x="20" y="20" width="580" height="316" rx="10" class="dg-stroke-navylt" stroke-width="2"/><text x="310" y="37" text-anchor="middle" class="dg-text" font-size="11.5" font-weight="600">Policies, Standards &amp; Security Awareness</text><rect x="66" y="44" width="488" height="268" rx="10" class="dg-stroke-navylt" stroke-width="2"/><text x="310" y="61" text-anchor="middle" class="dg-text" font-size="11.5" font-weight="600">Physical Security</text><rect x="112" y="68" width="396" height="220" rx="10" class="dg-stroke-navylt" stroke-width="2"/><text x="310" y="85" text-anchor="middle" class="dg-text" font-size="11.5" font-weight="600">Network &amp; Perimeter</text><rect x="158" y="92" width="304" height="172" rx="10" class="dg-stroke-navylt" stroke-width="2"/><text x="310" y="109" text-anchor="middle" class="dg-text" font-size="11.5" font-weight="600">Host &amp; Endpoint</text><rect x="204" y="116" width="212" height="124" rx="10" class="dg-stroke-navylt" stroke-width="2"/><text x="310" y="133" text-anchor="middle" class="dg-text" font-size="11.5" font-weight="600">Application</text><rect x="250" y="150" width="120" height="58" rx="8" class="dg-box"/><text x="310" y="184" text-anchor="middle" class="dg-inv" font-size="14" font-weight="700">DATA</text></svg>
+            <figcaption><strong>Defense in depth</strong> layers independent controls around the asset &mdash; policy and people on the outside, then physical, network, host, and application controls around the <strong>data</strong> at the core. No single layer is trusted alone; an attacker must defeat every layer, so one failure never exposes the asset.</figcaption>
+          </figure>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>Identity &amp; Access Management</h3></div>
+          <p>IAM ensures the right people have the right access for the right reasons &mdash; and access recertification is one of Domain 5's most-tested controls.</p>
+          <ul class="detail">
+            <li><strong>Identity lifecycle:</strong> provisioning (approved need, tied to HR), modification (role changes), recertification (periodic owner review), de-provisioning (prompt revocation on termination).</li>
+            <li><strong>Authentication factors:</strong> Type 1 knowledge (password/PIN), Type 2 possession (token, authenticator app), Type 3 inherence (biometrics); <strong>MFA</strong> combines two or more categories.</li>
+            <li><strong>Authorization models:</strong> RBAC (role), ABAC (attributes), DAC (owner-controlled), MAC (system-enforced labels).</li>
+            <li><strong>Privileged access management:</strong> least privilege, separate privileged accounts, privileged access workstations, password vaulting and session recording, just-in-time access.</li>
+            <li><strong>SSO &amp; federation:</strong> SAML, OAuth 2.0, OpenID Connect; identity providers and service providers.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Access recertification (user access review) is heavily tested. Auditors look for: (1) reviews on a defined schedule, (2) reviews performed by the <strong>business manager</strong> (not IT), and (3) evidence that inappropriate access was actually revoked &mdash; not just rubber-stamped.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Access Control</strong>, <strong>Biometrics</strong>, and <strong>Kerberos</strong> &mdash; interactive modules on authorization, authentication factors, and network authentication.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/access_control/access_control.html" target="_blank" rel="noopener noreferrer">Access Control <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/Biometrics/Biometrics.html" target="_blank" rel="noopener noreferrer">Biometrics <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/kerberos/kerberos.html" target="_blank" rel="noopener noreferrer">Kerberos <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Network &amp; Endpoint Security</h3></div>
+          <p>Network and endpoint controls defend the pathways and devices where data lives and moves.</p>
+          <ul class="detail">
+            <li><strong>Network defense:</strong> DMZ, segmentation/microsegmentation (VLANs, prod vs. dev), next-generation firewalls, IDS/IPS.</li>
+            <li><strong>Secure protocols:</strong> TLS 1.2+ (1.0/1.1 deprecated), SSH (replace Telnet), SNMPv3, HTTPS/HSTS.</li>
+            <li><strong>Remote access:</strong> VPN with MFA, Zero Trust Network Access (identity + device-posture verification), PAM for admin access.</li>
+            <li><strong>Endpoint:</strong> EDR, current anti-malware, host firewall, full-disk encryption, Mobile Device Management.</li>
+            <li><strong>Auditor:</strong> firewall rules reviewed on a schedule; all endpoints under EDR and current AV; full-disk encryption on portables; deprecated protocols disabled; remote connections logged.</li>
+          </ul>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Firewalls</strong>, <strong>IDS/IPS</strong>, and <strong>VPN</strong> &mdash; interactive modules on network filtering, intrusion monitoring, and secure remote access.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/Firewalls/Firewalls.html" target="_blank" rel="noopener noreferrer">Firewalls <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/IDS_IPS/IDS_IPS.html" target="_blank" rel="noopener noreferrer">IDS / IPS <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/vpn/vpn.html" target="_blank" rel="noopener noreferrer">VPN <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Data Encryption &amp; PKI</h3></div>
+          <p>Encryption protects confidentiality and integrity at rest and in transit &mdash; but its value depends entirely on how the keys are managed.</p>
+          <ul class="detail">
+            <li><strong>Types:</strong> symmetric (AES-256), asymmetric (RSA, ECC), hashing (SHA-256/SHA-3).</li>
+            <li><strong>At rest:</strong> Transparent Data Encryption, file-system, and media encryption. <strong>In transit:</strong> TLS 1.2+, SSH, VPN tunnels.</li>
+            <li><strong>Key management:</strong> generation, storage, rotation, revocation; Hardware Security Modules; dual control and custodianship.</li>
+            <li><strong>PKI:</strong> Certificate Authority (root/intermediate), Registration Authority; X.509 certificates (SSL/TLS DV/OV/EV, code signing, S/MIME).</li>
+            <li><strong>Certificate revocation:</strong> a <strong>CRL</strong> (Certificate Revocation List) is a periodically published list of revoked certificates and may be stale between updates; <strong>OCSP</strong> (Online Certificate Status Protocol) checks a single certificate's status in real time.</li>
+            <li><strong>Auditor:</strong> data encrypted at rest and in transit; current algorithms (AES-256, RSA-2048+, SHA-256+); formalized key management with rotation and revocation; keys stored separately from data; certificate expiration monitored; private keys in HSMs.</li>
+          </ul>
+          <figure class="diagram">
+            <svg viewBox="0 0 780 206" role="img" aria-label="Asymmetric encryption. The sender encrypts plaintext with the recipient public key, producing ciphertext that travels safely; the recipient decrypts it with their matching private key. The private key never leaves the recipient."><rect x="16" y="66" width="104" height="72" rx="8" class="dg-box-soft"/><text x="68.0" y="107.0" text-anchor="middle" class="dg-text" font-size="12.5" font-weight="700">Sender</text><rect x="140" y="66" width="176" height="72" rx="8" class="dg-box-accent"/><text x="228.0" y="99.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Encrypt with</text><text x="228.0" y="116.0" text-anchor="middle" class="dg-inv" font-size="10.5">Recipient&#8217;s PUBLIC key</text><rect x="336" y="66" width="104" height="72" rx="8" class="dg-box-soft"/><text x="388.0" y="107.0" text-anchor="middle" class="dg-text" font-size="12.5" font-weight="700">Ciphertext</text><rect x="380" y="80" width="16" height="12" rx="2" class="dg-box"/><path d="M382 80 v-4 a6 6 0 0 1 12 0 v4" class="dg-stroke-navylt" stroke-width="2"/><rect x="460" y="66" width="176" height="72" rx="8" class="dg-box"/><text x="548.0" y="99.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Decrypt with</text><text x="548.0" y="116.0" text-anchor="middle" class="dg-inv" font-size="10.5">Recipient&#8217;s PRIVATE key</text><rect x="656" y="66" width="108" height="72" rx="8" class="dg-box-soft"/><text x="710.0" y="107.0" text-anchor="middle" class="dg-text" font-size="12.5" font-weight="700">Recipient</text><line x1="120" y1="102" x2="131" y2="102" class="dg-arrow-line" stroke-width="2"/><path d="M130 97 L140 102 L130 107 Z" class="dg-arrow"/><line x1="316" y1="102" x2="327" y2="102" class="dg-arrow-line" stroke-width="2"/><path d="M326 97 L336 102 L326 107 Z" class="dg-arrow"/><line x1="440" y1="102" x2="451" y2="102" class="dg-arrow-line" stroke-width="2"/><path d="M450 97 L460 102 L450 107 Z" class="dg-arrow"/><line x1="636" y1="102" x2="647" y2="102" class="dg-arrow-line" stroke-width="2"/><path d="M646 97 L656 102 L646 107 Z" class="dg-arrow"/></svg>
+            <figcaption>In <strong>asymmetric</strong> encryption the keys are a linked pair: anyone can encrypt with the recipient&rsquo;s <strong>public</strong> key, but only the matching <strong>private</strong> key &mdash; which never leaves the recipient &mdash; can decrypt. The exam&rsquo;s recurring finding isn&rsquo;t weak math, it&rsquo;s weak <em>key management</em>.</figcaption>
+          </figure>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Encryption is necessary but not sufficient. The most common encryption finding isn't that encryption is missing &mdash; it's inadequate <strong>key management</strong>. Keys stored with the data, never rotated, or with no revocation process undermine the whole control.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Cryptography</strong> &mdash; an interactive deep-dive on symmetric/asymmetric encryption and hashing.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/Cryptography/Crypto.html" target="_blank" rel="noopener noreferrer">Cryptography <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s6">
+          <div class="cs-head"><span class="cs-num">6</span><h3>Data Loss Prevention</h3></div>
+          <p>Data Loss Prevention detects and blocks unauthorized movement of sensitive data &mdash; and it only works when aligned to the classification scheme.</p>
+          <ul class="detail">
+            <li><strong>Deployment modes:</strong> network DLP (traffic leaving), endpoint DLP (USB/print/cloud sync), cloud DLP, storage DLP (repository scanning).</li>
+            <li><strong>Policy:</strong> data identification (card numbers, SSNs, health records), detection rules (regex, fingerprinting, ML classification), response actions (block, quarantine, alert, encrypt, log).</li>
+            <li><strong>Auditor:</strong> DLP policies aligned to the data classification scheme; coverage complete (network + endpoint + cloud); alerts reviewed and investigated; exceptions documented and approved.</li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s7">
+          <div class="cs-head"><span class="cs-num">7</span><h3>Cloud, Virtualization, Mobile, Wireless &amp; IoT</h3></div>
+          <p>Modern environments extend far beyond the data center. Each new surface &mdash; cloud, virtualization, mobile, wireless, IoT &mdash; adds controls the auditor must evaluate.</p>
+          <ul class="detail">
+            <li><strong>Cloud:</strong> the shared-responsibility model &mdash; the customer always owns the data, and responsibility shifts up the stack from IaaS to SaaS; CASB, cloud-native security, identity federation with MFA, IaC configuration scanning.</li>
+            <li><strong>Virtualization:</strong> hypervisor hardening, VM isolation (prevent VM escape), virtual micro-segmentation.</li>
+            <li><strong>Mobile:</strong> MDM/EMM (PIN, encryption, remote wipe), BYOD/COPE/CYOD policies, app containerization (MAM).</li>
+            <li><strong>Wireless:</strong> WPA3 is current; WPA2 carries the <strong>KRACK</strong> key-reinstallation weakness, so keep firmware patched. Audit procedures include <strong>wireless site surveys</strong>, rogue-AP detection, WPA2-Enterprise with RADIUS, and guest-network isolation.</li>
+            <li><strong>IoT:</strong> change default credentials, manage firmware updates, segment onto a separate VLAN; inventory and discovery are hard.</li>
+            <li><strong>Auditor:</strong> shared responsibility documented; cloud configs scanned (CIS benchmarks); MFA for cloud consoles; mobile under MDM; wireless on WPA2-Enterprise/WPA3; IoT inventoried and segmented.</li>
+          </ul>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Wireless Security</strong> &mdash; an interactive module on WEP/WPA/TKIP and wireless encryption standards.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/WirelessSec/WirelessSecurity.html" target="_blank" rel="noopener noreferrer">Wireless Security <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 5A judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale. Watch defense in depth, independent access review, and key management.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>Access recertifications are performed annually by the IT security team, who review system-generated access reports. The MOST significant deficiency is:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Access reviews should be performed quarterly, not annually.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Access reviews should be performed by business managers who know whether each user's access is appropriate for their current role.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> The IT security team should be replaced by an external auditor for access reviews.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> System-generated reports are unreliable and should be replaced with manually compiled lists.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Access reviews must be performed by business managers who know each user's job function &mdash; not by IT security, who cannot determine whether access is appropriate for a business role. IT may facilitate and monitor, but the business makes the appropriateness determination. <b>Why the others fall short:</b> <b>A</b> review frequency isn&rsquo;t the core deficiency; <b>C</b> an external auditor doesn&rsquo;t own operational access reviews; <b>D</b> the reports are fine &mdash; the wrong reviewer is the issue.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q2.</span>Encryption uses AES-256 at rest and TLS 1.2 in transit, but encryption keys are stored on the same database server as the encrypted data. The MOST significant finding is:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> TLS 1.2 should be upgraded to TLS 1.3 immediately.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> AES-256 is not current and should be replaced with AES-128.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> Encryption keys stored on the same server as the encrypted data undermine the protection encryption provides.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> The organization should implement end-to-end encryption across all layers.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> Storing keys on the same server as the data eliminates the benefit of encryption &mdash; compromise the server and the attacker gets both data and keys. Keys must be stored separately, ideally in an HSM. <b>Why the others fall short:</b> <b>A</b> TLS 1.2 is acceptable, not the finding; <b>B</b> AES-256 is current and strong &mdash; downgrading is wrong; <b>D</b> blanket end-to-end encryption distracts from the key-storage flaw.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>IoT environmental sensors are deployed on the same network segment as the production control systems. The auditor should identify this as:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Acceptable if the IoT devices are managed by IT.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> A network segmentation deficiency; IoT devices should be isolated from production control systems.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> A physical security finding related to unauthorized device installation.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> An asset management finding because the IoT devices are not in the inventory.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> IoT devices are hard to secure (limited updates, weak authentication) and should be segmented from operational technology and production control systems. Co-mingling them creates significant risk of lateral movement. <b>Why the others fall short:</b> <b>A</b> being &lsquo;IT-managed&rsquo; doesn&rsquo;t remove the segmentation risk; <b>C</b> it isn&rsquo;t a physical-installation issue; <b>D</b> inventory is secondary to the isolation gap.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q4.</span>An IS auditor finds that remote administrative access to production servers uses only a username and password, with no second factor. The MOST appropriate recommendation is:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> Increase password length and complexity requirements.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Require multi-factor authentication for privileged and remote access.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Restrict remote administrative access to business hours.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Rename the administrator accounts to make them harder to guess.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> MFA is the expected control for privileged and remote access; it defends against credential theft and reuse in a way that password complexity alone (A) cannot. <b>Why the others fall short:</b> <b>A</b> stronger passwords still leave a single factor; <b>C</b> time-of-day limits don&rsquo;t fix single-factor access; <b>D</b> renaming accounts is security-by-obscurity.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>A data center's only access control is a single badge-reader door to the server room. The IS auditor should identify this as:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> An acceptable control, since the badge system logs every entry.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> A lack of defense in depth &mdash; each security zone should be protected by multiple independent layers.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> A finding only if the badge system fails to log entries.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> A capacity concern with the badge reader.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Physical security relies on defense in depth: multiple independent layers so the failure of one does not expose the asset. A single door is one layer, not a layered control. <b>Why the others fall short:</b> <b>A</b> logging a single door doesn&rsquo;t create layers; <b>C</b> the gap exists whether or not entries are logged; <b>D</b> capacity isn&rsquo;t the concern &mdash; layered control is.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson06.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 6 &mdash; Business Resilience (Part B)</span></a>
+    <a href="lesson08.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 8 &mdash; Security Event Management (Part B)</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

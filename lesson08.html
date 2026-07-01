@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8 — Domain 5: Protection of Information Assets (Part B) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 8</span></p>
+    <span class="lesson-badge-lg">Day 5 &mdash; Morning &middot; Domain 5B</span>
+    <h1>Protection of Information Assets <span>&mdash; Part B</span></h1>
+    <p class="lesson-lede">Part B, Security Event Management, is the operational half of Domain 5: the human layer and attack landscape, security testing and monitoring, and what happens when prevention fails &mdash; incident response and forensics.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Morning, Day 5</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>26% (Domain 5)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>6 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Detect, respond, and preserve the evidence</h2>
+    <div class="rule"></div>
+    <p class="lead">Where Part A built the protective controls, Part B is about <em>security events</em>: the human attack surface, finding weaknesses before attackers do, watching for what gets through, and responding when it does. The signature exam lessons here &mdash; train and measure the human layer; test and monitor with independence; in incident response, <strong>contain before you eradicate</strong>; and in forensics, <strong>preserve volatile evidence first</strong>. The auditor evaluates whether these capabilities exist and are exercised &mdash; not whether they can run the SOC.</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Assess</strong> security awareness programs and the attack landscape. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> security testing &mdash; vulnerability assessment and penetration testing. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> security monitoring (SIEM, UEBA, threat intelligence). <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> incident response processes and the response lifecycle. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> forensic evidence handling and chain of custody. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SIEM</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Security Information and Event Management &mdash; a platform that aggregates, correlates, and analyzes security events to detect threats and support response.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SOC</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Security Operations Center &mdash; a team responsible for monitoring, detecting, analyzing, and responding to cybersecurity threats.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Chain of Custody</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Chronological documentation of the control, transfer, and handling of evidence from collection through presentation, ensuring its integrity.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Penetration Testing</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An authorized simulated cyberattack to identify exploitable vulnerabilities in systems, networks, or applications.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Vulnerability Assessment</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A systematic review of security weaknesses without exploiting them, typically using automated scanning tools.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Incident Response Plan</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A documented, organized approach to managing the aftermath of a security breach, minimizing damage and recovery time.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">APT</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Advanced Persistent Threat &mdash; a well-resourced adversary (often nation-state) that gains and maintains long-term, stealthy access to achieve strategic objectives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Cyber Kill Chain</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Lockheed Martin&rsquo;s model of an intrusion&rsquo;s stages &mdash; reconnaissance, weaponization, delivery, exploitation, installation, command &amp; control, actions on objectives &mdash; used to detect and disrupt attacks.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">UEBA</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">User and Entity Behavior Analytics &mdash; analytics that baseline normal behavior and flag anomalies (unusual access, data movement) that signature-based tools miss.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">MITRE ATT&amp;CK</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A public knowledge base of adversary tactics, techniques, and procedures (TTPs) used to map, detect, and communicate real-world attacker behavior.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">TTPs</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Tactics, Techniques &amp; Procedures &mdash; the behavioral patterns of a threat actor; more durable indicators than easily-changed artifacts like IPs or file hashes.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Order of Volatility</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The sequence for collecting digital evidence from most to least perishable (CPU/registers &rarr; memory &rarr; network state &rarr; disk &rarr; archival) to preserve forensic integrity.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Awareness &amp; Attacks</a></li>
+          <li><a href="#s2">2. Testing &amp; Monitoring</a></li>
+          <li><a href="#s3">3. Incident Response</a></li>
+          <li><a href="#s4">4. Forensics &amp; Evidence</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>Security Awareness &amp; Attack Methods</h3></div>
+          <p>People are both the largest attack surface and the first line of defense. The exam tests whether the auditor can match controls to threats &mdash; not the technical mechanics of each attack.</p>
+          <ul class="detail">
+            <li><strong>Awareness program:</strong> annual baseline plus role-specific training, phishing simulations with follow-up, new-hire orientation; measure via click-rate trends, completion, pre/post scores, and reporting rates.</li>
+            <li><strong>Attack methods:</strong> malware (ransomware, trojans, worms, rootkits, fileless); social engineering (phishing, <strong>spear-phishing</strong>, vishing, smishing, pretexting, <strong>baiting</strong>, business email compromise); web (SQLi, XSS, CSRF &mdash; OWASP Top 10); network (MITM, DoS/DDoS, ARP/DNS poisoning); insider threats; APTs (kill chain).</li>
+            <li><strong>Auditor:</strong> training mandatory and tracked; topics aligned to the current threat landscape; effectiveness measured and improvements made.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>The exam doesn't require deep technical attack knowledge. It tests (1) which controls mitigate which attack types, and (2) whether the organization can detect and respond. Focus on the <strong>control</strong>, not the mechanics of the attack.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Social Engineering</strong>, <strong>Phishing</strong>, and <strong>Malware/APT</strong> &mdash; interactive modules on the human-layer and malware threats.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/social_engineering/social_engineering.html" target="_blank" rel="noopener noreferrer">Social Engineering <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/phishing/phishing.html" target="_blank" rel="noopener noreferrer">Phishing <span class="ext">&#8599;</span></a>
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/attacks/attacks.html" target="_blank" rel="noopener noreferrer">Malware &amp; APT <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Security Testing &amp; Monitoring</h3></div>
+          <p>Security testing finds the gaps; security monitoring catches what gets through. Both feed the auditor's evidence on whether defenses actually work.</p>
+          <ul class="detail">
+            <li><strong>Testing:</strong> vulnerability assessment (automated scanning, no exploitation); penetration testing (black/white/gray box; authorized scope and rules of engagement); SAST (source code) and DAST (running app); authorized social-engineering tests.</li>
+            <li><strong>Monitoring:</strong> SIEM (correlation and alerting), UEBA (behavioral baselines), threat intelligence (IoCs, TTPs; MITRE ATT&amp;CK), network traffic analysis.</li>
+            <li><strong>Auditor:</strong> scans at least quarterly (PCI DSS); pen tests at least annually or after major change; findings tracked to remediation; tests performed by independent parties; SIEM coverage across critical systems; alerts tuned; results reviewed by qualified staff.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>If the same high-severity penetration-test findings appear year after year, the problem isn't the test &mdash; it's that remediation never happened. The auditor's first concern is whether prior findings were closed.</p></div>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>&ldquo;Independent&rdquo; testing has limits: if the firm that <em>designed or implemented</em> the controls also runs the penetration test, that is a <strong>self-review / familiarity threat</strong> to independence. Confirm the testers are independent of the work they assess &mdash; a consulting relationship can compromise the objectivity of the test.</p></div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Penetration Testing</strong> &mdash; an interactive module on pen-testing methodologies.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/pen_testing/pen_testing.html" target="_blank" rel="noopener noreferrer">Pen Testing <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>Security Incident Response Management</h3></div>
+          <p>When prevention fails, response determines the damage. The exam tests the incident-response lifecycle sequence &mdash; and one ordering in particular.</p>
+          <ul class="detail">
+            <li><strong>NIST SP 800-61 lifecycle:</strong> Preparation &rarr; Detection &amp; Analysis &rarr; Containment &rarr; Eradication &rarr; Recovery &rarr; Post-Incident Activity.</li>
+            <li><strong>Version note:</strong> this lifecycle is <strong>SP 800-61 Rev.&nbsp;2</strong>, which the current exam aligns to. <strong>Rev.&nbsp;3</strong> (finalized 2025) reframes incident response around cybersecurity risk management rather than a fixed phase list &mdash; useful context, but answer to Rev.&nbsp;2 unless a question says otherwise.</li>
+            <li>Classification P1&ndash;P4 with escalation triggers; team roles (IR lead, technical analyst, communications lead, legal/compliance, executive sponsor).</li>
+            <li><strong>Regulatory reporting:</strong> GDPR (72 hours), PCI DSS (immediate), HIPAA (60 days), SEC (publicly traded companies).</li>
+            <li><strong>Auditor:</strong> a documented IR plan with roles and escalation; tested at least annually; complete incident logs retained; post-incident reviews tracked to improvement.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>When a security incident is <em>also</em> a reportable breach, the IR plan must branch into the <strong>regulatory notification</strong> path &mdash; the direct link between Domain&nbsp;5B response and Domain&nbsp;2 privacy. One exfiltration of EU cardholder data can trigger GDPR (72 hours), PCI DSS, and contractual notice at once; the plan must name who declares a breach and who notifies each party.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>IR questions often test sequence: Preparation &rarr; Detection &rarr; <strong>Containment &rarr; Eradication</strong> &rarr; Recovery &rarr; Lessons Learned. Watch for scenarios that eradicate before containing &mdash; wrong, because it risks the attack spreading. <strong>Contain first, then eradicate.</strong></div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Evidence Collection &amp; Forensics</h3></div>
+          <p>When an incident may lead to legal action, how evidence is handled determines whether it is usable. Forensics is about preserving integrity and provenance.</p>
+          <ul class="detail">
+            <li><strong>Principles:</strong> preserve the original (work on forensic copies), maintain chain of custody, document every action, verify integrity (cryptographic hash before and after).</li>
+            <li><strong>Order of volatility</strong> (collect most volatile first): CPU registers/cache &rarr; routing/ARP/process tables &rarr; RAM &rarr; temp/swap &rarr; disk &rarr; remote logs &rarr; physical/topology &rarr; archival media.</li>
+            <li><strong>Chain of custody:</strong> who collected, when, from where, custody history, storage conditions.</li>
+            <li><strong>Admissibility:</strong> evidence must be authentic, complete, reliable, and believable; improper handling can render it inadmissible.</li>
+            <li><strong>Auditor:</strong> forensic procedures documented; staff trained in preservation and chain of custody; capability available (internal or contracted).</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>A classic trap: a system compromise is suspected &mdash; what first? <strong>Not</strong> to immediately power it down (that destroys volatile memory evidence). Follow the IR plan and preserve evidence by order of volatility &mdash; capture RAM and network state before taking the system offline.</div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 5B judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale. Remember: contain before eradicate, and preserve volatile evidence first.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>During an incident investigation, a first responder immediately powers off a compromised server to prevent further damage. The auditor's MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Powering off without management approval violates change management.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Volatile evidence (memory, network state, active processes) was destroyed before it could be collected.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> The server should have been isolated from the network rather than powered off.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> Powering off is a change to production requiring CAB approval.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Powering off before capturing volatile evidence destroys RAM contents (processes, network connections, keys in memory). Network isolation (C) is the preferred first containment action &mdash; it stops spread while preserving evidence &mdash; but the most significant concern is the destroyed volatile evidence. <b>Why the others fall short:</b> <b>A</b> the change-management framing misses the evidence loss; <b>C</b> isolation is preferable, but the key concern is the destroyed volatile evidence; <b>D</b> CAB approval misframes a forensic problem.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q2.</span>An organization runs annual external penetration tests; results show high-severity findings every year. The auditor should FIRST determine:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> Whether the testing firm's methodology aligns to industry standards.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> Whether remediation of prior-test findings was completed before new tests were commissioned.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> Whether the scope covers all external-facing systems.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> Whether annual frequency is sufficient given the risk profile.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Recurring high-severity findings indicate remediation isn't happening. The primary concern is whether prior findings were remediated &mdash; repeated findings signal a management remediation failure, not a testing problem. <b>Why the others fall short:</b> <b>A</b> methodology is secondary to unremediated repeat findings; <b>C</b> scope matters but isn&rsquo;t the first concern when findings recur; <b>D</b> frequency isn&rsquo;t the issue when prior findings persist.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>During a malware incident, the response team begins eradicating the malware from infected hosts before isolating them from the network. The IS auditor should note that:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Eradication should always precede containment to remove the threat as fast as possible.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> Containment should precede eradication; eradicating first risks the malware spreading during cleanup.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> The systems should have been restored from backup before any eradication.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Law enforcement should have led the eradication step.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The NIST sequence is Preparation &rarr; Detection &rarr; Containment &rarr; Eradication &rarr; Recovery &rarr; Lessons Learned. Containing first stops lateral spread; eradicating before containment risks the infection moving to other hosts. <b>Why the others fall short:</b> <b>A</b> eradicating first risks the malware spreading; <b>C</b> restoring before eradication can reintroduce the threat; <b>D</b> law enforcement doesn&rsquo;t lead technical eradication.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q4.</span>When collecting digital evidence from a live, compromised system, which should the auditor confirm was captured FIRST?</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> Data stored on the hard disk.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Archived backup media.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Volatile data such as RAM contents and active network connections.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> The system's physical configuration documentation.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> The order of volatility requires collecting the most volatile data first &mdash; RAM, running processes, and network state &mdash; before it is lost. Disk and archival media are far less volatile and can be captured later. <b>Why the others fall short:</b> <b>A</b> disk data is less volatile and captured later; <b>B</b> archived backups are the least volatile source; <b>D</b> configuration documentation isn&rsquo;t volatile evidence.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>An organization's phishing-simulation click rate has risen over three consecutive quarters despite annual security training. The MOST appropriate auditor observation is:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Phishing simulations are unreliable and should be discontinued.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> The awareness program is not improving effectiveness; training content and frequency should be reviewed and strengthened.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Employees who click links should be terminated.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> The email gateway should be configured to block all external email.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> A rising click rate is a measured decline in awareness-program effectiveness. The auditor's observation targets the program (content, frequency, reinforcement), not punitive action or blocking all email. <b>Why the others fall short:</b> <b>A</b> discontinuing simulations removes the measurement, not the problem; <b>C</b> terminating employees is punitive and ignores program effectiveness; <b>D</b> blocking all external email is impractical and misses the awareness gap.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q6.</span>A retailer confirms attackers exfiltrated a database holding EU residents&rsquo; personal data and cardholder data. Under the GDPR, by when must the supervisory authority be notified?</p>
+          <fieldset class="opts">
+            <legend class="sr-only">Select one answer</legend>
+            <label class="opt"><input type="radio" name="q6" value="A"><span><span class="opt-letter">A.</span> Immediately, within 24 hours of detection.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="B"><span><span class="opt-letter">B.</span> Within 60 days, consistent with HIPAA.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="C"><span><span class="opt-letter">C.</span> Without undue delay and, where feasible, within 72 hours of becoming aware.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="D"><span><span class="opt-letter">D.</span> Only after the full forensic investigation concludes.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> GDPR Article&nbsp;33 requires notifying the supervisory authority without undue delay and, where feasible, within <strong>72 hours</strong> of the organization becoming aware. <b>A</b> is the wrong window &mdash; 24 hours is not the GDPR rule. <b>B</b> is the HIPAA breach window (60 days), not GDPR. <b>D</b> is wrong: notification cannot wait for the investigation to finish, and the cardholder data separately triggers PCI DSS and payment-brand reporting.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson07.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 7 &mdash; Asset Security & Control (Part A)</span></a>
+    <a href="lesson09.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 9 &mdash; Review, Practice Exam & Study Plan</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

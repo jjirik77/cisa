@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6 — Domain 4: Business Resilience (Part B) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 6</span></p>
+    <span class="lesson-badge-lg">Day 4 &mdash; Morning &middot; Domain 4B</span>
+    <h1>Business Resilience <span>&mdash; Part B</span></h1>
+    <p class="lesson-lede">When systems fail &mdash; and they will &mdash; organizations that planned survive. Domain 4B is the auditor's guide to evaluating whether the organization can absorb disruption and recover: impact analysis, resilient architecture, backups, business continuity, and disaster recovery.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Morning, Day 4</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>26% (Domain 4)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Plan, prove, recover &mdash; in that order</h2>
+    <div class="rule"></div>
+    <p class="lead">Part B completes Domain 4 with resilience. It begins with the Business Impact Analysis, which sets the recovery targets (RTO and RPO) that everything else must meet, then moves through resilient architecture, backups, the Business Continuity Plan, and the Disaster Recovery Plan. The exam's relentless theme here is <strong>evidence over assumption</strong>: a plan that has never been tested &mdash; or whose tested capability doesn't meet the BIA's requirements &mdash; is a finding, not a reassurance. &ldquo;We have a DRP&rdquo; means nothing without documented test results showing it works.</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Apply</strong> Business Impact Analysis concepts to evaluate the prioritization of recovery efforts. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Assess</strong> system and operational resilience architectures for adequacy. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> data backup, storage, and restoration controls for completeness and effectiveness. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> Business Continuity Plans for adequacy, currency, and testability. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> Disaster Recovery Plans for technical feasibility, completeness, and test results. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Distinguish</strong> between BCP and DRP scope, objectives, and audit evaluation criteria. <em class="bloom-tag">Bloom: Analyze</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Business Impact Analysis (BIA)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A process to identify critical business functions and quantify the impact of disruption over time &mdash; financial, operational, and reputational.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">RTO (Recovery Time Objective)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The maximum acceptable time to restore a business function or IT system after a disruption before the impact becomes unacceptable.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">RPO (Recovery Point Objective)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The maximum acceptable amount of data loss measured in time; defines how far back the recovery must restore data.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">MTPD (Maximum Tolerable Period of Disruption)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The maximum time a business process can be disrupted before organizational survival is threatened; the outer boundary for RTO.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Business Continuity Plan (BCP)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A documented plan for maintaining or quickly resuming critical business functions during and after a significant disruption.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Disaster Recovery Plan (DRP)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A documented plan for restoring IT systems, applications, and data following a disaster; a technical subset of the BCP.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Hot Site</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A fully equipped recovery facility with real-time or near-real-time data replication, enabling rapid failover with minimal data loss.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Warm Site</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A recovery facility with hardware pre-installed and configured but requiring data restoration before operations can resume.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Cold Site</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A recovery facility providing physical space and infrastructure but no pre-installed equipment; longest recovery time.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Failover</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The automatic or manual switching of operations to a redundant or standby system when the primary system fails.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Tabletop Exercise</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A discussion-based BCP/DRP test in which participants walk through a scenario without activating recovery procedures.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Full Interruption Test</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The most comprehensive BCP/DRP test, in which normal operations are intentionally interrupted and recovery is fully executed.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Business Impact Analysis</a></li>
+          <li><a href="#s2">2. Operational Resilience</a></li>
+          <li><a href="#s3">3. Backup &amp; Restoration</a></li>
+          <li><a href="#s4">4. Business Continuity Plan</a></li>
+          <li><a href="#s5">5. Disaster Recovery Plan</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>Business Impact Analysis</h3></div>
+          <p>Business resilience starts with knowing what matters most. The BIA identifies critical business functions, quantifies the impact of losing them over time, and sets the recovery targets (RTO and RPO) that every downstream plan must meet.</p>
+          <ul class="detail">
+            <li><strong>Method:</strong> identify processes &amp; owners &rarr; interview &rarr; map dependencies (IT, staff, vendors, facilities, data) &rarr; quantify impact by time interval &rarr; set MTPD/RTO/RPO &rarr; rank by criticality &rarr; map to IT systems.</li>
+            <li><strong>Impact dimensions:</strong> financial (lost revenue, fines), operational, reputational, regulatory.</li>
+            <li><strong>RTO</strong> = maximum time to restore (e.g., 4 hours); <strong>RPO</strong> = maximum acceptable data loss in time (e.g., 1 hour &rarr; backups at least hourly).</li>
+            <li><strong>Auditor:</strong> BIA documented and approved; updated within ~12&ndash;18 months; all critical processes (not just IT) covered; DRP capabilities align to BIA RTO/RPO; process owners involved.</li>
+          </ul>
+          <figure class="diagram">
+            <svg viewBox="0 0 760 292" role="img" aria-label="A timeline of a disruption. To the left, the gap from the last good backup to the disruption is the RPO (maximum data loss). To the right, the gap from the disruption to systems restored is the RTO (recovery target). Above, the wider gap from the disruption to the point where impact becomes unacceptable is the MTPD, which the RTO must fit within.">
+              <text x="350" y="28" text-anchor="middle" class="dg-text-accent" font-size="14" font-weight="700">Disruption / outage</text>
+              <path d="M350 80 V72 H660 V80" class="dg-brk-mtd" stroke-width="2"/>
+              <text x="505" y="62" text-anchor="middle" class="dg-text-blue" font-size="12.5" font-weight="600">MTPD &#8212; maximum tolerable disruption</text>
+              <line x1="62" y1="156" x2="704" y2="156" class="dg-axis" stroke-width="2.5"/>
+              <path d="M704 150 L718 156 L704 162 Z" class="dg-dot"/>
+              <text x="712" y="146" text-anchor="end" class="dg-text-muted" font-size="11">time</text>
+              <line x1="350" y1="80" x2="350" y2="214" class="dg-incident" stroke-width="2" stroke-dasharray="4 3"/>
+              <circle cx="160" cy="156" r="6" class="dg-dot"/>
+              <circle cx="350" cy="156" r="8" class="dg-dot-accent"/>
+              <circle cx="530" cy="156" r="6" class="dg-dot"/>
+              <circle cx="660" cy="156" r="6" class="dg-dot"/>
+              <path d="M160 176 V184 H350 V176" class="dg-brk-rpo" stroke-width="2"/>
+              <text x="255" y="202" text-anchor="middle" class="dg-text-accent" font-size="13" font-weight="700">RPO</text>
+              <text x="255" y="217" text-anchor="middle" class="dg-text-muted" font-size="11">max data loss</text>
+              <path d="M350 176 V184 H530 V176" class="dg-brk-rto" stroke-width="2"/>
+              <text x="440" y="202" text-anchor="middle" class="dg-text-blue" font-size="13" font-weight="700">RTO</text>
+              <text x="440" y="217" text-anchor="middle" class="dg-text-muted" font-size="11">recovery target</text>
+              <text x="160" y="250" text-anchor="middle" class="dg-text" font-size="11.5">Last good backup</text>
+              <text x="530" y="250" text-anchor="middle" class="dg-text" font-size="11.5">Systems restored</text>
+              <text x="660" y="250" text-anchor="middle" class="dg-text" font-size="11.5">Impact</text>
+              <text x="660" y="264" text-anchor="middle" class="dg-text" font-size="11.5">unacceptable</text>
+            </svg>
+            <figcaption>Recovery objectives on one timeline: <strong>RPO</strong> is the acceptable <em>data-loss</em> window (it sets your backup frequency), <strong>RTO</strong> is the acceptable <em>downtime</em> to restore &mdash; and the RTO must fit inside the <strong>MTPD</strong>, the point where the impact becomes unacceptable.</figcaption>
+          </figure>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>The BIA drives everything else. If it's outdated, incomplete, or misaligned to system capabilities, the BCP and DRP are built on sand. Always check whether the DRP's recovery capabilities meet the BIA-defined RTOs and RPOs &mdash; misalignment is a critical finding.</div>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>System &amp; Operational Resilience</h3></div>
+          <p>Resilience is built into the architecture so a single failure doesn't become an outage. The auditor's test: capabilities verified by testing, not assumed from design.</p>
+          <ul class="detail">
+            <li><strong>Architectures:</strong> HA clustering, load balancing, geographic redundancy (separate sites); <strong>active-active</strong> (both live, immediate failover) vs. <strong>active-passive</strong> (standby requires activation).</li>
+            <li><strong>Redundant infrastructure:</strong> power (UPS, dual feeds, generators), network (dual ISPs, BGP, diverse paths), storage (RAID, synchronous replication).</li>
+            <li><strong>Testing:</strong> failover testing and chaos engineering (intentional fault injection).</li>
+            <li><strong>Auditor:</strong> single points of failure identified and addressed; geographic redundancy for critical systems; mechanisms tested regularly; recovery capability verified by testing, not assumed.</li>
+          </ul>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>Data Backup, Storage &amp; Restoration</h3></div>
+          <p>Backups are the last line of defense &mdash; but only if they can actually be restored. Restoration testing is the single most important backup control.</p>
+          <ul class="detail">
+            <li><strong>Types:</strong> full (slow create, fast restore), incremental (fast create, slow restore), differential (in between).</li>
+            <li><strong>Storage:</strong> on-site (fast but shares the disaster), off-site (geographic separation), air-gapped/offline (ransomware protection).</li>
+            <li><strong>Retention:</strong> Grandfather-Father-Son (GFS) schedules aligned to regulation and RPO.</li>
+            <li>Backups are encrypted, access-controlled, and securely transported off-site.</li>
+            <li><strong>Auditor:</strong> schedules aligned to RPO; off-site/geo-separate storage; restoration tests performed and documented; backups encrypted; access controls prevent unauthorized restore or deletion.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>The most common backup deficiency on the exam: backups taken regularly but <strong>never tested for restoration</strong>. Organizations discover failed backups exactly when they need them. If restoration testing isn't documented, the backup program cannot be considered effective &mdash; no matter how often backups run.</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Ransomware</strong> &mdash; an interactive module on attack progression and mitigation; air-gapped backups are a key defense.</span></div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/ransomware/RansomwareAttack.html" target="_blank" rel="noopener noreferrer">Ransomware <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Business Continuity Plan</h3></div>
+          <p>The BCP is broader than IT &mdash; it covers people, facilities, communications, and how the whole business keeps running through disruption.</p>
+          <ul class="detail">
+            <li><strong>Components:</strong> policy &amp; scope, BIA results, recovery strategies, emergency response (life safety first), crisis communication (internal and external), alternate work arrangements, vendor/supply-chain continuity, named roles, activation criteria.</li>
+            <li><strong>Crisis communication:</strong> call trees, media relations, regulatory notification, stakeholder templates.</li>
+            <li><strong>Maintenance:</strong> annual review plus trigger-based updates (major changes, incidents, test failures) and version control.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p><strong>Supply-chain resilience</strong> is now a core BCP consideration: map critical vendors and their <em>concentration</em> and <strong>fourth-party</strong> dependencies, require continuity and RTO commitments in contracts, and pre-arrange alternates for single points of failure. On the communications side, a mature crisis-comms plan pre-approves <strong>holding statements</strong>, names a single spokesperson, and sets an update cadence &mdash; so the response is fast and consistent rather than improvised under pressure.</p></div>
+          <div class="table-wrap" style="margin:1.1rem 0">
+            <table class="data"><thead><tr><th style="width:30%">Test Type</th><th style="width:16%">Risk</th><th>Value</th></tr></thead><tbody>
+          <tr><td class="term">Tabletop exercise</td><td>None</td><td>Identifies gaps in understanding</td></tr>
+          <tr><td class="term">Structured walk-through</td><td>Minimal</td><td>Validates plan completeness</td></tr>
+          <tr><td class="term">Simulation</td><td>Low</td><td>Tests decision-making under a scenario</td></tr>
+          <tr><td class="term">Parallel test</td><td>Moderate</td><td>Validates recovery capability alongside production</td></tr>
+          <tr><td class="term">Full interruption</td><td>High</td><td>Most realistic validation; production taken offline</td></tr>
+            </tbody></table>
+          </div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>BCP testing frequency is a frequent topic; <strong>annual is the minimum</strong> for most organizations. The key word in test findings is &ldquo;documented&rdquo; &mdash; auditors can't rely on management statements that tests occurred. An undocumented test equals no test from an audit perspective.</div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>BCP and DRP have <strong>different owners</strong>: the <strong>business continuity team</strong> owns the BCP (people, facilities, communications, processes), while <strong>IT</strong> owns the DRP (systems, applications, data recovery). The DRP is the technical subset of the BCP &mdash; a tested distinction.</div>
+        </article>
+
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Disaster Recovery Plan</h3></div>
+          <p>The DRP is the technical subset of the BCP &mdash; how IT systems, applications, and data are recovered. Its credibility lives or dies on test results.</p>
+          <ul class="detail">
+            <li><strong>Components:</strong> recovery-site option, system recovery procedures, prioritized recovery sequence (per BIA), recovery team roles and contacts, vendor escalation, data restoration, validation testing, return-to-primary procedures.</li>
+            <li><strong>Testing:</strong> validate <em>actual</em> RTOs/RPOs; a full test at least annually for critical systems; document RTO achieved vs. RTO required.</li>
+            <li><strong>Auditor:</strong> procedures complete and accurate; tested RTO/RPO meet BIA requirements; a named owner; regular documented tests; gaps tracked to remediation; recovery personnel trained.</li>
+          </ul>
+          <div class="table-wrap" style="margin:1.1rem 0">
+            <table class="data"><thead><tr><th style="width:18%">Recovery Site</th><th>Description</th><th style="width:16%">RTO</th><th style="width:14%">Cost</th></tr></thead><tbody>
+          <tr><td class="term">Hot site</td><td>Full replica with real-time sync</td><td>Minutes&ndash;hours</td><td>Very high</td></tr>
+          <tr><td class="term">Warm site</td><td>Pre-configured hardware; data restoration needed</td><td>Hours&ndash;days</td><td>Moderate</td></tr>
+          <tr><td class="term">Cold site</td><td>Space &amp; infrastructure only; equipment must be procured</td><td>Days&ndash;weeks</td><td>Low</td></tr>
+          <tr><td class="term">Cloud DR (DRaaS)</td><td>Recovery in the cloud; elastic capacity</td><td>Variable</td><td>Pay-per-use</td></tr>
+          <tr><td class="term">Reciprocal</td><td>Mutual-use agreement with another organization</td><td>Variable</td><td>Low (capacity not guaranteed)</td></tr>
+            </tbody></table>
+          </div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>A DRP that has never been tested is a theoretical document. The strongest evidence it works is test results showing critical systems recovered within RTO/RPO. If a test shows the RTO was not met, that is an immediate finding &mdash; not a qualification.</div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 4B judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale for every item. Hold the line on evidence: tested capability vs. BIA requirement.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>The BIA gives the order-management system an RTO of 4 hours. The DRP, tested repeatedly, consistently recovers it in 10&ndash;12 hours. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Accept the DRP since 10&ndash;12 hours is reasonable for most systems.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Report a critical finding: the DRP recovery capability does not meet the BIA-defined RTO.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> Recommend revising the BIA to increase the RTO to 12 hours.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> Require a hot site to achieve the 4-hour RTO.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> When the tested recovery capability (10&ndash;12 hours) does not meet the BIA-defined RTO (4 hours), it's a critical finding. The auditor should not recommend weakening the BIA to match the DRP &mdash; that would erase the accountability the BIA creates. <b>Why the others fall short:</b> <b>A</b> accepting 10&ndash;12 hours ignores the business-set 4-hour RTO; <b>C</b> raising the BIA to fit the DRP inverts the relationship &mdash; the BIA drives the RTO; <b>D</b> mandating a hot site prescribes a fix; the finding is the capability gap.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q2.</span>An organization runs nightly full backups to an off-site vault, but restoration has never been tested. The auditor's MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> Backup frequency may not meet the RPO.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> The off-site vault may not be physically secure.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> There is no assurance that backups can actually be restored when needed.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> The backup media may not be encrypted during transport.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> The primary risk is that backups have never been proven to work. All other concerns (frequency, security, encryption) are secondary to the fundamental question of whether the backup program is functional. <b>Why the others fall short:</b> <b>A</b> backup frequency is secondary if restores are never proven; <b>B</b> vault security matters less than whether backups can be recovered at all; <b>D</b> encryption is secondary to recoverability.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>During a BCP tabletop exercise, several team members don't know their roles and the contact list includes people who left 18 months ago. The MOST significant finding is:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> The tabletop format is insufficient for BCP validation.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> The BCP has not been maintained to reflect current personnel and responsibilities.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> The BCP requires more frequent testing than annually.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Contact-list management should be delegated to HR.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The BCP has not been maintained &mdash; personnel changes aren't reflected and members don't know their roles. A plan that describes an organization that no longer exists cannot be effective. <b>Why the others fall short:</b> <b>A</b> the tabletop succeeded &mdash; it surfaced the real problem; <b>C</b> more testing won&rsquo;t fix an unmaintained plan; <b>D</b> delegating contact lists to HR sidesteps plan-maintenance ownership.</div>
+        </div>
+
+        <div class="q" data-answer="A">
+          <p class="q-stem"><span class="qn">Q4.</span>The primary data center sits in a flood plain; the recovery site is 2 miles away. The auditor's MOST significant concern is:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> The recovery site is too close and may be affected by the same disaster.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> A flood would cause recovery time to exceed the RTO.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> There is no written contract for the recovery site.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Two-mile proximity violates ISACA standards for site distance.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: A.</b> A recovery site 2 miles away in the same flood plain may be in the same flood zone, so one disaster could take out both sites. Geographic diversity is a core resilience requirement; proximity defeats the purpose of a recovery site. <b>Why the others fall short:</b> <b>B</b> the RTO framing misses that both sites can flood together; <b>C</b> a missing contract is lesser than shared-disaster exposure; <b>D</b> there&rsquo;s no fixed &lsquo;ISACA distance&rsquo; &mdash; the concern is common-disaster risk.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>A &ldquo;warm&rdquo; recovery site has servers pre-installed, but data must be restored from nightly off-site backups (~8 hours). The BIA requires a 1-hour RPO. The auditor should identify:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> An acceptable configuration since a warm site suits most recovery scenarios.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> A gap: the site&rsquo;s data currency (up to ~24 hours old) cannot meet the 1-hour RPO.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> An operational risk finding related to backup transport time.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> A contractual finding related to the off-site vault agreement.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> A warm site fed by nightly off-site backups cannot achieve a 1-hour RPO &mdash; restored data could be up to ~24 hours old. Meeting a 1-hour RPO requires near-real-time replication, such as a hot site with synchronous or near-synchronous replication. <b>Why the others fall short:</b> <b>A</b> &lsquo;a warm site suits most cases&rsquo; ignores this 1-hour RPO; <b>C</b> the transport-time framing misses the RPO gap; <b>D</b> the vault contract isn&rsquo;t the issue &mdash; data currency is.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson05.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 5 &mdash; IS Operations (Part A)</span></a>
+    <a href="lesson07.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 7 &mdash; Protection of Information Assets</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

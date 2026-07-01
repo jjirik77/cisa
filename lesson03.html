@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 — Domain 2: Management of IT (Part B) | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 3</span></p>
+    <span class="lesson-badge-lg">Day 2 &mdash; Afternoon &middot; Domain 2B</span>
+    <h1>Management of IT <span>&mdash; Part B</span></h1>
+    <p class="lesson-lede">Governance sets the direction; management keeps the engine running. IT management turns strategy into operational capability &mdash; and gives IS auditors a rich set of processes to evaluate: resource management, segregation of duties, vendor oversight, performance monitoring, and quality management.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Afternoon, Day 2</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>18% (Domain 2)</strong></span>
+      <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Where strategy becomes operational reality</h2>
+    <div class="rule"></div>
+    <p class="lead"><strong>Governance sets the direction; management makes it real.</strong> Part B completes Domain 2 by examining how IT is <strong>managed</strong> day to day. Four management disciplines dominate the exam: managing IT resources (people, assets, and segregation of duties), managing vendors (contracts, SOC reports, and the all-important right-to-audit clause), monitoring performance (KPIs, KRIs, and whether anyone acts on them), and managing quality (ISO 9001, CMMI, and the independence of the QA function). Throughout, the auditor's eye is on <em>accountability</em> and <em>reliable evidence</em> &mdash; not just whether the technology works.</p>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Evaluate</strong> IT resource management practices for alignment with organizational needs and governance requirements. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Assess</strong> IT vendor management programs for contract adequacy, oversight, and risk management. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Review</strong> IT performance monitoring and reporting mechanisms for completeness and accuracy. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Evaluate</strong> quality assurance and quality management practices within IT operations. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Apply</strong> IS audit procedures to identify and report deficiencies across all IT management domains. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Explain</strong> how IT management failures translate into organizational risk. <em class="bloom-tag">Bloom: Understand</em></span></li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IT Resource Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The processes for acquiring, deploying, maintaining, and retiring IT resources (people, applications, infrastructure, information) to support organizational objectives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SLA (Service Level Agreement)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A formal contract between a service provider and customer defining the expected level of service, metrics, and remedies for non-performance.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">OLA (Operational Level Agreement)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An internal agreement between IT groups defining service expectations that support delivery of SLAs to external customers.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Vendor Risk Management</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The process of identifying, assessing, and mitigating risks associated with third-party vendors and service providers.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">SOC Report</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An auditor's report on controls at a service organization: SOC 1 (financial reporting controls), SOC 2 (trust service criteria), SOC 3 (public version of SOC 2).</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">KPI (Key Performance Indicator)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A quantifiable measure used to evaluate success at meeting a defined objective.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">KRI (Key Risk Indicator)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A forward-looking metric that signals increasing risk exposure before an incident occurs.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">ITIL</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Information Technology Infrastructure Library; a framework of best practices for IT service management, current version ITIL 4.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">IT Balanced Scorecard</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An IT performance tool measuring across four perspectives: financial, customer, internal process, and learning/growth.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Quality Management System (QMS)</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A formalized system documenting processes, procedures, and responsibilities for achieving quality objectives; often aligned to ISO 9001.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Right-to-Audit Clause</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A contractual provision giving an organization (or its auditors) the right to inspect a vendor's operations, controls, and records.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Fourth-Party Risk</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Risk arising from the vendors of the organization's vendors (sub-service providers); concentration risk in the vendor supply chain.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+    <div class="lesson-content">
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. IT Resource Management</a></li>
+          <li><a href="#s2">2. Segregation of Duties</a></li>
+          <li><a href="#s3">3. IT Vendor Management</a></li>
+          <li><a href="#s4">4. Performance Monitoring</a></li>
+          <li><a href="#s5">5. Quality Management</a></li>
+        </ul>
+      </nav>
+      <div class="content-main">
+
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>IT Resource Management</h3></div>
+          <p>IT can only deliver if its resources are managed deliberately. COBIT 2019 frames five resource types &mdash; people, process, information, technology, and partners &mdash; and the auditor evaluates how each is acquired, deployed, and retired.</p>
+          <h4>Workforce &amp; assets</h4>
+          <ul class="detail">
+            <li><strong>Five resource types:</strong> people, process, information, technology, partners.</li>
+            <li><strong>Workforce:</strong> skills-gap analysis, succession planning, security vetting, role-based and annual security-awareness training, and off-boarding with prompt access revocation.</li>
+            <li><strong>Asset management:</strong> hardware inventory and lifecycle, software-license compliance, cloud-resource inventory, end-of-life tracking.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>The fastest way an organization fails an access audit is weak off-boarding &mdash; terminated staff whose accounts stay live for weeks are a textbook finding.</p></div>
+        </article>
+
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Segregation of Duties</h3></div>
+          <p>Segregation of duties (SoD) ensures no single person controls an entire critical transaction, limiting both error and fraud. It is one of the most-tested control concepts on the exam.</p>
+          <ul class="detail">
+            <li>No one should <strong>initiate, authorize, AND complete</strong> a transaction.</li>
+            <li>Separate development from production access; IT operations from security; system administration from audit/log review.</li>
+            <li>Where SoD is not feasible (e.g., small organizations), <strong>compensating controls</strong> such as independent management review of logs must fill the gap.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>For SoD scenarios, ask whether a single person can <strong>initiate, authorize, AND complete</strong> a transaction. Any two of those three in one person may be a concern depending on the risk.</div>
+        </article>
+
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>IT Vendor Management</h3></div>
+          <p>As organizations outsource more, vendor controls effectively become the organization's controls. The auditor evaluates the full vendor lifecycle and the contract terms that make oversight possible.</p>
+          <h4>Lifecycle &amp; contracts</h4>
+          <ul class="detail">
+            <li><strong>Lifecycle:</strong> due diligence &amp; selection &rarr; contract &rarr; ongoing monitoring &rarr; offboarding.</li>
+            <li><strong>Due diligence:</strong> financial stability, security/compliance posture (certifications, audit reports), references, business-continuity capability, data-handling practices.</li>
+            <li><strong>Critical contract terms:</strong> SLAs, data ownership and return/destruction on termination, minimum security standards, <strong>right-to-audit clause</strong>, incident/breach notification, subcontractor (fourth-party) disclosure, IP ownership, liability.</li>
+          </ul>
+          <h4>SOC reports &amp; cloud</h4>
+          <ul class="detail">
+            <li><strong>SOC 1</strong> (financial-reporting controls), <strong>SOC 2</strong> (Security, Availability, Processing Integrity, Confidentiality, Privacy), <strong>SOC 3</strong> (public). <strong>Type I</strong> = design at a point in time; <strong>Type II</strong> = operating effectiveness over a period.</li>
+            <li>Review <strong>complementary user entity controls (CUECs)</strong> &mdash; controls the customer must operate &mdash; and any listed subservice organizations.</li>
+            <li><strong>Cloud:</strong> shared-responsibility model, data residency/jurisdiction, CASB visibility, CSA STAR certification.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>In cloud/outsourcing arrangements, look for the <strong>right-to-audit clause</strong>. Without it, the auditor cannot independently verify vendor controls and must rely entirely on the vendor's own representations &mdash; a significant limitation.</div>
+        </article>
+
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>IT Performance Monitoring &amp; Reporting</h3></div>
+          <p>You can't govern what you don't measure &mdash; and you can't govern what you measure but ignore. Monitoring exists to surface degradation early and to inform governance decisions.</p>
+          <ul class="detail">
+            <li><strong>Frameworks:</strong> IT Balanced Scorecard (financial, customer, internal-process, learning/growth), COBIT 2019 performance management, ITIL reporting.</li>
+            <li><strong>Audit angle:</strong> verify all four Balanced Scorecard perspectives &mdash; financial, customer, internal-process, and learning/growth &mdash; are actually measured and reported, not just the financial one; a finance-only scorecard is a finding.</li>
+            <li><strong>KPIs:</strong> availability, MTTR, MTBF, SLA-compliance rate, change-success rate, help-desk first-call resolution.</li>
+            <li><strong>KRIs</strong> (forward-looking): open critical vulnerabilities, days since last backup verification, failed privileged-access attempts.</li>
+            <li><strong>Dashboards:</strong> executive RAG status, operational detail, and board/audit-committee risk reporting.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A help desk reporting 95% first-call resolution by closing and reopening unresolved tickets isn't a tooling problem &mdash; it's a reporting-integrity finding. The metric is being gamed.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When metrics are reported but not acted upon, the finding isn't that the metrics are wrong &mdash; it's that the <strong>management response process is ineffective</strong>. Reporting without action is not governance.</div>
+        </article>
+
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Quality Assurance &amp; Quality Management</h3></div>
+          <p>The quality of IT services depends on consistent, measured processes &mdash; and on a QA function independent enough to tell the truth about them.</p>
+          <ul class="detail">
+            <li><strong>Principles:</strong> customer focus, process approach, continual improvement, evidence-based decision-making.</li>
+            <li><strong>Frameworks:</strong> ISO 9001 (QMS), CMMI (five maturity levels), Six Sigma (DMAIC), Total Quality Management.</li>
+            <li><strong>Software QA:</strong> an independent testing function, code-review standards, defect tracking, test-coverage requirements.</li>
+            <li><strong>ITIL 4 service quality:</strong> service-level management, continual service improvement (CSI), and problem management (root-cause elimination vs. firefighting). <span class="xref">(also <a href="lesson05.html">Lesson&nbsp;5</a> &mdash; ITSM/ITIL processes in operations)</span></li>
+          </ul>
+          <div class="table-wrap" style="margin:1.1rem 0">
+            <table class="data"><thead><tr><th style="width:12%">Level</th><th style="width:28%">Name</th><th>Description</th></tr></thead><tbody>
+          <tr><td class="weight">1</td><td class="term">Initial</td><td>Unpredictable, reactive processes.</td></tr>
+          <tr><td class="weight">2</td><td class="term">Managed</td><td>Projects are planned and controlled &mdash; but processes are project-specific, not organization-wide.</td></tr>
+          <tr><td class="weight">3</td><td class="term">Defined</td><td>Processes are documented and standardized across the organization.</td></tr>
+          <tr><td class="weight">4</td><td class="term">Quantitatively Managed</td><td>Processes are measured and controlled statistically.</td></tr>
+          <tr><td class="weight">5</td><td class="term">Optimizing</td><td>Continuous process improvement.</td></tr>
+            </tbody></table>
+          </div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Quality questions often hinge on QA <strong>independence</strong>. If QA reports to the same manager as developers, or developers approve their own code for release, independence is compromised &mdash; a finding regardless of the technical quality of the output.</div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 2B judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Select the best answer for each question, then submit for your score and the rationale for every item. Focus on accountability, oversight, and the reliability of evidence.</p>
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>A cloud vendor contract has no right-to-audit clause, but the vendor provides an annual SOC 2 Type II report. The auditor should conclude that:</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> The SOC 2 Type II report provides sufficient assurance; a right-to-audit clause is redundant.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> The absence of a right-to-audit clause is a contractual deficiency; reliance on the SOC 2 report may be necessary but is a limitation.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> The organization should immediately terminate the contract and find a compliant alternative.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> This is acceptable since most cloud vendors do not permit right-to-audit provisions.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> The missing clause is a contractual deficiency that limits the auditor's ability to independently verify controls. SOC 2 reports are useful but are produced by auditors the vendor selects. It's a finding and a limitation &mdash; not a disqualifying event. <b>Why the others fall short:</b> <b>A</b> a vendor-selected SOC report doesn&rsquo;t make an independent audit right redundant; <b>C</b> terminating over a single clause is disproportionate; <b>D</b> &lsquo;most vendors don&rsquo;t allow it&rsquo; normalizes the gap rather than flagging the limitation.</div>
+        </div>
+
+        <div class="q" data-answer="A">
+          <p class="q-stem"><span class="qn">Q2.</span>An IT help desk reports a 95% first-call resolution rate every month. The auditor discovers unresolved calls are closed after 24 hours and reopened as new tickets. The MOST significant finding is:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> The closure policy creates artificially inflated metrics, undermining the integrity of reporting.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> The SLA should be extended to 48 hours to allow proper resolution.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> The 95% rate is industry-standard and requires no further evaluation.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> The ITSM tool should be replaced with one that prevents premature ticket closure.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: A.</b> Closing and reopening tickets artificially inflates the KPI, making it unreliable. This is a governance and integrity finding about reporting reliability &mdash; not primarily an SLA or tooling issue. <b>Why the others fall short:</b> <b>B</b> extending the SLA treats a symptom and ignores the manipulation; <b>C</b> calling 95% &lsquo;industry-standard&rsquo; accepts a gamed number; <b>D</b> swapping tools sidesteps the reporting-integrity problem.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>A developer responsible for a critical financial application also has production access to deploy changes directly. This MOST represents:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> An IT operations risk because unauthorized changes could disrupt availability.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> A segregation of duties violation; developer access to production is an inadequately controlled environment.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> An acceptable configuration in small IT shops where developer headcount is limited.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> An access management deficiency that must be remediated by the IT security team.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Developer access to production is a classic SoD violation &mdash; the developer can both create and deploy changes without independent review. It has access-management implications (D), but the root finding is the SoD violation. <b>Why the others fall short:</b> <b>A</b> availability risk is a consequence, not the core failure; <b>C</b> &lsquo;acceptable in small shops&rsquo; excuses the gap rather than requiring compensating controls; <b>D</b> access is involved, but the root finding is the SoD violation.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q4.</span>A vendor's SOC 2 Type II report lists a complementary user entity control (CUEC) requiring the customer to maintain a privileged-access review for admin accounts on the vendor's platform. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> Note it as the vendor's responsibility since it appears in the vendor's SOC report.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Verify that the organization has implemented and is operating the CUEC as required.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Recommend requesting a modified SOC report that removes the CUEC requirement.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Accept the SOC report as complete assurance without further testing.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> CUECs are controls the user organization must implement to complete the control environment described in the SOC report. The auditor must verify the organization is actually operating the required CUEC &mdash; it is not the vendor's responsibility. <b>Why the others fall short:</b> <b>A</b> a CUEC is by definition the customer&rsquo;s responsibility, not the vendor&rsquo;s; <b>C</b> asking to strip the CUEC misreads its purpose; <b>D</b> accepting the report without testing the CUEC leaves a required control unverified.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>An IT department is at CMMI Level 2 for change management: individual projects manage changes effectively, but there is no organization-wide standardized process. This BEST aligns with:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Level 1 &mdash; Initial: processes are unpredictable and reactive.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Level 2 &mdash; Managed: projects are planned and managed; processes are project-specific, not organization-wide.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Level 3 &mdash; Defined: processes are documented and standardized across the organization.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Level 4 &mdash; Quantitatively Managed: processes are measured and statistically controlled.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> CMMI Level 2 (Managed) is characterized by project-level control. Processes exist and work within projects but are not standardized across the organization &mdash; that institutionalization is Level 3 (Defined). <b>Why the others fall short:</b> <b>A</b> Level 1 is reactive/unpredictable, but projects here manage changes effectively; <b>C</b> Level 3 requires org-wide standardization, which is explicitly absent; <b>D</b> Level 4 requires statistical control, well beyond this state.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson02.html" class="prev"><span class="pager-dir">&#8592; Previous</span><span class="pager-name">Lesson 2 &mdash; Governance of IT (Part A)</span></a>
+    <a href="lesson04.html" class="next"><span class="pager-dir">Next &#8594;</span><span class="pager-name">Lesson 4 &mdash; Acquisition, Development &amp; Implementation</span></a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>

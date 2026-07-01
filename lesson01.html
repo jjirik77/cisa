@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 1 — Domain 1: IS Auditing Process | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-seal">CISA<br>PREP</div>
+    <span class="nav-title">5-Day Workshop</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#lessons">Lessons</a></li>
+      <li><a href="index.html#schedule">Schedule</a></li>
+      <li><a href="index.html#domains">Domains</a></li>
+      <li><a href="index.html#resources">Resources</a></li>
+    </ul>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
+  </div>
+</nav>
+
+<!-- LESSON HERO -->
+<header class="lesson-hero">
+  <div class="lesson-hero-inner">
+    <p class="breadcrumb"><a href="index.html">Workshop</a> &nbsp;&rsaquo;&nbsp; <a href="index.html#lessons">Lessons</a> &nbsp;&rsaquo;&nbsp; <span>Lesson 1</span></p>
+    <span class="lesson-badge-lg">Day 1 &mdash; Afternoon &middot; Domain 1</span>
+    <h1>Information Systems <span>Auditing Process</span></h1>
+    <p class="lesson-lede">The audit doesn't start when the auditor arrives at the client site &mdash; it starts with a risk-based plan. Domain 1 establishes the professional framework that governs every IS audit engagement: how you <strong>plan</strong> where to look, and how you <strong>execute</strong> &mdash; the methods, evidence, testing, and communication that turn audit objectives into defensible findings.</p>
+    <div class="meta-chips">
+      <span class="meta-chip">Session: <strong>Afternoon, Day 1</strong></span>
+      <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
+      <span class="meta-chip">Exam Weight: <strong>18%</strong> (~27 Qs)</span>
+      <span class="meta-chip">Knowledge Check: <strong>10 Questions</strong></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- OVERVIEW -->
+  <section class="block">
+    <p class="eyebrow">Overview</p>
+    <h2 class="h2">Planning tells you where to look; execution is how you look</h2>
+    <div class="rule"></div>
+    <p class="lead">Domain 1 is the largest single domain at 18% of the exam, and it is the conceptual spine of the whole credential. Everything else &mdash; governance, systems, operations, security &mdash; is something the auditor <em>evaluates</em> using the discipline established here. This lesson runs the full engagement lifecycle in two halves: <strong>Planning (Domain 1A)</strong> &mdash; standards and ethics, audit types, risk-based planning, and controls; and <strong>Execution (Domain 1B)</strong> &mdash; project management, testing and sampling, evidence, analytics, reporting, and quality assurance. Throughout, hold the auditor's stance: evaluate, test, document, and report &mdash; independently and on the basis of evidence.</p>
+          <figure class="diagram">
+            <svg viewBox="0 0 760 188" role="img" aria-label="The audit engagement lifecycle: planning, then fieldwork and evidence, then reporting, then follow-up, looping back as a continuous risk-based cycle."><rect x="28" y="40" width="152" height="58" rx="8" class="dg-box"/><text x="104.0" y="66.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">1 &#183; Planning</text><text x="104.0" y="83.0" text-anchor="middle" class="dg-inv" font-size="10.5">risk-based scope</text><rect x="220" y="40" width="152" height="58" rx="8" class="dg-box"/><text x="296.0" y="66.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">2 &#183; Fieldwork</text><text x="296.0" y="83.0" text-anchor="middle" class="dg-inv" font-size="10.5">test &amp; gather evidence</text><rect x="412" y="40" width="152" height="58" rx="8" class="dg-box"/><text x="488.0" y="66.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">3 &#183; Reporting</text><text x="488.0" y="83.0" text-anchor="middle" class="dg-inv" font-size="10.5">findings &amp; opinion</text><rect x="604" y="40" width="152" height="58" rx="8" class="dg-box"/><text x="680.0" y="66.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">4 &#183; Follow-up</text><text x="680.0" y="83.0" text-anchor="middle" class="dg-inv" font-size="10.5">verify remediation</text><line x1="180" y1="69" x2="211" y2="69" class="dg-arrow-line" stroke-width="2"/><path d="M210 64 L220 69 L210 74 Z" class="dg-arrow"/><line x1="372" y1="69" x2="403" y2="69" class="dg-arrow-line" stroke-width="2"/><path d="M402 64 L412 69 L402 74 Z" class="dg-arrow"/><line x1="564" y1="69" x2="595" y2="69" class="dg-arrow-line" stroke-width="2"/><path d="M594 64 L604 69 L594 74 Z" class="dg-arrow"/><path d="M680 98 V140 H104 V106" class="dg-arrow-line" stroke-width="2"/><path d="M99 114 L104 104 L109 114 Z" class="dg-arrow"/><text x="392" y="160" text-anchor="middle" class="dg-text-muted" font-size="11.5">Continuous, risk-based engagement cycle</text></svg>
+            <figcaption>Every IS audit follows the same engagement lifecycle &mdash; <strong>plan</strong> where to look (by risk), <strong>execute</strong> the fieldwork and gather evidence, <strong>report</strong> findings and an opinion, then <strong>follow up</strong> to confirm remediation &mdash; and the cycle repeats.</figcaption>
+          </figure>
+  </section>
+
+  <!-- OBJECTIVES -->
+  <section class="block">
+    <p class="eyebrow">Learning Objectives</p>
+    <h2 class="h2">By the end of this lesson you will be able to&hellip;</h2>
+    <div class="rule"></div>
+    <ul class="objectives">
+      <li><span><strong>Apply</strong> ISACA IS audit standards, guidelines, and the Code of Professional Ethics to audit engagements. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Distinguish</strong> among the types of audits, assessments, and reviews used in IS audit practice. <em class="bloom-tag">Bloom: Analyze</em></span></li>
+      <li><span><strong>Develop</strong> a risk-based audit plan that prioritizes engagements according to organizational risk exposure. <em class="bloom-tag">Bloom: Create</em></span></li>
+      <li><span><strong>Classify</strong> controls by type and nature, and assess adequacy versus effectiveness. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Identify</strong> threats to auditor independence and objectivity and apply appropriate mitigation strategies. <em class="bloom-tag">Bloom: Remember</em></span></li>
+      <li><span><strong>Select</strong> appropriate audit tests, sampling methods, and evidence-collection techniques, including CAATs. <em class="bloom-tag">Bloom: Evaluate</em></span></li>
+      <li><span><strong>Apply</strong> audit data analytics to test full populations and detect anomalies. <em class="bloom-tag">Bloom: Apply</em></span></li>
+      <li><span><strong>Structure</strong> audit findings (CRAF) and communicate results, escalating critical issues appropriately. <em class="bloom-tag">Bloom: Create</em></span></li>
+    </ul>
+  </section>
+
+  <!-- KEY TERMS (FLASHCARDS) -->
+  <section class="block">
+    <p class="eyebrow">Key Terms</p>
+    <h2 class="h2">Vocabulary flashcards</h2>
+    <div class="rule"></div>
+    <p class="flip-hint-top">&#128072; Read the term, recall the definition, then click or press Enter to check yourself. Active recall beats re-reading.</p>
+    <div class="vocab-grid">
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Audit Charter</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A document that formally authorizes the internal audit function, defines its purpose, authority, and responsibility, and is approved by the audit committee or board.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Audit Scope</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The boundary and extent of an audit engagement, defining the systems, processes, time periods, and locations to be examined.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Risk-Based Audit Planning</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An approach to audit planning that prioritizes audit resources toward the areas with the highest risk to organizational objectives.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Inherent Risk</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The risk that exists in a process or activity before any controls are applied.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Control Risk</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The risk that a material error or misstatement will not be prevented or detected by the existing internal control structure.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Detection Risk</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The risk that an auditor's procedures will fail to detect a material error or weakness that exists.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Preventive Control</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A control designed to stop an error, irregularity, or incident from occurring in the first place.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Detective Control</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A control designed to identify and alert on errors, irregularities, or incidents after they occur.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Corrective Control</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A control designed to minimize the impact of and remedy errors or incidents after they are detected.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Compensating Control</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">An alternative control that provides equivalent protection when a primary control cannot be implemented.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Independence</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">The condition of being free from factors &mdash; financial, organizational, personal &mdash; that impair objective judgment in an audit.</div></div>
+        </div>
+      </button>
+
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Materiality</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">A threshold above which an error, omission, or weakness is significant enough to affect the decisions of users of audit information.</div></div>
+        </div>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- LESSON CONTENT -->
+  <section class="block">
+    <p class="eyebrow">Lesson Content</p>
+    <h2 class="h2">Study the material</h2>
+    <div class="rule"></div>
+
+    <div class="lesson-content">
+
+      <!-- ON THIS PAGE NAV -->
+      <nav class="toc" aria-label="On this page">
+        <div class="toc-title">On this page</div>
+        <ul>
+          <li><a href="#s1">1. Standards, Guidelines &amp; Ethics</a></li>
+          <li><a href="#s2">2. Types of Audits &amp; Reviews</a></li>
+          <li><a href="#s3">3. Risk-Based Audit Planning</a></li>
+          <li><a href="#s4">4. Types of Controls</a></li>
+          <li><a href="#s5">5. Audit Project Management</a></li>
+          <li><a href="#s6">6. Testing &amp; Sampling</a></li>
+          <li><a href="#s7">7. Evidence Collection</a></li>
+          <li><a href="#s8">8. Audit Data Analytics</a></li>
+          <li><a href="#s9">9. Reporting &amp; Communication</a></li>
+          <li><a href="#s10">10. Quality Assurance</a></li>
+        </ul>
+      </nav>
+
+      <div class="content-main">
+
+        <!-- 1 -->
+        <article class="content-section" id="s1">
+          <div class="cs-head"><span class="cs-num">1</span><h3>IS Audit Standards, Guidelines &amp; the Code of Ethics</h3></div>
+          <p>An IS audit is only credible if it follows recognized professional standards. ISACA publishes a tiered body of authoritative guidance that tells an auditor <strong>what they must do</strong>, <strong>how they may do it</strong>, and the <strong>ethics that bind them</strong>. Every exam scenario assumes you are operating inside this framework, so it is the foundation for everything that follows.</p>
+          <h4>The three tiers of guidance</h4>
+          <ul class="detail">
+            <li><strong>IS Audit &amp; Assurance Standards (S1&ndash;S16)</strong> &mdash; mandatory minimum requirements. They cover the audit charter (S1), organizational and professional independence (S2, S3), reasonable expectation (S4), due professional care (S5), proficiency (S6), assertions and criteria (S7, S8), planning (S9), supervision (S10), materiality (S11), using the work of other experts (S12), evidence (S13), use of CAATs (S14), reporting (S15), and follow-up (S16).</li>
+            <li><strong>Guidelines</strong> &mdash; non-mandatory guidance that elaborates on <em>how</em> to apply the standards in practice.</li>
+            <li><strong>Tools &amp; Techniques</strong> &mdash; practical, hands-on implementation guidance.</li>
+          </ul>
+          <h4>The Code of Professional Ethics</h4>
+          <p>ISACA's Code binds every candidate and certificate holder to act with objectivity and due care, serve stakeholders lawfully, maintain confidentiality, sustain professional competency, inform appropriate parties of results (disclosing all material facts), and support stakeholder education.</p>
+          <h4>Threats to independence</h4>
+          <ul class="detail">
+            <li><strong>Self-review</strong> &mdash; auditing one's own prior work.</li>
+            <li><strong>Advocacy</strong> &mdash; promoting a client's position.</li>
+            <li><strong>Familiarity</strong> &mdash; over-reliance on close relationships.</li>
+            <li><strong>Intimidation</strong> &mdash; actual or perceived pressure.</li>
+            <li><strong>Financial interest</strong> &mdash; ownership or compensation conflicts.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An auditor asked to review a control they personally helped design last year faces a self-review threat. The correct response is to disclose the conflict and reassign the work &mdash; not to "proceed with extra care."</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When a scenario gives an auditor a personal, financial, or prior-engagement relationship with the auditee, the answer almost always involves <strong>disclosing the conflict and/or reassigning the engagement</strong> &mdash; not simply proceeding with added care.</div>
+        </article>
+
+        <!-- 2 -->
+        <article class="content-section" id="s2">
+          <div class="cs-head"><span class="cs-num">2</span><h3>Types of Audits, Assessments &amp; Reviews</h3></div>
+          <p>Not every engagement has the same objective, and the objective dictates the procedures. The exam repeatedly asks you to recognize <em>what kind</em> of audit a scenario describes, because mislabeling the engagement leads to the wrong answer.</p>
+          <ul class="detail">
+            <li><strong>Financial audit</strong> &mdash; examines financial records for accuracy and GAAP/IFRS compliance; IS audit supports it by evaluating IT controls over financial reporting.</li>
+            <li><strong>Operational audit</strong> &mdash; evaluates the effectiveness and efficiency of processes.</li>
+            <li><strong>Compliance audit</strong> &mdash; assesses adherence to laws, regulations, and policies (SOX, PCI DSS, HIPAA, GDPR).</li>
+            <li><strong>IS audit</strong> &mdash; evaluates the adequacy, effectiveness, and efficiency of IT controls.</li>
+            <li><strong>Integrated audit</strong> &mdash; combines financial/operational objectives with IS procedures.</li>
+            <li><strong>Forensic audit</strong> &mdash; investigates suspected fraud; involves evidence preservation and chain of custody.</li>
+            <li><strong>Third-party / service-provider audit</strong> &mdash; evaluates vendor controls; includes SOC&nbsp;1/2/3 report review.</li>
+            <li><strong>Pre- and post-implementation reviews</strong> &mdash; evaluate controls before go-live and whether objectives were met after.</li>
+            <li><strong>Self-assessment</strong> &mdash; management-led; the auditor evaluates the quality of the self-assessment process.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>"Does the change process follow policy?" is a <strong>compliance</strong> question. "Does the change process work efficiently?" is an <strong>operational</strong> question. The same process can be the subject of either &mdash; the objective is what changes.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>The exam frequently tests <strong>compliance vs. operational</strong>. Compliance asks "Does the organization follow the rules?" Performance/operational asks "Does the process work effectively and efficiently?" Identify which the scenario is measuring.</div>
+        </article>
+
+        <!-- 3 -->
+        <article class="content-section" id="s3">
+          <div class="cs-head"><span class="cs-num">3</span><h3>Risk-Based Audit Planning</h3></div>
+          <p>Audit resources are always finite. Risk-based planning directs them where organizational risk is highest &mdash; and judging that allocation correctly is the single most-tested skill in Domain 1.</p>
+          <h4>How the plan is built</h4>
+          <ul class="detail">
+            <li>Start from the <strong>audit universe</strong> &mdash; the complete inventory of auditable entities (processes, systems, applications, units, locations).</li>
+            <li>For each entity, assess <strong>inherent risk</strong>, evaluate existing controls (<strong>control risk</strong>), and determine the <strong>residual risk</strong> that remains.</li>
+            <li><strong>Rank entities by residual risk</strong> and allocate the audit plan accordingly.</li>
+          </ul>
+          <h4>Scoring the audit universe</h4>
+          <ul class="detail">
+            <li>In practice each entity is <strong>scored numerically</strong>: rate <strong>impact</strong> and <strong>likelihood</strong> (commonly 1&ndash;5 each) against defined criteria, then combine them &mdash; a simple product (impact &times; likelihood) or a <strong>weighted model</strong> that also factors control maturity, prior findings, regulatory exposure, and time since last audit.</li>
+            <li>The resulting scores rank the universe and plot onto a <strong>risk heat map</strong>; the highest-scoring entities become the annual plan&rsquo;s priorities.</li>
+            <li><strong>Auditor:</strong> the scoring criteria and weights are documented, applied consistently, refreshed for new risk, and approved by the audit committee &mdash; so the ranking is defensible, not subjective.</li>
+          </ul>
+          <h4>Inputs to the plan</h4>
+          <ul class="detail">
+            <li>Prior audit results and open findings; regulatory requirements; organizational strategy and material changes; management and board/audit-committee direction; emerging threats.</li>
+            <li>Distinguish the <strong>annual</strong> plan (strategic scope) from the <strong>engagement-level</strong> plan (a single audit). Audit objectives must link clearly to risk; scope sets the boundaries. COBIT&nbsp;2019 supports the framework.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Given twelve auditable areas (five high-risk, four medium, three low) but capacity for only six, the risk-based plan covers all five high-risk areas plus the single highest-scoring medium area &mdash; the risk ranking, not convenience, drives the choice.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>In planning scenarios the auditor always prioritizes the <strong>highest-risk</strong> areas &mdash; not the most recently audited, not what management requests, and not the most technically complex. If material new risk emerges (e.g., a breach), the plan is updated to include it.</div>
+        </article>
+
+        <!-- 4 -->
+        <article class="content-section" id="s4">
+          <div class="cs-head"><span class="cs-num">4</span><h3>Types of Controls</h3></div>
+          <p>Auditors classify controls so they can judge two things: whether the <em>right kind</em> of control exists for a given risk, and whether that control is both well-designed and actually working.</p>
+          <h4>By objective</h4>
+          <ul class="detail">
+            <li><strong>Preventive</strong> (block before it happens &mdash; access controls, input validation), <strong>detective</strong> (identify after &mdash; logs, reconciliations, IDS), <strong>corrective</strong> (remedy &mdash; backup restoration, patching), plus <strong>deterrent</strong>, <strong>directive</strong>, and <strong>recovery</strong> controls.</li>
+          </ul>
+          <h4>By nature</h4>
+          <ul class="detail">
+            <li><strong>Manual</strong> (people; prone to error/override), <strong>automated</strong> (systems; consistent but can fail system-wide), and <strong>IT-dependent manual</strong> (manual steps that rely on IT-generated output).</li>
+            <li><strong>General IT controls (GITCs):</strong> access, change, operations, physical/environmental, backup. <strong>Application controls:</strong> input, processing, output. <strong>Entity-level controls:</strong> governance and culture.</li>
+          </ul>
+          <figure class="diagram">
+            <svg viewBox="0 0 760 198" role="img" aria-label="Control types arranged around a security event. Before the event: deterrent and preventive controls reduce likelihood. After the event: detective, corrective, and recovery controls reduce impact. Compensating controls substitute when a primary control is not feasible."><text x="176" y="22" text-anchor="middle" class="dg-text-muted" font-size="11.5" font-weight="700">BEFORE &#8212; reduce likelihood</text><text x="576" y="22" text-anchor="middle" class="dg-text-muted" font-size="11.5" font-weight="700">AFTER &#8212; reduce impact</text><line x1="380" y1="34" x2="380" y2="126" class="dg-incident" stroke-width="2" stroke-dasharray="4 3"/><text x="380" y="32" text-anchor="middle" class="dg-text-accent" font-size="10.5" font-weight="700">event</text><rect x="24" y="54" width="140" height="60" rx="8" class="dg-box"/><text x="94.0" y="81.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Deterrent</text><text x="94.0" y="98.0" text-anchor="middle" class="dg-inv" font-size="10.5">warning banners</text><rect x="178" y="54" width="140" height="60" rx="8" class="dg-box"/><text x="248.0" y="81.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Preventive</text><text x="248.0" y="98.0" text-anchor="middle" class="dg-inv" font-size="10.5">MFA, locks</text><rect x="400" y="54" width="112" height="60" rx="8" class="dg-box"/><text x="456.0" y="81.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Detective</text><text x="456.0" y="98.0" text-anchor="middle" class="dg-inv" font-size="10.5">logs, IDS</text><rect x="522" y="54" width="112" height="60" rx="8" class="dg-box"/><text x="578.0" y="81.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Corrective</text><text x="578.0" y="98.0" text-anchor="middle" class="dg-inv" font-size="10.5">patch, restore</text><rect x="644" y="54" width="112" height="60" rx="8" class="dg-box"/><text x="700.0" y="81.0" text-anchor="middle" class="dg-inv" font-size="12.5" font-weight="700">Recovery</text><text x="700.0" y="98.0" text-anchor="middle" class="dg-inv" font-size="10.5">backups, DRP</text><rect x="220" y="150" width="320" height="32" rx="6" class="dg-stroke-navylt" stroke-dasharray="5 3" stroke-width="1.5"/><text x="380" y="170" text-anchor="middle" class="dg-text" font-size="11">Compensating &#8212; stand-in for an infeasible primary control</text></svg>
+            <figcaption>Controls are classified by <em>when</em> they act on a threat: <strong>deterrent</strong> and <strong>preventive</strong> controls work before the event to lower likelihood; <strong>detective</strong>, <strong>corrective</strong>, and <strong>recovery</strong> controls work after it to limit impact. A <strong>compensating</strong> control stands in when the ideal control isn&rsquo;t feasible.</figcaption>
+          </figure>
+          <h4>Adequacy vs. effectiveness</h4>
+          <p><strong>Adequacy</strong> asks whether the control is <em>designed</em> to address the risk. <strong>Effectiveness</strong> asks whether it is <em>operating</em> as designed and actually reducing risk. When a primary control isn't feasible, a <strong>compensating control</strong> must provide equivalent risk reduction. Common frameworks: COBIT&nbsp;2019, NIST&nbsp;SP&nbsp;800-53, ISO/IEC&nbsp;27001/27002, and CIS Controls.</p>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A nightly reconciliation that catches posting errors is a <strong>detective</strong> control; the access control that blocks unauthorized entry is <strong>preventive</strong>. A high-risk process often needs both.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span><strong>Adequacy and effectiveness are separate.</strong> A control can be well-designed but poorly implemented (adequate but ineffective), or operate flawlessly while being the wrong control for the risk (effective but inadequate).</div>
+          <div class="resource-link">
+            <span class="rl-icon" aria-hidden="true">&#128218;</span>
+            <div class="rl-body">
+              <span class="rl-label">Explore further</span>
+              <span class="rl-text"><strong>Cybersecurity Controls reference</strong> &mdash; an interactive guide to control families and how they map to risk. A deeper companion to this section.</span>
+            </div>
+            <div class="rl-actions">
+              <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/controls/cybersecurity_controls.html" target="_blank" rel="noopener noreferrer">Controls <span class="ext">&#8599;</span></a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5 -->
+        <article class="content-section" id="s5">
+          <div class="cs-head"><span class="cs-num">5</span><h3>Audit Project Management</h3></div>
+          <p>Execution begins by treating the audit as a project. Before any testing, the engagement must be scoped, staffed, supervised, and documented so the work can stand on its own.</p>
+          <ul class="detail">
+            <li><strong>Engagement letter / notification</strong> defines purpose, scope, timing, and resources for the auditee.</li>
+            <li><strong>Team roles:</strong> engagement lead (overall quality and conclusions), senior auditor (complex testing, supervision), staff auditor (assigned testing and workpapers). <strong>Standard S10</strong> requires supervision proportionate to complexity and experience.</li>
+            <li><strong>Phases:</strong> planning &rarr; fieldwork/execution &rarr; reporting &rarr; follow-up.</li>
+            <li><strong>Workpaper standards:</strong> complete, accurate, concise, and logically organized &mdash; <strong>sufficient to support the audit findings and conclusions</strong> (a practical heuristic: a competent reviewer could follow the work without needing to ask the auditor).</li>
+            <li>Track open issues and exceptions during fieldwork; watch project risks such as scope creep, resource constraints, auditee non-cooperation, and timeline overruns.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A workpaper that lists the procedures performed but never ties them to a conclusion is insufficient &mdash; a reviewer can't tell what the evidence <em>means</em>. Every workpaper should connect to a finding or conclusion.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>ISACA's standard is that workpapers be <strong>sufficient to support the findings and conclusions</strong>. A useful heuristic is whether a competent reviewer could follow the work without asking the auditor &mdash; but the standard itself is about supporting conclusions. Documenting procedures without tying them to conclusions is insufficient.</div>
+        </article>
+
+        <!-- 6 -->
+        <article class="content-section" id="s6">
+          <div class="cs-head"><span class="cs-num">6</span><h3>Audit Testing &amp; Sampling Methodology</h3></div>
+          <p>Testing produces the evidence behind every conclusion. Choosing the right test, the right sample, and understanding the risk of being wrong is core auditor craft.</p>
+          <h4>Types of tests (rising reliability)</h4>
+          <ul class="detail">
+            <li><strong>Inquiry</strong> (lowest reliability; needs corroboration) &rarr; <strong>observation</strong> &rarr; <strong>inspection/examination</strong> &rarr; <strong>re-performance</strong> (auditor repeats the control) &rarr; <strong>analytical procedures</strong>.</li>
+            <li><strong>Test of controls</strong> verifies a control operates as designed; <strong>test of details</strong> (substantive) verifies the underlying transactions or balances.</li>
+          </ul>
+          <h4>Sampling</h4>
+          <ul class="detail">
+            <li><strong>Statistical</strong> sampling uses probability and can be projected to the population (random, systematic, stratified). <strong>Non-statistical (judgmental)</strong> sampling relies on auditor judgment and cannot be projected (also block and haphazard).</li>
+            <li>Sample size depends on population size, acceptable risk of incorrect acceptance, and the tolerable vs. expected deviation rate.</li>
+            <li><strong>Sampling risk:</strong> <em>under-reliance</em> (alpha / Type I &mdash; concluding a good control is bad) vs. <em>over-reliance</em> (beta / Type II &mdash; concluding a bad control is good).</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>If a sample's deviation rate exceeds the tolerable rate set at planning, the control cannot be relied upon &mdash; you report it. You do not keep enlarging the sample until the numbers pass, or lower the tolerance to match the result.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span><strong>Beta risk (over-reliance / Type II)</strong> is the more dangerous sampling risk &mdash; concluding controls work when they don't. Sampling-risk questions usually hinge on which risk is more consequential to audit quality.</div>
+        </article>
+
+        <!-- 7 -->
+        <article class="content-section" id="s7">
+          <div class="cs-head"><span class="cs-num">7</span><h3>Audit Evidence Collection</h3></div>
+          <p>Audit conclusions must rest on evidence that is both <strong>sufficient</strong> (enough) and <strong>appropriate</strong> (relevant and reliable). Reliability depends heavily on where the evidence comes from.</p>
+          <ul class="detail">
+            <li><strong>Reliability hierarchy</strong> (most to least): the auditor's direct observation or re-performance &rarr; documentary evidence from third parties &rarr; documentary evidence from the organization &rarr; oral evidence (inquiry).</li>
+            <li><strong>Collection techniques:</strong> document review, interview, observation, <strong>walk-through</strong> (tracing a transaction end to end), reconciliation, and third-party confirmation.</li>
+            <li><strong>CAATs (Computer-Assisted Audit Techniques):</strong> audit software (extract and analyze data), <strong>test data</strong> (dummy transactions through the live system), <strong>Integrated Test Facility (ITF)</strong> (a fictitious entity embedded in production), and <strong>parallel simulation</strong> (auditor re-creates processing logic and compares).</li>
+            <li>Protect the custody and security of confidential evidence obtained during the audit.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Test data and ITF deliberately push fictitious transactions through production. If those entries aren't completely removed or reversed when testing ends, they corrupt real data and reporting &mdash; a significant risk the auditor owns.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Test data and ITF introduce fictitious data into production. The auditor must ensure all fictitious entries are <strong>completely removed or reversed</strong> before concluding the test &mdash; failure to remove test data is a serious risk.</div>
+        </article>
+
+        <!-- 8 -->
+        <article class="content-section" id="s8">
+          <div class="cs-head"><span class="cs-num">8</span><h3>Audit Data Analytics</h3></div>
+          <p>Analytics shift auditing from samples to <strong>entire populations</strong> &mdash; every transaction rather than a subset &mdash; dramatically improving coverage and the odds of catching anomalies.</p>
+          <ul class="detail">
+            <li><strong>Common applications:</strong> completeness testing, duplicate detection, gap analysis (missing sequence numbers), outlier/anomaly detection, trend analysis, and <strong>Benford's Law</strong> (deviations from expected leading-digit frequencies can signal manipulation).</li>
+            <li><strong>Tools:</strong> ACL (Galvanize/Diligent), IDEA, Microsoft Excel, Python/R, and Tableau/Power BI for visualization.</li>
+            <li>Analytics are only as good as the data: it must be complete, accurate, and drawn from authoritative sources. Auditors must work from <strong>read-only</strong> access &mdash; DBA or production access is inappropriate.</li>
+            <li>Distinguish <strong>continuous auditing</strong> (automated testing performed by auditors) from <strong>continuous monitoring</strong> (automated control monitoring performed by management).</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Running Benford's Law across an entire expense file can flag manipulated amounts that a 30-item judgmental sample would almost certainly miss &mdash; population testing changes what's findable.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>An auditor performing analytics needs <strong>read-only</strong> access to authoritative data. Holding DBA or production access is itself a control weakness &mdash; and grants the auditor capabilities that conflict with independence.</div>
+        </article>
+
+        <!-- 9 -->
+        <article class="content-section" id="s9">
+          <div class="cs-head"><span class="cs-num">9</span><h3>Reporting &amp; Communication</h3></div>
+          <p>A finding only has value if it is communicated clearly and at the right time. A consistent structure makes findings defensible and actionable.</p>
+          <h4>The CRAF finding structure</h4>
+          <ul class="detail">
+            <li><strong>Condition</strong> (what was found) &middot; <strong>Criteria</strong> (the expected standard) &middot; <strong>Cause</strong> (root cause) &middot; <strong>Risk/Effect</strong> (consequence) &middot; <strong>Recommendation</strong> (how to close the gap).</li>
+          </ul>
+          <h4>The reporting process</h4>
+          <ul class="detail">
+            <li>Present findings in a <strong>draft</strong> to management for response before final issuance; management acknowledges each finding with a remediation plan and target date.</li>
+            <li>Report components: scope &amp; objectives, executive summary, detailed findings, management response, and overall conclusion/opinion.</li>
+            <li><strong>Audit opinions:</strong> unqualified (clean), qualified (minor exceptions), adverse (material weaknesses), or disclaimer (unable to form an opinion).</li>
+            <li>Critical findings discovered during fieldwork must be <strong>escalated immediately</strong> &mdash; not held for the final report. Significant issues route to the audit committee/board, preserving the audit function's independence.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An auditor who uncovers an actively exploitable security hole mid-fieldwork communicates it to management/the audit committee right away. Waiting weeks for the final report would itself be an audit-quality failure.</p></div>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When a critical issue surfaces during fieldwork, the correct action is to <strong>communicate it immediately</strong> to the appropriate level &mdash; not wait for the final report. Timing of communication matters.</div>
+        </article>
+
+        <!-- 10 -->
+        <article class="content-section" id="s10">
+          <div class="cs-head"><span class="cs-num">10</span><h3>Quality Assurance &amp; Improvement of the Audit Process</h3></div>
+          <p>The audit function must hold itself to the same scrutiny it applies elsewhere. Quality assurance keeps audit work meeting professional standards and feeds continuous improvement.</p>
+          <ul class="detail">
+            <li><strong>Internal QA:</strong> supervision and workpaper review, engagement quality reviews for high-risk work, and internal peer review.</li>
+            <li><strong>External QA:</strong> an independent external quality assessment of the audit function, plus ISACA peer-review programs.</li>
+            <li><strong>Key performance indicators:</strong> audit-plan completion rate, average findings per engagement, repeat-finding rate, time from fieldwork to report issuance, and percentage of recommendations implemented on schedule.</li>
+            <li>Use those metrics to refine methodology, resource allocation, and staff development. ISACA's <strong>ITAF (IT Assurance Framework)</strong> integrates standards, guidelines, and tools into one quality framework.</li>
+          </ul>
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A rising <strong>repeat-finding rate</strong> tells you recommendations aren't being implemented &mdash; a signal that matters to both the audit function's quality program and to management's accountability for remediation.</p></div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- KNOWLEDGE CHECK -->
+  <section class="block" id="knowledge-check">
+    <p class="eyebrow">Scored Knowledge Check</p>
+    <h2 class="h2">Test your Domain 1 judgment</h2>
+    <div class="rule"></div>
+    <p class="lead" style="margin-bottom:1.5rem">Ten questions across Planning (1A) and Execution (1B). Select the best answer, then submit for your score and the rationale for every item &mdash; including why the trap answers fail. Answer from the auditor's perspective.</p>
+
+    <div class="quiz-card">
+      <form id="quiz">
+
+        <p class="eyebrow" style="margin-bottom:0.5rem">Part A &mdash; Planning (Domain 1A)</p>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q1.</span>During audit planning, an IS auditor identifies 12 potential audit subjects: five high-risk, four medium-risk, three low-risk. Resources allow only six engagements. Which approach BEST reflects risk-based planning?</p>
+          <fieldset class="options">
+            <legend>Question 1 options</legend>
+            <label class="opt"><input type="radio" name="q1" value="A"><span><span class="opt-letter">A.</span> Select six subjects randomly to avoid bias in selection.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="B"><span><span class="opt-letter">B.</span> Select the five high-risk subjects and the one medium-risk subject with the next-highest risk score.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="C"><span><span class="opt-letter">C.</span> Select three high-risk and three low-risk subjects for broad coverage across risk levels.</span></label>
+            <label class="opt"><input type="radio" name="q1" value="D"><span><span class="opt-letter">D.</span> Defer to management to identify the six most important audit subjects.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Risk-based planning concentrates resources on the highest-risk areas first. All five high-risk subjects are included; the remaining slot goes to the next-highest medium subject. Random selection (A) ignores risk; management direction (D) compromises independence. <b>Why the others fall short:</b> <b>A</b> random selection ignores risk entirely; <b>C</b> covering low-risk areas while leaving two high-risk ones unaudited misallocates scarce effort; <b>D</b> hands the auditor&rsquo;s independent risk judgment to management.</div>
+        </div>
+
+        <div class="q" data-answer="D">
+          <p class="q-stem"><span class="qn">Q2.</span>An IS auditor finds that supervisors verbally approve overtime before timecards are submitted, but no system control enforces this approval. This BEST represents:</p>
+          <fieldset class="options">
+            <legend>Question 2 options</legend>
+            <label class="opt"><input type="radio" name="q2" value="A"><span><span class="opt-letter">A.</span> An adequate and effective preventive control because human oversight exists.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="B"><span><span class="opt-letter">B.</span> A manual detective control that compensates for the lack of an automated control.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> An IT-dependent manual control that may not consistently operate as intended.</span></label>
+            <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> An absence of a preventive control; the verbal approval is a directive control at best.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: D.</b> A verbal approval with no system enforcement is a directive control (guidance) at best. Nothing prevents unapproved overtime from being entered. It is not IT-dependent (no IT component) and not detective (it does not identify errors after the fact). <b>Why the others fall short:</b> <b>A</b> nothing enforces the verbal approval, so it isn&rsquo;t an adequate preventive control; <b>B</b> a verbal sign-off detects nothing after the fact; <b>C</b> no IT-generated output is involved, so it isn&rsquo;t IT-dependent.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q3.</span>An organization's external auditor requests the IS auditor's working papers from last year's IT general controls review. The IS auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 3 options</legend>
+            <label class="opt"><input type="radio" name="q3" value="A"><span><span class="opt-letter">A.</span> Provide the working papers immediately as professional courtesy.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="B"><span><span class="opt-letter">B.</span> Consult with legal counsel and management before releasing any working papers.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="C"><span><span class="opt-letter">C.</span> Refuse the request since working papers are always confidential and cannot be shared.</span></label>
+            <label class="opt"><input type="radio" name="q3" value="D"><span><span class="opt-letter">D.</span> Provide a summary of findings only, withholding the detailed working papers.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Working papers are the property of the audit organization. Release to third parties, including external auditors, requires authorization. Consulting legal counsel and management is the appropriate first step. <b>Why the others fall short:</b> <b>A</b> releasing privileged work product without authorization is premature; <b>C</b> is overstated &mdash; working papers can be shared with proper authorization; <b>D</b> still decides the release unilaterally without consulting.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q4.</span>Which BEST describes the purpose of a risk-based audit plan compared to a cyclical (rotation-based) plan?</p>
+          <fieldset class="options">
+            <legend>Question 4 options</legend>
+            <label class="opt"><input type="radio" name="q4" value="A"><span><span class="opt-letter">A.</span> Risk-based plans cover more subjects; cyclical plans are more efficient.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="B"><span><span class="opt-letter">B.</span> Risk-based plans allocate effort to the highest residual risk; cyclical plans allocate by schedule regardless of risk.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="C"><span><span class="opt-letter">C.</span> Risk-based plans are for external auditors; cyclical plans are for internal auditors.</span></label>
+            <label class="opt"><input type="radio" name="q4" value="D"><span><span class="opt-letter">D.</span> Risk-based plans require board approval; cyclical plans can be approved by the CAE.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Risk-based plans prioritize by assessed risk; cyclical plans rotate through entities on a schedule without necessarily considering current risk. Both can be used by internal or external auditors. <b>Why the others fall short:</b> <b>A</b> volume/efficiency isn&rsquo;t the defining difference; <b>C</b> both approaches apply to internal and external audit alike; <b>D</b> approval authority doesn&rsquo;t distinguish them.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q5.</span>During planning, an IS auditor learns the organization recently suffered a major breach in its customer database &mdash; a system not in the original plan. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 5 options</legend>
+            <label class="opt"><input type="radio" name="q5" value="A"><span><span class="opt-letter">A.</span> Proceed with the original plan since changing it mid-cycle introduces scope creep.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="B"><span><span class="opt-letter">B.</span> Add the customer database as an unplanned high-risk area and update the risk assessment.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="C"><span><span class="opt-letter">C.</span> Issue an advisory memo and defer the review to next year's plan.</span></label>
+            <label class="opt"><input type="radio" name="q5" value="D"><span><span class="opt-letter">D.</span> Perform only a limited review since the system was not in the original scope.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> A significant breach is a material change in the risk profile. The risk-based plan must be updated to incorporate this new high-risk area. Proceeding with the original plan when material risk has emerged violates risk-based principles. <b>Why the others fall short:</b> <b>A</b> rigidly freezing the plan ignores material new risk; <b>C</b> deferring a fresh breach a year leaves a known high risk unexamined; <b>D</b> a limited review under-responds to a major breach.</div>
+        </div>
+
+        <p class="eyebrow" style="margin:1.75rem 0 0.5rem">Part B &mdash; Execution (Domain 1B)</p>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q6.</span>An IS auditor uses audit software to extract and analyze 100% of the prior year's accounts payable transactions. This BEST describes:</p>
+          <fieldset class="options">
+            <legend>Question 6 options</legend>
+            <label class="opt"><input type="radio" name="q6" value="A"><span><span class="opt-letter">A.</span> Statistical sampling, because a software tool is used.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="B"><span><span class="opt-letter">B.</span> Judgmental sampling, because the auditor selected the AP population.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="C"><span><span class="opt-letter">C.</span> A population analysis rather than sampling, since the entire population is examined.</span></label>
+            <label class="opt"><input type="radio" name="q6" value="D"><span><span class="opt-letter">D.</span> A substantive test using block sampling technique.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> Examining 100% of a population is not sampling at all &mdash; it is a complete population analysis. Sampling only occurs when a subset is selected to represent the whole. <b>Why the others fall short:</b> <b>A</b> using a tool doesn&rsquo;t make it sampling &mdash; the whole population was examined; <b>B</b> no sample was drawn, so it isn&rsquo;t judgmental sampling; <b>D</b> block sampling is still a sample, not a full-population test.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q7.</span>While testing an automated three-way-match control, an IS auditor processes fictitious purchase orders through the live system. The MOST important follow-up action is to:</p>
+          <fieldset class="options">
+            <legend>Question 7 options</legend>
+            <label class="opt"><input type="radio" name="q7" value="A"><span><span class="opt-letter">A.</span> Document the test results in the workpapers and issue the report.</span></label>
+            <label class="opt"><input type="radio" name="q7" value="B"><span><span class="opt-letter">B.</span> Ensure all fictitious test transactions are completely removed from the production system.</span></label>
+            <label class="opt"><input type="radio" name="q7" value="C"><span><span class="opt-letter">C.</span> Notify management that test data was introduced into production.</span></label>
+            <label class="opt"><input type="radio" name="q7" value="D"><span><span class="opt-letter">D.</span> Retain the test data as evidence that the control was tested.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> Removing all fictitious test data from production is the most critical post-testing action. Leaving it could corrupt data integrity, trigger false control activity, or affect financial records. <b>Why the others fall short:</b> <b>A</b> reporting while test data pollutes production ignores the integrity risk; <b>C</b> notifying isn&rsquo;t enough &mdash; the data must be removed; <b>D</b> leaving fictitious transactions in production corrupts real records.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q8.</span>An IS auditor presents draft findings to management three days before issuance. Management disagrees with one finding and offers a technical explanation the auditor hadn't considered. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 8 options</legend>
+            <label class="opt"><input type="radio" name="q8" value="A"><span><span class="opt-letter">A.</span> Maintain the original finding since management feedback cannot change conclusions.</span></label>
+            <label class="opt"><input type="radio" name="q8" value="B"><span><span class="opt-letter">B.</span> Remove the finding entirely since management has challenged it.</span></label>
+            <label class="opt"><input type="radio" name="q8" value="C"><span><span class="opt-letter">C.</span> Evaluate the new information and, if it changes the evidence, revise the finding accordingly.</span></label>
+            <label class="opt"><input type="radio" name="q8" value="D"><span><span class="opt-letter">D.</span> Escalate the disagreement to the audit committee to resolve.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> The auditor must consider new evidence. If management's explanation is supported and changes the finding, revise it; if it does not change the evidence, the finding stands with management's response documented. <b>Why the others fall short:</b> <b>A</b> refusing to weigh new evidence isn&rsquo;t objective; <b>B</b> dropping a finding merely because it&rsquo;s challenged abandons evidence-based judgment; <b>D</b> escalating before evaluating the information skips the auditor&rsquo;s own analysis.</div>
+        </div>
+
+        <div class="q" data-answer="C">
+          <p class="q-stem"><span class="qn">Q9.</span>During a routine payroll audit, an auditor finds evidence suggesting the CFO is approving fictitious employee payments. The auditor should FIRST:</p>
+          <fieldset class="options">
+            <legend>Question 9 options</legend>
+            <label class="opt"><input type="radio" name="q9" value="A"><span><span class="opt-letter">A.</span> Expand the audit scope to gather additional evidence before taking any action.</span></label>
+            <label class="opt"><input type="radio" name="q9" value="B"><span><span class="opt-letter">B.</span> Immediately report the finding to the CFO's supervisor and request an explanation.</span></label>
+            <label class="opt"><input type="radio" name="q9" value="C"><span><span class="opt-letter">C.</span> Consult legal counsel and escalate to the audit committee or board, bypassing normal management channels.</span></label>
+            <label class="opt"><input type="radio" name="q9" value="D"><span><span class="opt-letter">D.</span> Document the finding and include it in the next scheduled audit report.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: C.</b> Suspected fraud involving senior management requires immediate escalation to the audit committee or board, bypassing the normal management chain. Expanding testing (A) may follow, but only after escalation; waiting for a scheduled report (D) is inappropriate given the severity. <b>Why the others fall short:</b> <b>A</b> expanding scope first delays reporting suspected senior-management fraud; <b>B</b> going through management channels risks alerting a potentially complicit chain; <b>D</b> deferring to the next report is far too slow for suspected fraud.</div>
+        </div>
+
+        <div class="q" data-answer="B">
+          <p class="q-stem"><span class="qn">Q10.</span>After testing user-access recertification, the deviation rate in the sample exceeds the tolerable deviation rate set at planning. The auditor should:</p>
+          <fieldset class="options">
+            <legend>Question 10 options</legend>
+            <label class="opt"><input type="radio" name="q10" value="A"><span><span class="opt-letter">A.</span> Increase the sample size and re-test until the deviation rate falls within tolerance.</span></label>
+            <label class="opt"><input type="radio" name="q10" value="B"><span><span class="opt-letter">B.</span> Conclude that the control is ineffective and report the finding with appropriate evidence.</span></label>
+            <label class="opt"><input type="radio" name="q10" value="C"><span><span class="opt-letter">C.</span> Reduce the tolerable deviation rate to match the sample result.</span></label>
+            <label class="opt"><input type="radio" name="q10" value="D"><span><span class="opt-letter">D.</span> Perform additional inquiry of management to determine whether deviations are systemic.</span></label>
+          </fieldset>
+          <div class="rationale"><b>Correct: B.</b> When sample results exceed the tolerable deviation rate, the control cannot be relied upon. The auditor concludes it is ineffective and reports accordingly. Increasing the sample after a failed test, or adjusting tolerance to match results, are not appropriate responses. <b>Why the others fall short:</b> <b>A</b> re-testing until it passes is result-shopping; <b>C</b> lowering the tolerable rate to match the result rationalizes the failure away; <b>D</b> inquiry adds context but doesn&rsquo;t undo that the control failed its test.</div>
+        </div>
+
+        <div class="quiz-actions">
+          <button type="button" class="btn" onclick="gradeQuiz()">Submit Answers</button>
+          <button type="button" class="btn secondary" onclick="resetQuiz()">Reset</button>
+          <span class="score" id="score" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<!-- PAGER -->
+<nav class="pager" aria-label="Lesson navigation">
+  <div class="pager-inner">
+    <a href="lesson00.html" class="prev">
+      <span class="pager-dir">&#8592; Previous</span>
+      <span class="pager-name">Lesson 0 &mdash; Exam Overview &amp; Orientation</span>
+    </a>
+    <a href="lesson02.html" class="next">
+      <span class="pager-dir">Next &#8594;</span>
+      <span class="pager-name">Lesson 2 &mdash; Governance of IT (Part A)</span>
+    </a>
+  </div>
+</nav>
+
+<footer>
+  <div class="footer-logo">CISA 5-DAY WORKSHOP</div>
+  <p class="footer-disclaimer">This workshop is an independent educational resource and is not affiliated with, endorsed by, or sponsored by ISACA. CISA&#174; is a registered trademark of ISACA. All domain descriptions and exam details are based on publicly available ISACA documentation and the CISA Job Practice effective 2019 (current as of 2026). Always verify the live exam content outline at isaca.org before registering.</p>
+</footer>
+
+<script src="cisa-lesson.js"></script>
+</body>
+</html>
