@@ -328,6 +328,292 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>If a sample's deviation rate exceeds the tolerable rate set at planning, the control cannot be relied upon &mdash; you report it. You do not keep enlarging the sample until the numbers pass, or lower the tolerance to match the result.</p></div>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span><strong>Beta risk (over-reliance / Type II)</strong> is the more dangerous sampling risk &mdash; concluding controls work when they don't. Sampling-risk questions usually hinge on which risk is more consequential to audit quality.</div>
+
+          <!-- ══ INTERACTIVE: Audit risk model → detection risk → sample size ══ -->
+          <h4>Try it &mdash; how much testing does the risk model demand?</h4>
+          <p>Sample size isn't guesswork &mdash; it falls out of the <strong>audit risk model</strong>. Set inherent and control risk and the audit risk you're willing to accept; the model returns the <strong>detection risk</strong> you can allow, and the <strong>sample size</strong> needed to earn it. Watch weak controls force you to test more.</p>
+
+          <style>
+            .ars{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;max-width:100%;}
+            .ars *{box-sizing:border-box;}
+            .ars-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.15rem;overflow:hidden;}
+            .ars-grid{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-start;}
+            .ars-panel{flex:1 1 250px;min-width:0;}
+            .ars-out{flex:1.4 1 300px;min-width:0;}
+            .ars-panel h5,.ars-out h5{font-family:Arial,sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 0.15rem;}
+            .ars-panel .plead{font-family:Arial,sans-serif;font-size:0.74rem;color:var(--text-muted);margin:0 0 0.8rem;}
+            .ars-gt{font-family:Arial,sans-serif;font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);font-weight:700;margin:0.85rem 0 0.55rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border);}
+            .ars-field{margin-bottom:0.85rem;}
+            .ars-field .r{display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;margin-bottom:0.3rem;}
+            .ars-field label{font-size:0.82rem;font-weight:700;color:var(--text-primary);}
+            .ars-field .v{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.92rem;color:var(--gold);font-variant-numeric:tabular-nums;}
+            .ars-field .h{font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;line-height:1.4;}
+            .ars input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:var(--section-alt);outline:none;margin:0;}
+            .ars input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.35);}
+            .ars input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;}
+            .ars input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .ars-reset{margin-top:0.4rem;font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);background:transparent;border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.8rem;cursor:pointer;}
+            .ars-reset:hover{color:var(--gold);border-color:var(--gold);}
+            .ars-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.55rem;margin-bottom:0.85rem;}
+            .ars-tile{background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.65rem 0.7rem;min-width:0;}
+            .ars-tile.acc{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .ars-tile .k{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:700;}
+            .ars-tile .val{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.1rem;font-weight:900;color:var(--text-primary);font-variant-numeric:tabular-nums;margin-top:0.2rem;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+            .ars-verdict{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.75rem 0.85rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);margin-bottom:0.85rem;}
+            .ars-verdict.good{background:var(--correct-bg);border-color:var(--correct);}
+            .ars-verdict.warn{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .ars-verdict.crit{background:var(--wrong-bg);border-color:var(--wrong);}
+            .ars-pill{font-size:0.64rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:20px;color:#fff;white-space:nowrap;}
+            .ars-pill.good{background:var(--correct);}.ars-pill.warn{background:var(--navy);}.ars-pill.crit{background:var(--wrong);}
+            .ars-head{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.15rem;font-weight:900;font-variant-numeric:tabular-nums;}
+            .ars-coach{font-size:0.8rem;color:var(--text-secondary);flex:1 1 190px;min-width:160px;line-height:1.5;}
+            .ars-chart{background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.85rem;}
+            .ars-chart h6{font-family:Georgia,serif;font-size:0.92rem;font-weight:700;color:var(--text-primary);margin:0 0 0.15rem;}
+            .ars-chart .cap{font-size:0.72rem;color:var(--text-muted);margin:0 0 0.55rem;line-height:1.45;}
+            .ars canvas{width:100%;height:auto;display:block;}
+            .ars-legend{display:flex;gap:0.85rem;flex-wrap:wrap;margin-top:0.55rem;font-size:0.68rem;color:var(--text-muted);}
+            .ars-legend span{display:inline-flex;align-items:center;gap:0.35rem;}
+            .ars-sw{width:14px;height:3px;border-radius:2px;display:inline-block;}
+            .ars-sw.dot{width:9px;height:9px;border-radius:50%;}
+            /* Expand-to-fullscreen */
+            .ars-topbar{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding-bottom:0.7rem;margin-bottom:0.95rem;border-bottom:1px solid var(--border);}
+            .ars-topbar-eyebrow{font-family:Arial,sans-serif;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+            .ars-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .ars-expand:hover{background:var(--gold);color:#fff;}
+            .ars-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .ars-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .ars.is-expanded{position:fixed;inset:2.5vh 2.5vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .ars.is-expanded .ars-card{max-width:1180px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+          </style>
+
+          <div class="ars" id="ars-root">
+            <div class="ars-card">
+              <div class="ars-topbar">
+                <span class="ars-topbar-eyebrow">Interactive &middot; adjust &amp; explore</span>
+                <button type="button" class="ars-expand" id="ars-expand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+              </div>
+              <div class="ars-grid">
+                <!-- INPUTS -->
+                <div class="ars-panel">
+                  <h5>Your judgment</h5>
+                  <p class="plead">Set the risks; the model sizes the test.</p>
+
+                  <div class="ars-gt">Risk assessment</div>
+                  <div class="ars-field">
+                    <div class="r"><label for="ars_ir">Inherent risk (IR)</label><span class="v" id="ars_ir-v">80%</span></div>
+                    <input type="range" id="ars_ir" min="10" max="100" step="1" value="80">
+                    <div class="h">Risk before controls &mdash; how error-prone the area is.</div>
+                  </div>
+                  <div class="ars-field">
+                    <div class="r"><label for="ars_cr">Control risk (CR)</label><span class="v" id="ars_cr-v">50%</span></div>
+                    <input type="range" id="ars_cr" min="5" max="100" step="1" value="50">
+                    <div class="h">Chance controls fail to catch an error. Weaker controls &rarr; higher.</div>
+                  </div>
+                  <div class="ars-field">
+                    <div class="r"><label for="ars_ar">Target audit risk (AR)</label><span class="v" id="ars_ar-v">5%</span></div>
+                    <input type="range" id="ars_ar" min="1" max="15" step="1" value="5">
+                    <div class="h">Overall risk of a wrong opinion you'll accept.</div>
+                  </div>
+
+                  <div class="ars-gt">Sampling parameters</div>
+                  <div class="ars-field">
+                    <div class="r"><label for="ars_tdr">Tolerable deviation rate</label><span class="v" id="ars_tdr-v">8%</span></div>
+                    <input type="range" id="ars_tdr" min="2" max="20" step="1" value="8">
+                    <div class="h">Highest error rate you'd still rely on the control at.</div>
+                  </div>
+                  <div class="ars-field">
+                    <div class="r"><label for="ars_edr">Expected deviation rate</label><span class="v" id="ars_edr-v">1%</span></div>
+                    <input type="range" id="ars_edr" min="0" max="10" step="1" value="1">
+                    <div class="h">Error rate you actually expect to find.</div>
+                  </div>
+                  <button class="ars-reset" id="ars-reset" type="button">Reset scenario</button>
+                </div>
+
+                <!-- OUTPUTS -->
+                <div class="ars-out">
+                  <h5>What the model returns</h5>
+                  <div class="ars-tiles">
+                    <div class="ars-tile"><div class="k">Risk of material misstatement</div><div class="val" id="ars-rmm">&mdash;</div></div>
+                    <div class="ars-tile"><div class="k">Allowable detection risk</div><div class="val" id="ars-dr">&mdash;</div></div>
+                    <div class="ars-tile"><div class="k">Assurance required</div><div class="val" id="ars-assur">&mdash;</div></div>
+                    <div class="ars-tile acc"><div class="k">Required sample size</div><div class="val" id="ars-n">&mdash;</div></div>
+                  </div>
+                  <div class="ars-verdict" id="ars-verdict">
+                    <span class="ars-pill" id="ars-pill">&mdash;</span>
+                    <span class="ars-head" id="ars-headline">&mdash;</span>
+                    <span class="ars-coach" id="ars-coach">Set the risks to size the test.</span>
+                  </div>
+                  <div class="ars-chart">
+                    <h6>Sample size vs. control risk</h6>
+                    <p class="cap">As controls weaken (control risk rises), the detection risk you can accept shrinks &mdash; so the sample grows. Your operating point (&#9679;) slides along the curve; the curve itself shifts with inherent risk, the audit-risk target, and tolerances. Assumes a large population.</p>
+                    <canvas id="ars-canvas" width="640" height="330" role="img" aria-label="Curve of required sample size against control risk"></canvas>
+                    <div class="ars-legend">
+                      <span><i class="ars-sw" style="background:var(--gold)"></i> Sample size at your settings</span>
+                      <span><i class="ars-sw dot" style="background:var(--correct)"></i> Your operating point</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>The numbers are a teaching approximation of attribute sampling &mdash; real engagements use ISACA/AICPA tables &mdash; but the direction is exam-true: weaker controls and lower tolerance demand more evidence. And note the trap: if expected deviations reach your tolerable rate, no sample size rescues reliance &mdash; you report the deficiency, you don't keep sampling until it passes.</p></div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('ars-root'); if(!root) return;
+            var ids=['ir','cr','ar','tdr','edr'], el={};
+            ids.forEach(function(i){el[i]=document.getElementById('ars_'+i);});
+            var defaults={ir:80,cr:50,ar:5,tdr:8,edr:1};
+
+            function read(){return {ir:+el.ir.value/100, cr:+el.cr.value/100, ar:+el.ar.value/100, tdr:+el.tdr.value/100, edr:+el.edr.value/100};}
+            function drOf(ir,cr,ar){var dr=ar/(ir*cr); return Math.max(0.001,Math.min(0.99,dr));}
+            function nOf(ir,cr,ar,tdr,edr){
+              var prec=tdr-edr; if(prec<=0) return null;
+              var dr=drOf(ir,cr,ar);
+              return Math.max(1, Math.ceil(Math.log(1/dr)/prec));
+            }
+            function model(v){
+              var rmm=v.ir*v.cr, dr=drOf(v.ir,v.cr,v.ar), n=nOf(v.ir,v.cr,v.ar,v.tdr,v.edr);
+              return {rmm:rmm, dr:dr, assur:1-dr, n:n, invalid:v.edr>=v.tdr};
+            }
+            function pct(x,d){return (x*100).toFixed(d||0)+'%';}
+
+            function paint(){
+              var v=read(), m=model(v);
+              document.getElementById('ars_ir-v').textContent=pct(v.ir);
+              document.getElementById('ars_cr-v').textContent=pct(v.cr);
+              document.getElementById('ars_ar-v').textContent=pct(v.ar);
+              document.getElementById('ars_tdr-v').textContent=pct(v.tdr);
+              document.getElementById('ars_edr-v').textContent=pct(v.edr);
+
+              document.getElementById('ars-rmm').textContent=pct(m.rmm);
+              document.getElementById('ars-dr').textContent=pct(m.dr,1);
+              document.getElementById('ars-assur').textContent=pct(m.assur,1);
+              document.getElementById('ars-n').textContent=m.invalid?'—':m.n+' items';
+
+              var box=document.getElementById('ars-verdict'), pill=document.getElementById('ars-pill'),
+                  head=document.getElementById('ars-headline'), coach=document.getElementById('ars-coach');
+              box.classList.remove('good','warn','crit'); pill.classList.remove('good','warn','crit');
+              if(m.invalid){
+                pill.textContent='Can’t rely'; pill.classList.add('crit'); box.classList.add('crit');
+                head.textContent='no valid sample';
+                coach.textContent='Expected deviations ('+pct(v.edr)+') meet or exceed your tolerable rate ('+pct(v.tdr)+'). No sample size supports reliance — report the deficiency, don’t sample until it passes.';
+              } else {
+                head.textContent='n ≈ '+m.n;
+                var crp=v.cr*100;
+                if(crp<=25){
+                  pill.textContent='Rely on controls'; pill.classList.add('good'); box.classList.add('good');
+                  coach.textContent='Strong controls (control risk '+pct(v.cr)+') let you accept '+pct(m.dr,1)+' detection risk and test less (~'+m.n+' items) — but confirm the controls actually operate before relying on them.';
+                } else if(crp>=60){
+                  pill.textContent='Test more'; pill.classList.add('warn'); box.classList.add('warn');
+                  coach.textContent='Weak controls (control risk '+pct(v.cr)+') leave little detection risk to spare, so you must gather more evidence (~'+m.n+' items) to hold audit risk at '+pct(v.ar)+'.';
+                } else {
+                  pill.textContent='Balanced'; pill.classList.add('warn'); box.classList.add('warn');
+                  coach.textContent='Moderate reliance: '+pct(m.dr,1)+' detection risk is acceptable, calling for ~'+m.n+' items. Lower your tolerable rate or find weaker controls and the sample climbs.';
+                }
+              }
+              draw(m,v);
+            }
+
+            var cvs=document.getElementById('ars-canvas'), ctx=cvs.getContext('2d');
+            function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+            function rgba(hex,a){hex=(hex||'').replace('#','');
+              if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
+              var n=parseInt(hex,16); if(isNaN(n))return 'rgba(120,130,145,'+a+')';
+              return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+            function resize(){
+              var w=cvs.parentElement.clientWidth||360, dpr=window.devicePixelRatio||1;
+              var big=root.classList.contains('is-expanded');
+              var h=big?Math.max(240,Math.min(w*0.55,window.innerHeight-cvs.getBoundingClientRect().top-90)):Math.max(230,Math.min(320,w*0.6));
+              cvs.width=w*dpr; cvs.height=h*dpr; cvs.style.height=h+'px';
+              ctx.setTransform(dpr,0,0,dpr,0,0); cvs._w=w; cvs._h=h;
+            }
+            function draw(m,v){
+              if(!m){v=read(); m=model(v);}
+              var w=cvs._w||360, h=cvs._h||300; ctx.clearRect(0,0,w,h);
+              var padL=48,padR=14,padT=14,padB=40, x0=padL,x1=w-padR,y0=h-padB,y1=padT;
+              var cAcc=css('--gold'), cMut=css('--text-muted'), cBor=css('--border'),
+                  cGood=css('--correct'), cBad=css('--wrong'), cCard=css('--card-bg');
+              // y max: largest sample across CR sweep (at CR=100%), or fallback
+              var yMax=1;
+              for(var c=0.05;c<=1.0001;c+=0.05){var nn=nOf(v.ir,c,v.ar,v.tdr,v.edr); if(nn&&nn>yMax)yMax=nn;}
+              yMax=Math.ceil(yMax*1.15/5)*5;
+              function X(cr){return x0+cr*(x1-x0);}            // cr as fraction 0..1
+              function Y(n){return y0-(n/yMax)*(y0-y1);}
+              // grid + y ticks
+              ctx.font='11px Arial,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+              for(var i=0;i<=5;i++){var yv=yMax*i/5, py=Y(yv);
+                ctx.strokeStyle=rgba(cBor,0.9); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,py); ctx.lineTo(x1,py); ctx.stroke();
+                ctx.fillStyle=cMut; ctx.fillText(Math.round(yv),x0-8,py);}
+              // x ticks (control risk %)
+              ctx.textAlign='center'; ctx.textBaseline='top';
+              for(var j=0;j<=4;j++){var xr=j/4; ctx.fillStyle=cMut; ctx.fillText(Math.round(xr*100)+'%',X(xr),y0+7);}
+              ctx.fillText('Control risk  →',(x0+x1)/2,y0+22);
+              // curve (invalid → no curve)
+              if(!m.invalid){
+                ctx.strokeStyle=cAcc; ctx.lineWidth=2.6; ctx.beginPath(); var started=false;
+                for(var cc=0.02;cc<=1.0001;cc+=0.01){var nn=nOf(v.ir,cc,v.ar,v.tdr,v.edr); if(nn==null)continue;
+                  var px=X(cc),py=Y(nn); if(!started){ctx.moveTo(px,py);started=true;}else ctx.lineTo(px,py);}
+                ctx.stroke();
+                // operating point
+                var opx=X(v.cr), opy=Y(m.n);
+                ctx.beginPath(); ctx.arc(opx,opy,6,0,Math.PI*2); ctx.fillStyle=cGood; ctx.fill();
+                ctx.lineWidth=2.5; ctx.strokeStyle=cCard; ctx.stroke();
+              } else {
+                ctx.fillStyle=rgba(cBad,0.95); ctx.font='bold 12px Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+                ctx.fillText('Expected ≥ tolerable — sampling cannot support reliance',(x0+x1)/2,(y0+y1)/2);
+              }
+              // y axis title
+              ctx.save(); ctx.translate(14,(y0+y1)/2); ctx.rotate(-Math.PI/2);
+              ctx.fillStyle=cMut; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='11px Arial,sans-serif';
+              ctx.fillText('Sample size (items)',0,0); ctx.restore();
+            }
+
+            ids.forEach(function(i){el[i].addEventListener('input',paint);});
+            document.getElementById('ars-reset').addEventListener('click',function(){
+              ids.forEach(function(i){el[i].value=defaults[i];}); paint();});
+            window.addEventListener('resize',function(){resize();draw();});
+            new MutationObserver(function(){draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+            // Expand: blow the widget up into a full-viewport overlay (no popup window).
+            var expBtn=document.getElementById('ars-expand');
+            var backdrop=document.createElement('div'); backdrop.className='ars-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded interactive');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              resize(); paint();
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+
+            resize(); paint();
+          })();
+          </script>
+          <!-- ══ END INTERACTIVE ══ -->
         </article>
 
         <!-- 7 -->

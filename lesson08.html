@@ -202,6 +202,259 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>If the same high-severity penetration-test findings appear year after year, the problem isn't the test &mdash; it's that remediation never happened. The auditor's first concern is whether prior findings were closed.</p></div>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>&ldquo;Independent&rdquo; testing has limits: if the firm that <em>designed or implemented</em> the controls also runs the penetration test, that is a <strong>self-review / familiarity threat</strong> to independence. Confirm the testers are independent of the work they assess &mdash; a consulting relationship can compromise the objectivity of the test.</p></div>
+
+          <!-- ══ INTERACTIVE: SIEM alert-threshold tuning ══ -->
+          <h4>Try it &mdash; tune the alerts (catch attacks vs. drown in noise)</h4>
+          <p>A SIEM scores every event; you set the line above which it raises an alert. Slide the threshold and watch the trade no tool escapes: set it high and attacks slip past; set it low and analysts drown in false alarms. A sharper detector is the only way to get more of both.</p>
+
+          <style>
+            .alt{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;max-width:100%;}
+            .alt *{box-sizing:border-box;}
+            .alt-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.15rem;}
+            .alt-topbar{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding-bottom:0.7rem;margin-bottom:0.95rem;border-bottom:1px solid var(--border);}
+            .alt-topbar-eyebrow{font-family:Arial,sans-serif;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+            .alt-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .alt-expand:hover{background:var(--gold);color:#fff;}
+            .alt-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .alt-grid{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-start;}
+            .alt-panel{flex:1 1 250px;min-width:0;}
+            .alt-out{flex:1.4 1 300px;min-width:0;}
+            .alt-panel h5,.alt-out h5{font-family:Arial,sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 0.15rem;}
+            .alt-panel .plead{font-size:0.74rem;color:var(--text-muted);margin:0 0 0.85rem;}
+            .alt-field{margin-bottom:0.95rem;}
+            .alt-field .r{display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;margin-bottom:0.3rem;}
+            .alt-field label{font-size:0.82rem;font-weight:700;color:var(--text-primary);}
+            .alt-field .v{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.9rem;color:var(--gold);font-variant-numeric:tabular-nums;}
+            .alt-field .h{font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;line-height:1.4;}
+            .alt input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:var(--section-alt);outline:none;margin:0;}
+            .alt input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.35);}
+            .alt input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;}
+            .alt input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .alt-reset{margin-top:0.35rem;font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);background:transparent;border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.8rem;cursor:pointer;}
+            .alt-reset:hover{color:var(--gold);border-color:var(--gold);}
+            .alt-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.55rem;margin-bottom:0.85rem;}
+            .alt-tile{background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.65rem 0.7rem;min-width:0;}
+            .alt-tile.acc{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .alt-tile .k{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:700;}
+            .alt-tile .val{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.1rem;font-weight:900;color:var(--text-primary);font-variant-numeric:tabular-nums;margin-top:0.2rem;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+            .alt-verdict{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.75rem 0.85rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);margin-bottom:0.85rem;}
+            .alt-verdict.good{background:var(--correct-bg);border-color:var(--correct);}
+            .alt-verdict.warn{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .alt-verdict.crit{background:var(--wrong-bg);border-color:var(--wrong);}
+            .alt-pill{font-size:0.64rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:20px;color:#fff;white-space:nowrap;}
+            .alt-pill.good{background:var(--correct);}.alt-pill.warn{background:var(--navy);}.alt-pill.crit{background:var(--wrong);}
+            .alt-head{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.15rem;font-weight:900;font-variant-numeric:tabular-nums;}
+            .alt-coach{font-size:0.8rem;color:var(--text-secondary);flex:1 1 190px;min-width:160px;line-height:1.5;}
+            .alt-chart{background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.85rem;}
+            .alt-chart h6{font-family:Georgia,serif;font-size:0.92rem;font-weight:700;color:var(--text-primary);margin:0 0 0.15rem;}
+            .alt-chart .cap{font-size:0.72rem;color:var(--text-muted);margin:0 0 0.55rem;line-height:1.45;}
+            .alt canvas{width:100%;height:auto;display:block;}
+            .alt-legend{display:flex;gap:0.85rem;flex-wrap:wrap;margin-top:0.55rem;font-size:0.68rem;color:var(--text-muted);}
+            .alt-legend span{display:inline-flex;align-items:center;gap:0.35rem;}
+            .alt-sw{width:14px;height:10px;border-radius:2px;display:inline-block;}
+            .alt-sw.dash{height:0;border-top:2px dashed var(--text-muted);width:16px;}
+            .alt-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .alt.is-expanded{position:fixed;inset:2.5vh 2.5vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .alt.is-expanded .alt-card{max-width:1180px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+          </style>
+
+          <div class="alt" id="alt-root">
+            <div class="alt-card">
+              <div class="alt-topbar">
+                <span class="alt-topbar-eyebrow">Interactive &middot; adjust &amp; explore</span>
+                <button type="button" class="alt-expand" id="alt-expand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+              </div>
+              <div class="alt-grid">
+                <div class="alt-panel">
+                  <h5>Tune the SIEM</h5>
+                  <p class="plead">Baseline: 5,000 security events a day.</p>
+                  <div class="alt-field">
+                    <div class="r"><label for="alt_thr">Alert threshold</label><span class="v" id="alt_thr-v">60</span></div>
+                    <input type="range" id="alt_thr" min="10" max="95" step="1" value="60">
+                    <div class="h">Raise an alert when an event scores above this.</div>
+                  </div>
+                  <div class="alt-field">
+                    <div class="r"><label for="alt_q">Detector quality</label><span class="v" id="alt_q-v">60%</span></div>
+                    <input type="range" id="alt_q" min="0" max="100" step="1" value="60">
+                    <div class="h">How well it separates real threats from normal noise.</div>
+                  </div>
+                  <div class="alt-field">
+                    <div class="r"><label for="alt_atk">Attacks per day</label><span class="v" id="alt_atk-v">40</span></div>
+                    <input type="range" id="alt_atk" min="1" max="120" step="1" value="40">
+                    <div class="h">How many of the day&rsquo;s events are truly malicious.</div>
+                  </div>
+                  <button type="button" class="alt-reset" id="alt-reset">Reset scenario</button>
+                </div>
+                <div class="alt-out">
+                  <h5>What the SOC sees</h5>
+                  <div class="alt-tiles">
+                    <div class="alt-tile"><div class="k">Attacks caught</div><div class="val" id="alt-recall">&mdash;</div></div>
+                    <div class="alt-tile"><div class="k">Attacks missed / day</div><div class="val" id="alt-missed">&mdash;</div></div>
+                    <div class="alt-tile"><div class="k">False alarms / day</div><div class="val" id="alt-fp">&mdash;</div></div>
+                    <div class="alt-tile acc"><div class="k">Precision (alerts that are real)</div><div class="val" id="alt-prec">&mdash;</div></div>
+                  </div>
+                  <div class="alt-verdict" id="alt-verdict">
+                    <span class="alt-pill" id="alt-pill">&mdash;</span>
+                    <span class="alt-head" id="alt-head">&mdash;</span>
+                    <span class="alt-coach" id="alt-coach">Slide the threshold to see the trade-off.</span>
+                  </div>
+                  <div class="alt-chart">
+                    <h6>Where the threshold falls</h6>
+                    <p class="cap">Two clouds of events by risk score &mdash; normal (blue) and malicious (red). Everything right of the line alerts: red-shaded = caught attacks, blue-shaded = false alarms. The clouds overlap, so no line separates them cleanly.</p>
+                    <canvas id="alt-canvas" width="640" height="330" role="img" aria-label="Benign and malicious event score distributions with the alert threshold"></canvas>
+                    <div class="alt-legend">
+                      <span><i class="alt-sw" style="background:var(--navy-light)"></i> Normal events</span>
+                      <span><i class="alt-sw" style="background:var(--gold)"></i> Malicious events</span>
+                      <span><i class="alt-sw dash"></i> Alert threshold</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>This is the base-rate problem the exam loves: when real attacks are rare, even a good detector floods the SOC with false alarms, so <strong>precision stays low</strong>. Chasing 100% detection by dropping the threshold just buries analysts &mdash; which is why auditors check that <strong>alerts are tuned</strong> and <strong>reviewed by qualified staff</strong>, not merely that a SIEM exists.</p></div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('alt-root'); if(!root) return;
+            var BEN=5000, benMean=34, sdB=12, sdM=13;
+            var defs={thr:60,q:60,atk:40};
+            function erf(x){var s=x<0?-1:1;x=Math.abs(x);var t=1/(1+0.3275911*x);
+              var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);
+              return s*y;}
+            function Phi(z){return 0.5*(1+erf(z/Math.SQRT2));}
+            function read(){return {thr:+el.thr.value, q:+el.q.value, atk:+el.atk.value};}
+            function malMean(q){return 46+0.34*q;}
+            function model(v){
+              var mm=malMean(v.q);
+              var recall=1-Phi((v.thr-mm)/sdM);
+              var fpr=1-Phi((v.thr-benMean)/sdB);
+              var tp=v.atk*recall, fn=v.atk*(1-recall), fp=BEN*fpr;
+              var prec=(tp+fp)>0? tp/(tp+fp):0;
+              return {mm:mm, recall:recall, fpr:fpr, tp:tp, fn:fn, fp:fp, prec:prec, alerts:tp+fp};
+            }
+            var el={thr:document.getElementById('alt_thr'), q:document.getElementById('alt_q'), atk:document.getElementById('alt_atk')};
+
+            function paint(){
+              var v=read(), m=model(v);
+              document.getElementById('alt_thr-v').textContent=v.thr;
+              document.getElementById('alt_q-v').textContent=v.q+'%';
+              document.getElementById('alt_atk-v').textContent=v.atk;
+              document.getElementById('alt-recall').textContent=Math.round(m.recall*100)+'%';
+              document.getElementById('alt-missed').textContent=(m.fn<10?m.fn.toFixed(1):Math.round(m.fn))+' / day';
+              document.getElementById('alt-fp').textContent=Math.round(m.fp).toLocaleString()+' / day';
+              document.getElementById('alt-prec').textContent=Math.round(m.prec*100)+'%';
+
+              var box=document.getElementById('alt-verdict'), pill=document.getElementById('alt-pill'),
+                  head=document.getElementById('alt-head'), coach=document.getElementById('alt-coach');
+              box.className='alt-verdict'; pill.className='alt-pill';
+              head.textContent=Math.round(m.recall*100)+'% caught';
+              var missed=(m.fn<10?m.fn.toFixed(1):Math.round(m.fn));
+              if(m.recall<0.6){
+                pill.classList.add('crit'); box.classList.add('crit'); pill.textContent='Missing attacks';
+                coach.textContent='The threshold is too tight — about '+missed+' attacks slip past every day. Lower it to catch more (you’ll pay in false alarms).';
+              } else if(m.prec<0.15){
+                pill.classList.add('warn'); box.classList.add('warn'); pill.textContent='Alert fatigue';
+                coach.textContent='You catch '+Math.round(m.recall*100)+'%, but '+Math.round(m.fp).toLocaleString()+' false alarms/day bury the SOC — only '+Math.round(m.prec*100)+'% of alerts are real. Raise the threshold or improve the detector.';
+              } else {
+                pill.classList.add('good'); box.classList.add('good'); pill.textContent='Tuned';
+                coach.textContent='A workable balance: '+Math.round(m.recall*100)+'% caught, '+Math.round(m.prec*100)+'% of alerts real. You can’t lift detection without more noise — unless you sharpen the detector (raise its quality).';
+              }
+              draw(v,m);
+            }
+
+            var cvs=document.getElementById('alt-canvas'), ctx=cvs.getContext('2d');
+            function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+            function rgba(hex,a){hex=(hex||'').replace('#','');
+              if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
+              var n=parseInt(hex,16); if(isNaN(n))return 'rgba(120,130,145,'+a+')';
+              return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+            function resize(){
+              var w=cvs.parentElement.clientWidth||360, dpr=window.devicePixelRatio||1;
+              var big=root.classList.contains('is-expanded');
+              var h=big?Math.max(240,Math.min(w*0.55,window.innerHeight-cvs.getBoundingClientRect().top-90)):Math.max(240,Math.min(330,w*0.6));
+              cvs.width=w*dpr; cvs.height=h*dpr; cvs.style.height=h+'px';
+              ctx.setTransform(dpr,0,0,dpr,0,0); cvs._w=w; cvs._h=h;
+            }
+            function draw(v,m){
+              if(!v){v=read(); m=model(v);}
+              var w=cvs._w||360, h=cvs._h||300; ctx.clearRect(0,0,w,h);
+              var padL=14,padR=14,padT=14,padB=42, x0=padL,x1=w-padR,y0=h-padB,y1=padT;
+              var cNavy=css('--navy-light'), cRed=css('--gold'), cMut=css('--text-muted'), cBor=css('--border'),
+                  cGood=css('--correct'), cWrong=css('--wrong'), cInk=css('--text-primary');
+              function X(s){return x0+(s/100)*(x1-x0);}
+              var H=(y0-y1)*0.86;
+              function pk(x,mn,sd){return Math.exp(-0.5*Math.pow((x-mn)/sd,2));}
+              function areaRight(mn,sd,color){
+                ctx.beginPath(); ctx.moveTo(X(v.thr),y0);
+                for(var s=v.thr;s<=100.0001;s+=1) ctx.lineTo(X(s),y0-pk(s,mn,sd)*H);
+                ctx.lineTo(X(100),y0); ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+              }
+              function curve(mn,sd,color){
+                ctx.beginPath();
+                for(var s=0;s<=100;s+=1){var yy=y0-pk(s,mn,sd)*H; if(s===0)ctx.moveTo(X(0),yy); else ctx.lineTo(X(s),yy);}
+                ctx.strokeStyle=color; ctx.lineWidth=2.2; ctx.stroke();
+              }
+              // baseline
+              ctx.strokeStyle=rgba(cBor,0.9); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y0); ctx.stroke();
+              // shaded alert regions (right of threshold)
+              areaRight(benMean,sdB,rgba(cWrong,0.16));     // false alarms
+              areaRight(m.mm,sdM,rgba(cGood,0.22));         // caught attacks
+              // curves
+              curve(benMean,sdB,cNavy);
+              curve(m.mm,sdM,cRed);
+              // threshold line
+              ctx.save(); ctx.setLineDash([5,4]); ctx.strokeStyle=cMut; ctx.lineWidth=1.6;
+              ctx.beginPath(); ctx.moveTo(X(v.thr),y1); ctx.lineTo(X(v.thr),y0); ctx.stroke(); ctx.restore();
+              ctx.fillStyle=cMut; ctx.font='10px Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+              ctx.fillText('threshold',X(v.thr),y1+10);
+              // x axis labels
+              ctx.fillStyle=cMut; ctx.textBaseline='top'; ctx.font='9.5px Arial,sans-serif';
+              ctx.textAlign='left'; ctx.fillText('← threshold up: fewer false alarms',x0,y0+7);
+              ctx.textAlign='right'; ctx.fillText('threshold down: catch more →',x1,y0+7);
+              ctx.textAlign='center'; ctx.fillText('event risk score',(x0+x1)/2,y0+24);
+            }
+
+            ['thr','q','atk'].forEach(function(k){el[k].addEventListener('input',paint);});
+            document.getElementById('alt-reset').addEventListener('click',function(){
+              el.thr.value=defs.thr; el.q.value=defs.q; el.atk.value=defs.atk; paint();});
+            window.addEventListener('resize',function(){resize();draw();});
+            new MutationObserver(function(){draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+            var expBtn=document.getElementById('alt-expand');
+            var backdrop=document.createElement('div'); backdrop.className='alt-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(x){return !x.disabled && x.offsetParent!==null;});}
+            function setExpanded(o){
+              root.classList.toggle('is-expanded',o);
+              if(o){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded interactive');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=o?'hidden':'';
+              expBtn.innerHTML=o?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',o?'true':'false');
+              resize(); draw();
+              if(o){root.scrollTop=0; expBtn.focus();} else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){var f=focusables(); if(!f.length)return; var fi=f[0],la=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); fi.focus();}
+                else if(e.shiftKey&&document.activeElement===fi){e.preventDefault(); la.focus();}
+                else if(!e.shiftKey&&document.activeElement===la){e.preventDefault(); fi.focus();}}
+            });
+
+            resize(); paint();
+          })();
+          </script>
+          <!-- ══ END INTERACTIVE ══ -->
           <div class="resource-link">
             <span class="rl-icon" aria-hidden="true">&#128218;</span>
             <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Penetration Testing</strong> &mdash; an interactive module on pen-testing methodologies.</span></div>

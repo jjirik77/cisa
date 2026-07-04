@@ -241,6 +241,247 @@
             <li><strong>Auditor:</strong> SLAs documented and signed; metrics monitored continuously (not just reported after the fact); breaches documented and remediated; capacity plans reviewed at least annually; SPOFs in the risk register.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An ERP reporting 99.7% availability &ldquo;above SLA&rdquo; can still mislead if planned-maintenance downtime is excluded. The auditor checks whether the SLA actually defines that exclusion &mdash; and whether it reflects real business impact.</p></div>
+
+          <!-- ══ INTERACTIVE: Availability "nines" calculator ══ -->
+          <h4>Try it &mdash; from &ldquo;nines&rdquo; to minutes of downtime</h4>
+          <p>Availability sounds abstract until you turn it into <em>downtime</em>. Set how reliable one component is, how many must work in a chain, and how much redundancy you add &mdash; and watch the system&rsquo;s uptime, its &ldquo;nines,&rdquo; and the minutes it&rsquo;s dark each year. A chain multiplies failures; redundancy divides them.</p>
+
+          <style>
+            .av{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;max-width:100%;}
+            .av *{box-sizing:border-box;}
+            .av-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.15rem;}
+            .av-topbar{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding-bottom:0.7rem;margin-bottom:0.95rem;border-bottom:1px solid var(--border);}
+            .av-topbar-eyebrow{font-family:Arial,sans-serif;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+            .av-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .av-expand:hover{background:var(--gold);color:#fff;}
+            .av-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .av-grid{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-start;}
+            .av-panel{flex:1 1 250px;min-width:0;}
+            .av-out{flex:1.4 1 300px;min-width:0;}
+            .av-panel h5,.av-out h5{font-family:Arial,sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 0.15rem;}
+            .av-panel .plead{font-size:0.74rem;color:var(--text-muted);margin:0 0 0.85rem;}
+            .av-field{margin-bottom:0.95rem;}
+            .av-field .r{display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;margin-bottom:0.3rem;}
+            .av-field label{font-size:0.82rem;font-weight:700;color:var(--text-primary);}
+            .av-field .v{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.9rem;color:var(--gold);font-variant-numeric:tabular-nums;}
+            .av-field .h{font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;line-height:1.4;}
+            .av input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:var(--section-alt);outline:none;margin:0;}
+            .av input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.35);}
+            .av input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;}
+            .av input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .av-reset{margin-top:0.35rem;font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);background:transparent;border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.8rem;cursor:pointer;}
+            .av-reset:hover{color:var(--gold);border-color:var(--gold);}
+            .av-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.55rem;margin-bottom:0.85rem;}
+            .av-tile{background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.65rem 0.7rem;min-width:0;}
+            .av-tile.acc{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .av-tile .k{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:700;}
+            .av-tile .val{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.1rem;font-weight:900;color:var(--text-primary);font-variant-numeric:tabular-nums;margin-top:0.2rem;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+            .av-verdict{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.75rem 0.85rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);margin-bottom:0.85rem;}
+            .av-verdict.good{background:var(--correct-bg);border-color:var(--correct);}
+            .av-verdict.warn{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .av-verdict.crit{background:var(--wrong-bg);border-color:var(--wrong);}
+            .av-pill{font-size:0.64rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:20px;color:#fff;white-space:nowrap;}
+            .av-pill.good{background:var(--correct);}.av-pill.warn{background:var(--navy);}.av-pill.crit{background:var(--wrong);}
+            .av-head{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.15rem;font-weight:900;font-variant-numeric:tabular-nums;}
+            .av-coach{font-size:0.8rem;color:var(--text-secondary);flex:1 1 190px;min-width:160px;line-height:1.5;}
+            .av-chart{background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.85rem;}
+            .av-chart h6{font-family:Georgia,serif;font-size:0.92rem;font-weight:700;color:var(--text-primary);margin:0 0 0.15rem;}
+            .av-chart .cap{font-size:0.72rem;color:var(--text-muted);margin:0 0 0.55rem;line-height:1.45;}
+            .av canvas{width:100%;height:auto;display:block;}
+            .av-legend{display:flex;gap:0.85rem;flex-wrap:wrap;margin-top:0.55rem;font-size:0.68rem;color:var(--text-muted);}
+            .av-legend span{display:inline-flex;align-items:center;gap:0.35rem;}
+            .av-sw{width:14px;height:3px;border-radius:2px;display:inline-block;}
+            .av-sw.dot{width:9px;height:9px;border-radius:50%;}
+            .av-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .av.is-expanded{position:fixed;inset:2.5vh 2.5vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .av.is-expanded .av-card{max-width:1180px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+          </style>
+
+          <div class="av" id="av-root">
+            <div class="av-card">
+              <div class="av-topbar">
+                <span class="av-topbar-eyebrow">Interactive &middot; adjust &amp; explore</span>
+                <button type="button" class="av-expand" id="av-expand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+              </div>
+              <div class="av-grid">
+                <div class="av-panel">
+                  <h5>Design the service</h5>
+                  <p class="plead">One component, a chain of them, some redundancy.</p>
+                  <div class="av-field">
+                    <div class="r"><label for="av_a">Per-component availability</label><span class="v" id="av_a-v">99.00%</span></div>
+                    <input type="range" id="av_a" min="9000" max="9999" step="1" value="9900">
+                    <div class="h">How reliable a single component is on its own.</div>
+                  </div>
+                  <div class="av-field">
+                    <div class="r"><label for="av_s">Components in the chain</label><span class="v" id="av_s-v">4</span></div>
+                    <input type="range" id="av_s" min="1" max="8" step="1" value="4">
+                    <div class="h">Every one must be up for the service to work (series).</div>
+                  </div>
+                  <div class="av-field">
+                    <div class="r"><label for="av_r">Redundant copies each</label><span class="v" id="av_r-v">1 (none)</span></div>
+                    <input type="range" id="av_r" min="1" max="4" step="1" value="1">
+                    <div class="h">Parallel spares remove single points of failure.</div>
+                  </div>
+                  <button type="button" class="av-reset" id="av-reset">Reset scenario</button>
+                </div>
+                <div class="av-out">
+                  <h5>The result</h5>
+                  <div class="av-tiles">
+                    <div class="av-tile"><div class="k">System availability</div><div class="val" id="av-avail">&mdash;</div></div>
+                    <div class="av-tile"><div class="k">&ldquo;Nines&rdquo;</div><div class="val" id="av-nines">&mdash;</div></div>
+                    <div class="av-tile"><div class="k">Downtime / year</div><div class="val" id="av-down">&mdash;</div></div>
+                    <div class="av-tile acc"><div class="k">Meets 99.9% SLA?</div><div class="val" id="av-sla">&mdash;</div></div>
+                  </div>
+                  <div class="av-verdict" id="av-verdict">
+                    <span class="av-pill" id="av-pill">&mdash;</span>
+                    <span class="av-head" id="av-head">&mdash;</span>
+                    <span class="av-coach" id="av-coach">Adjust the design to see the downtime.</span>
+                  </div>
+                  <div class="av-chart">
+                    <h6>Downtime vs. redundancy</h6>
+                    <p class="cap">Yearly downtime on a log scale (each grid line is 10&times; less) as you add redundant copies. Your operating point (&#9679;) is at your current redundancy &mdash; each spare roughly buys another nine.</p>
+                    <canvas id="av-canvas" width="640" height="330" role="img" aria-label="Downtime per year against number of redundant copies"></canvas>
+                    <div class="av-legend">
+                      <span><i class="av-sw" style="background:var(--gold)"></i> Downtime at your settings</span>
+                      <span><i class="av-sw dot" style="background:var(--correct)"></i> Your operating point</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>The math assumes component failures are <em>independent</em> &mdash; real outages often aren&rsquo;t (a shared power feed, a bad change, one data center). That&rsquo;s why the auditor looks past the headline percentage to whether <strong>single points of failure</strong> are in the risk register and whether the SLA&rsquo;s downtime <em>exclusions</em> hide the real business impact.</p></div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('av-root'); if(!root) return;
+            var MINS=525600;
+            var defs={a:9900,s:4,r:1};
+            var el={a:document.getElementById('av_a'), s:document.getElementById('av_s'), r:document.getElementById('av_r')};
+            function read(){return {a:+el.a.value/10000, s:+el.s.value, r:+el.r.value};}
+            function sysAvail(A,S,R){ var g=1-Math.pow(1-A,R); return Math.pow(g,S); }
+            function fmtAvail(a){var p=a*100; return (p>=99.99?p.toFixed(4):p>=99.9?p.toFixed(3):p.toFixed(2))+'%';}
+            function fmtDown(min){ if(min>=1440)return (min/1440).toFixed(min>=14400?0:1)+' days'; if(min>=60)return (min/60).toFixed(1)+' hrs'; if(min>=1)return Math.round(min)+' min'; return (min*60).toFixed(0)+' sec'; }
+            function ninesOf(a){ return a>=0.99999999?9:(-Math.log10(1-a)); }
+
+            function paint(){
+              var v=read(); var A=v.a, sys=sysAvail(A,v.s,v.r), dt=(1-sys)*MINS, nn=ninesOf(sys);
+              document.getElementById('av_a-v').textContent=(v.a*100).toFixed(2)+'%';
+              document.getElementById('av_s-v').textContent=v.s;
+              document.getElementById('av_r-v').textContent=v.r+(v.r===1?' (none)':' ×');
+              document.getElementById('av-avail').textContent=fmtAvail(sys);
+              document.getElementById('av-nines').textContent=nn.toFixed(1);
+              document.getElementById('av-down').textContent=fmtDown(dt);
+              var slaEl=document.getElementById('av-sla'), pass=sys>=0.999;
+              slaEl.textContent=pass?'✓ Yes':'✗ No'; slaEl.style.color=pass?'var(--correct)':'var(--wrong)';
+
+              var box=document.getElementById('av-verdict'), pill=document.getElementById('av-pill'),
+                  head=document.getElementById('av-head'), coach=document.getElementById('av-coach');
+              box.className='av-verdict'; pill.className='av-pill';
+              head.textContent=nn.toFixed(1)+' nines';
+              if(sys>=0.9999){
+                pill.classList.add('good'); box.classList.add('good'); pill.textContent='Highly available';
+                coach.textContent='Redundancy pays off — each parallel copy roughly adds a nine. Downtime is down to '+fmtDown(dt)+'/yr. (Assumes failures are independent.)';
+              } else if(sys>=0.999){
+                pill.classList.add('good'); box.classList.add('good'); pill.textContent='Meets 99.9% SLA';
+                coach.textContent='Above the 99.9% line — about '+fmtDown(dt)+' of downtime a year. Add a copy or drop a dependency to reach four nines.';
+              } else if(sys>=0.99){
+                pill.classList.add('warn'); box.classList.add('warn'); pill.textContent='Below SLA';
+                coach.textContent='Two nines — roughly '+fmtDown(dt)+' dark each year, under the 99.9% SLA. '+(v.r===1?'Add a redundant copy to kill the single points of failure.':'Reduce dependencies or improve the components.');
+              } else {
+                pill.classList.add('crit'); box.classList.add('crit'); pill.textContent='Low availability';
+                coach.textContent='A chain of '+v.s+' single components fails if any one does — about '+fmtDown(dt)+' of downtime a year. Add redundancy or shorten the chain.';
+              }
+              draw(v);
+            }
+
+            var cvs=document.getElementById('av-canvas'), ctx=cvs.getContext('2d');
+            function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+            function rgba(hex,a){hex=(hex||'').replace('#','');
+              if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
+              var n=parseInt(hex,16); if(isNaN(n))return 'rgba(120,130,145,'+a+')';
+              return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+            function resize(){
+              var w=cvs.parentElement.clientWidth||360, dpr=window.devicePixelRatio||1;
+              var big=root.classList.contains('is-expanded');
+              var h=big?Math.max(240,Math.min(w*0.55,window.innerHeight-cvs.getBoundingClientRect().top-90)):Math.max(240,Math.min(330,w*0.6));
+              cvs.width=w*dpr; cvs.height=h*dpr; cvs.style.height=h+'px';
+              ctx.setTransform(dpr,0,0,dpr,0,0); cvs._w=w; cvs._h=h;
+            }
+            function draw(v){
+              if(!v)v=read();
+              var w=cvs._w||360, h=cvs._h||300; ctx.clearRect(0,0,w,h);
+              var padL=58,padR=14,padT=14,padB=42, x0=padL,x1=w-padR,y0=h-padB,y1=padT;
+              var cAcc=css('--gold'), cMut=css('--text-muted'), cBor=css('--border'), cGood=css('--correct'), cCard=css('--card-bg');
+              var LMIN=Math.log10(0.5), LMAX=Math.log10(MINS); // 0.5 min .. 1 year
+              function Yl(min){var lg=Math.log10(Math.max(min,0.5)); return y0-((lg-LMIN)/(LMAX-LMIN))*(y0-y1);}
+              function X(r){return x0+((r-1)/3)*(x1-x0);} // r=1..4
+              // grid lines at time markers
+              var marks=[[5,'5 min'],[60,'1 hr'],[1440,'1 day'],[10080,'1 wk'],[43800,'1 mo'],[525600,'1 yr']];
+              ctx.font='10px Arial,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+              marks.forEach(function(mk){var py=Yl(mk[0]);
+                ctx.strokeStyle=rgba(cBor,0.9); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,py); ctx.lineTo(x1,py); ctx.stroke();
+                ctx.fillStyle=cMut; ctx.fillText(mk[1],x0-7,py);});
+              // x labels
+              ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle=cMut; ctx.font='9.5px Arial,sans-serif';
+              for(var r=1;r<=4;r++) ctx.fillText(r+(r===1?'':'×'),X(r),y0+7);
+              ctx.fillText('redundant copies per component',(x0+x1)/2,y0+23);
+              ctx.save(); ctx.translate(15,(y0+y1)/2); ctx.rotate(-Math.PI/2);
+              ctx.fillStyle=cMut; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='11px Arial,sans-serif';
+              ctx.fillText('Downtime / year (log)',0,0); ctx.restore();
+              // curve of downtime vs R
+              ctx.strokeStyle=cAcc; ctx.lineWidth=2.6; ctx.beginPath();
+              for(var rr=1;rr<=4;rr++){ var dt=(1-sysAvail(v.a,v.s,rr))*MINS; var px=X(rr),py=Yl(dt);
+                if(rr===1)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+              ctx.stroke();
+              // points
+              for(var rp=1;rp<=4;rp++){ var d2=(1-sysAvail(v.a,v.s,rp))*MINS;
+                ctx.beginPath(); ctx.arc(X(rp),Yl(d2),3.5,0,Math.PI*2); ctx.fillStyle=rgba(cMut,0.7); ctx.fill(); }
+              // operating point
+              var od=(1-sysAvail(v.a,v.s,v.r))*MINS;
+              ctx.beginPath(); ctx.arc(X(v.r),Yl(od),6,0,Math.PI*2); ctx.fillStyle=cGood; ctx.fill();
+              ctx.lineWidth=2.5; ctx.strokeStyle=cCard; ctx.stroke();
+            }
+
+            ['a','s','r'].forEach(function(k){el[k].addEventListener('input',paint);});
+            document.getElementById('av-reset').addEventListener('click',function(){ el.a.value=defs.a; el.s.value=defs.s; el.r.value=defs.r; paint();});
+            window.addEventListener('resize',function(){resize();draw();});
+            new MutationObserver(function(){draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+            var expBtn=document.getElementById('av-expand');
+            var backdrop=document.createElement('div'); backdrop.className='av-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(x){return !x.disabled && x.offsetParent!==null;});}
+            function setExpanded(o){
+              root.classList.toggle('is-expanded',o);
+              if(o){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded interactive');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=o?'hidden':'';
+              expBtn.innerHTML=o?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',o?'true':'false');
+              resize(); draw();
+              if(o){root.scrollTop=0; expBtn.focus();} else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){var f=focusables(); if(!f.length)return; var fi=f[0],la=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); fi.focus();}
+                else if(e.shiftKey&&document.activeElement===fi){e.preventDefault(); la.focus();}
+                else if(!e.shiftKey&&document.activeElement===la){e.preventDefault(); fi.focus();}}
+            });
+
+            resize(); paint();
+          })();
+          </script>
+          <!-- ══ END INTERACTIVE ══ -->
         </article>
 
         <article class="content-section" id="s6">

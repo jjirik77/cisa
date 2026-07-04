@@ -249,6 +249,240 @@
             <li><strong>Go/no-go:</strong> critical and high defects resolved, UAT sign-off, security findings remediated, data migration validated, rollback plan tested.</li>
           </ul>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>On testing questions, check <strong>independence</strong>: who tests and who approves. Developers testing their own code without independent review, or a manager approving their own team's UAT, compromises independence &mdash; a finding.</div>
+
+          <!-- ══ INTERACTIVE: Cost of a defect by SDLC phase ══ -->
+          <h4>Try it &mdash; the cheapest bug is the one you catch first</h4>
+          <p>This is why the auditor&rsquo;s value is highest <em>early</em>. A defect fixed at requirements costs a fraction of the same defect found in production. Set how many defects the project carries and how rigorously it tests early &mdash; then watch where the remediation money actually goes.</p>
+
+          <style>
+            .cod{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;max-width:100%;}
+            .cod *{box-sizing:border-box;}
+            .cod-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.15rem;}
+            .cod-topbar{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding-bottom:0.7rem;margin-bottom:0.95rem;border-bottom:1px solid var(--border);}
+            .cod-topbar-eyebrow{font-family:Arial,sans-serif;font-size:0.64rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+            .cod-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .cod-expand:hover{background:var(--gold);color:#fff;}
+            .cod-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .cod-grid{display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-start;}
+            .cod-panel{flex:1 1 250px;min-width:0;}
+            .cod-out{flex:1.4 1 300px;min-width:0;}
+            .cod-panel h5,.cod-out h5{font-family:Arial,sans-serif;font-size:0.66rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 0.15rem;}
+            .cod-panel .plead{font-size:0.74rem;color:var(--text-muted);margin:0 0 0.85rem;}
+            .cod-field{margin-bottom:0.95rem;}
+            .cod-field .r{display:flex;justify-content:space-between;align-items:baseline;gap:0.5rem;margin-bottom:0.3rem;}
+            .cod-field label{font-size:0.82rem;font-weight:700;color:var(--text-primary);}
+            .cod-field .v{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.9rem;color:var(--gold);font-variant-numeric:tabular-nums;}
+            .cod-field .h{font-size:0.7rem;color:var(--text-muted);margin-top:0.25rem;line-height:1.4;}
+            .cod input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:var(--section-alt);outline:none;margin:0;}
+            .cod input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.35);}
+            .cod input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--card-bg);cursor:pointer;}
+            .cod input[type=range]:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .cod-reset{margin-top:0.35rem;font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);background:transparent;border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.8rem;cursor:pointer;}
+            .cod-reset:hover{color:var(--gold);border-color:var(--gold);}
+            .cod-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.55rem;margin-bottom:0.85rem;}
+            .cod-tile{background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.65rem 0.7rem;min-width:0;}
+            .cod-tile.acc{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .cod-tile .k{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-muted);font-weight:700;}
+            .cod-tile .val{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.1rem;font-weight:900;color:var(--text-primary);font-variant-numeric:tabular-nums;margin-top:0.2rem;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+            .cod-verdict{display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;padding:0.75rem 0.85rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);margin-bottom:0.85rem;}
+            .cod-verdict.good{background:var(--correct-bg);border-color:var(--correct);}
+            .cod-verdict.warn{background:var(--blue-pale);border-color:var(--blue-pale-border);}
+            .cod-verdict.crit{background:var(--wrong-bg);border-color:var(--wrong);}
+            .cod-pill{font-size:0.64rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.28rem 0.7rem;border-radius:20px;color:#fff;white-space:nowrap;}
+            .cod-pill.good{background:var(--correct);}.cod-pill.warn{background:var(--navy);}.cod-pill.crit{background:var(--wrong);}
+            .cod-head{font-family:'Arial Narrow',Arial,sans-serif;font-size:1.15rem;font-weight:900;font-variant-numeric:tabular-nums;}
+            .cod-coach{font-size:0.8rem;color:var(--text-secondary);flex:1 1 190px;min-width:160px;line-height:1.5;}
+            .cod-chart{background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.85rem;}
+            .cod-chart h6{font-family:Georgia,serif;font-size:0.92rem;font-weight:700;color:var(--text-primary);margin:0 0 0.15rem;}
+            .cod-chart .cap{font-size:0.72rem;color:var(--text-muted);margin:0 0 0.55rem;line-height:1.45;}
+            .cod canvas{width:100%;height:auto;display:block;}
+            .cod-legend{display:flex;gap:0.85rem;flex-wrap:wrap;margin-top:0.55rem;font-size:0.68rem;color:var(--text-muted);}
+            .cod-legend span{display:inline-flex;align-items:center;gap:0.35rem;}
+            .cod-sw{width:14px;height:10px;border-radius:2px;display:inline-block;}
+            .cod-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .cod.is-expanded{position:fixed;inset:2.5vh 2.5vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .cod.is-expanded .cod-card{max-width:1180px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+          </style>
+
+          <div class="cod" id="cod-root">
+            <div class="cod-card">
+              <div class="cod-topbar">
+                <span class="cod-topbar-eyebrow">Interactive &middot; adjust &amp; explore</span>
+                <button type="button" class="cod-expand" id="cod-expand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+              </div>
+              <div class="cod-grid">
+                <div class="cod-panel">
+                  <h5>Your project</h5>
+                  <p class="plead">A fix costs 1× at requirements … 100× in production.</p>
+                  <div class="cod-field">
+                    <div class="r"><label for="cod_n">Defects in the build</label><span class="v" id="cod_n-v">50</span></div>
+                    <input type="range" id="cod_n" min="5" max="200" step="5" value="50">
+                    <div class="h">How many bugs the system carries, mostly baked in early.</div>
+                  </div>
+                  <div class="cod-field">
+                    <div class="r"><label for="cod_r">Test rigor (shift-left)</label><span class="v" id="cod_r-v">45%</span></div>
+                    <input type="range" id="cod_r" min="0" max="100" step="1" value="45">
+                    <div class="h">How aggressively each phase catches defects before the next.</div>
+                  </div>
+                  <button type="button" class="cod-reset" id="cod-reset">Reset scenario</button>
+                </div>
+                <div class="cod-out">
+                  <h5>The bill</h5>
+                  <div class="cod-tiles">
+                    <div class="cod-tile acc"><div class="k">Total remediation cost</div><div class="val" id="cod-total">&mdash;</div></div>
+                    <div class="cod-tile"><div class="k">Caught before production</div><div class="val" id="cod-pre">&mdash;</div></div>
+                    <div class="cod-tile"><div class="k">Avg cost / defect</div><div class="val" id="cod-avg">&mdash;</div></div>
+                    <div class="cod-tile"><div class="k">Reached production</div><div class="val" id="cod-prod">&mdash;</div></div>
+                  </div>
+                  <div class="cod-verdict" id="cod-verdict">
+                    <span class="cod-pill" id="cod-pill">&mdash;</span>
+                    <span class="cod-head" id="cod-head">&mdash;</span>
+                    <span class="cod-coach" id="cod-coach">Slide the rigor to shift detection earlier.</span>
+                  </div>
+                  <div class="cod-chart">
+                    <h6>Where the remediation money goes</h6>
+                    <p class="cap">Total fix cost by the phase a defect is caught in. Late phases cost far more per defect &mdash; so even a few that reach production can dominate the bill.</p>
+                    <canvas id="cod-canvas" width="640" height="330" role="img" aria-label="Remediation cost by SDLC phase"></canvas>
+                    <div class="cod-legend">
+                      <span><i class="cod-sw" style="background:var(--gold)"></i> Cost if caught here</span>
+                      <span><i class="cod-sw" style="background:var(--wrong)"></i> Production (most expensive)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>This is the case for the auditor being in the room <strong>early</strong>: a control designed at requirements is cheap; the same gap found after go-live is a costly rework or a breach. It&rsquo;s also why <strong>independent testing</strong> and a real <strong>go/no-go</strong> matter &mdash; letting critical defects through to production is exactly the expensive outcome the model shows.</p></div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('cod-root'); if(!root) return;
+            var phases=['Requirements','Design','Coding','Testing','Production'];
+            var shortP=['Req','Design','Code','Test','Prod'];
+            var mult=[1,6,15,40,100], BASE=100;
+            var defs={n:50,r:45};
+            var el={n:document.getElementById('cod_n'), r:document.getElementById('cod_r')};
+            function read(){return {n:+el.n.value, r:+el.r.value};}
+            function model(v){
+              var c=0.15+0.75*(v.r/100), rem=v.n, caught=[], cost=[], total=0;
+              for(var i=0;i<4;i++){ var ct=rem*c; caught[i]=ct; rem-=ct; cost[i]=ct*BASE*mult[i]; total+=cost[i]; }
+              caught[4]=rem; cost[4]=rem*BASE*mult[4]; total+=cost[4];
+              var pre=v.n>0?(v.n-caught[4])/v.n:0;
+              return {caught:caught, cost:cost, total:total, pre:pre, prod:caught[4], avg:v.n>0?total/v.n:0, best:v.n*BASE};
+            }
+            function money(n){return '$'+Math.round(n).toLocaleString();}
+            function shortMoney(n){ n=Math.round(n); if(n>=1e6)return '$'+(n/1e6).toFixed(1)+'M'; if(n>=1e3)return '$'+Math.round(n/1e3)+'k'; return '$'+n; }
+
+            function paint(){
+              var v=read(), m=model(v);
+              document.getElementById('cod_n-v').textContent=v.n;
+              document.getElementById('cod_r-v').textContent=v.r+'%';
+              document.getElementById('cod-total').textContent=money(m.total);
+              document.getElementById('cod-pre').textContent=Math.round(m.pre*100)+'%';
+              document.getElementById('cod-avg').textContent=money(m.avg);
+              document.getElementById('cod-prod').textContent=(m.prod<10?m.prod.toFixed(1):Math.round(m.prod))+' defects';
+
+              var box=document.getElementById('cod-verdict'), pill=document.getElementById('cod-pill'),
+                  head=document.getElementById('cod-head'), coach=document.getElementById('cod-coach');
+              box.className='cod-verdict'; pill.className='cod-pill';
+              var prem=m.total/m.best, prodShare=m.total>0?m.cost[4]/m.total:0;
+              head.textContent=prem.toFixed(1)+'× the best case';
+              if(prem<3){
+                pill.classList.add('good'); box.classList.add('good'); pill.textContent='Shift-left working';
+                coach.textContent='Catching defects early keeps the bill down — '+Math.round(m.pre*100)+'% are fixed before production. The cheapest bug is one found at requirements.';
+              } else if(prem<8){
+                pill.classList.add('warn'); box.classList.add('warn'); pill.textContent='Costly late detection';
+                coach.textContent='You spend '+prem.toFixed(1)+'× the best case. The '+(m.prod<10?m.prod.toFixed(1):Math.round(m.prod))+' defects reaching production drive '+Math.round(prodShare*100)+'% of the cost — test earlier.';
+              } else {
+                pill.classList.add('crit'); box.classList.add('crit'); pill.textContent='Escaping to production';
+                coach.textContent='Late detection costs '+prem.toFixed(1)+'× the best case: just '+(m.prod<10?m.prod.toFixed(1):Math.round(m.prod))+' production defects are '+Math.round(prodShare*100)+'% of the total bill. Shift testing left.';
+              }
+              draw(v,m);
+            }
+
+            var cvs=document.getElementById('cod-canvas'), ctx=cvs.getContext('2d');
+            function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+            function rgba(hex,a){hex=(hex||'').replace('#','');
+              if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');
+              var n=parseInt(hex,16); if(isNaN(n))return 'rgba(120,130,145,'+a+')';
+              return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')';}
+            function resize(){
+              var w=cvs.parentElement.clientWidth||360, dpr=window.devicePixelRatio||1;
+              var big=root.classList.contains('is-expanded');
+              var h=big?Math.max(240,Math.min(w*0.55,window.innerHeight-cvs.getBoundingClientRect().top-90)):Math.max(240,Math.min(330,w*0.6));
+              cvs.width=w*dpr; cvs.height=h*dpr; cvs.style.height=h+'px';
+              ctx.setTransform(dpr,0,0,dpr,0,0); cvs._w=w; cvs._h=h;
+            }
+            function draw(v,m){
+              if(!v){v=read(); m=model(v);}
+              var w=cvs._w||360, h=cvs._h||300; ctx.clearRect(0,0,w,h);
+              var padL=48,padR=14,padT=18,padB=42, x0=padL,x1=w-padR,y0=h-padB,y1=padT;
+              var cAcc=css('--gold'), cRed=css('--wrong'), cMut=css('--text-muted'), cBor=css('--border'), cInk=css('--text-primary');
+              var yMax=Math.max.apply(null,m.cost)*1.16 || 1;
+              function Y(c){return y0-(c/yMax)*(y0-y1);}
+              // y gridlines (4)
+              ctx.font='10px Arial,sans-serif'; ctx.textAlign='right'; ctx.textBaseline='middle';
+              for(var g=0;g<=4;g++){var cv=yMax*g/4, py=Y(cv);
+                ctx.strokeStyle=rgba(cBor,0.9); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,py); ctx.lineTo(x1,py); ctx.stroke();
+                ctx.fillStyle=cMut; ctx.fillText(shortMoney(cv),x0-6,py);}
+              // bars
+              var n=5, gap=(x1-x0)/n, bw=gap*0.56;
+              for(var i=0;i<n;i++){
+                var bx=x0+gap*i+(gap-bw)/2, by=Y(m.cost[i]), bh=y0-by;
+                ctx.fillStyle=(i===4?cRed:cAcc); ctx.fillRect(bx,by,bw,Math.max(0,bh));
+                // cost label above
+                ctx.fillStyle=(i===4?cRed:cMut); ctx.font='bold 10px Arial,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+                if(m.cost[i]>yMax*0.02) ctx.fillText(shortMoney(m.cost[i]),bx+bw/2,by-3);
+                // phase label below
+                ctx.fillStyle=cMut; ctx.font='9.5px Arial,sans-serif'; ctx.textBaseline='top';
+                ctx.fillText(shortP[i],bx+bw/2,y0+6);
+                ctx.fillStyle=rgba(cMut,0.8); ctx.font='8.5px Arial,sans-serif';
+                ctx.fillText(mult[i]+'×',bx+bw/2,y0+19);
+              }
+              ctx.save(); ctx.translate(13,(y0+y1)/2); ctx.rotate(-Math.PI/2);
+              ctx.fillStyle=cMut; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='11px Arial,sans-serif';
+              ctx.fillText('Remediation cost',0,0); ctx.restore();
+            }
+
+            ['n','r'].forEach(function(k){el[k].addEventListener('input',paint);});
+            document.getElementById('cod-reset').addEventListener('click',function(){ el.n.value=defs.n; el.r.value=defs.r; paint();});
+            window.addEventListener('resize',function(){resize();draw();});
+            new MutationObserver(function(){draw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+            var expBtn=document.getElementById('cod-expand');
+            var backdrop=document.createElement('div'); backdrop.className='cod-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(x){return !x.disabled && x.offsetParent!==null;});}
+            function setExpanded(o){
+              root.classList.toggle('is-expanded',o);
+              if(o){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded interactive');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=o?'hidden':'';
+              expBtn.innerHTML=o?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',o?'true':'false');
+              resize(); draw();
+              if(o){root.scrollTop=0; expBtn.focus();} else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){var f=focusables(); if(!f.length)return; var fi=f[0],la=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); fi.focus();}
+                else if(e.shiftKey&&document.activeElement===fi){e.preventDefault(); la.focus();}
+                else if(!e.shiftKey&&document.activeElement===la){e.preventDefault(); fi.focus();}}
+            });
+
+            resize(); paint();
+          })();
+          </script>
+          <!-- ══ END INTERACTIVE ══ -->
         </article>
 
         <article class="content-section" id="s6">
