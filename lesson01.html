@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lesson 1 — Domain 1: IS Auditing Process | CISA 5-Day Workshop</title>
 <link rel="stylesheet" href="cisa-lesson.css">
+<style>
+  /* Section-level learning-objective tags (maps each section back to the stated objectives) */
+  .obj-tag{display:inline-block;font-family:Arial,sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--blue-pale-border);border-radius:20px;padding:0.18rem 0.62rem;margin-left:0.7rem;vertical-align:middle;white-space:nowrap;}
+  @media (max-width:640px){ .obj-tag{display:none;} }
+</style>
 </head>
 <body>
 
@@ -165,6 +170,13 @@
         </div>
       </button>
 
+      <button type="button" class="flip-card vocab" aria-pressed="false">
+        <div class="flip-inner">
+          <div class="flip-face flip-front"><span class="vocab-label">Term</span><div class="vocab-term">Walk-Through</div><span class="flip-hint">&#8634; Definition</span></div>
+          <div class="flip-face flip-back"><span class="vocab-label">Definition</span><div class="vocab-def">Tracing a single transaction from initiation to completion to confirm a control&rsquo;s design and that it is actually placed in operation as documented.</div></div>
+        </div>
+      </button>
+
     </div>
   </section>
 
@@ -197,14 +209,23 @@
 
         <!-- 1 -->
         <article class="content-section" id="s1">
-          <div class="cs-head"><span class="cs-num">1</span><h3>IS Audit Standards, Guidelines &amp; the Code of Ethics</h3></div>
+          <div class="cs-head"><span class="cs-num">1</span><h3>IS Audit Standards, Guidelines &amp; the Code of Ethics</h3><span class="obj-tag">Objectives 1 &amp; 5 &middot; standards, ethics &amp; independence</span></div>
           <p>An IS audit is only credible if it follows recognized professional standards. ISACA publishes a tiered body of authoritative guidance that tells an auditor <strong>what they must do</strong>, <strong>how they may do it</strong>, and the <strong>ethics that bind them</strong>. Every exam scenario assumes you are operating inside this framework, so it is the foundation for everything that follows.</p>
-          <h4>The three tiers of guidance</h4>
+          <h4>ITAF and the three tiers of guidance</h4>
+          <p>ISACA gathers this guidance into <strong>ITAF (the IT Assurance Framework)</strong> &mdash; the single overarching framework that houses the three tiers below and sets the professional practices for the audit function. Everything from the mandatory standards to the hands-on techniques lives inside ITAF.</p>
           <ul class="detail">
             <li><strong>IS Audit &amp; Assurance Standards (S1&ndash;S16)</strong> &mdash; mandatory minimum requirements. They cover the audit charter (S1), organizational and professional independence (S2, S3), reasonable expectation (S4), due professional care (S5), proficiency (S6), assertions and criteria (S7, S8), planning (S9), supervision (S10), materiality (S11), using the work of other experts (S12), evidence (S13), use of CAATs (S14), reporting (S15), and follow-up (S16).</li>
             <li><strong>Guidelines</strong> &mdash; non-mandatory guidance that elaborates on <em>how</em> to apply the standards in practice.</li>
             <li><strong>Tools &amp; Techniques</strong> &mdash; practical, hands-on implementation guidance.</li>
           </ul>
+          <h4>Standards the exam singles out</h4>
+          <ul class="detail">
+            <li><strong>Audit charter (S1)</strong> &mdash; the document that protects the auditor&rsquo;s independence: it authorizes access to all records, systems, and personnel, and is approved by the <strong>board or audit committee</strong>, not by the management being audited.</li>
+            <li><strong>Assertions &amp; criteria (S7, S8)</strong> &mdash; audit objectives are framed as the <strong>management assertions</strong> being tested (existence, completeness, accuracy, valuation, rights/obligations, presentation) against defined criteria.</li>
+            <li><strong>Materiality (S11)</strong> &mdash; what is significant enough to matter; set <strong>quantitatively or qualitatively</strong>, it drives how wide the audit <strong>scope</strong> is and which findings rise to the level of being <strong>reported</strong>.</li>
+            <li><strong>Using the work of other experts (S12)</strong> &mdash; you may rely on specialists (penetration testers, other auditors), but the <strong>originating auditor remains responsible</strong> for the conclusion and must assess the expert&rsquo;s <strong>competence, objectivity, and scope</strong>.</li>
+          </ul>
+          <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Whenever a scenario questions the auditor&rsquo;s <strong>authority</strong> or <strong>independence</strong>, the answer is the <strong>audit charter</strong> &mdash; it must be approved above management and grant unrestricted access to records and staff.</div>
           <h4>The Code of Professional Ethics</h4>
           <p>ISACA's Code binds every candidate and certificate holder to act with objectivity and due care, serve stakeholders lawfully, maintain confidentiality, sustain professional competency, inform appropriate parties of results (disclosing all material facts), and support stakeholder education.</p>
           <h4>Threats to independence</h4>
@@ -221,7 +242,7 @@
 
         <!-- 2 -->
         <article class="content-section" id="s2">
-          <div class="cs-head"><span class="cs-num">2</span><h3>Types of Audits, Assessments &amp; Reviews</h3></div>
+          <div class="cs-head"><span class="cs-num">2</span><h3>Types of Audits, Assessments &amp; Reviews</h3><span class="obj-tag">Objective 2 &middot; audit types</span></div>
           <p>Not every engagement has the same objective, and the objective dictates the procedures. The exam repeatedly asks you to recognize <em>what kind</em> of audit a scenario describes, because mislabeling the engagement leads to the wrong answer.</p>
           <ul class="detail">
             <li><strong>Financial audit</strong> &mdash; examines financial records for accuracy and GAAP/IFRS compliance; IS audit supports it by evaluating IT controls over financial reporting.</li>
@@ -240,7 +261,7 @@
 
         <!-- 3 -->
         <article class="content-section" id="s3">
-          <div class="cs-head"><span class="cs-num">3</span><h3>Risk-Based Audit Planning</h3></div>
+          <div class="cs-head"><span class="cs-num">3</span><h3>Risk-Based Audit Planning</h3><span class="obj-tag">Objective 3 &middot; risk-based planning</span></div>
           <p>Audit resources are always finite. Risk-based planning directs them where organizational risk is highest &mdash; and judging that allocation correctly is the single most-tested skill in Domain 1.</p>
           <h4>How the plan is built</h4>
           <ul class="detail">
@@ -265,7 +286,7 @@
 
         <!-- 4 -->
         <article class="content-section" id="s4">
-          <div class="cs-head"><span class="cs-num">4</span><h3>Types of Controls</h3></div>
+          <div class="cs-head"><span class="cs-num">4</span><h3>Types of Controls</h3><span class="obj-tag">Objective 4 &middot; classifying controls</span></div>
           <p>Auditors classify controls so they can judge two things: whether the <em>right kind</em> of control exists for a given risk, and whether that control is both well-designed and actually working.</p>
           <h4>By objective</h4>
           <ul class="detail">
@@ -313,7 +334,7 @@
 
         <!-- 6 -->
         <article class="content-section" id="s6">
-          <div class="cs-head"><span class="cs-num">6</span><h3>Audit Testing &amp; Sampling Methodology</h3></div>
+          <div class="cs-head"><span class="cs-num">6</span><h3>Audit Testing &amp; Sampling Methodology</h3><span class="obj-tag">Objective 6 &middot; tests, sampling &amp; CAATs</span></div>
           <p>Testing produces the evidence behind every conclusion. Choosing the right test, the right sample, and understanding the risk of being wrong is core auditor craft.</p>
           <h4>Types of tests (rising reliability)</h4>
           <ul class="detail">
@@ -618,12 +639,13 @@
 
         <!-- 7 -->
         <article class="content-section" id="s7">
-          <div class="cs-head"><span class="cs-num">7</span><h3>Audit Evidence Collection</h3></div>
+          <div class="cs-head"><span class="cs-num">7</span><h3>Audit Evidence Collection</h3><span class="obj-tag">Objective 6 &middot; evidence &amp; CAATs</span></div>
           <p>Audit conclusions must rest on evidence that is both <strong>sufficient</strong> (enough) and <strong>appropriate</strong> (relevant and reliable). Reliability depends heavily on where the evidence comes from.</p>
           <ul class="detail">
             <li><strong>Reliability hierarchy</strong> (most to least): the auditor's direct observation or re-performance &rarr; documentary evidence from third parties &rarr; documentary evidence from the organization &rarr; oral evidence (inquiry).</li>
             <li><strong>Collection techniques:</strong> document review, interview, observation, <strong>walk-through</strong> (tracing a transaction end to end), reconciliation, and third-party confirmation.</li>
             <li><strong>CAATs (Computer-Assisted Audit Techniques):</strong> audit software (extract and analyze data), <strong>test data</strong> (dummy transactions through the live system), <strong>Integrated Test Facility (ITF)</strong> (a fictitious entity embedded in production), and <strong>parallel simulation</strong> (auditor re-creates processing logic and compares).</li>
+            <li><strong>ITF vs. parallel simulation &mdash; the risk difference:</strong> ITF (and test data) push fictitious transactions <em>inside production</em>, which must be removed or reversed or they corrupt real data; <strong>parallel simulation</strong> re-runs the auditor&rsquo;s own logic <em>outside</em> production, so it carries no data-corruption risk.</li>
             <li>Protect the custody and security of confidential evidence obtained during the audit.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Test data and ITF deliberately push fictitious transactions through production. If those entries aren't completely removed or reversed when testing ends, they corrupt real data and reporting &mdash; a significant risk the auditor owns.</p></div>
@@ -632,7 +654,7 @@
 
         <!-- 8 -->
         <article class="content-section" id="s8">
-          <div class="cs-head"><span class="cs-num">8</span><h3>Audit Data Analytics</h3></div>
+          <div class="cs-head"><span class="cs-num">8</span><h3>Audit Data Analytics</h3><span class="obj-tag">Objective 7 &middot; data analytics</span></div>
           <p>Analytics shift auditing from samples to <strong>entire populations</strong> &mdash; every transaction rather than a subset &mdash; dramatically improving coverage and the odds of catching anomalies.</p>
           <ul class="detail">
             <li><strong>Common applications:</strong> completeness testing, duplicate detection, gap analysis (missing sequence numbers), outlier/anomaly detection, trend analysis, and <strong>Benford's Law</strong> (deviations from expected leading-digit frequencies can signal manipulation).</li>
@@ -646,7 +668,7 @@
 
         <!-- 9 -->
         <article class="content-section" id="s9">
-          <div class="cs-head"><span class="cs-num">9</span><h3>Reporting &amp; Communication</h3></div>
+          <div class="cs-head"><span class="cs-num">9</span><h3>Reporting &amp; Communication</h3><span class="obj-tag">Objective 8 &middot; findings &amp; communication</span></div>
           <p>A finding only has value if it is communicated clearly and at the right time. A consistent structure makes findings defensible and actionable.</p>
           <h4>The CRAF finding structure</h4>
           <ul class="detail">
@@ -713,7 +735,7 @@
             <label class="opt"><input type="radio" name="q2" value="C"><span><span class="opt-letter">C.</span> An IT-dependent manual control that may not consistently operate as intended.</span></label>
             <label class="opt"><input type="radio" name="q2" value="D"><span><span class="opt-letter">D.</span> An absence of a preventive control; the verbal approval is a directive control at best.</span></label>
           </fieldset>
-          <div class="rationale"><b>Correct: D.</b> A verbal approval with no system enforcement is a directive control (guidance) at best. Nothing prevents unapproved overtime from being entered. It is not IT-dependent (no IT component) and not detective (it does not identify errors after the fact). <b>Why the others fall short:</b> <b>A</b> nothing enforces the verbal approval, so it isn&rsquo;t an adequate preventive control; <b>B</b> a verbal sign-off detects nothing after the fact; <b>C</b> no IT-generated output is involved, so it isn&rsquo;t IT-dependent.</div>
+          <div class="rationale"><b>Correct: D.</b> A verbal approval with no system enforcement is a directive control (guidance) at best. <b>The key distinction is enforcement:</b> a <em>directive</em> control communicates the expected behavior (a policy, procedure, or verbal instruction), but only a <em>preventive</em> control actually blocks the act &mdash; an enforced approval gate or system control. Here nothing stops unapproved overtime from being entered, so no preventive control exists. It is also not IT-dependent (no IT component) and not detective (it does not identify errors after the fact). <b>Why the others fall short:</b> <b>A</b> nothing enforces the verbal approval, so it isn&rsquo;t an adequate preventive control; <b>B</b> a verbal sign-off detects nothing after the fact; <b>C</b> no IT-generated output is involved, so it isn&rsquo;t IT-dependent.</div>
         </div>
 
         <div class="q" data-answer="B">
@@ -799,7 +821,7 @@
             <label class="opt"><input type="radio" name="q9" value="C"><span><span class="opt-letter">C.</span> Consult legal counsel and escalate to the audit committee or board, bypassing normal management channels.</span></label>
             <label class="opt"><input type="radio" name="q9" value="D"><span><span class="opt-letter">D.</span> Document the finding and include it in the next scheduled audit report.</span></label>
           </fieldset>
-          <div class="rationale"><b>Correct: C.</b> Suspected fraud involving senior management requires immediate escalation to the audit committee or board, bypassing the normal management chain. Expanding testing (A) may follow, but only after escalation; waiting for a scheduled report (D) is inappropriate given the severity. <b>Why the others fall short:</b> <b>A</b> expanding scope first delays reporting suspected senior-management fraud; <b>B</b> going through management channels risks alerting a potentially complicit chain; <b>D</b> deferring to the next report is far too slow for suspected fraud.</div>
+          <div class="rationale"><b>Correct: C.</b> Suspected fraud involving senior management requires immediate escalation to the audit committee or board, bypassing the normal management chain. <b>The principle is independence, not just procedure:</b> the suspected party (the CFO) <em>is</em> management, so the normal reporting chain is compromised &mdash; the audit committee/board escalation path exists precisely for this scenario, keeping the auditor independent of the people under suspicion. Expanding testing (A) may follow, but only after escalation; waiting for a scheduled report (D) is inappropriate given the severity. <b>Why the others fall short:</b> <b>A</b> expanding scope first delays reporting suspected senior-management fraud; <b>B</b> going through management channels risks alerting a potentially complicit chain; <b>D</b> deferring to the next report is far too slow for suspected fraud.</div>
         </div>
 
         <div class="q" data-answer="B">
