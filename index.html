@@ -266,6 +266,47 @@
     .lesson-card { break-inside: avoid; border: 1px solid #ccc; }
   }
 
+  /* FEEDBACK / SURVEY */
+  .feedback-section { background: var(--blue-pale); border-top: 3px solid var(--gold); padding: 4.5rem 2rem; }
+  .feedback-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+  .feedback-eyebrow {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-family: Arial, sans-serif; font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+    margin-bottom: 0.85rem;
+  }
+  .feedback-heading {
+    font-family: Georgia, serif; font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700;
+    color: var(--text-primary); line-height: 1.2; margin-bottom: 0.9rem;
+  }
+  .feedback-heading .highlight { color: var(--gold); font-style: italic; }
+  .feedback-desc {
+    font-family: Arial, sans-serif; font-size: 0.95rem; color: var(--text-secondary);
+    line-height: 1.7; margin: 0 auto 1.75rem; max-width: 520px;
+  }
+  .feedback-desc strong { color: var(--text-primary); }
+  .feedback-btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: var(--gold); color: #ffffff; text-decoration: none;
+    font-family: Arial, sans-serif; font-size: 0.92rem; font-weight: 700;
+    letter-spacing: 0.04em; padding: 0.85rem 2rem; border-radius: 50px;
+    box-shadow: 0 4px 16px rgba(228,0,43,0.25);
+    transition: background 0.2s, transform 0.18s, box-shadow 0.2s;
+  }
+  .feedback-btn:hover {
+    background: var(--navy); transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(0,57,93,0.35);
+  }
+  .feedback-btn-arrow { transition: transform 0.2s; }
+  .feedback-btn:hover .feedback-btn-arrow { transform: translateX(4px); }
+  .feedback-note {
+    margin-top: 1rem; font-family: Arial, sans-serif; font-size: 0.76rem; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem; flex-wrap: wrap;
+  }
+  @media (max-width: 767px) {
+    .feedback-section { padding: 3rem 1.25rem; }
+  }
+
 .day-outcomes{list-style:none;margin:0;padding:.5rem .85rem .6rem;font-size:.66rem;color:var(--text-secondary);background:var(--card-bg);border-bottom:1px solid var(--border);}
 .day-outcomes li{position:relative;padding-left:.9rem;margin:.28rem 0;line-height:1.35;}
 .day-outcomes li::before{content:"\2713";position:absolute;left:0;color:var(--gold);font-weight:700;}
@@ -286,6 +327,7 @@
       <li><a href="#domains">Domains</a></li>
       <li><a href="#resources">Resources</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#feedback">Feedback</a></li>
     </ul>
     <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">&#9790; Dark</button>
   </div>
@@ -661,6 +703,25 @@
     </div>
   </div>
 </div>
+
+<!-- FEEDBACK / SURVEY -->
+<section id="feedback" class="feedback-section" aria-labelledby="feedback-heading">
+  <div class="feedback-inner">
+    <div class="feedback-eyebrow"><span aria-hidden="true">&#128172;</span> Before You Go</div>
+    <h2 class="feedback-heading" id="feedback-heading">We'd Love Your <span class="highlight">Feedback</span></h2>
+    <p class="feedback-desc">
+      <strong>NCyTE would appreciate your feedback!</strong> Please take a few minutes to
+      complete our brief workshop survey. Click the button below to open it in a new tab.
+    </p>
+    <a href="https://tinyurl.com/NCyTE-Workshop-Survey" class="feedback-btn" target="_blank" rel="noopener noreferrer"
+       aria-label="Open the NCyTE workshop survey (opens in new tab)">
+      <span aria-hidden="true">&#128221;</span>
+      Take the Survey
+      <span class="feedback-btn-arrow" aria-hidden="true">&#8594;</span>
+    </a>
+    <p class="feedback-note"><span aria-hidden="true">&#128279;</span> Opens in a new tab &nbsp;&middot;&nbsp; tinyurl.com/NCyTE-Workshop-Survey</p>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
