@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Afternoon, Day 2</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>18% (Domain 2)</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -479,6 +480,254 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A help desk reporting 95% first-call resolution by closing and reopening unresolved tickets isn't a tooling problem &mdash; it's a reporting-integrity finding. The metric is being gamed.</p></div>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When metrics are reported but not acted upon, the finding isn't that the metrics are wrong &mdash; it's that the <strong>management response process is ineffective</strong>. Reporting without action is not governance.</div>
+
+          <!-- ══ ACTIVITY: The All-Green Dashboard ══ -->
+          <h4>Activity &mdash; the all-green dashboard</h4>
+          <p>The board sees this page once a quarter. Every tile is green. For each metric, decide whether it is a <strong>KPI or a KRI</strong>, and choose the <strong>evidence you would request</strong> to test the number. Four of these eight are green because of how they were measured, not because the control works &mdash; and when you check, the dashboard recalculates itself.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Give the room three minutes on the tiles before anyone touches a control, and ask only one question: <em>which of these numbers would you sign your name under?</em> Note the votes, then work the tiles and re-run the vote. The recomputed dashboard at the end is the whole session in one screen &mdash; expand it for that moment.</div>
+
+          <style>
+            .agd{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .agd *{box-sizing:border-box;}
+            .agd-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .agd-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+            .agd-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .agd-lead b{color:var(--gold);font-size:1rem;}
+            .agd-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .agd-hd{background:var(--navy);color:var(--white);border-radius:5px 5px 0 0;padding:0.55rem 0.85rem;display:flex;justify-content:space-between;align-items:baseline;gap:0.75rem;flex-wrap:wrap;}
+            .agd-hd b{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.92rem;letter-spacing:0.06em;text-transform:uppercase;}
+            .agd-hd span{font-size:0.67rem;color:#bcd0e8;}
+            .agd-grid{border:1px solid var(--border);border-top:none;border-radius:0 0 5px 5px;padding:0.7rem;display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+            .agd-tile{border:1px solid var(--border);border-left:4px solid var(--correct);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);display:flex;flex-direction:column;gap:0.45rem;}
+            .agd-tile.amber{border-left-color:var(--wrong);}
+            .agd-mh{display:flex;align-items:baseline;justify-content:space-between;gap:0.6rem;}
+            .agd-name{font-size:0.79rem;font-weight:700;color:var(--text-primary);line-height:1.3;}
+            .agd-scope{display:block;font-size:0.66rem;font-weight:400;color:var(--text-muted);margin-top:0.1rem;line-height:1.35;}
+            .agd-val{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:1.15rem;color:var(--correct);white-space:nowrap;display:flex;align-items:center;gap:0.35rem;}
+            .agd-val i{width:9px;height:9px;border-radius:50%;background:var(--correct);display:inline-block;font-style:normal;}
+            .agd-val.bad{color:var(--wrong);}
+            .agd-val.bad i{background:var(--wrong);}
+            .agd-was{font-family:Arial,sans-serif;font-weight:400;font-size:0.64rem;color:var(--text-muted);text-decoration:line-through;}
+            .agd-ctl{display:flex;gap:0.35rem;align-items:center;flex-wrap:wrap;}
+            .agd-seg{display:flex;gap:0.2rem;}
+            .agd-seg button{font-family:Arial,sans-serif;font-size:0.66rem;font-weight:700;letter-spacing:0.04em;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.25rem 0.55rem;cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+            .agd-seg button:hover:not([disabled]){border-color:var(--gold);color:var(--gold);}
+            .agd-seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .agd-seg button.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .agd-seg button.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .agd-seg button.miss{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .agd-tile select{font-family:Arial,sans-serif;font-size:0.71rem;color:var(--text-primary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.28rem 0.35rem;width:100%;}
+            .agd-tile select:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+            .agd-why{font-size:0.73rem;color:var(--text-secondary);line-height:1.45;border-top:1px dashed var(--border);padding-top:0.4rem;}
+            .agd-why b{color:var(--text-primary);}
+            .agd-why em{color:var(--gold);font-style:normal;font-weight:700;}
+            .agd-ev{display:block;margin-top:0.25rem;}
+            .agd-ev.ok{color:var(--correct);}
+            .agd-ev.no{color:var(--wrong);}
+            .agd-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .agd-btn:hover{background:var(--gold-light);}
+            .agd-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .agd-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .agd-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .agd-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .agd-expand:hover{background:var(--gold);color:#fff;}
+            .agd-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .agd-fb{margin-top:0.85rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .agd-fb b{color:var(--gold);}
+            .agd-bsc{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;margin:0.6rem 0 0.5rem;}
+            .agd-bsc div{border:1px solid var(--border);border-radius:4px;padding:0.4rem 0.5rem;font-size:0.7rem;text-align:center;color:var(--text-muted);background:var(--card-bg);}
+            .agd-bsc div b{display:block;font-family:'Arial Narrow',Arial,sans-serif;font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-primary);margin-bottom:0.15rem;}
+            .agd-bsc div.none{border-color:var(--wrong);background:var(--wrong-bg);}
+            .agd-bsc div.none b{color:var(--wrong);}
+            .agd-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .agd.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .agd.is-expanded .agd-card{max-width:1400px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .agd.is-expanded .agd-grid{grid-template-columns:repeat(4,1fr);gap:0.42rem;padding:0.5rem;}
+            .agd.is-expanded .agd-name{font-size:0.75rem;}
+            .agd.is-expanded .agd-why{font-size:0.68rem;line-height:1.34;padding-top:0.26rem;}
+            .agd.is-expanded .agd-tile{padding:0.5rem 0.6rem;gap:0.35rem;}
+            .agd.is-expanded .agd-bsc{margin:0.45rem 0 0.4rem;gap:0.35rem;}
+            .agd.is-expanded .agd-bsc div{padding:0.3rem 0.4rem;font-size:0.67rem;}
+            .agd.is-expanded .agd-top{margin-bottom:0.5rem;}
+            .agd.is-expanded .agd-fb{font-size:0.75rem;line-height:1.38;margin-top:0.42rem;padding:0.55rem 0.65rem;}
+            @media (max-width:820px){ .agd-grid{grid-template-columns:1fr;} .agd-bsc{grid-template-columns:1fr 1fr;} }
+            @media (max-width:1100px){ .agd.is-expanded .agd-grid{grid-template-columns:1fr 1fr;} }
+          </style>
+
+          <div class="agd" id="agd-root">
+            <div class="agd-card">
+              <div class="agd-top">
+                <span class="agd-lead">Type <b id="agdT">0</b>/8 &nbsp;&middot;&nbsp; Evidence <b id="agdE">0</b>/8</span>
+                <div class="agd-tools">
+                  <button type="button" class="agd-btn" id="agdCheck" disabled>Check &amp; recompute</button>
+                  <button type="button" class="agd-btn ghost" id="agdReset">Start over</button>
+                  <button type="button" class="agd-expand" id="agdExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="agd-hd">
+                <b id="agdTitle">Northgate IT &mdash; Executive Performance Dashboard</b>
+                <span id="agdSub">Board pack &middot; Q3 &middot; All indicators green</span>
+              </div>
+              <div class="agd-grid" id="agdGrid"></div>
+              <div class="agd-fb" id="agdFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('agd-root'); if(!root) return;
+            var M=[
+              {n:'System availability', v:'99.95%', scope:'Reported monthly by the infrastructure team', t:'KPI', bad:true, fix:'99.62%',
+               ev:['Ask for the monitoring tool&rsquo;s uptime report for the last 12 months',
+                   'Ask where availability is measured from, whether planned maintenance is excluded, then reconcile to user-reported outage tickets',
+                   'Ask the infrastructure manager to confirm the figure in writing'],
+               a:1,
+               w:'Measured at the datacenter edge with maintenance windows excluded. The users experienced two WAN outages that the number cannot see. <em>Availability of what, measured from where?</em> is the first question for any uptime figure.'},
+              {n:'Change success rate', v:'99.2%', scope:'Changes closed successfully / changes raised', t:'KPI', bad:true, fix:'94.1%',
+               ev:['Recompute from the full change population, including emergency changes and any change backed out and re-applied',
+                   'Sample ten successful changes and verify each was approved',
+                   'Request the CAB minutes for the quarter'],
+               a:0,
+               w:'Emergency changes never enter the denominator, and a change that was backed out and re-applied is counted once &mdash; as a success. The defect is in the <em>population</em>, so sampling successes cannot find it.'},
+              {n:'Patch compliance', v:'97%', scope:'Scope: all servers, network devices and cloud workloads; reconciled monthly to the asset inventory', t:'KPI', bad:false,
+               ev:['Reconcile the patch tool&rsquo;s asset population to the asset inventory and test a sample of the 3% exceptions',
+                   'Accept the figure &mdash; the stated scope is sufficient assurance',
+                   'Request the vendor&rsquo;s patch release notes'],
+               a:0,
+               w:'Honest metric: the scope is stated and reconciled to an independent population. You still test it &mdash; an honest number verifies quickly; it does not verify itself.'},
+              {n:'Help-desk first-call resolution', v:'92%', scope:'Tickets resolved on first contact', t:'KPI', bad:true, fix:'79%',
+               ev:['Ask for the ticket reopen rate and the system&rsquo;s definition of &ldquo;resolved&rdquo;',
+                   'Survey users on their satisfaction with the help desk',
+                   'Observe the help desk for a day and count outcomes'],
+               a:0,
+               w:'Tickets closed and later reopened are counted as resolved, and some are closed when the caller stops chasing. This is the reporting-integrity finding described earlier in this section &mdash; the metric is being gamed, not merely mismeasured.'},
+              {n:'Mean time to repair', v:'3.2 hrs', scope:'Priority-1 incidents, open to service restored', t:'KPI', bad:false,
+               ev:['Compare it against the published industry benchmark for the sector',
+                   'Independently recompute MTTR from the incident record set for the period',
+                   'Ask the operations team whether 3.2 hours is realistic'],
+               a:1,
+               w:'Honest metric, and note the distractor: an industry benchmark is not <em>criteria</em> for this organization &mdash; the SLA is. Recomputation from source records is the test.'},
+              {n:'Open critical vulnerabilities', v:'3', scope:'Down from 11 last quarter', t:'KRI', bad:false,
+               ev:['Ask how many were remediated during the quarter',
+                   'Request the scanning vendor&rsquo;s CVSS scoring methodology',
+                   'Reconcile the count to the raw scan output, and check the scan scope and date'],
+               a:2,
+               w:'Forward-looking, so a KRI: it signals exposure that has not yet become an incident. Honest here &mdash; but always confirm the scan <em>scope and date</em>, because a clean count from a stale or narrow scan is worthless.'},
+              {n:'Days since last backup verification', v:'8', scope:'Reported by the backup operations team', t:'KRI', bad:true, fix:'427',
+               ev:['Ask for the backup schedule and retention policy',
+                   'Ask what &ldquo;verification&rdquo; means here &mdash; job-success confirmation or an actual restore &mdash; and request the date and result of the last restore test',
+                   'Confirm that backup media is stored offsite'],
+               a:1,
+               w:'&ldquo;Verification&rdquo; means the backup job reported success. No <em>restore</em> has been tested in 427 days. A backup nobody has restored is an assumption, not a control &mdash; you will meet this again in Lesson 6.'},
+              {n:'Failed privileged-access attempts', v:'14 / week', scope:'Aggregated across production domains', t:'KRI', bad:false,
+               ev:['Reconcile to the raw authentication logs, and confirm who reviews them and on what cadence',
+                   'Ask whether any attempt resulted in an account lockout',
+                   'Request the current privileged-account inventory'],
+               a:0,
+               w:'A leading risk indicator, honestly reported. The audit question is not the number &mdash; it is whether anyone <em>reviews</em> it, and whether the reviewer is independent of the accounts being monitored.'}
+            ];
+            var picks=M.map(function(){return {t:null,e:null};}), checked=false;
+            var grid=document.getElementById('agdGrid'), fb=document.getElementById('agdFb'),
+                bChk=document.getElementById('agdCheck'), bRst=document.getElementById('agdReset'),
+                elT=document.getElementById('agdT'), elE=document.getElementById('agdE'),
+                elSub=document.getElementById('agdSub'), expBtn=document.getElementById('agdExpand');
+
+            function render(){
+              grid.innerHTML=M.map(function(m,i){
+                var p=picks[i], flipped=checked&&m.bad;
+                var val = flipped
+                  ? '<span class="agd-val bad"><i></i>'+m.fix+' <span class="agd-was">'+m.v+'</span></span>'
+                  : '<span class="agd-val"><i></i>'+m.v+'</span>';
+                var seg=['KPI','KRI'].map(function(t){
+                  var c='';
+                  if(checked){ if(t===m.t) c=' class="hit"'; else if(t===p.t) c=' class="miss"'; }
+                  else if(t===p.t) c=' class="on"';
+                  return '<button type="button"'+c+' data-i="'+i+'" data-t="'+t+'"'+(checked?' disabled':'')+'>'+t+'</button>';
+                }).join('');
+                var sel='<select data-i="'+i+'" aria-label="Evidence you would request for '+m.n+'"'+(checked?' disabled':'')+'>'+
+                  '<option value="">&mdash; what evidence would you request? &mdash;</option>'+
+                  m.ev.map(function(e,k){return '<option value="'+k+'"'+(p.e===k?' selected':'')+'>'+e+'</option>';}).join('')+'</select>';
+                var why='';
+                if(checked){
+                  var ok=p.e===m.a;
+                  why='<div class="agd-why">'+
+                    '<b>'+m.t+' &middot; '+(m.bad?'flattered by how it is measured':'honest')+'.</b> '+m.w+
+                    '<span class="agd-ev '+(ok?'ok':'no')+'">'+(ok?'&#10003; Evidence: correct.':'&#10007; The evidence to request: &ldquo;'+m.ev[m.a]+'&rdquo;')+'</span></div>';
+                }
+                return '<div class="agd-tile'+(flipped?' amber':'')+'">'+
+                  '<div class="agd-mh"><span class="agd-name">'+m.n+'<span class="agd-scope">'+m.scope+'</span></span>'+val+'</div>'+
+                  '<div class="agd-ctl"><span class="agd-seg">'+seg+'</span></div>'+sel+why+'</div>';
+              }).join('');
+              var answered=picks.filter(function(p){return p.t&&p.e!==null;}).length;
+              bChk.disabled=checked||answered<M.length;
+              bChk.innerHTML=checked?'Recomputed':(answered<M.length?'Check &amp; recompute ('+answered+'/8)':'Check &amp; recompute');
+              elT.textContent=checked?picks.filter(function(p,i){return p.t===M[i].t;}).length:0;
+              elE.textContent=checked?picks.filter(function(p,i){return p.e===M[i].a;}).length:0;
+              elSub.innerHTML=checked?'Board pack &middot; Q3 &middot; <span style="color:#ff9aa7">4 indicators restated after audit enquiry</span>':'Board pack &middot; Q3 &middot; All indicators green';
+            }
+            grid.addEventListener('click',function(e){
+              var b=e.target.closest('.agd-seg button'); if(!b||checked) return;
+              picks[+b.dataset.i].t=b.dataset.t; render();
+            });
+            grid.addEventListener('change',function(e){
+              var s=e.target.closest('select[data-i]'); if(!s||checked) return;
+              picks[+s.dataset.i].e = s.value===''?null:+s.value; render();
+            });
+            bChk.addEventListener('click',function(){
+              checked=true; render();
+              var t=picks.filter(function(p,i){return p.t===M[i].t;}).length;
+              var ev=picks.filter(function(p,i){return p.e===M[i].a;}).length;
+              fb.innerHTML='<b>Type correct on '+t+'/8 &middot; evidence correct on '+ev+'/8 &middot; four tiles restated.</b> '+
+                'Nothing on this dashboard was false. Every number was produced by a real system from a real population &mdash; the population was just drawn to exclude what would have turned the tile red. That is why the audit question is never &ldquo;is this number right?&rdquo; but <em>&ldquo;what was counted, and what was left out?&rdquo;</em>'+
+                '<div class="agd-bsc">'+
+                  '<div><b>Financial</b>cost &amp; efficiency measures present</div>'+
+                  '<div><b>Internal process</b>heavily represented &mdash; 6 of 8 tiles</div>'+
+                  '<div class="none"><b>Customer</b>not measured</div>'+
+                  '<div class="none"><b>Learning &amp; growth</b>not measured</div>'+
+                '</div>'+
+                'Now step back from the individual tiles. Mapped to the IT Balanced Scorecard, this pack reports process and cost only &mdash; there is no measure of business satisfaction or value delivered, and none of skills, training, or succession. <b>A scorecard missing two of its four perspectives is a finding in its own right</b>, and it is the one that survives even after management fixes every metric above.'+
+                '<br><br><b>Carry this rule:</b> a green metric is an assertion until you know its population, its measurement point, and who computed it &mdash; and a dashboard that reports only what IT controls is reporting to itself.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){
+              picks=M.map(function(){return {t:null,e:null};}); checked=false; fb.hidden=true; render();
+            });
+
+            // Expand into a full-viewport overlay — the recomputed dashboard is the payoff shot.
+            var backdrop=document.createElement('div'); backdrop.className='agd-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the all-green dashboard');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s5">
