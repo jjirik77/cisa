@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Morning, Day 4</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>26% (Domain 4)</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -584,6 +585,253 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/ransomware/RansomwareAttack.html" target="_blank" rel="noopener noreferrer">Ransomware <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: Friday 16:40 — the restore drill ══ -->
+          <h4>Activity &mdash; Friday, 16:40</h4>
+          <p>Ransomware has detonated across the estate. Five systems are down and the recovery team is waiting on you. For each system, choose <strong>the copy you would restore from</strong> &mdash; then find out what you actually get back. Every organisation in this scenario has backups. That was never the question.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Five minutes to choose, no discussion between tables. Then reveal one system at a time and ask the room to predict the outcome before you show it. Save the summary for last: <em>played perfectly, this estate still recovers only two of five systems inside their objectives</em> &mdash; and that is the finding, not the choices.</div>
+
+          <style>
+            .rst{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .rst *{box-sizing:border-box;}
+            .rst-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .rst-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;}
+            .rst-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .rst-lead b{color:var(--gold);font-size:1rem;}
+            .rst-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .rst-clock{background:var(--navy);color:var(--white);border-radius:5px;padding:0.5rem 0.8rem;display:flex;justify-content:space-between;gap:0.6rem;flex-wrap:wrap;align-items:baseline;margin-bottom:0.6rem;}
+            .rst-clock b{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;}
+            .rst-clock span{font-size:0.67rem;color:#bcd0e8;}
+            .rst-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+            .rst-sys{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);display:flex;flex-direction:column;gap:0.45rem;}
+            .rst-sys.win{border-left-color:var(--correct);}
+            .rst-sys.part{border-left-color:var(--gold);}
+            .rst-sys.lose{border-left-color:var(--wrong);}
+            .rst-sh{display:flex;align-items:baseline;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;}
+            .rst-name{font-size:0.83rem;font-weight:700;color:var(--text-primary);}
+            .rst-bia{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.05em;color:var(--text-muted);white-space:nowrap;}
+            .rst-bia b{color:var(--gold);}
+            .rst-opts{display:grid;gap:0.28rem;}
+            .rst-opt{display:flex;gap:0.5rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.76rem;line-height:1.4;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.4rem 0.5rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .rst-opt:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .rst-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .rst-opt i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .rst-opt.on{border-color:var(--navy);background:var(--blue-pale);}
+            .rst-opt.best{border-color:var(--correct);background:var(--correct-bg);}
+            .rst-opt.poor{border-color:var(--gold);background:var(--gold-pale);}
+            .rst-opt.bad{border-color:var(--wrong);background:var(--wrong-bg);}
+            .rst-opt.chosen{box-shadow:inset 3px 0 0 var(--navy);}
+            .rst-res{display:block;font-size:0.71rem;line-height:1.4;color:var(--text-muted);margin-top:0.2rem;}
+            .rst-res b{color:var(--text-primary);}
+            .rst-out{font-size:0.74rem;line-height:1.45;border-top:1px dashed var(--border);padding-top:0.4rem;color:var(--text-secondary);}
+            .rst-meter{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.25rem;}
+            .rst-pill{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.14rem 0.5rem;border-radius:12px;color:#fff;}
+            .rst-pill.ok{background:var(--correct);}
+            .rst-pill.no{background:var(--wrong);}
+            .rst-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .rst-btn:hover{background:var(--gold-light);}
+            .rst-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .rst-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .rst-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .rst-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .rst-expand:hover{background:var(--gold);color:#fff;}
+            .rst-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .rst-fb{margin-top:0.8rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .rst-fb b{color:var(--gold);}
+            .rst-tally{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:0.5rem;padding-bottom:0.45rem;border-bottom:1px dashed var(--border);}
+            .rst-tally span{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.74rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .rst-tally span b{display:block;font-size:1.15rem;color:var(--gold);}
+            .rst-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .rst.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .rst.is-expanded .rst-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .rst.is-expanded .rst-grid{grid-template-columns:repeat(3,1fr);gap:0.42rem;}
+            .rst.is-expanded .rst-opt{font-size:0.73rem;padding:0.3rem 0.42rem;}
+            .rst.is-expanded .rst-res{font-size:0.67rem;line-height:1.36;margin-top:0.15rem;}
+            .rst.is-expanded .rst-out{font-size:0.71rem;line-height:1.4;padding-top:0.32rem;}
+            .rst.is-expanded .rst-top{margin-bottom:0.5rem;}
+            .rst.is-expanded .rst-fb{font-size:0.74rem;line-height:1.4;column-count:2;column-gap:1.3rem;margin-top:0.42rem;padding:0.6rem 0.7rem;}
+            .rst.is-expanded .rst-tally{column-span:all;}
+            @media (max-width:820px){ .rst-grid{grid-template-columns:1fr;} }
+            @media (max-width:1200px){ .rst.is-expanded .rst-grid{grid-template-columns:1fr 1fr;} }
+          </style>
+
+          <div class="rst" id="rst-root">
+            <div class="rst-card">
+              <div class="rst-top">
+                <span class="rst-lead">Restore sources chosen <b id="rstN">0</b>/5</span>
+                <div class="rst-tools">
+                  <button type="button" class="rst-btn" id="rstGo" disabled>Begin the restore</button>
+                  <button type="button" class="rst-btn ghost" id="rstReset">Start over</button>
+                  <button type="button" class="rst-expand" id="rstExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="rst-clock">
+                <b>Helix Logistics &mdash; ransomware detonation, Friday 16:40</b>
+                <span>Production encrypted estate-wide &middot; five systems down &middot; recovery team standing by</span>
+              </div>
+              <div class="rst-grid" id="rstGrid"></div>
+              <div class="rst-fb" id="rstFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('rst-root'); if(!root) return;
+            var S=[
+              {n:'Order Management', rto:'4 hrs', rpo:'1 hr',
+               o:[
+                {t:'Last night&rsquo;s snapshot on the production SAN (22:00)', v:'bad',
+                 r:'<b>Encrypted.</b> The snapshot sat on the same SAN as production, so the attacker took it along with everything else.'},
+                {t:'The continuously replicated volume at the DR site', v:'bad',
+                 r:'<b>Encrypted 14 minutes after production.</b> Replication is not backup &mdash; it copies corruption faithfully and fast.'},
+                {t:'Weekly tape from the off-site vault (Sunday 02:00)', v:'poor', loss:'5 days', time:'6 hrs', rpoOK:false, rtoOK:false,
+                 r:'Clean, and five days old. Against a 1-hour RPO that is 120 hours of lost orders, and retrieval alone breaks the 4-hour RTO.'},
+                {t:'Immutable cloud vault, hourly (last write 16:00)', v:'best', loss:'40 mins', time:'9 hrs', rpoOK:true, rtoOK:false,
+                 r:'Clean and 40 minutes old &mdash; <b>RPO met</b>. But the vault has never been restore-tested: it takes 9 hours against a 4-hour RTO. Right choice, and still a finding.'}
+               ]},
+              {n:'Payroll', rto:'72 hrs', rpo:'7 days',
+               o:[
+                {t:'Nightly backup held on the backup appliance', v:'bad',
+                 r:'<b>Deleted.</b> The appliance authenticates against the same Active Directory the attacker compromised, so domain admin was enough to erase every backup on it.'},
+                {t:'Weekly tape from the off-site vault (Sunday)', v:'best', loss:'5 days', time:'6 hrs', rpoOK:true, rtoOK:true,
+                 r:'Clean, five days old &mdash; inside the 7-day RPO &mdash; and retrievable in 6 hours. <b>Both objectives met.</b> Offline media survived precisely because it was offline.'},
+                {t:'The payroll manager&rsquo;s copy on a USB drive', v:'bad',
+                 r:'Unencrypted, undocumented, outside any chain of custody. Even if the data is intact, restoring production from it <em>is itself the finding</em>.'}
+               ]},
+              {n:'Customer CRM (SaaS)', rto:'8 hrs', rpo:'4 hrs',
+               o:[
+                {t:'Ask the vendor to restore from their platform backup', v:'bad',
+                 r:'The contract carries <b>no restore SLA</b>. The ticket comes back &ldquo;queued &mdash; 5 business days.&rdquo; Retention was never the problem; the absent contractual term is.'},
+                {t:'Your own nightly SaaS export (02:00)', v:'best', loss:'14 hrs', time:'5 hrs', rpoOK:false, rtoOK:true,
+                 r:'The best available copy: restorable in 5 hours. But 14 hours of data loss against a 4-hour RPO &mdash; <b>a nightly export cannot meet an hourly objective</b>, and nobody checked that arithmetic.'},
+                {t:'The sales-ops team&rsquo;s spreadsheet extract', v:'bad',
+                 r:'Shadow end-user computing: partial, unversioned, last updated by hand in April.'}
+               ]},
+              {n:'Data warehouse', rto:'72 hrs', rpo:'24 hrs',
+               o:[
+                {t:'Monthly full plus 27 nightly incrementals', v:'best', loss:'6 hrs', time:'40 hrs', rpoOK:true, rtoOK:true,
+                 r:'It restores &mdash; slowly. Applying the chain takes 40 hours, which fits the 72-hour RTO. <b>Both objectives met</b>, and a working illustration of why incrementals are cheap to write and expensive to read.'},
+                {t:'Last week&rsquo;s differential set', v:'bad',
+                 r:'Faster to apply than the chain &mdash; and written to the same appliance that was wiped. Media diversity matters more than restore speed.'},
+                {t:'Rebuild by re-extracting from the source systems', v:'poor', loss:'0 hrs', time:'5 days', rpoOK:true, rtoOK:false,
+                 r:'Five days of extraction and reconciliation. Outside the RTO, and it <em>recreates</em> data rather than restoring it &mdash; with no assurance the result matches what was lost.'}
+               ]},
+              {n:'Case Management', rto:'8 hrs', rpo:'4 hrs', note:'Provisioned in March',
+               o:[
+                {t:'The nightly job on the backup schedule', v:'bad',
+                 r:'There is no job. The system was provisioned in March, <b>after the last asset-inventory refresh</b>, and was never added to the schedule.'},
+                {t:'The DR site replica', v:'bad',
+                 r:'Never configured &mdash; replication was scoped from the same stale inventory.'},
+                {t:'A vendor snapshot', v:'bad',
+                 r:'Not contracted. Snapshots were an optional line item nobody purchased.'},
+                {t:'No recoverable copy exists', v:'best', loss:'total', time:'&mdash;', rpoOK:false, rtoOK:false, lost:true,
+                 r:'<b>Correct &mdash; and the worst finding in the drill.</b> Last quarter&rsquo;s backup report showed 100% success because this system was never in the population being measured. A backup metric only covers what the inventory knows about.'}
+               ]}
+            ];
+            var picks=new Array(S.length).fill(null), done=false;
+            var grid=document.getElementById('rstGrid'), fb=document.getElementById('rstFb'),
+                bGo=document.getElementById('rstGo'), bRst=document.getElementById('rstReset'),
+                elN=document.getElementById('rstN'), expBtn=document.getElementById('rstExpand');
+
+            function outcome(s,k){
+              var o=s.o[k];
+              if(!o||o.v==='bad') return null;
+              return o;
+            }
+            function render(){
+              grid.innerHTML=S.map(function(s,i){
+                var p=picks[i], cls='rst-sys';
+                if(done){
+                  var oc=outcome(s,p);
+                  cls += (oc&&oc.rpoOK&&oc.rtoOK)?' win':(oc?' part':' lose');
+                }
+                var opts=s.o.map(function(o,k){
+                  var c='rst-opt';
+                  if(done){ c+=' '+o.v; if(k===p) c+=' chosen'; }
+                  else if(k===p) c+=' on';
+                  return '<button type="button" class="'+c+'" data-i="'+i+'" data-k="'+k+'"'+(done?' disabled':'')+'>'+
+                    '<i>'+String.fromCharCode(65+k)+'.</i><span>'+o.t+
+                    (done?'<span class="rst-res">'+o.r+'</span>':'')+'</span></button>';
+                }).join('');
+                var out='';
+                if(done){
+                  var oc2=outcome(s,p);
+                  out='<div class="rst-out"><div class="rst-meter">'+
+                    (oc2? '<span class="rst-pill '+(oc2.rtoOK?'ok':'no')+'">RTO '+(oc2.rtoOK?'met':'missed')+' &middot; '+oc2.time+'</span>'+
+                          '<span class="rst-pill '+(oc2.rpoOK?'ok':'no')+'">RPO '+(oc2.rpoOK?'met':'missed')+' &middot; '+oc2.loss+' lost</span>'
+                        : '<span class="rst-pill no">Nothing recovered</span>')+
+                    '</div>'+(oc2?(oc2.lost?'Correctly identified &mdash; and this system is not coming back. There is nothing to restore from.':''):'The copy you chose does not exist, has been encrypted, or has been deleted. This system is still down.')+'</div>';
+                }
+                return '<div class="'+cls+'">'+
+                  '<div class="rst-sh"><span class="rst-name">'+s.n+(s.note?' <span style="font-weight:400;color:var(--text-muted);font-size:0.72rem">&mdash; '+s.note+'</span>':'')+'</span>'+
+                  '<span class="rst-bia">RTO <b>'+s.rto+'</b> &middot; RPO <b>'+s.rpo+'</b></span></div>'+
+                  '<div class="rst-opts">'+opts+'</div>'+out+'</div>';
+              }).join('');
+              var n=picks.filter(function(p){return p!==null;}).length;
+              elN.textContent=n;
+              bGo.disabled=done||n<S.length;
+              bGo.textContent=done?'Restore complete':(n<S.length?'Begin the restore ('+n+'/5)':'Begin the restore');
+            }
+            grid.addEventListener('click',function(e){
+              var b=e.target.closest('.rst-opt'); if(!b||done) return;
+              picks[+b.dataset.i]=+b.dataset.k; render();
+            });
+            bGo.addEventListener('click',function(){
+              done=true; render();
+              var best=picks.filter(function(p,i){return S[i].o[p].v==='best';}).length;
+              var both=0, some=0, none=0;
+              picks.forEach(function(p,i){
+                var oc=outcome(S[i],p);
+                if(!oc||oc.lost) none++; else if(oc.rpoOK&&oc.rtoOK) both++; else some++;
+              });
+              fb.innerHTML='<div class="rst-tally">'+
+                  '<span>Best available copy chosen<b>'+best+' / 5</b></span>'+
+                  '<span>Systems meeting both objectives<b>'+both+' / 5</b></span>'+
+                  '<span>Systems still down<b>'+none+'</b></span>'+
+                '</div>'+
+                '<b>Now the number that matters: played perfectly, this estate recovers two of five systems inside their objectives.</b> Payroll and the data warehouse &mdash; the two least critical systems in the drill. Order Management, the one the business cannot trade without, comes back clean and five hours late, because nobody ever timed a restore from the vault. '+
+                'You cannot choose your way out of this scenario, and that is the point: by Friday at 16:40 every decision that mattered had already been made &mdash; months earlier, in a schedule, an inventory and a contract.'+
+                '<br><br>Four failures, none of which a backup-success report would show: the snapshot that <em>shared the disaster</em>, the replica that <em>copied the encryption</em>, the appliance that <em>trusted the same directory</em> as production, and the system that was never <em>in the population</em> at all.'+
+                '<br><br><b>Carry this rule:</b> a backup is an assumption until a restore has been timed. Test the RPO against the schedule (an hourly objective cannot be met by a nightly job), test the RTO against a rehearsed restore, and test the <em>inventory</em> &mdash; because the most dangerous system in any estate is the one no report has ever mentioned.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ picks=new Array(S.length).fill(null); done=false; fb.hidden=true; render(); });
+
+            // Expand into a full-viewport overlay.
+            var backdrop=document.createElement('div'); backdrop.className='rst-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the restore drill');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s4">
