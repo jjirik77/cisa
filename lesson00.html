@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Morning Orientation</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>N/A &mdash; Meta-lesson</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -155,7 +156,7 @@
           <li><a href="#s1">1. Who Should Pursue the CISA</a></li>
           <li><a href="#s2">2. Exam Format &amp; Scoring</a></li>
           <li><a href="#s3">3. Eligibility &amp; Experience</a></li>
-          <li><a href="#s4">4. Endorsement, Retake &amp; Maintenance</a></li>
+          <li><a href="#s4">4. Costs, Endorsement &amp; Maintenance</a></li>
           <li><a href="#s5">5. Code of Professional Ethics</a></li>
           <li><a href="#s6">6. Job Practice &amp; Standards</a></li>
           <li><a href="#s7">7. The Auditor Mindset</a></li>
@@ -209,12 +210,23 @@
         </article>
 
         <article class="content-section" id="s4">
-          <div class="cs-head"><span class="cs-num">4</span><h3>Endorsement, Retake &amp; Maintenance (CPE &amp; AMF)</h3></div>
-          <p>Earning the credential is the start; keeping it requires ongoing investment.</p>
+          <div class="cs-head"><span class="cs-num">4</span><h3>Certification Costs, Endorsement &amp; Maintenance</h3></div>
+          <p>Earning the credential is the start; keeping it requires ongoing investment &mdash; of both money and CPE hours. Budget for two kinds of cost: <strong>one-time</strong> charges to earn the credential and <strong>recurring</strong> charges to keep it active.</p>
+          <h4>What it costs</h4>
+          <div class="table-wrap" style="margin:1.1rem 0">
+            <table class="data"><thead><tr><th>Cost</th><th>When</th><th style="width:19%">Member</th><th style="width:19%">Non-member</th></tr></thead><tbody>
+          <tr><td>Exam registration</td><td>One-time, per attempt</td><td class="weight">$575</td><td class="weight">$760</td></tr>
+          <tr><td>ISACA membership <em>(optional)</em></td><td>Annual</td><td class="weight">~$135 + chapter dues</td><td class="weight">&mdash;</td></tr>
+          <tr><td>Certification application</td><td>One-time, after passing</td><td class="weight">$50</td><td class="weight">$50</td></tr>
+          <tr><td>Annual Maintenance Fee (AMF)</td><td>Every year you hold CISA</td><td class="weight">$45</td><td class="weight">$85</td></tr>
+            </tbody></table>
+          </div>
+          <div class="tip"><span class="tip-label">&#128176; Cost Tip</span>Membership usually pays for itself. Member dues (~$135) plus the member exam fee ($575) total about $710 &mdash; less than the $760 non-member exam fee alone &mdash; and membership also halves the annual maintenance fee ($45 vs $85) and unlocks discounted review materials. Figures are approximate and exclude local taxes and chapter dues; <strong>always verify current pricing at isaca.org</strong>, as ISACA adjusts fees periodically.</div>
+          <h4>Endorsement, retakes &amp; ongoing maintenance</h4>
           <ul class="detail">
             <li>Apply for certification after passing; agree to the Code of Professional Ethics; ISACA reviews and approves the application.</li>
-            <li><strong>Retake policy:</strong> up to four attempts in a rolling 12-month period, with required waiting periods and a fee per attempt.</li>
-            <li><strong>Maintenance:</strong> 120 CPE hours per 3-year cycle, minimum 20 per year, plus an annual maintenance fee (AMF); CPE may be selected for audit.</li>
+            <li><strong>Retake policy:</strong> up to four attempts in a rolling 12-month period, with required waiting periods and the registration fee due per attempt.</li>
+            <li><strong>Maintenance:</strong> 120 CPE hours per 3-year cycle, minimum 20 per year, <em>plus</em> the annual maintenance fee (AMF) above &mdash; both are required to keep the credential active, and CPE may be selected for audit.</li>
           </ul>
         </article>
 
@@ -232,6 +244,231 @@
             <li><strong>7.</strong> Support the professional education of stakeholders in enhancing their understanding of the governance and management of enterprise IS/IT.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Asked to help design a control you'll later audit? The Code's objectivity principle says decline and document &mdash; preserving independence outranks being helpful.</p></div>
+
+          <!-- ══ ACTIVITY: Ethics Round-Robin ══ -->
+          <h4>Activity &mdash; Ethics round-robin</h4>
+          <p>Five situations, each of which puts one principle of the Code under direct pressure. For each, commit to two decisions before you check: <strong>which principle is most directly at stake</strong>, and <strong>what the Code requires you to do</strong>. Naming the principle is the easy half &mdash; the exam tests the required action.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Assign one situation per table. Each table commits privately first (no discussion), then argues its case to the room for 60 seconds before checking. Rotate so every table hears all five. The debrief question that matters: <em>which wrong answer did someone at your table find tempting, and why?</em></div>
+
+          <style>
+            .eth{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .eth *{box-sizing:border-box;}
+            .eth-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .eth-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.8rem;padding-bottom:0.7rem;border-bottom:1px solid var(--border);}
+            .eth-tabs{display:flex;gap:0.3rem;flex-wrap:wrap;}
+            .eth-tab{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:var(--card-bg);color:var(--text-muted);font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.8rem;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}
+            .eth-tab:hover{border-color:var(--gold);color:var(--gold);}
+            .eth-tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .eth-tab.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .eth-tab.done{border-color:var(--correct);color:var(--correct);}
+            .eth-tab.on.done{background:var(--correct);border-color:var(--correct);color:var(--white);}
+            .eth-tally{font-size:0.7rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .eth-tally b{color:var(--gold);font-family:'Arial Narrow',Arial,sans-serif;font-size:0.95rem;}
+            .eth-scene{background:var(--blue-pale);border-left:3px solid var(--navy-light);border-radius:0 4px 4px 0;padding:0.8rem 0.95rem;font-size:0.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:0.95rem;}
+            .eth-scene b{color:var(--text-primary);}
+            .eth-step{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.45rem;display:block;}
+            .eth-chips{display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:1rem;}
+            .eth-chip{font-family:Arial,sans-serif;font-size:0.71rem;font-weight:700;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:20px;padding:0.32rem 0.7rem;cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+            .eth-chip span{color:var(--text-muted);font-weight:400;}
+            .eth-chip:hover{border-color:var(--gold);color:var(--gold);}
+            .eth-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .eth-chip.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .eth-chip.on span{color:#bcd0e8;}
+            .eth-chip.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .eth-chip.miss{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .eth-acts{display:grid;gap:0.4rem;margin-bottom:0.9rem;}
+            .eth-act{display:flex;gap:0.6rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.83rem;color:var(--text-secondary);line-height:1.5;background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.6rem 0.75rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .eth-act:hover{border-color:var(--gold);background:var(--gold-pale);}
+            .eth-act:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .eth-act i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .eth-act.on{border-color:var(--navy);background:var(--blue-pale);}
+            .eth-act.hit{border-color:var(--correct);background:var(--correct-bg);}
+            .eth-act.hit i{color:var(--correct);}
+            .eth-act.miss{border-color:var(--wrong);background:var(--wrong-bg);}
+            .eth-act.miss i{color:var(--wrong);}
+            .eth-actions{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;}
+            .eth-btn{font-family:Arial,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.5rem 1rem;cursor:pointer;transition:background .15s;}
+            .eth-btn:hover{background:var(--gold-light);}
+            .eth-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .eth-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .eth-btn.ghost:hover{color:var(--gold);border-color:var(--gold);background:transparent;}
+            .eth-fb{margin:0 0 0.9rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);padding:0.8rem 0.9rem;font-size:0.83rem;color:var(--text-secondary);line-height:1.6;}
+            .eth-fb b{color:var(--text-primary);}
+            .eth-verdict{display:block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
+            .eth-verdict.good{color:var(--correct);}
+            .eth-verdict.bad{color:var(--wrong);}
+            .eth-rule{margin-top:0.6rem;padding-top:0.6rem;border-top:1px dashed var(--border);font-size:0.8rem;color:var(--text-muted);}
+            .eth-rule b{color:var(--gold);}
+            @media (max-width:600px){ .eth-tally{width:100%} }
+          </style>
+
+          <div class="eth" id="eth-root">
+            <div class="eth-card">
+              <div class="eth-top">
+                <div class="eth-tabs" id="ethTabs" role="group" aria-label="Choose a situation"></div>
+                <span class="eth-tally" id="ethTally">Principle <b>0</b>/5 &nbsp;&middot;&nbsp; Required action <b>0</b>/5</span>
+              </div>
+              <div class="eth-scene" id="ethScene"></div>
+              <span class="eth-step">Step 1 &mdash; Which principle is most directly at stake?</span>
+              <div class="eth-chips" id="ethChips" role="group" aria-label="Code of Ethics principles"></div>
+              <span class="eth-step">Step 2 &mdash; What does the Code require you to do?</span>
+              <div class="eth-acts" id="ethActs" role="group" aria-label="Required action options"></div>
+              <div class="eth-fb" id="ethFb" aria-live="polite" hidden></div>
+              <div class="eth-actions">
+                <button type="button" class="eth-btn" id="ethCheck" disabled>Check my answer</button>
+                <button type="button" class="eth-btn" id="ethNext" hidden>Next situation &#8594;</button>
+                <button type="button" class="eth-btn ghost" id="ethReset">Start over</button>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('eth-root'); if(!root) return;
+            var PRIN=[
+              {n:1,t:'Standards &amp; governance'},
+              {n:2,t:'Objectivity &amp; due care'},
+              {n:3,t:'Lawful conduct &amp; reputation'},
+              {n:4,t:'Privacy &amp; confidentiality'},
+              {n:5,t:'Competence'},
+              {n:6,t:'Disclosure of results'},
+              {n:7,t:'Stakeholder education'}
+            ];
+            var S=[
+              {
+                scene:'You are three days into an audit of the treasury system when you come across board minutes describing an <b>acquisition that has not been announced</b>. That evening your brother-in-law &mdash; who knows which company you are working at &mdash; asks whether now would be a good time to buy its shares.',
+                p:4,
+                acts:[
+                  'Tell him what you saw. It will be public within weeks anyway, so no one is harmed.',
+                  'Say nothing about the engagement, and neither act on the information nor pass it to anyone.',
+                  'Say nothing to him, but buy a small position yourself &mdash; a private decision harms no one.'
+                ],
+                a:1,
+                why:'Principle 4 requires you to maintain the privacy and confidentiality of information obtained in the course of your activities &mdash; and states that such information <b>shall not be used for personal benefit or released to inappropriate parties</b>. Both wrong answers fail on that clause. That the information will become public later is irrelevant; so is the absence of any visible victim.',
+                rule:'Confidential information has no expiry date and no harmless private use.'
+              },
+              {
+                scene:'Your audit manager assigns you a review of the company&rsquo;s new <b>Kubernetes container platform</b>. You have never audited containers. Fieldwork starts Monday, and the manager tells you, &ldquo;You&rsquo;ll pick it up as you go.&rdquo;',
+                p:5,
+                acts:[
+                  'Accept the engagement and do your best, then note the limitation in the scope section of the report.',
+                  'Decline the assignment and ask to be taken off the audit plan entirely.',
+                  'Raise it with audit management before fieldwork begins and request training, a technical specialist, or reassignment.'
+                ],
+                a:2,
+                why:'Principle 5 requires you to <b>undertake only activities you can reasonably expect to complete</b> with the necessary skills, knowledge, and competence. Disclosing the gap afterward (A) does not cure accepting work you could not competently perform. Flat refusal (B) over-corrects &mdash; the profession expects you to raise the gap and arrange competence, and Standard S12 (Using the Work of Other Experts) exists precisely for this.',
+                rule:'Competence is arranged before the engagement, not disclaimed after it.'
+              },
+              {
+                scene:'The CFO offers to make your life easier: her team will <b>select the 40 invoices for your sample</b> and send you a spreadsheet extract of the payments ledger to test against.',
+                p:2,
+                acts:[
+                  'Accept the extract and the sample &mdash; it saves days, and you can always test additional items later.',
+                  'Accept the extract but double the sample size to compensate for its source.',
+                  'Select the sample yourself, from a population you obtain independently and validate for completeness.'
+                ],
+                a:2,
+                why:'Principle 2 requires objectivity and due professional care. If the auditee chooses the sample or controls the population, the evidence is auditee-generated and the test proves nothing about the items you were never shown. Enlarging a sample drawn from an unverified population (B) multiplies the work without repairing the flaw.',
+                rule:'Sample selection and population completeness belong to the auditor &mdash; always.'
+              },
+              {
+                scene:'A business unit head asks you to <b>leave a control deficiency out of your report</b>. She has already begun fixing it, and says publishing it will &ldquo;embarrass a team that is doing its best.&rdquo;',
+                p:6,
+                acts:[
+                  'Remove the finding &mdash; the risk is being addressed, and the report should reflect the current state.',
+                  'Report the finding, noting management&rsquo;s corrective action and target completion date.',
+                  'Leave it out of the written report, but raise it verbally with the audit committee.'
+                ],
+                a:1,
+                why:'Principle 6 requires you to inform appropriate parties of the results of your work, <b>disclosing all significant facts that, if not disclosed, may distort the reporting of results</b>. Remediation changes the note attached to a finding; it never deletes the finding. A verbal-only mention (C) leaves no record and still distorts the written report.',
+                rule:'Remediation is a footnote to a finding, not a substitute for one.'
+              },
+              {
+                scene:'Last year &mdash; before you moved into internal audit &mdash; you personally <b>designed and implemented the access-provisioning workflow</b> for the HR system. The current audit plan has you testing that workflow next month.',
+                p:2,
+                acts:[
+                  'Perform the audit. Nobody in the organization understands that control better than you do.',
+                  'Disclose the prior involvement to audit management and ask that another auditor test that control.',
+                  'Test the control yourself, but have a colleague independently review your workpapers afterward.'
+                ],
+                a:1,
+                why:'This is a <b>self-review threat</b>, and Principle 2 (objectivity) is what it breaks. Being the person who knows the control best is exactly what disqualifies you from testing it &mdash; you would be issuing an opinion on your own work. A workpaper review (C) checks your documentation, not your independence, so it repairs nothing.',
+                rule:'You cannot audit your own work &mdash; disclose, then hand it to someone else.'
+              }
+            ];
+            var i=0, st=S.map(function(){return {p:null,a:null,done:false};});
+            var tabs=document.getElementById('ethTabs'), scene=document.getElementById('ethScene'),
+                chips=document.getElementById('ethChips'), acts=document.getElementById('ethActs'),
+                fb=document.getElementById('ethFb'), tally=document.getElementById('ethTally'),
+                bCheck=document.getElementById('ethCheck'), bNext=document.getElementById('ethNext'),
+                bReset=document.getElementById('ethReset');
+
+            tabs.innerHTML=S.map(function(s,k){
+              return '<button type="button" class="eth-tab" data-k="'+k+'" aria-label="Situation '+(k+1)+'">'+(k+1)+'</button>';
+            }).join('');
+            chips.innerHTML=PRIN.map(function(p){
+              return '<button type="button" class="eth-chip" data-p="'+p.n+'"><span>'+p.n+'.</span> '+p.t+'</button>';
+            }).join('');
+
+            function score(){
+              var a=0,b=0;
+              st.forEach(function(x,k){ if(!x.done) return; if(x.p===S[k].p) a++; if(x.a===S[k].a) b++; });
+              return [a,b];
+            }
+            function render(){
+              var s=S[i], x=st[i], shown=x.done;
+              scene.innerHTML=s.scene;
+              Array.prototype.forEach.call(tabs.children,function(t,k){
+                t.className='eth-tab'+(k===i?' on':'')+(st[k].done?' done':'');
+                t.setAttribute('aria-current',k===i?'true':'false');
+              });
+              Array.prototype.forEach.call(chips.children,function(c){
+                var n=+c.dataset.p, cls='eth-chip';
+                if(shown){ if(n===s.p) cls+=' hit'; else if(n===x.p) cls+=' miss'; }
+                else if(n===x.p) cls+=' on';
+                c.className=cls; c.disabled=shown;
+                c.setAttribute('aria-pressed',n===x.p?'true':'false');
+              });
+              acts.innerHTML=s.acts.map(function(t,k){
+                var cls='eth-act';
+                if(shown){ if(k===s.a) cls+=' hit'; else if(k===x.a) cls+=' miss'; }
+                else if(k===x.a) cls+=' on';
+                return '<button type="button" class="'+cls+'" data-a="'+k+'"'+(shown?' disabled':'')+'><i>'+
+                       String.fromCharCode(65+k)+'.</i><span>'+t+'</span></button>';
+              }).join('');
+              bCheck.disabled=shown||x.p===null||x.a===null;
+              bCheck.hidden=shown;
+              bNext.hidden=!shown||i>=S.length-1;
+              if(shown){
+                var okP=x.p===s.p, okA=x.a===s.a;
+                var v = okP&&okA ? '<span class="eth-verdict good">&#10003; Both right &mdash; principle and action</span>'
+                      : okA ? '<span class="eth-verdict good">&#10003; Right action &mdash; but check the principle</span>'
+                      : okP ? '<span class="eth-verdict bad">Right principle &mdash; wrong action</span>'
+                            : '<span class="eth-verdict bad">Not this time</span>';
+                fb.innerHTML=v+'<b>Principle '+s.p+' &mdash; '+PRIN[s.p-1].t+'. Required action: '+
+                  String.fromCharCode(65+s.a)+'.</b><br>'+s.why+
+                  '<div class="eth-rule"><b>Carry this rule:</b> '+s.rule+'</div>';
+                fb.hidden=false;
+              } else { fb.hidden=true; fb.innerHTML=''; }
+              var sc=score();
+              tally.innerHTML='Principle <b>'+sc[0]+'</b>/'+S.length+' &nbsp;&middot;&nbsp; Required action <b>'+sc[1]+'</b>/'+S.length;
+            }
+            tabs.addEventListener('click',function(e){
+              var b=e.target.closest('.eth-tab'); if(!b) return; i=+b.dataset.k; render();
+            });
+            chips.addEventListener('click',function(e){
+              var b=e.target.closest('.eth-chip'); if(!b||b.disabled) return; st[i].p=+b.dataset.p; render();
+            });
+            acts.addEventListener('click',function(e){
+              var b=e.target.closest('.eth-act'); if(!b||b.disabled) return; st[i].a=+b.dataset.a; render();
+            });
+            bCheck.addEventListener('click',function(){ st[i].done=true; render(); });
+            bNext.addEventListener('click',function(){ if(i<S.length-1){ i++; render(); } });
+            bReset.addEventListener('click',function(){ st=S.map(function(){return {p:null,a:null,done:false};}); i=0; render(); });
+            render();
+          })();
+          </script>
+
           <div class="resource-link">
             <span class="rl-icon" aria-hidden="true">&#128218;</span>
             <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Ethics &amp; Professional Conduct</strong> &mdash; an interactive module on professional codes of ethics and values.</span></div>
@@ -271,6 +508,173 @@
             <li><strong>Common traps:</strong> the technical fix over the audit action; &ldquo;implement immediately&rdquo; over &ldquo;evaluate and report&rdquo;; the most thorough test over the most risk-appropriate one.</li>
           </ul>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When in doubt, ask: <strong>&ldquo;Is this what an auditor does, or what a systems administrator does?&rdquo;</strong> The auditor evaluates, tests, documents, and reports &mdash; it does not build, implement, or manage.</div>
+
+          <!-- ══ ACTIVITY: Practitioner or Auditor? ══ -->
+          <h4>Activity &mdash; Practitioner or auditor?</h4>
+          <p>Twelve actions, one at a time. Decide whether each is something the <strong>auditor</strong> does, something the <strong>practitioner or management</strong> does, or whether <strong>it depends</strong> on facts you do not yet have. Commit before you check &mdash; the value is in noticing which instinct fired first. Most experienced professionals miss the same three or four cards, and always in the same direction.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Everyone sorts all twelve silently first &mdash; no talking. Then take a show of hands on each card and spend your discussion time <em>only</em> on the cards where the room splits, plus the three &ldquo;it depends&rdquo; cards. Those disagreements are the lesson; the unanimous cards are not.</div>
+
+          <style>
+            .pav{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .pav *{box-sizing:border-box;}
+            .pav-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .pav-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+            .pav-count{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);}
+            .pav-count b{color:var(--gold);font-size:1rem;}
+            .pav-dots{display:flex;gap:0.22rem;flex-wrap:wrap;}
+            .pav-dot{width:11px;height:11px;border-radius:50%;border:1px solid var(--border);background:transparent;}
+            .pav-dot.now{border-color:var(--gold);background:var(--gold-pale);}
+            .pav-dot.hit{background:var(--correct);border-color:var(--correct);}
+            .pav-dot.miss{background:var(--wrong);border-color:var(--wrong);}
+            .pav-stage{background:var(--blue-pale);border-left:3px solid var(--navy-light);border-radius:0 4px 4px 0;padding:1rem 1.05rem;min-height:92px;display:flex;align-items:center;margin-bottom:0.95rem;}
+            .pav-prompt{font-family:Georgia,serif;font-size:1.02rem;line-height:1.5;color:var(--text-primary);margin:0;}
+            .pav-choices{display:grid;grid-template-columns:repeat(3,1fr);gap:0.55rem;margin-bottom:0.5rem;}
+            .pav-btn{display:flex;flex-direction:column;gap:0.2rem;align-items:center;text-align:center;background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.7rem 0.5rem;cursor:pointer;transition:background .12s,border-color .12s,transform .12s;}
+            .pav-btn:hover{border-color:var(--gold);background:var(--gold-pale);transform:translateY(-1px);}
+            .pav-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .pav-btn[disabled]{cursor:default;transform:none;}
+            .pav-btn b{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.92rem;letter-spacing:0.04em;text-transform:uppercase;color:var(--text-primary);}
+            .pav-btn span{font-size:0.63rem;color:var(--text-muted);line-height:1.35;}
+            .pav-btn.hit{background:var(--correct-bg);border-color:var(--correct);}
+            .pav-btn.hit b{color:var(--correct);}
+            .pav-btn.miss{background:var(--wrong-bg);border-color:var(--wrong);}
+            .pav-btn.miss b{color:var(--wrong);}
+            .pav-fb{margin-top:0.85rem;border-radius:5px;border:1px solid var(--border);background:var(--section-alt);padding:0.8rem 0.9rem;font-size:0.83rem;color:var(--text-secondary);line-height:1.6;}
+            .pav-verdict{display:block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.35rem;}
+            .pav-verdict.good{color:var(--correct);}
+            .pav-verdict.bad{color:var(--wrong);}
+            .pav-nav{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-top:0.9rem;}
+            .pav-go{font-family:Arial,sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.5rem 1rem;cursor:pointer;transition:background .15s;}
+            .pav-go:hover{background:var(--gold-light);}
+            .pav-go.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .pav-go.ghost:hover{color:var(--gold);border-color:var(--gold);background:transparent;}
+            .pav-board{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:0.9rem;}
+            .pav-col{background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.7rem 0.75rem;}
+            .pav-col h5{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:0 0 0.45rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border);}
+            .pav-col ul{list-style:none;margin:0;padding:0;display:grid;gap:0.4rem;}
+            .pav-col li{font-size:0.74rem;line-height:1.4;color:var(--text-secondary);padding-left:0.95rem;position:relative;}
+            .pav-col li::before{content:'\25CF';position:absolute;left:0;top:0;font-size:0.6rem;color:var(--correct);}
+            .pav-col li.miss::before{content:'\2716';color:var(--wrong);font-size:0.7rem;}
+            .pav-final{margin-top:0.9rem;background:var(--blue-pale);border:1px solid var(--blue-pale-border);border-radius:5px;padding:0.85rem 0.95rem;font-size:0.85rem;color:var(--text-secondary);line-height:1.6;}
+            .pav-final b{color:var(--gold);}
+            @media (max-width:600px){ .pav-choices{grid-template-columns:1fr;} .pav-board{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="pav" id="pav-root">
+            <div class="pav-card">
+              <div class="pav-top">
+                <span class="pav-count">Card <b id="pavN">1</b> of 12</span>
+                <div class="pav-dots" id="pavDots" aria-hidden="true"></div>
+              </div>
+              <div class="pav-stage"><p class="pav-prompt" id="pavPrompt"></p></div>
+              <div class="pav-choices" role="group" aria-label="Choose a category">
+                <button type="button" class="pav-btn" data-c="A"><b>Auditor</b><span>evaluate &middot; test &middot; document &middot; report</span></button>
+                <button type="button" class="pav-btn" data-c="P"><b>Practitioner</b><span>build &middot; implement &middot; manage &middot; approve</span></button>
+                <button type="button" class="pav-btn" data-c="D"><b>It depends</b><span>disclose first &middot; facts still missing</span></button>
+              </div>
+              <div class="pav-fb" id="pavFb" aria-live="polite" hidden></div>
+              <div class="pav-nav">
+                <button type="button" class="pav-go" id="pavNext" hidden>Next card &#8594;</button>
+                <button type="button" class="pav-go ghost" id="pavReset">Start over</button>
+              </div>
+              <div id="pavEnd" hidden>
+                <div class="pav-board" id="pavBoard"></div>
+                <div class="pav-final" id="pavFinal"></div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('pav-root'); if(!root) return;
+            var LABEL={A:'Auditor',P:'Practitioner / management',D:'It depends'};
+            var C=[
+              {t:'Reconfigure the firewall rule that is allowing inbound traffic from any source.', c:'P',
+               w:'Implementing the fix is management&rsquo;s work. The auditor documents the weakness and reports it &mdash; touching the configuration creates a self-review threat over a control you are testing.'},
+              {t:'Select 40 terminated employees and test whether their access was revoked within the stated SLA.', c:'A',
+               w:'Designing and performing the test is the core auditor activity: sample, test against criteria, document the result.'},
+              {t:'Write the remediation project plan and assign staff to complete it.', c:'P',
+               w:'The auditor recommends; <b>management owns the fix</b>, the plan, and the resources. Writing the plan makes you accountable for a result you must later evaluate.'},
+              {t:'Report a significant deficiency to the audit committee after management declines to remediate it.', c:'A',
+               w:'Escalation is squarely the auditor&rsquo;s duty. Principle 6 of the Code requires disclosing significant facts that would otherwise distort the reporting of results.'},
+              {t:'Design the new access-provisioning control for a system your team will audit next quarter.', c:'P',
+               w:'Classic self-review threat. The Code&rsquo;s objectivity principle says decline and document &mdash; preserving independence outranks being helpful.'},
+              {t:'Recommend that management establish a quarterly access-recertification process.', c:'A',
+               w:'Recommending a control is in scope; implementing or operating it is not. Notice how close this sits to the previous card &mdash; that gap is what the exam tests.'},
+              {t:'Interview the database administrator, then corroborate their statements against system-generated logs.', c:'A',
+               w:'Professional skepticism in action: management assertions are a starting point, not evidence. Corroboration converts a claim into a finding.'},
+              {t:'Approve an emergency change so the production outage clears before month-end close.', c:'P',
+               w:'Approving a transaction is a management duty. An auditor who approves changes has become part of the control they are meant to evaluate.'},
+              {t:'Assess whether the stated 4-hour recovery time objective is actually achievable, based on the last DR test results.', c:'A',
+               w:'Evaluating a claim against evidence &mdash; the auditor does not set the RTO, and does not fix it. They test whether the number the business committed to is real.'},
+              {t:'Deliver a lunch-and-learn on secure coding to the development team.', c:'D',
+               w:'General professional education is explicitly <b>supported</b> by Principle 7 of the Code. It tips into impairment only if you are training the team on the specific control you will test, or effectively making design decisions for them. Ask what is being taught, and to whom.'},
+              {t:'Take a seat on the steering committee for the ERP implementation your team will review after go-live.', c:'D',
+               w:'A <b>non-voting observer</b> role gives valuable early visibility and is commonly permitted. A voting member making management decisions has crossed the line. It turns on the role definition, the audit charter, and disclosure &mdash; not on attendance itself.'},
+              {t:'Continue auditing payroll after learning that your spouse was just hired as a payroll clerk.', c:'D',
+               w:'The disclosure is never optional &mdash; report the relationship to audit management immediately. Whether you continue depends on whether safeguards are sufficient or reassignment is required. That decision is not yours to make alone.'}
+            ];
+            var i=0, picks=new Array(C.length).fill(null);
+            var elN=document.getElementById('pavN'), elDots=document.getElementById('pavDots'),
+                elP=document.getElementById('pavPrompt'), elFb=document.getElementById('pavFb'),
+                bNext=document.getElementById('pavNext'), bReset=document.getElementById('pavReset'),
+                elEnd=document.getElementById('pavEnd'), elBoard=document.getElementById('pavBoard'),
+                elFinal=document.getElementById('pavFinal'),
+                btns=root.querySelectorAll('.pav-btn');
+
+            function render(){
+              var done=picks[i]!==null;
+              elN.textContent=i+1;
+              elP.innerHTML=C[i].t;
+              elDots.innerHTML=C.map(function(c,k){
+                var cls='pav-dot'+(k===i?' now':'');
+                if(picks[k]!==null) cls='pav-dot'+(picks[k]===C[k].c?' hit':' miss')+(k===i?' now':'');
+                return '<span class="'+cls+'"></span>';
+              }).join('');
+              Array.prototype.forEach.call(btns,function(b){
+                var c=b.dataset.c, cls='pav-btn';
+                if(done){ if(c===C[i].c) cls+=' hit'; else if(c===picks[i]) cls+=' miss'; }
+                b.className=cls; b.disabled=done;
+              });
+              if(done){
+                var ok=picks[i]===C[i].c;
+                elFb.innerHTML='<span class="pav-verdict '+(ok?'good':'bad')+'">'+
+                  (ok?'&#10003; Correct &mdash; ':'You said &ldquo;'+LABEL[picks[i]]+'&rdquo; &mdash; the answer is ')+
+                  LABEL[C[i].c]+'</span>'+C[i].w;
+                elFb.hidden=false;
+              } else { elFb.hidden=true; }
+              bNext.hidden=!done||i>=C.length-1;
+              var all=picks.every(function(p){return p!==null;});
+              elEnd.hidden=!all;
+              if(all) summarize();
+            }
+            function summarize(){
+              var order=['A','P','D'], head={A:'The auditor does this',P:'Management does this',D:'It depends &mdash; disclose first'};
+              elBoard.innerHTML=order.map(function(g){
+                var items=C.map(function(c,k){return {c:c,k:k};}).filter(function(o){return o.c.c===g;});
+                return '<div class="pav-col"><h5>'+head[g]+'</h5><ul>'+items.map(function(o){
+                  var miss=picks[o.k]!==o.c.c;
+                  return '<li class="'+(miss?'miss':'')+'">'+o.c.t+'</li>';
+                }).join('')+'</ul></div>';
+              }).join('');
+              var right=picks.filter(function(p,k){return p===C[k].c;}).length;
+              var msg = right===C.length
+                ? 'A clean sweep. Hold onto the discipline that produced it &mdash; under exam pressure the practitioner instinct returns.'
+                : 'Look at what you missed: almost every miss on this deck runs in one direction &mdash; choosing the action that <em>fixes the problem</em> over the action that <em>evaluates and reports it</em>. That instinct is what five years of doing the work built, and it is the single most expensive habit to carry into the exam room.';
+              elFinal.innerHTML='<b>'+right+' of '+C.length+' correct.</b> Cards marked &#10006; above are the ones you put in the wrong column. '+msg+
+                '<br><br><b>Carry this rule:</b> when two answers both look technically correct, choose the one an <em>independent evaluator</em> would take &mdash; and when the scenario involves your own history or relationships, disclosure comes before any decision about continuing.';
+            }
+            Array.prototype.forEach.call(btns,function(b){
+              b.addEventListener('click',function(){
+                if(picks[i]!==null) return;
+                picks[i]=b.dataset.c; render();
+              });
+            });
+            bNext.addEventListener('click',function(){ if(i<C.length-1){ i++; render(); } });
+            bReset.addEventListener('click',function(){ picks=new Array(C.length).fill(null); i=0; elEnd.hidden=true; render(); });
+            render();
+          })();
+          </script>
         </article>
 
         <article class="content-section" id="s8">
