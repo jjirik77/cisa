@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Development Methodologies & Control Implications Command Reference Grid</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --accent-green: #008751;
+            --light-green: #e6f4ea;
+            --border-color: #cccccc;
+            --code-bg: #f4f4f4;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        header {
+            border-bottom: 3px solid var(--accent-green);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            color: var(--text-color);
+            margin: 0;
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 span {
+            color: var(--accent-green);
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #444444;
+            margin-top: 4px;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            width: 280px;
+            font-size: 12px;
+        }
+
+        .btn {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+        }
+
+        .btn-outline.active {
+            background-color: var(--text-color);
+            color: white;
+        }
+
+        .section-title {
+            background-color: var(--text-color);
+            color: white;
+            padding: 4px 8px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: var(--light-green);
+            color: var(--text-color);
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent-green);
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--code-bg);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            color: #000000;
+            border: 1px solid #e0e0e0;
+            display: inline-block;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .note-box {
+            background-color: var(--light-green);
+            border-left: 4px solid var(--accent-green);
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                font-size: 10px;
+            }
+            .controls {
+                display: none;
+            }
+            th, td {
+                padding: 3px 5px;
+            }
+            .section-title {
+                padding: 2px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>SDLC & Governance <span>Command Reference Grid</span></h1>
+            <div class="subtitle">Exam Quick-Reference | System Development Methodologies & Control Implications</div>
+        </div>
+        <div>
+            <button class="btn" onclick="window.print()">Print / PDF</button>
+        </div>
+    </header>
+
+    <div class="note-box">
+        <strong>Core Principle:</strong> The methodology shapes where and how controls are applied. No SDLC methodology is inherently insecure—security and compliance depend on adapting controls to the team's operational rhythm.
+    </div>
+
+    <div class="controls">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Filter by command, framework, or parameter...">
+        <button class="btn btn-outline active" onclick="filterCategory('all', this)">All Methodologies</button>
+        <button class="btn btn-outline" onclick="filterCategory('waterfall', this)">Waterfall</button>
+        <button class="btn btn-outline" onclick="filterCategory('agile', this)">Agile</button>
+        <button class="btn btn-outline" onclick="filterCategory('devsecops', this)">DevOps / DevSecOps</button>
+        <button class="btn btn-outline" onclick="filterCategory('rad-cots', this)">RAD & COTS</button>
+    </div>
+
+    <div class="grid-layout">
+
+        <!-- WATERFALL SECTION -->
+        <div class="framework-group" data-category="waterfall">
+            <div class="section-title">
+                <span>Waterfall Methodology</span>
+                <span style="font-weight: normal; font-size: 11px;">Sequential Phase Gates & Traditional Controls</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Directive / Directive</th>
+                        <th style="width: 25%;">Parameters / Switches</th>
+                        <th style="width: 33%;">Description & Control Implications</th>
+                        <th style="width: 20%;">Execution Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>waterfall-gate</code></td>
+                        <td><code>--phase=req|design|build|test|deploy</code></td>
+                        <td>Enforces sequential formal sign-offs before transitioning phases. Predictable for stable requirements, but highly inflexible; delays testing to late in the cycle.</td>
+                        <td><code>waterfall-gate --phase=test --approve</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>waterfall-baseline</code></td>
+                        <td><code>--scope=fixed --signoff=formal</code></td>
+                        <td>Establishes rigid requirement baselines. Scope changes require formal Change Control Board (CCB) review, reducing agility but streamlining compliance tracking.</td>
+                        <td><code>waterfall-baseline --scope=fixed</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- AGILE SECTION -->
+        <div class="framework-group" data-category="agile">
+            <div class="section-title">
+                <span>Agile (Scrum, Kanban, SAFe)</span>
+                <span style="font-weight: normal; font-size: 11px;">Iterative Sprints & Audit Nuances</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Directive / Directive</th>
+                        <th style="width: 25%;">Parameters / Switches</th>
+                        <th style="width: 33%;">Description & Control Implications</th>
+                        <th style="width: 20%;">Execution Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>agile-sprint-audit</code></td>
+                        <td><code>--cadence=biweekly --audit=per-sprint</code></td>
+                        <td>Audits controls on a continuous per-sprint cycle rather than end-of-project gates. Ensures rapid feedback and continuous requirement verification.</td>
+                        <td><code>agile-sprint-audit --cadence=2w</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>agile-backlog</code></td>
+                        <td><code>--item=sec-req --priority=high</code></td>
+                        <td>Embeds security controls directly into user stories and product backlogs as acceptance criteria to maintain visibility and traceability.</td>
+                        <td><code>agile-backlog --item=SEC-101</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>agile-retro-nuance</code></td>
+                        <td><code>--type=retrospective --audit-valid=false</code></td>
+                        <td>Sprint retrospectives drive internal team improvement but are NOT workpaper-equivalent. Audits require explicit baseline and control documentation.</td>
+                        <td><code>agile-retro-nuance --reject-as-wp</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DEVOPS / DEVSECOPS SECTION -->
+        <div class="framework-group" data-category="devsecops">
+            <div class="section-title">
+                <span>DevOps & DevSecOps</span>
+                <span style="font-weight: normal; font-size: 11px;">CI/CD Pipelines & Automated Security</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Directive / Directive</th>
+                        <th style="width: 25%;">Parameters / Switches</th>
+                        <th style="width: 33%;">Description & Control Implications</th>
+                        <th style="width: 20%;">Execution Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>devsecops-pipeline</code></td>
+                        <td><code>--scan=sast|dast|sca|container</code></td>
+                        <td>Integrates automated static (SAST), dynamic (DAST), dependency (SCA), and container security analysis into continuous deployment pipelines.</td>
+                        <td><code>devsecops-pipeline --scan=sast</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>iac-control</code></td>
+                        <td><code>--template=terraform|ansible --enforce=policy</code></td>
+                        <td>Manages Infrastructure as Code (IaC) via automated security policy engines. Shifts infrastructure auditing left to code reviews.</td>
+                        <td><code>iac-control --enforce=policy</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>pipeline-access</code></td>
+                        <td><code>--deploy-approval=required --mfa=true</code></td>
+                        <td>Restricts direct production access; enforces strict pipeline access controls and automated/segregated deployment gate approvals.</td>
+                        <td><code>pipeline-access --deploy-approval</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RAD & COTS SECTION -->
+        <div class="framework-group" data-category="rad-cots">
+            <div class="section-title">
+                <span>RAD (Prototype-Based) & COTS (Commercial Off-The-Shelf)</span>
+                <span style="font-weight: normal; font-size: 11px;">Rapid Prototyping & Third-Party Vendor Risk</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 22%;">Directive / Directive</th>
+                        <th style="width: 25%;">Parameters / Switches</th>
+                        <th style="width: 33%;">Description & Control Implications</th>
+                        <th style="width: 20%;">Execution Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>rad-prototype</code></td>
+                        <td><code>--iterative=true --risk=scope-creep</code></td>
+                        <td>Rapid Application Development uses working prototypes; risks include scope creep, skipped formal design docs, and premature production promotion.</td>
+                        <td><code>rad-prototype --iterative=true</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cots-escrow</code></td>
+                        <td><code>--trigger=vendor-bankruptcy|default</code></td>
+                        <td>Requires source-code escrow contracts for critical third-party software to ensure business continuity if the vendor defaults or discontinues support.</td>
+                        <td><code>cots-escrow --trigger=bankruptcy</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cots-sca</code></td>
+                        <td><code>--vendor=[name] --scan=license|vuln</code></td>
+                        <td>Runs Software Composition Analysis (SCA) on third-party commercial applications and libraries to identify embedded supply chain vulnerabilities.</td>
+                        <td><code>cots-sca --vendor=acme --scan=vuln</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>cots-contract</code></td>
+                        <td><code>--terms=sla|sec-audit|patching</code></td>
+                        <td>Enforces contractual security clauses, SLA requirements, breach notification timelines, and mandatory patching schedules on vendors.</td>
+                        <td><code>cots-contract --terms=sec-audit</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent || row.innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function filterCategory(category, btn) {
+            const groups = document.querySelectorAll('.framework-group');
+            const buttons = document.querySelectorAll('.controls .btn-outline');
+
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            groups.forEach(group => {
+                if (category === 'all' || group.getAttribute('data-category') === category) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
