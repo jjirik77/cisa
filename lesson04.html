@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Morning, Day 3</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>12% (~18 Qs)</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -514,6 +515,289 @@
             <li><strong>Infrastructure:</strong> environment parity, infrastructure as code, network segmentation, certificate and key management.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A 2% drop in record count after migration isn't automatically acceptable &ldquo;because it's small.&rdquo; The auditor wants evidence that the missing records were identified, reviewed, and authorized for removal.</p></div>
+
+          <!-- ══ ACTIVITY: Go/No-Go — the cutover meeting ══ -->
+          <h4>Activity &mdash; the cutover meeting</h4>
+          <p>It is Thursday afternoon. Go-live is Saturday at 23:00. You are the IS auditor sitting in on the steering committee, and the sponsor wants your recommendation before the meeting closes. You have the status pack &mdash; and of the ten pieces of evidence available you may request <strong>five</strong>, no more. Choose them, then commit to a recommendation. The skill here is not spotting problems; it is knowing which questions can actually change the answer.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Each table gets five requests and must agree on them <em>before</em> seeing any results &mdash; that argument is the activity. Take a show of hands on go / conditions / no-go before the reveal, then again after. Ask the tables that changed their vote which single request did it.</div>
+
+          <style>
+            .gng{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .gng *{box-sizing:border-box;}
+            .gng-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .gng-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+            .gng-budget{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .gng-budget b{color:var(--gold);font-size:1.15rem;}
+            .gng-budget.out b{color:var(--wrong);}
+            .gng-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .gng-body{display:grid;grid-template-columns:1fr;gap:0.8rem;}
+            .gng-pack{border:1px solid var(--border);border-radius:5px;overflow:hidden;}
+            .gng-packhd{background:var(--navy);color:var(--white);padding:0.5rem 0.8rem;display:flex;justify-content:space-between;gap:0.6rem;flex-wrap:wrap;align-items:baseline;}
+            .gng-packhd b{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;}
+            .gng-packhd span{font-size:0.66rem;color:#bcd0e8;}
+            .gng-packb{padding:0.65rem 0.8rem;background:var(--blue-pale);}
+            .gng-packb ul{list-style:none;margin:0;padding:0;display:grid;gap:0.28rem;}
+            .gng-packb li{font-size:0.78rem;color:var(--text-secondary);line-height:1.45;padding-left:0.9rem;position:relative;}
+            .gng-packb li::before{content:'\25B8';position:absolute;left:0;color:var(--gold);}
+            .gng-packb li b{color:var(--text-primary);}
+            .gng-sect{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin:0 0 0.4rem;}
+            .gng-menu{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;}
+            .gng-item{border:1px solid var(--border);border-left:3px solid transparent;border-radius:5px;background:var(--card-bg);overflow:hidden;}
+            .gng-req{width:100%;text-align:left;background:transparent;border:none;padding:0.5rem 0.6rem;cursor:pointer;font-family:Arial,sans-serif;font-size:0.78rem;line-height:1.4;color:var(--text-secondary);display:flex;gap:0.5rem;align-items:flex-start;}
+            .gng-req:hover:not([disabled]){background:var(--gold-pale);color:var(--gold);}
+            .gng-req:focus-visible{outline:2px solid var(--gold);outline-offset:-2px;}
+            .gng-req[disabled]{cursor:default;}
+            .gng-req i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--text-muted);flex-shrink:0;}
+            .gng-item.got{border-left-color:var(--navy);}
+            .gng-item.got .gng-req{color:var(--text-primary);font-weight:700;}
+            .gng-fact{padding:0 0.6rem 0.5rem;font-size:0.76rem;line-height:1.45;color:var(--text-secondary);}
+            .gng-fact q{display:block;background:var(--section-alt);border-left:2px solid var(--navy-light);border-radius:0 3px 3px 0;padding:0.4rem 0.5rem;quotes:none;margin-bottom:0.35rem;}
+            .gng-note{display:block;font-size:0.72rem;color:var(--text-muted);line-height:1.4;}
+            .gng-note b{color:var(--text-primary);}
+            .gng-badge{display:inline-block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.08rem 0.4rem;border-radius:10px;color:#fff;margin-right:0.35rem;}
+            .gng-badge.dec{background:var(--correct);}
+            .gng-badge.sup{background:var(--navy-light);}
+            .gng-badge.ass{background:var(--gold);}
+            .gng-badge.noi{background:var(--text-muted);}
+            .gng-item.dec{border-left-color:var(--correct);}
+            .gng-item.missed{border-left-color:var(--wrong);opacity:0.92;}
+            .gng-dec{border:1px solid var(--border);border-radius:5px;padding:0.7rem 0.8rem;background:var(--section-alt);}
+            .gng-opts{display:grid;gap:0.35rem;margin-top:0.45rem;}
+            .gng-opt{display:flex;gap:0.55rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.79rem;line-height:1.45;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:5px;padding:0.5rem 0.65rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .gng-opt:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .gng-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .gng-opt i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .gng-opt.on{border-color:var(--navy);background:var(--blue-pale);}
+            .gng-opt.hit{border-color:var(--correct);background:var(--correct-bg);}
+            .gng-opt.miss{border-color:var(--wrong);background:var(--wrong-bg);}
+            .gng-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .gng-btn:hover{background:var(--gold-light);}
+            .gng-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .gng-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .gng-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .gng-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .gng-expand:hover{background:var(--gold);color:#fff;}
+            .gng-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .gng-fb{margin-top:0.8rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .gng-fb b{color:var(--gold);}
+            .gng-score{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:0.5rem;padding-bottom:0.45rem;border-bottom:1px dashed var(--border);}
+            .gng-score span{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.74rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .gng-score span b{display:block;font-size:1.15rem;color:var(--gold);}
+            .gng-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .gng.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .gng.is-expanded .gng-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            /* Expanded: status pack and recommendation on the left, the evidence menu two-up on the right. */
+            .gng.is-expanded .gng-body{grid-template-columns:340px 1fr;align-items:start;gap:0.75rem;}
+            .gng.is-expanded .gng-left{display:grid;gap:0.6rem;}
+            .gng.is-expanded .gng-req{font-size:0.75rem;padding:0.42rem 0.55rem;}
+            .gng.is-expanded .gng-fact{font-size:0.72rem;padding:0 0.55rem 0.4rem;}
+            .gng.is-expanded .gng-fact q{padding:0.32rem 0.42rem;margin-bottom:0.25rem;}
+            .gng.is-expanded .gng-item{border-radius:4px;}
+            .gng.is-expanded .gng-note{font-size:0.69rem;}
+            .gng.is-expanded .gng-packb li{font-size:0.74rem;}
+            .gng.is-expanded .gng-opt{font-size:0.75rem;padding:0.42rem 0.55rem;}
+            .gng.is-expanded .gng-fb{font-size:0.75rem;line-height:1.42;column-count:2;column-gap:1.3rem;}
+            .gng.is-expanded .gng-score{column-span:all;}
+            @media (max-width:820px){ .gng-menu{grid-template-columns:1fr;} }
+            @media (max-width:1100px){ .gng.is-expanded .gng-body{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="gng" id="gng-root">
+            <div class="gng-card">
+              <div class="gng-top">
+                <span class="gng-budget" id="gngBudget">Evidence requests remaining: <b>5</b></span>
+                <div class="gng-tools">
+                  <button type="button" class="gng-btn" id="gngSubmit" disabled>Submit my recommendation</button>
+                  <button type="button" class="gng-btn ghost" id="gngReset">Start over</button>
+                  <button type="button" class="gng-expand" id="gngExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+
+              <div class="gng-body">
+                <div class="gng-left">
+                  <div class="gng-pack">
+                    <div class="gng-packhd"><b>Meridian Health &mdash; Patient Billing Replacement</b><span>Cutover status pack &middot; Thursday 14:00</span></div>
+                    <div class="gng-packb">
+                      <ul>
+                        <li><b>Go-live:</b> Saturday 23:00. Change freeze from Friday 18:00.</li>
+                        <li><b>UAT:</b> 94% of test cases passed. 3 high and 11 medium defects remain open.</li>
+                        <li><b>Security:</b> penetration testing &ldquo;complete&rdquo;.</li>
+                        <li><b>Data conversion:</b> &ldquo;reconciled&rdquo; &mdash; 1.2M records migrated.</li>
+                        <li><b>Training:</b> 62% of billing staff completed.</li>
+                        <li><b>Rollback:</b> documented in the cutover runbook.</li>
+                        <li><b>Sponsor:</b> wants to proceed. The CFO notes duplicate licence costs of <b>$180k per month</b> if the date slips.</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="gng-dec">
+                    <p class="gng-sect">Your recommendation to the committee</p>
+                    <div class="gng-opts" id="gngOpts"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <p class="gng-sect">Evidence you could request &mdash; five of ten</p>
+                  <div class="gng-menu" id="gngMenu"></div>
+                </div>
+              </div>
+
+              <div class="gng-fb" id="gngFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('gng-root'); if(!root) return;
+            var BUDGET=5;
+            var TAGS={dec:['dec','Decisive'],sup:['sup','Supporting'],ass:['ass','Assertion'],noi:['noi','Cannot change the outcome']};
+            var E=[
+              {r:'The UAT sign-off register, with the open-defect list attached', tag:'dec',
+               f:'Signed by the Billing Manager &mdash; conditionally: &ldquo;subject to closure of the three open high defects.&rdquo; Two of the three sit in claims adjudication, the core revenue path. None are closed.',
+               n:'<b>A conditional sign-off whose conditions are unmet is not a sign-off.</b> The status pack reports the 94% and the signature, and omits the condition.'},
+              {r:'The project manager&rsquo;s confirmation that UAT is complete', tag:'ass',
+               f:'&ldquo;UAT is complete and the team is confident we are ready to go.&rdquo;',
+               n:'Oral assertion from the party whose work you are testing &mdash; the bottom of the Lesson 1 evidence ladder. It tells you what to test, never what is true.'},
+              {r:'The result of the most recent rollback test', tag:'dec',
+               f:'The rollback procedure is documented in the cutover runbook. It has never been executed &mdash; not in production, not in a test environment, not once.',
+               n:'<b>This single fact changes the recommendation.</b> An untested rollback is a plan, not a control: on Saturday night there is no evidence anyone can get back.'},
+              {r:'The data-conversion reconciliation, source versus target', tag:'dec',
+               f:'Record counts tie exactly (1,204,338 both sides). Aggregate open receivables differ by <b>$412,000</b> (0.3%), annotated &ldquo;within tolerance&rdquo; by the conversion team. No business-owner sign-off is recorded.',
+               n:'Counts tying proves rows arrived, not that <em>values</em> did. And &ldquo;within tolerance&rdquo; is a judgement the data owner must make and sign &mdash; not the team that performed the conversion.'},
+              {r:'The penetration-test report and its remediation tracker', tag:'dec',
+               f:'Testing was performed six weeks ago against the pre-integration build. Two highs remediated; one open &mdash; unauthenticated access to the reporting endpoint. No retest has been performed.',
+               n:'&ldquo;Security findings remediated&rdquo; is one of the five go/no-go criteria in this lesson. An unretested fix, on a build that no longer exists, does not meet it.'},
+              {r:'The environment parity report &mdash; test versus production', tag:'dec',
+               f:'Production carries four integration endpoints absent from the test environment, including the payer clearinghouse.',
+               n:'If the environment tested is not the environment deployed, the 94% pass rate describes <em>a system that does not exist</em>.'},
+              {r:'The CAB approval record for the cutover', tag:'sup',
+               f:'Approved by the Change Advisory Board on Tuesday. The approval references cutover plan <b>v3</b>; the plan now in circulation is <b>v5</b>.',
+               n:'A genuine control gap &mdash; approval of a superseded document &mdash; but on its own it changes your conditions, not your recommendation.'},
+              {r:'The training completion report', tag:'noi',
+               f:'62% of billing staff trained; the remaining sessions are scheduled for the fortnight after go-live.',
+               n:'Uncomfortable, and a business-readiness matter for the sponsor. No auditor defers a cutover over a training curve.'},
+              {r:'The vendor&rsquo;s current SOC 2 Type II report', tag:'noi',
+               f:'Unqualified opinion covering Security and Availability for the hosting platform; period ended last quarter.',
+               n:'Relevant to ongoing vendor assurance &mdash; and silent on whether <em>this</em> cutover is safe on Saturday. Right document, wrong question.'},
+              {r:'The sponsor&rsquo;s written acceptance of residual risk', tag:'ass',
+               f:'&ldquo;I accept the residual risk and wish to proceed on schedule.&rdquo; Signed by the business sponsor.',
+               n:'Do not mistake this for evidence of readiness. It is evidence that <b>management has decided</b> &mdash; which is their right, and exactly why your recommendation has to be on the record.'}
+            ];
+            var OPT=[
+              {t:'<b>Recommend go.</b> The open items are manageable and the delay cost is material.'},
+              {t:'<b>Recommend go with conditions</b> &mdash; proceed once the three high defects are closed and training completes.'},
+              {t:'<b>Recommend deferral.</b> The rollback has never been tested, the conversion difference is unexplained and unsigned, and the security fix is unretested.'},
+              {t:'<b>Make no recommendation.</b> The go/no-go decision belongs to the steering committee, not to the auditor.'}
+            ];
+            var CORRECT=2;
+            var bought={}, decision=null, done=false;
+            var menu=document.getElementById('gngMenu'), opts=document.getElementById('gngOpts'),
+                fb=document.getElementById('gngFb'), bSub=document.getElementById('gngSubmit'),
+                bRst=document.getElementById('gngReset'), elB=document.getElementById('gngBudget'),
+                expBtn=document.getElementById('gngExpand');
+
+            function spent(){ return Object.keys(bought).filter(function(k){return bought[k];}).length; }
+            function render(){
+              var left=BUDGET-spent();
+              menu.innerHTML=E.map(function(e,i){
+                var got=!!bought[i], show=got||done, cls='gng-item';
+                if(done){ if(e.tag==='dec'&&got) cls+=' dec'; else if(e.tag==='dec'&&!got) cls+=' missed'; else if(got) cls+=' got'; }
+                else if(got) cls+=' got';
+                var dis = done || (!got && left<=0);
+                return '<div class="'+cls+'">'+
+                  '<button type="button" class="gng-req" data-i="'+i+'"'+(dis?' disabled':'')+'>'+
+                    '<i>'+(got?'&#10003;':(done?'&#8212;':'+'))+'</i><span>'+e.r+'</span></button>'+
+                  (show?'<div class="gng-fact">'+
+                     (done?'<span class="gng-badge '+TAGS[e.tag][0]+'">'+TAGS[e.tag][1]+(e.tag==='dec'&&!got?' &mdash; you did not ask':'')+'</span>':'')+
+                     (done&&e.tag!=='dec'?'':'<q>'+e.f+'</q>')+
+                     '<span class="gng-note">'+e.n+'</span></div>':'')+
+                '</div>';
+              }).join('');
+              opts.innerHTML=OPT.map(function(o,k){
+                if(done && k!==CORRECT && k!==decision) return '';
+                var cls='gng-opt';
+                if(done){ if(k===CORRECT) cls+=' hit'; else if(k===decision) cls+=' miss'; }
+                else if(k===decision) cls+=' on';
+                return '<button type="button" class="'+cls+'" data-k="'+k+'"'+(done?' disabled':'')+'><i>'+
+                  String.fromCharCode(65+k)+'.</i><span>'+o.t+'</span></button>';
+              }).join('')+(done?'<p class="gng-note" style="margin-top:0.4rem">'+
+                (decision===CORRECT?'Your recommendation, and the supportable one.':'Your recommendation is shown against the supportable one.')+'</p>':'');
+              elB.innerHTML=done?'Recommendation submitted':'Evidence requests remaining: <b>'+left+'</b>';
+              elB.className='gng-budget'+(!done&&left===0?' out':'');
+              bSub.disabled=done||decision===null;
+            }
+            menu.addEventListener('click',function(ev){
+              var b=ev.target.closest('.gng-req'); if(!b||b.disabled) return;
+              var i=+b.dataset.i; if(bought[i]) return;
+              if(spent()>=BUDGET) return;
+              bought[i]=true; render();
+            });
+            opts.addEventListener('click',function(ev){
+              var b=ev.target.closest('.gng-opt'); if(!b||done) return;
+              decision=+b.dataset.k; render();
+            });
+            bSub.addEventListener('click',function(){
+              done=true; render();
+              var decBought=E.filter(function(e,i){return e.tag==='dec'&&bought[i];}).length;
+              var wasted=E.filter(function(e,i){return bought[i]&&(e.tag==='noi'||e.tag==='ass');}).length;
+              var hasRollback=!!bought[2], hasConv=!!bought[3];
+              var verdict;
+              if(decision===CORRECT){
+                verdict = (hasRollback||hasConv)
+                  ? 'You reached the right recommendation <b>and you can defend it</b> &mdash; you are holding the evidence that makes deferral the only supportable position.'
+                  : 'Right recommendation, <b>wrong footing</b>. You never requested the rollback test or the conversion reconciliation, so in the meeting you are arguing from instinct. Management will ask what you are basing it on, and the honest answer is the status pack &mdash; which says everything is fine.';
+              } else if(decision===3){
+                verdict = 'The trap. It is true that the decision belongs to the committee &mdash; and that is precisely why your <em>recommendation</em> must be on the record. Declining to give one while holding evidence of an untested rollback is a failure to report significant facts, the same duty you met in Lesson 1&rsquo;s reporting section. The auditor recommends; management decides; both are documented.';
+              } else if(decision===1){
+                verdict = 'Close, and the most common answer in the room. But look at what your conditions cover: defects and training. Neither touches the untested rollback or the unsigned $412,000 conversion difference &mdash; so the conditions could all be met on Friday and the cutover would still be unsafe. Conditions must attach to the things that would actually stop it.';
+              } else {
+                verdict = 'Against the evidence. Five of the twelve requests would each have told you something the status pack conceals; the pack was assembled by the people whose project it is.';
+              }
+              fb.innerHTML='<div class="gng-score">'+
+                  '<span>Decisive evidence obtained<b>'+decBought+' / 5</b></span>'+
+                  '<span>Requests that could not change the outcome<b>'+wasted+'</b></span>'+
+                  '<span>Recommendation<b>'+(decision===CORRECT?'Correct':'Not supported')+'</b></span>'+
+                '</div>'+verdict+
+                '<br><br>Notice what the status pack did. Nothing in it was false. &ldquo;Reconciled&rdquo;, &ldquo;complete&rdquo;, &ldquo;documented&rdquo; &mdash; every word survives scrutiny, and every one of them hides the question that matters: reconciled <em>on what basis</em>, complete <em>against which build</em>, documented <em>but ever executed?</em>'+
+                '<br><br><b>Carry this rule:</b> at a go/no-go, work the five criteria &mdash; critical defects closed, UAT signed off, security findings remediated, conversion validated and signed by the data owner, <em>rollback tested</em> &mdash; and treat any of them reported as an adjective rather than an artefact as unmet until you have seen the artefact.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ bought={}; decision=null; done=false; fb.hidden=true; render(); });
+
+            // Expand into a full-viewport overlay.
+            var backdrop=document.createElement('div'); backdrop.className='gng-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the cutover meeting');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s8">
