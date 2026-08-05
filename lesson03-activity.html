@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+  CISA Domain 2 Branching Scenario: "The Independence Question"
+  =============================================================
+  Learning objective:
+    Given evidence from an organization's IT quality processes, the learner will
+    diagnose quality assurance/quality management deficiencies, evaluate their
+    impact on organizational IT strategy, and select governance-aligned
+    remediation actions — justifying each choice against CISA Domain 2 concepts
+    (QA vs. QC vs. QMS, independence of the QA function, PDCA/continuous
+    improvement, and strategic alignment of quality objectives).
+
+  Bloom's level targeted: Analyze / Evaluate
+  Intended course placement: CISA Exam Prep — Domain 2 (Governance & Management
+    of IT), audit-simulation practicum, used after Domain 2 lecture content on
+    QA/QC/QMS and prior to a summative Domain 2 assessment.
+  Target learner: community college students / working professionals studying
+    for the CISA exam.
+
+  Build pattern: single HTML file, zero external dependencies, inline CSS/JS
+  only, dark/light mode with localStorage persistence, print-friendly fallback,
+  WCAG 2.1 AA target. Deployable by double-click or GitHub Pages.
+
+  Reuse: swap SCENARIOS data object to redeploy this shape (evidence → judgment
+  → consequence → debrief) against any other CISA task/knowledge statement.
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Independence Question — CISA Domain 2 Audit Simulation</title>
+<style>
+  :root{
+    --cream:#F7F5EF;
+    --paper:#FFFFFF;
+    --ink:#1B2027;
+    --ink-soft:#4A5160;
+    --line:#D8D3C6;
+    --navy:#14213D;
+    --navy-soft:#2A3A5C;
+    --green:#2E6F40;
+    --green-soft:#E4EFE6;
+    --amber:#B4650A;
+    --amber-soft:#F6E9D8;
+    --red:#8C2F2F;
+    --red-soft:#F5E2E0;
+    --focus:#0B5FFF;
+    --shadow: 0 1px 2px rgba(20,33,61,0.06), 0 6px 20px rgba(20,33,61,0.07);
+    --radius:10px;
+    --serif:'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --sans:'IBM Plex Sans', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono:'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  }
+
+  html[data-theme="dark"]{
+    --cream:#10151E;
+    --paper:#161D29;
+    --ink:#E8E6DE;
+    --ink-soft:#AEB4C2;
+    --line:#2C3646;
+    --navy:#DDE3F0;
+    --navy-soft:#B7C2DD;
+    --green:#5FAE76;
+    --green-soft:#1B2E22;
+    --amber:#E0983B;
+    --amber-soft:#2E250F;
+    --red:#E08080;
+    --red-soft:#301C1C;
+    --focus:#7EB2FF;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  @font-face{
+    font-family:'Fraunces';
+    src: local('Fraunces');
+    font-weight: 300 900;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+    transition:background .2s ease, color .2s ease;
+  }
+
+  h1,h2,h3,h4{
+    font-family:var(--serif);
+    font-weight:600;
+    color:var(--ink);
+    line-height:1.2;
+    margin:0 0 .5em;
+  }
+  h1{ font-size:clamp(1.6rem, 3.2vw, 2.35rem); font-weight:700; }
+  h2{ font-size:clamp(1.25rem, 2.4vw, 1.6rem); }
+  h3{ font-size:1.05rem; letter-spacing:.01em; }
+
+  p{ margin:0 0 1em; color:var(--ink); }
+  .muted{ color:var(--ink-soft); }
+  code, .mono, .data-label{ font-family:var(--mono); font-size:.85em; }
+
+  a{ color:var(--navy-soft); }
+
+  :focus-visible{
+    outline:3px solid var(--focus);
+    outline-offset:2px;
+    border-radius:4px;
+  }
+
+  .skip-link{
+    position:absolute; left:-999px; top:0;
+    background:var(--focus); color:#fff; padding:.6em 1em; z-index:200;
+  }
+  .skip-link:focus{ left:1em; top:1em; }
+
+  /* ---------- Shell ---------- */
+  .app-header{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    padding:.7rem 1rem;
+    display:flex; align-items:center; gap:.75rem; flex-wrap:wrap;
+  }
+  .brand{
+    display:flex; flex-direction:column; gap:0; margin-right:auto;
+  }
+  .brand .eyebrow{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--green); font-weight:600;
+  }
+  .brand .title{
+    font-family:var(--serif); font-weight:700; font-size:1.05rem;
+  }
+
+  .header-controls{ display:flex; gap:.5rem; align-items:center; }
+  .icon-btn{
+    background:transparent; border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; padding:.45rem .7rem; font-family:var(--sans);
+    font-size:.82rem; cursor:pointer; display:flex; align-items:center; gap:.4em;
+  }
+  .icon-btn:hover{ border-color:var(--navy-soft); }
+
+  main{ max-width:920px; margin:0 auto; padding:1.5rem 1.1rem 5rem; }
+
+  /* ---------- Progress ---------- */
+  .progress{
+    display:flex; list-style:none; margin:0 0 1.6rem; padding:0;
+    gap:.35rem; flex-wrap:wrap; font-family:var(--mono); font-size:.72rem;
+  }
+  .progress li{
+    padding:.3rem .6rem; border:1px solid var(--line); border-radius:999px;
+    color:var(--ink-soft); background:var(--paper);
+  }
+  .progress li[data-state="current"]{
+    border-color:var(--green); color:var(--green); font-weight:600;
+    background:var(--green-soft);
+  }
+  .progress li[data-state="done"]{
+    color:var(--ink); border-color:var(--ink-soft);
+  }
+
+  /* ---------- Cards / panels ---------- */
+  .panel{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:1.4rem 1.4rem; box-shadow:var(--shadow); margin-bottom:1.2rem;
+  }
+
+  .objective-box{
+    border-left:4px solid var(--green);
+    background:var(--green-soft);
+    padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin:1rem 0 1.4rem;
+  }
+  .objective-box .label{
+    font-family:var(--mono); font-size:.7rem; text-transform:uppercase;
+    letter-spacing:.12em; color:var(--green); font-weight:700; display:block; margin-bottom:.4em;
+  }
+
+  .scenario-picker{ display:grid; gap:1rem; grid-template-columns:1fr; }
+  @media(min-width:680px){ .scenario-picker{ grid-template-columns:1fr 1fr; } }
+  .scenario-card{
+    text-align:left; border:1px solid var(--line); background:var(--paper);
+    border-radius:var(--radius); padding:1.2rem; cursor:pointer; box-shadow:var(--shadow);
+    font-family:var(--sans); color:var(--ink); display:flex; flex-direction:column; gap:.6rem;
+  }
+  .scenario-card:hover{ border-color:var(--green); }
+  .scenario-card .industry{
+    font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.1em; color:var(--amber); font-weight:700;
+  }
+  .scenario-card h3{ margin:0; }
+  .scenario-card .cta{ margin-top:auto; color:var(--green); font-weight:600; font-size:.9rem; }
+
+  /* ---------- Evidence ---------- */
+  .evidence-grid{ display:grid; gap:.8rem; }
+  .evidence-card{
+    border:1px solid var(--line); border-radius:var(--radius); background:var(--paper);
+    overflow:hidden;
+  }
+  .evidence-card summary{
+    list-style:none; cursor:pointer; padding:.9rem 1.1rem; display:flex;
+    align-items:center; gap:.8rem; font-weight:600; font-family:var(--sans);
+  }
+  .evidence-card summary::-webkit-details-marker{ display:none; }
+  .evidence-card summary .chev{
+    margin-left:auto; transition:transform .15s ease; color:var(--ink-soft);
+    font-family:var(--mono);
+  }
+  .evidence-card[open] summary .chev{ transform:rotate(90deg); }
+  .evidence-card summary .exhibit-tag{
+    font-family:var(--mono); font-size:.68rem; background:var(--navy); color:#fff;
+    padding:.15rem .5rem; border-radius:4px; letter-spacing:.05em;
+  }
+  html[data-theme="dark"] .evidence-card summary .exhibit-tag{ color:var(--cream); }
+  .evidence-card .body{
+    padding:0 1.1rem 1.1rem; border-top:1px solid var(--line);
+  }
+  .evidence-card .body{ padding-top:.9rem; }
+  .evidence-card blockquote{
+    font-family:var(--serif); font-style:italic; font-size:1.05rem;
+    border-left:3px solid var(--amber); margin:.6em 0; padding:.2em 1em; color:var(--ink);
+  }
+  .evidence-card .cite{ font-family:var(--mono); font-size:.75rem; color:var(--ink-soft); }
+  .viewed-badge{
+    font-family:var(--mono); font-size:.68rem; color:var(--green); font-weight:700;
+  }
+
+  .evidence-progress{
+    font-family:var(--mono); font-size:.8rem; color:var(--ink-soft); margin-bottom:.8rem;
+  }
+
+  .continue-row{ display:flex; justify-content:flex-end; margin-top:1.4rem; }
+  .btn{
+    font-family:var(--sans); font-weight:600; font-size:.92rem;
+    background:var(--green); color:#fff; border:1px solid var(--green);
+    padding:.7rem 1.3rem; border-radius:8px; cursor:pointer;
+  }
+  .btn:hover{ filter:brightness(1.06); }
+  .btn[disabled]{ background:var(--line); border-color:var(--line); color:var(--ink-soft); cursor:not-allowed; }
+  .btn.secondary{ background:transparent; color:var(--ink); border-color:var(--line); }
+
+  /* ---------- Chart ---------- */
+  .chart-wrap{ margin:.6rem 0 .2rem; }
+  .chart-wrap svg{ width:100%; height:auto; overflow:visible; }
+  .chart-legend{ display:flex; gap:1rem; font-family:var(--mono); font-size:.72rem; color:var(--ink-soft); margin-top:.4rem; flex-wrap:wrap; }
+  .chart-legend span::before{
+    content:''; display:inline-block; width:.7em; height:.7em; border-radius:2px;
+    margin-right:.4em; vertical-align:middle; background:currentColor;
+  }
+
+  /* ---------- Decision screens ---------- */
+  .decision-context{
+    background:var(--amber-soft); border-left:4px solid var(--amber);
+    padding:1rem 1.2rem; border-radius:0 8px 8px 0; margin-bottom:1.2rem;
+  }
+  .decision-context .label{
+    font-family:var(--mono); font-size:.7rem; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--amber); font-weight:700; display:block; margin-bottom:.4em;
+  }
+  .options{ display:grid; gap:.7rem; }
+  .option-btn{
+    text-align:left; background:var(--paper); border:1px solid var(--line);
+    border-radius:var(--radius); padding:1rem 1.1rem; cursor:pointer; font-family:var(--sans);
+    color:var(--ink); font-size:.95rem; display:flex; gap:.8rem; align-items:flex-start;
+  }
+  .option-btn:hover:not([disabled]){ border-color:var(--navy-soft); }
+  .option-btn .letter{
+    font-family:var(--mono); font-weight:700; color:var(--navy-soft);
+    border:1px solid var(--line); border-radius:6px; width:1.8em; height:1.8em;
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .option-btn[disabled]{ cursor:default; opacity:.55; }
+  .option-btn[aria-pressed="true"]{ border-color:var(--green); border-width:2px; }
+  .option-btn[aria-pressed="true"] .letter{ background:var(--green); color:#fff; border-color:var(--green); }
+
+  .feedback{
+    margin-top:1.1rem; padding:1.1rem 1.2rem; border-radius:8px; border:1px solid var(--line);
+  }
+  .feedback[data-strength="strong"]{ background:var(--green-soft); border-color:var(--green); }
+  .feedback[data-strength="moderate"]{ background:var(--amber-soft); border-color:var(--amber); }
+  .feedback[data-strength="weak"]{ background:var(--red-soft); border-color:var(--red); }
+  .feedback .strength-label{
+    font-family:var(--mono); font-size:.72rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:700; display:block; margin-bottom:.5em;
+  }
+  .feedback[data-strength="strong"] .strength-label{ color:var(--green); }
+  .feedback[data-strength="moderate"] .strength-label{ color:var(--amber); }
+  .feedback[data-strength="weak"] .strength-label{ color:var(--red); }
+  .feedback .concept-tag{
+    display:inline-block; font-family:var(--mono); font-size:.7rem; background:var(--navy);
+    color:#fff; padding:.15rem .5rem; border-radius:4px; margin:.3em .3em 0 0;
+  }
+  html[data-theme="dark"] .feedback .concept-tag{ color:var(--cream); }
+
+  /* ---------- Debrief ---------- */
+  .debrief-path{ display:grid; gap:.7rem; margin:1rem 0 1.6rem; }
+  .debrief-item{
+    border:1px solid var(--line); border-radius:8px; padding:.9rem 1.05rem; background:var(--paper);
+    display:grid; grid-template-columns:auto 1fr; gap:.9rem; align-items:start;
+  }
+  .debrief-item .marker{
+    width:2rem; height:2rem; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; color:#fff; flex:none;
+  }
+  .debrief-item[data-strength="strong"] .marker{ background:var(--green); }
+  .debrief-item[data-strength="moderate"] .marker{ background:var(--amber); }
+  .debrief-item[data-strength="weak"] .marker{ background:var(--red); }
+
+  .score-summary{
+    display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.2rem;
+  }
+  .score-pill{
+    font-family:var(--mono); font-size:.85rem; border:1px solid var(--line); border-radius:999px;
+    padding:.4rem .9rem; display:flex; gap:.4em; align-items:center;
+  }
+  .score-pill .n{ font-weight:700; }
+  .score-pill[data-k="strong"] .n{ color:var(--green); }
+  .score-pill[data-k="moderate"] .n{ color:var(--amber); }
+  .score-pill[data-k="weak"] .n{ color:var(--red); }
+
+  .replay-row{ display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1.4rem; }
+
+  /* ---------- Glossary ---------- */
+  .glossary-panel{
+    position:fixed; top:0; right:0; height:100vh; width:min(380px, 92vw);
+    background:var(--paper); border-left:1px solid var(--line); z-index:100;
+    transform:translateX(100%); transition:transform .22s ease;
+    display:flex; flex-direction:column; box-shadow:-8px 0 24px rgba(0,0,0,.15);
+  }
+  .glossary-panel[data-open="true"]{ transform:translateX(0); }
+  .glossary-head{
+    padding:1rem 1.2rem; border-bottom:1px solid var(--line); display:flex;
+    align-items:center; justify-content:space-between;
+  }
+  .glossary-body{ padding:1rem 1.2rem; overflow-y:auto; flex:1; }
+  .glossary-body dt{ font-family:var(--serif); font-weight:700; margin-top:1.1em; }
+  .glossary-body dt:first-child{ margin-top:0; }
+  .glossary-body dd{ margin:.3em 0 0; color:var(--ink-soft); font-size:.92rem; }
+  .glossary-overlay{
+    position:fixed; inset:0; background:rgba(10,14,20,.35); z-index:99; display:none;
+  }
+  .glossary-overlay[data-open="true"]{ display:block; }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
+  footer.app-footer{
+    max-width:920px; margin:0 auto; padding:0 1.1rem 3rem; color:var(--ink-soft); font-size:.82rem;
+  }
+
+  @media print{
+    .app-header, .glossary-panel, .glossary-overlay, .icon-btn, .continue-row .btn.secondary,
+    .replay-row, .header-controls { display:none !important; }
+    body{ background:#fff; color:#000; }
+    .panel{ box-shadow:none; border:1px solid #999; break-inside:avoid; }
+    details{ break-inside:avoid; }
+    main{ padding:1rem; max-width:none; }
+    .option-btn{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="eyebrow">CISA Domain 2 · Audit Simulation</span>
+    <span class="title">The Independence Question</span>
+  </div>
+  <div class="header-controls">
+    <button type="button" class="icon-btn" id="glossaryToggle" aria-expanded="false" aria-controls="glossaryPanel">
+      Glossary
+    </button>
+    <button type="button" class="icon-btn" id="printBtn">Print</button>
+    <button type="button" class="icon-btn" id="themeToggle" aria-pressed="false">
+      <span id="themeIcon" aria-hidden="true">🌙</span>
+      <span id="themeLabel">Dark mode</span>
+    </button>
+  </div>
+</header>
+
+<main id="main-content">
+  <ol class="progress" id="progressList" aria-label="Activity progress"></ol>
+  <div id="screen" role="region" aria-live="polite"></div>
+</main>
+
+<footer class="app-footer">
+  <p>Domain 2 — Governance &amp; Management of IT. Reflection tool, not a scored assessment. Reset anytime to try a different organization.</p>
+</footer>
+
+<div class="glossary-overlay" id="glossaryOverlay"></div>
+<aside class="glossary-panel" id="glossaryPanel" aria-label="Reference glossary" aria-hidden="true">
+  <div class="glossary-head">
+    <h2 style="margin:0; font-size:1.1rem;">Domain 2 reference</h2>
+    <button type="button" class="icon-btn" id="glossaryClose" aria-label="Close glossary">✕</button>
+  </div>
+  <div class="glossary-body">
+    <dl>
+      <dt>QA vs. QC vs. QMS</dt>
+      <dd><strong>QC (Quality Control):</strong> operational, in-process checks that catch defects before delivery — testing a build, reviewing code. Owned by the delivery team.<br>
+      <strong>QA (Quality Assurance):</strong> process-level assurance that QC and development activities are actually working as intended — an independent check on the process, not the product. Must be organizationally independent of the function it assesses to be credible.<br>
+      <strong>QMS (Quality Management System):</strong> the overarching, documented system of policies, roles, and continuous-improvement mechanisms (e.g., ISO 9001, CMMI) that governs how an organization plans, controls, and improves quality across all of IT — QA and QC are components within it.</dd>
+
+      <dt>Independence of the QA function</dt>
+      <dd>QA loses credibility when it reports through the same management chain it is assessing — mirrors the auditor-independence principle. A QA lead reporting to the delivery manager whose schedule QA might jeopardize creates a structural conflict of interest, regardless of the individuals' integrity.</dd>
+
+      <dt>PDCA / continuous improvement</dt>
+      <dd><strong>Plan → Do → Check → Act.</strong> A quality program without a real "Act" step (using findings to change the process) is just measurement, not improvement. Watch for organizations that "Check" (dashboards, metrics) but never close the loop.</dd>
+
+      <dt>Maturity models</dt>
+      <dd>Frameworks (e.g., CMMI-style levels) describing how repeatable, defined, managed, and optimized a process is. Self-reported maturity should be corroborated with evidence — a "Level 4: Quantitatively Managed" claim needs independent verification and a real improvement loop, not just a dashboard.</dd>
+
+      <dt>Strategic alignment of quality objectives</dt>
+      <dd>Quality KPIs are only meaningful if they trace back to the organization's actual strategic objective. Velocity and defect-count trends measure delivery mechanics; they are not the same as outcome metrics (adoption, customer impact, regulatory compliance) the strategy actually depends on. A metric that looks good but doesn't move the strategic needle is a vanity metric.</dd>
+    </dl>
+  </div>
+</aside>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============================= THEME ============================= */
+  var root = document.documentElement;
+  var themeToggle = document.getElementById('themeToggle');
+  var themeIcon = document.getElementById('themeIcon');
+  var themeLabel = document.getElementById('themeLabel');
+
+  function applyTheme(t){
+    root.setAttribute('data-theme', t);
+    themeToggle.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+    themeIcon.textContent = t === 'dark' ? '☀️' : '🌙';
+    themeLabel.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
+    try{ localStorage.setItem('idq-theme', t); }catch(e){}
+  }
+  (function initTheme(){
+    var saved = null;
+    try{ saved = localStorage.getItem('idq-theme'); }catch(e){}
+    if(!saved){
+      saved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    applyTheme(saved);
+  })();
+  themeToggle.addEventListener('click', function(){
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+  window.addEventListener('beforeprint', function(){
+    document.querySelectorAll('details').forEach(function(d){ d.open = true; });
+  });
+
+  /* ============================ GLOSSARY ============================ */
+  var glossaryPanel = document.getElementById('glossaryPanel');
+  var glossaryOverlay = document.getElementById('glossaryOverlay');
+  var glossaryToggle = document.getElementById('glossaryToggle');
+  var glossaryClose = document.getElementById('glossaryClose');
+
+  function openGlossary(){
+    glossaryPanel.setAttribute('data-open','true');
+    glossaryPanel.setAttribute('aria-hidden','false');
+    glossaryOverlay.setAttribute('data-open','true');
+    glossaryToggle.setAttribute('aria-expanded','true');
+    glossaryClose.focus();
+  }
+  function closeGlossary(){
+    glossaryPanel.setAttribute('data-open','false');
+    glossaryPanel.setAttribute('aria-hidden','true');
+    glossaryOverlay.setAttribute('data-open','false');
+    glossaryToggle.setAttribute('aria-expanded','false');
+    glossaryToggle.focus();
+  }
+  glossaryToggle.addEventListener('click', openGlossary);
+  glossaryClose.addEventListener('click', closeGlossary);
+  glossaryOverlay.addEventListener('click', closeGlossary);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && glossaryPanel.getAttribute('data-open') === 'true') closeGlossary();
+  });
+
+  /* ============================ DATA ============================ */
+  var CONCEPTS = {
+    independence: 'QA independence',
+    qaqcqms: 'QA vs. QC vs. QMS',
+    pdca: 'PDCA / continuous improvement',
+    maturity: 'Maturity models',
+    alignment: 'Strategic alignment'
+  };
+
+  var SCENARIOS = {
+
+    meridian: {
+      id: 'meridian',
+      industry: 'Regional healthcare network',
+      orgName: 'Meridian Health Partners',
+      initiative: 'next-generation patient portal rollout',
+      timeline: '6 weeks to go-live',
+      strategicGoal: 'a 20% increase in patient portal adoption and a 30% reduction in support call volume within two quarters of launch',
+      briefing: 'Meridian Health Partners, a regional healthcare network, is six weeks from launching a next-generation patient portal intended to let patients message providers, view lab results, and self-schedule appointments. The board approved the initiative on the strength of a strategic case: increase patient portal adoption by 20% and cut support call volume by 30% within two quarters of launch. You have been engaged as the IS auditor to assess whether the organization\'s IT quality management practices give the board reasonable assurance that the platform will be fit to launch — and fit for the strategic purpose it was funded to serve.',
+      evidence: [
+        {
+          tag: 'Exhibit A',
+          title: 'Org chart excerpt — QA reporting lines',
+          body: '<p>The QA Lead for the patient portal program reports solid-line to the <strong>Director of Software Delivery</strong>, who also owns the program schedule and budget. There is no dotted-line or functional reporting relationship to the CIO, Chief Risk Officer, or Audit Committee.</p><p class="cite">Source: HR org chart export, current as of last week.</p>'
+        },
+        {
+          tag: 'Exhibit B',
+          title: 'Defect trend chart — six sprints',
+          body: '<div id="chartMeridian" class="chart-wrap" aria-label="Bar chart of critical defects found per sprint, trending upward from sprint 1 through sprint 5, with a slight dip in sprint 6"></div><p class="muted" style="font-size:.85rem;">Critical defects <em>found</em> per sprint. Note the dip in Sprint 6 — the release notes attribute this to “improved stability,” but the defect backlog shows several Sprint 5 items reclassified as “deferred to post-launch” rather than closed.</p>'
+        },
+        {
+          tag: 'Exhibit C',
+          title: 'IT Quality Policy — excerpt (last reviewed 4 years ago)',
+          body: '<blockquote>“Quality is a shared responsibility of all IT staff. Teams are expected to follow good engineering practices throughout the development lifecycle.”</blockquote><p class="cite">Full policy, section 2.1 — no named QMS framework, no defined independent verification step, no revision since the portal program began.</p>'
+        },
+        {
+          tag: 'Exhibit D',
+          title: 'Stakeholder interview — CIO',
+          body: '<blockquote>“We track velocity and defect counts for engineering — that\'s their KPI, not something governance needs to weigh in on. Our job right now is hitting the launch date the board committed to.”</blockquote><p class="cite">Interview conducted this week, recorded with consent.</p>'
+        },
+        {
+          tag: 'Exhibit E',
+          title: 'QMS maturity self-assessment',
+          body: '<p>Engineering leadership self-rates the quality program as <strong>“Level 4 — Quantitatively Managed”</strong> on a five-level maturity scale, citing the existence of sprint dashboards and defect-count tracking.</p><p>No evidence was found of independent verification of this rating, and no documented instance of the defect data being used to change process, staffing, or scope (i.e., no observable “Act” step).</p>'
+        },
+        {
+          tag: 'Exhibit F',
+          title: 'IT Strategic Plan — excerpt',
+          body: '<blockquote>“Success will be measured by patient portal adoption rate (+20%) and reduction in support call volume (-30%) within two quarters of launch.”</blockquote><p class="cite">Source: FY board-approved IT Strategic Plan, initiative charter.</p><p class="muted" style="font-size:.85rem;">Compare to the KPIs engineering currently tracks: sprint velocity, raw defect count, sprint burn-down. None of these trace explicitly to adoption or support-call outcomes.</p>'
+        }
+      ],
+      chart: { labels:['S1','S2','S3','S4','S5','S6'], values:[2,3,5,9,14,11], unit:'critical defects found' },
+      decisions: [
+        {
+          context: 'You\'ve now reviewed the evidence. Your first judgment call concerns Exhibit A: the QA Lead reports through the same delivery chain whose schedule QA is meant to check.',
+          prompt: 'Is the QA reporting-line conflict a finding worth escalating to the Audit Committee ahead of go-live, or a lower-risk item to note and monitor at the next audit cycle?',
+          options: [
+            {
+              label: 'Escalate now as a significant finding, with a recommendation that QA sign-off authority sit outside the delivery chain before go-live.',
+              strength: 'strong',
+              concepts: ['independence'],
+              consequence: 'The Audit Committee asks for an interim compensating control: an independent reviewer from outside the program signs off on go-live readiness. The program timeline holds.',
+              rationale: 'This is a textbook independence impairment: the function meant to provide objective assurance over quality reports to, and is evaluated by, the person whose deliverable it assesses. Given the imminent, high-stakes milestone, timing does not excuse structural conflicts — it heightens the risk of them. CISA Domain 2 treats independence of the QA function as foundational, comparable to external audit independence.'
+            },
+            {
+              label: 'Note it as an observation to monitor at the next scheduled audit cycle; the immediate risk seems manageable given the team\'s track record.',
+              strength: 'moderate',
+              concepts: ['independence'],
+              consequence: 'The finding goes into next quarter\'s follow-up log. Go-live proceeds under the existing reporting structure. No compensating control is put in place.',
+              rationale: 'Deferring is sometimes defensible when strong compensating controls exist. Here, none do — there is no independent review step anywhere else in the evidence set, and the milestone is imminent and strategically significant. Noting-and-monitoring understates the risk of relying on QA sign-off that cannot be structurally independent at exactly the moment independence matters most.'
+            },
+            {
+              label: 'Ask the Director of Software Delivery informally to adjust the reporting line before you finalize your assessment.',
+              strength: 'weak',
+              concepts: ['independence'],
+              consequence: 'The Director agrees to "look into it." No documentation is created. Your final report is silent on the issue because it was "being handled."',
+              rationale: 'This bypasses the formal governance channel and creates no auditable record — the exact failure mode independence rules exist to prevent. It also compromises your own independence as auditor: informally negotiating a remediation with the party being assessed, rather than reporting the condition, blurs the line between assurance and consulting.'
+            }
+          ]
+        },
+        {
+          context: 'The program has six weeks until go-live. Exhibits C and E show a policy with no named framework and a self-assessed maturity level that evidence does not support.',
+          prompt: 'What do you recommend regarding formal quality management structure, given the timeline?',
+          options: [
+            {
+              label: 'Recommend scoped, immediate controls (independent test sign-off gate, defect-severity escalation policy) now, with full QMS framework design as a formally chartered post-launch project.',
+              strength: 'strong',
+              concepts: ['qaqcqms', 'pdca'],
+              consequence: 'The steering committee adopts the interim gate. Two defects are escalated and fixed before launch that would otherwise have shipped. A post-launch QMS project is chartered with an executive sponsor.',
+              rationale: 'This right-sizes the recommendation to the timeline: it closes the most urgent gap (no independent gate before a strategically important launch) without overpromising a multi-quarter ISO 9001/CMMI rollout in six weeks. It also seeds a real PDCA loop — a scoped "Do," with an "Act" step chartered for after launch — rather than leaving quality management as measurement without improvement.'
+            },
+            {
+              label: 'Push for full ISO 9001 or CMMI adoption before go-live so the program launches under a credible framework.',
+              strength: 'moderate',
+              concepts: ['qaqcqms', 'maturity'],
+              consequence: 'Leadership agrees in principle but the six-week runway forces a compressed, checklist-driven version of the framework. Teams describe it privately as "paperwork we did to get through go-live."',
+              rationale: 'The instinct toward a real framework is right, and reflects good understanding of QMS as the umbrella structure QA/QC should sit inside. But compressing a genuine framework adoption into six weeks typically produces exactly the kind of unverified, box-checking maturity claim Exhibit E already shows — the recommendation solves the label problem, not the substance problem.'
+            },
+            {
+              label: 'Defer any quality management recommendation until after go-live; the immediate priority is shipping on schedule.',
+              strength: 'weak',
+              concepts: ['qaqcqms'],
+              consequence: 'Go-live proceeds with no additional control. Two weeks post-launch, a data-sync defect affecting lab-result delivery is reported by patients before it is caught internally.',
+              rationale: 'Audit timing exists specifically to inform risk decisions before they crystallize, not only to document them afterward. Deferring the recommendation past the highest-risk moment in the program — the launch itself — misses the point of engaging an auditor ahead of the milestone in the first place.'
+            }
+          ]
+        },
+        {
+          context: 'Exhibit D captures the CIO\'s position directly: quality metrics are "engineering\'s problem," not something governance needs to weigh in on.',
+          prompt: 'How do you respond to the CIO\'s framing in your assessment?',
+          options: [
+            {
+              label: 'Reframe the issue around strategic alignment: recommend a joint quality-governance review that ties current defect data to the board\'s adoption and support-call targets, presented to the steering committee before the go-live decision.',
+              strength: 'strong',
+              concepts: ['alignment', 'qaqcqms'],
+              consequence: 'The steering committee adds a standing agenda item connecting quality data to strategic KPIs. The CIO pushes back initially but the Audit Committee chair backs the recommendation.',
+              rationale: 'This correctly separates day-to-day quality control (engineering\'s legitimate operational KPI ownership) from governance accountability for whether the overall quality management system supports the strategic objective the board actually funded. That accountability cannot be delegated away by relabeling it "engineering\'s problem" — it is precisely what Domain 2 governance oversight exists to test.'
+            },
+            {
+              label: 'Note the disagreement for the steering committee\'s awareness, without pressing the point further this cycle.',
+              strength: 'moderate',
+              concepts: ['alignment'],
+              consequence: 'The note is logged. No specific action is taken before go-live. The topic resurfaces after launch when adoption tracks below target.',
+              rationale: 'Documenting a disagreement is better than dropping it, but given how close the imminent go-live decision is and how significant the risk evidence already is, a passive note likely understates the urgency of resolving the strategic-alignment gap before, not after, the launch decision.'
+            },
+            {
+              label: 'Accept the CIO\'s framing and remove quality metrics from the scope of your governance assessment, since they are described as an engineering KPI.',
+              strength: 'weak',
+              concepts: ['qaqcqms', 'alignment'],
+              consequence: 'Your final report is silent on quality-strategy alignment. The Audit Committee later asks why the report didn\'t address it, given the launch outcome.',
+              rationale: 'This conflates quality control (an operational, engineering-owned activity) with the governance question of whether the organization\'s quality management system is structured to support its stated strategy — a core Domain 2 distinction. Accepting the reframe removes exactly the lens an IS auditor is engaged to provide.'
+            }
+          ]
+        },
+        {
+          context: 'Exhibit F shows the board\'s stated strategic success measures. Compare them to the KPIs engineering actually tracks day to day.',
+          prompt: 'Do the current quality KPIs (velocity, defect count, burn-down) trace to the strategic objective, or are they vanity metrics?',
+          options: [
+            {
+              label: 'Flag it as a finding: recommend adding outcome-linked quality metrics (e.g., defects tagged to patient-facing usability, support calls root-caused to portal defects) before the go-live sign-off, tracked against the strategic targets post-launch.',
+              strength: 'strong',
+              concepts: ['alignment', 'maturity'],
+              consequence: 'Two new outcome metrics are added to the go-live dashboard. Post-launch, they reveal a usability defect class driving a disproportionate share of support calls — caught and fixed within the first month.',
+              rationale: 'Velocity and raw defect counts measure delivery mechanics, not whether the platform will actually move patient adoption or reduce support calls — the outcomes the strategy is funded on. Recommending metrics that trace directly to the stated strategic objective is the essence of evaluating strategic alignment of quality objectives, not just process existence.'
+            },
+            {
+              label: 'Recommend adding one outcome metric as a future improvement, but accept the current dashboard as sufficient for the go-live gate.',
+              strength: 'moderate',
+              concepts: ['alignment'],
+              consequence: 'The recommendation is logged as a "future enhancement." Go-live proceeds on the existing dashboard. The outcome metric is added two months later, after the initial adoption numbers already disappoint.',
+              rationale: 'Partial credit: recognizing the gap exists is the right instinct. But treating it as a "someday" improvement rather than a go-live gating condition misses how directly the current KPI set fails to test the very outcomes the board approved the initiative to achieve.'
+            },
+            {
+              label: 'Accept the current KPIs since defect counts and velocity are trending in a way engineering describes as "healthy."',
+              strength: 'weak',
+              concepts: ['alignment'],
+              consequence: 'Your report cites "healthy quality trends" without qualification. Two quarters later, adoption falls well short of target and no quality data explains why.',
+              rationale: 'This mistakes proxy metrics for outcome metrics — a classic vanity-metric trap. A dashboard can look "healthy" on delivery mechanics while telling you nothing about whether the product will achieve the strategic result it was funded to produce.'
+            }
+          ]
+        }
+      ]
+    },
+
+    summit: {
+      id: 'summit',
+      industry: 'Regional bank',
+      orgName: 'Summit Bancorp',
+      initiative: 'core banking modernization / real-time payments migration',
+      timeline: '10 weeks to a regulatory deadline',
+      strategicGoal: 'a 40% reduction in transaction processing time and real-time payments participation by a regulatory deadline, with zero increase in reconciliation exceptions',
+      briefing: 'Summit Bancorp is ten weeks from a regulator-imposed deadline to join a real-time payments network, contingent on migrating its legacy mainframe core to a cloud-native core banking platform delivered by a third-party vendor. The board\'s mandate is explicit: cut transaction processing time by 40%, participate in real-time payments by the regulatory deadline, and do so with zero increase in reconciliation exceptions. You have been engaged as the IS auditor to assess whether the bank\'s IT quality management practices provide reasonable assurance the migration will be safe to go live — and will actually deliver on the mandate, not just the deadline.',
+      evidence: [
+        {
+          tag: 'Exhibit A',
+          title: 'Org chart excerpt — QA / Testing Center of Excellence reporting lines',
+          body: '<p>The Testing Center of Excellence, responsible for core-banking QA sign-off, reports to the <strong>Program Director</strong>, who also owns the program schedule and budget and reports directly to the steering committee on go-live readiness.</p><p class="cite">Source: program governance charter, current version.</p>'
+        },
+        {
+          tag: 'Exhibit B',
+          title: 'Defect trend — ledger reconciliation module, UAT cycles 1–4',
+          body: '<div id="chartSummit" class="chart-wrap" aria-label="Bar chart of reconciliation defects across four UAT cycles, spiking in cycle 3 and flattening abruptly in cycle 4"></div><p class="muted" style="font-size:.85rem;">Regression defects in the ledger reconciliation module spike sharply in UAT Cycle 3, then flatten immediately before Cycle 4\'s steering committee update. Ticket-status history shows several Cycle 3 defects reclassified as "won\'t fix — edge case" rather than resolved.</p>'
+        },
+        {
+          tag: 'Exhibit C',
+          title: 'IT Quality Policy — excerpt',
+          body: '<blockquote>“All in-house developed applications shall be managed under the enterprise QMS, aligned to ISO 9001.”</blockquote><p class="cite">Section 3.4, current policy — note the scope: the policy explicitly covers in-house development. The core banking platform is vendor-delivered and configured, not in-house developed.</p>'
+        },
+        {
+          tag: 'Exhibit D',
+          title: 'Stakeholder interview — Program Director',
+          body: '<blockquote>“The vendor is ISO-certified themselves, so we don\'t need to duplicate their QA — that would just slow us down before the regulator\'s deadline.”</blockquote><p class="cite">Interview conducted this week, recorded with consent.</p>'
+        },
+        {
+          tag: 'Exhibit E',
+          title: 'QMS / change-management maturity self-assessment',
+          body: '<p>The bank\'s compliance function rates the organization <strong>“substantially compliant”</strong> with regulatory change-management guidance.</p><p class="cite">Assessment dated 18 months ago — conducted before the core modernization program existed, and not updated to reflect the current vendor-led delivery model.</p>'
+        },
+        {
+          tag: 'Exhibit F',
+          title: 'Board mandate and current KPI dashboard',
+          body: '<blockquote>“Real-time payments participation by the regulatory deadline; 40% reduction in transaction processing time; zero increase in reconciliation exceptions.”</blockquote><p class="cite">Source: board resolution, program charter.</p><p class="muted" style="font-size:.85rem;">Compare to the current program dashboard: "go-live readiness %" and "user stories completed." Neither metric is tied to reconciliation exception rate or payment settlement accuracy.</p>'
+        }
+      ],
+      chart: { labels:['UAT1','UAT2','UAT3','UAT4'], values:[4,7,19,3], unit:'reconciliation defects' },
+      decisions: [
+        {
+          context: 'Exhibit A shows the Testing Center of Excellence reporting to the same Program Director who owns the schedule and reports go-live readiness to the steering committee.',
+          prompt: 'Is this reporting structure a finding worth escalating, or a lower-risk item to note given the regulatory deadline pressure?',
+          options: [
+            {
+              label: 'Escalate now: recommend QA sign-off authority be moved outside the program\'s own management chain before the go-live decision.',
+              strength: 'strong',
+              concepts: ['independence'],
+              consequence: 'The steering committee adopts an independent sign-off gate reporting to the Chief Risk Officer. The regulatory deadline holds, but with an added review step.',
+              rationale: 'A QA function reporting to the person accountable for hitting a regulator-driven deadline is a structural independence impairment — the exact condition where schedule pressure is most likely to compress or override quality sign-off. Regulatory stakes make this more urgent to resolve, not less.'
+            },
+            {
+              label: 'Note it for the post-migration audit cycle; the regulatory deadline makes restructuring now impractical.',
+              strength: 'moderate',
+              concepts: ['independence'],
+              consequence: 'The finding is logged for follow-up. Go-live proceeds under the existing structure with no additional independent check.',
+              rationale: 'Practicality concerns are real, but "impractical to fix now" is different from "acceptable risk to carry into a regulator-facing, financial-system go-live." Given the stakes, some form of independent verification — even lightweight — is worth pursuing before launch rather than after.'
+            },
+            {
+              label: 'Ask the Program Director informally to loop in an independent reviewer before you finalize your report.',
+              strength: 'weak',
+              concepts: ['independence'],
+              consequence: 'The Program Director says they will "bring someone in if there\'s time." No such review occurs before go-live, and your final report doesn\'t mention the gap.',
+              rationale: 'Same failure mode as any informal, off-the-record fix: no auditable trail, no accountability if it doesn\'t happen, and it puts you in the position of negotiating remediation with the party you\'re assessing rather than reporting the condition.'
+            }
+          ]
+        },
+        {
+          context: 'Exhibit C shows the bank\'s QMS policy is explicitly scoped to in-house development — not vendor-delivered, vendor-configured platforms. Exhibit D shows the Program Director treating the vendor\'s own ISO certification as sufficient.',
+          prompt: 'How do you assess reliance on the vendor\'s ISO certification in place of the bank\'s own QMS scope?',
+          options: [
+            {
+              label: 'Require independent verification specifically of this implementation\'s configuration and integration — the vendor\'s certification covers their software development process, not this client\'s specific setup.',
+              strength: 'strong',
+              concepts: ['qaqcqms', 'maturity'],
+              consequence: 'An independent configuration review is added to the go-live checklist. It surfaces a mismatched settlement-timing parameter that would have caused reconciliation exceptions at launch.',
+              rationale: 'A vendor\'s ISO 9001 certification attests to their internal development process (a QMS claim about the vendor), not to the correctness of this specific client\'s configuration and integration (a QC-level, implementation-specific concern). Conflating the two is a classic QA/QC/QMS scope error, and here it left a real defect uncaught.'
+            },
+            {
+              label: 'Accept the vendor certification as a baseline, but request a summary of the vendor\'s test evidence for this specific implementation.',
+              strength: 'moderate',
+              concepts: ['qaqcqms'],
+              consequence: 'The vendor provides a high-level test summary. It offers some assurance but doesn\'t address configuration-specific risk in depth.',
+              rationale: 'Requesting evidence is better than accepting the certification at face value, but a summary alone doesn\'t close the gap between "the vendor\'s process is certified" and "this specific configuration was independently verified" — the distinction that actually matters here.'
+            },
+            {
+              label: 'Accept the vendor\'s ISO certification as sufficient assurance, consistent with the Program Director\'s position.',
+              strength: 'weak',
+              concepts: ['qaqcqms'],
+              consequence: 'No additional verification is performed. The mismatched settlement-timing parameter ships and is discovered in production three weeks post-launch.',
+              rationale: 'This is the scope error the evidence was designed to test: a vendor\'s process certification is not equivalent to independent assurance over how that vendor\'s platform was configured and integrated for this specific bank.'
+            }
+          ]
+        },
+        {
+          context: 'Exhibit B shows a defect count that spikes in UAT Cycle 3 and then flattens abruptly right before a steering committee update, with tickets reclassified rather than resolved.',
+          prompt: 'How do you respond to this pattern in the defect data?',
+          options: [
+            {
+              label: 'Formally validate the defect data\'s integrity — sample re-test a portion of the reclassified tickets and review the ticket-status change history — before relying on the reported downward trend in your assessment.',
+              strength: 'strong',
+              concepts: ['pdca', 'maturity'],
+              consequence: 'The sample re-test finds several "won\'t fix — edge case" tickets are unresolved defects affecting real transaction paths. Your report flags data integrity as a finding, separate from the underlying defects.',
+              rationale: 'A metric that improves right before it is reported, driven by reclassification rather than resolution, is a "Check" step being gamed rather than a genuine PDCA loop closing. Validating the underlying data before relying on a trend is a core audit discipline — and here it catches a governance-relevant reporting-integrity issue, not just a technical one.'
+            },
+            {
+              label: 'Assume the improvement is coincidental with the reporting cycle and proceed with the assessment based on the reported numbers.',
+              strength: 'moderate',
+              concepts: ['pdca'],
+              consequence: 'Your report relies on the reported trend. Two of the "won\'t fix" defects resurface in production after go-live.',
+              rationale: 'Treating a suspicious pattern as coincidence without checking it is a missed opportunity — the timing and reclassification pattern together are exactly the kind of signal that should prompt verification, not an assumption of good faith.'
+            },
+            {
+              label: 'Quietly ask a member of the test team, off the record, whether the numbers were adjusted before the steering committee update.',
+              strength: 'weak',
+              concepts: ['pdca'],
+              consequence: 'You get an informal, unattributable answer that doesn\'t make it into your workpapers. Your report cannot cite or act on what you were told.',
+              rationale: 'An off-the-record conversation produces no evidence you can rely on or document — it compromises the evidentiary standard your assessment needs to meet, and risks your own independence if it looks like you\'re trading informal information for a lighter finding.'
+            }
+          ]
+        },
+        {
+          context: 'Exhibit F shows the board\'s actual mandate alongside the metrics the program dashboard currently tracks.',
+          prompt: 'Do the current KPIs (go-live readiness %, user stories completed) trace to the board\'s mandate, or are they vanity metrics?',
+          options: [
+            {
+              label: 'Recommend gating the go-live decision on adding reconciliation exception rate and settlement accuracy as tracked KPIs before launch, not after.',
+              strength: 'strong',
+              concepts: ['alignment', 'maturity'],
+              consequence: 'The steering committee adds the metrics as go-live gating criteria. The configuration defect found earlier is now directly visible against a metric the board actually cares about.',
+              rationale: '"Go-live readiness %" and "stories completed" measure whether the program is on schedule, not whether it will achieve the board\'s actual mandate — reduced processing time, real-time payments participation, and stable reconciliation. Gating the decision on outcome-linked metrics is what strategic alignment requires here, given the regulatory and financial stakes.'
+            },
+            {
+              label: 'Recommend adding the outcome metrics as a post-launch monitoring improvement, while allowing go-live to proceed on the current dashboard.',
+              strength: 'moderate',
+              concepts: ['alignment'],
+              consequence: 'The metrics are added after launch. A reconciliation exception spike is detected in week two, after some transactions have already settled incorrectly.',
+              rationale: 'Recognizing the gap is the right instinct, but given a regulator-driven deadline and a mandate that explicitly names "zero increase in reconciliation exceptions," deferring the outcome metric past the go-live decision leaves the highest-stakes moment unmeasured against the thing that actually matters.'
+            },
+            {
+              label: 'Accept the current dashboard, since "go-live readiness %" is trending toward 100% ahead of the deadline.',
+              strength: 'weak',
+              concepts: ['alignment'],
+              consequence: 'Go-live proceeds on schedule. The regulator later flags reconciliation exceptions the bank\'s own dashboard never tracked.',
+              rationale: 'A readiness percentage measures whether the project plan is on schedule — it says nothing about whether the platform will actually hit the board\'s mandate. This is the vanity-metric trap in its clearest form: the dashboard looks good while measuring the wrong thing entirely.'
+            }
+          ]
+        }
+      ]
+    }
+  };
+
+  /* ============================ STATE ============================ */
+  var state = {
+    scenarioId: null,
+    screen: 'start',      // start | briefing | evidence | decision | debrief
+    decisionIndex: 0,
+    evidenceViewed: {},
+    choices: []           // { strength, concepts, consequence, rationale, optionLabel, decisionPrompt }
+  };
+
+  var STEP_LABELS = ['Briefing','Evidence','Decision 1','Decision 2','Decision 3','Decision 4','Debrief'];
+
+  function currentStepIndex(){
+    if(state.screen === 'start' || state.screen === 'briefing') return 0;
+    if(state.screen === 'evidence') return 1;
+    if(state.screen === 'decision') return 2 + state.decisionIndex;
+    if(state.screen === 'debrief') return 6;
+    return 0;
+  }
+
+  function renderProgress(){
+    var list = document.getElementById('progressList');
+    if(state.screen === 'start'){ list.innerHTML=''; return; }
+    var cur = currentStepIndex();
+    list.innerHTML = STEP_LABELS.map(function(label, i){
+      var st = i < cur ? 'done' : (i === cur ? 'current' : 'upcoming');
+      return '<li data-state="'+st+'"'+(st==='current' ? ' aria-current="step"' : '')+'>'+label+'</li>';
+    }).join('');
+  }
+
+  function scenario(){ return SCENARIOS[state.scenarioId]; }
+
+  /* ============================ RENDER: START ============================ */
+  function renderStart(){
+    var s = document.getElementById('screen');
+    s.innerHTML =
+      '<h1>The Independence Question</h1>' +
+      '<p class="muted">A CISA Domain 2 audit-simulation activity on quality assurance and quality management of IT.</p>' +
+      '<div class="objective-box"><span class="label">Learning objective</span>' +
+      '<p style="margin:0;">Given evidence from an organization\'s IT quality processes, diagnose quality assurance/quality management deficiencies, evaluate their impact on organizational IT strategy, and select governance-aligned remediation actions — justifying each choice against QA vs. QC vs. QMS, independence of the QA function, PDCA/continuous improvement, and strategic alignment of quality objectives.</p></div>' +
+      '<h2>Choose an organization to audit</h2>' +
+      '<div class="scenario-picker">' +
+        scenarioCardHTML('meridian') +
+        scenarioCardHTML('summit') +
+      '</div>';
+
+    document.querySelectorAll('.scenario-card').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        state.scenarioId = btn.getAttribute('data-scenario');
+        state.screen = 'briefing';
+        state.decisionIndex = 0;
+        state.evidenceViewed = {};
+        state.choices = [];
+        render();
+      });
+    });
+    renderProgress();
+  }
+
+  function scenarioCardHTML(id){
+    var sc = SCENARIOS[id];
+    return '<button type="button" class="scenario-card" data-scenario="'+id+'">' +
+      '<span class="industry">'+sc.industry+'</span>' +
+      '<h3>'+sc.orgName+'</h3>' +
+      '<p class="muted" style="margin:0;">'+cap(sc.initiative)+' — '+sc.timeline+'.</p>' +
+      '<span class="cta">Begin this audit →</span>' +
+      '</button>';
+  }
+  function cap(str){ return str.charAt(0).toUpperCase() + str.slice(1); }
+
+  /* ============================ RENDER: BRIEFING ============================ */
+  function renderBriefing(){
+    var sc = scenario();
+    var s = document.getElementById('screen');
+    s.innerHTML =
+      '<h1>Engagement briefing</h1>' +
+      '<div class="objective-box"><span class="label">Learning objective</span>' +
+      '<p style="margin:0;">Diagnose quality assurance/quality management deficiencies, evaluate their impact on IT strategy, and select governance-aligned remediation — justified against QA vs. QC vs. QMS, independence, PDCA, maturity models, and strategic alignment.</p></div>' +
+      '<div class="panel">' +
+        '<h3 style="margin-top:0;">'+sc.orgName+' <span class="muted" style="font-weight:400;">— '+sc.industry+'</span></h3>' +
+        '<p>'+sc.briefing+'</p>' +
+        '<p class="muted"><strong>Your role:</strong> engaged IS auditor, assessing IT quality management maturity ahead of the strategic milestone described above.</p>' +
+      '</div>' +
+      '<div class="continue-row">' +
+        '<button type="button" class="btn secondary" id="backToStart">Choose a different organization</button>' +
+        '<span style="width:.6rem;"></span>' +
+        '<button type="button" class="btn" id="toEvidence">Begin evidence review</button>' +
+      '</div>';
+    document.getElementById('backToStart').addEventListener('click', function(){
+      state.screen = 'start'; render();
+    });
+    document.getElementById('toEvidence').addEventListener('click', function(){
+      state.screen = 'evidence'; render();
+    });
+    renderProgress();
+  }
+
+  /* ============================ RENDER: EVIDENCE ============================ */
+  function renderEvidence(){
+    var sc = scenario();
+    var s = document.getElementById('screen');
+    var viewedCount = Object.keys(state.evidenceViewed).length;
+    var total = sc.evidence.length;
+
+    var cardsHTML = sc.evidence.map(function(ev, i){
+      return '<details class="evidence-card" data-index="'+i+'">' +
+        '<summary aria-describedby="ev-hint-'+i+'">' +
+          '<span class="exhibit-tag">'+ev.tag+'</span>' +
+          '<span>'+ev.title+'</span>' +
+          '<span class="viewed-badge" id="viewed-'+i+'" aria-hidden="true"></span>' +
+          '<span class="chev" aria-hidden="true">▶</span>' +
+        '</summary>' +
+        '<div class="body" id="ev-hint-'+i+'">'+ev.body+'</div>' +
+      '</details>';
+    }).join('');
+
+    s.innerHTML =
+      '<h1>Evidence review — '+sc.orgName+'</h1>' +
+      '<p class="muted">Expand each exhibit before proceeding. Real audit judgment depends on what you choose to examine.</p>' +
+      '<p class="evidence-progress" id="evProgress" role="status" aria-live="polite">'+viewedCount+' of '+total+' exhibits reviewed</p>' +
+      '<div class="evidence-grid">'+cardsHTML+'</div>' +
+      '<div class="continue-row">' +
+        '<button type="button" class="btn" id="toDecisions" disabled>Proceed to decision points</button>' +
+      '</div>';
+
+    // wire up details
+    var details = s.querySelectorAll('.evidence-card');
+    details.forEach(function(d){
+      d.addEventListener('toggle', function(){
+        var idx = d.getAttribute('data-index');
+        if(d.open){
+          state.evidenceViewed[idx] = true;
+          document.getElementById('viewed-'+idx).textContent = 'Reviewed';
+        }
+        updateEvidenceProgress();
+      });
+    });
+
+    // render charts if present
+    if(sc.chart){
+      var chartId = state.scenarioId === 'meridian' ? 'chartMeridian' : 'chartSummit';
+      var el = document.getElementById(chartId);
+      if(el) el.innerHTML = trendChartSVG(sc.chart);
+    }
+
+    updateEvidenceProgress();
+
+    document.getElementById('toDecisions').addEventListener('click', function(){
+      state.screen = 'decision';
+      state.decisionIndex = 0;
+      render();
+    });
+  }
+
+  function updateEvidenceProgress(){
+    var sc = scenario();
+    var viewedCount = Object.keys(state.evidenceViewed).length;
+    var total = sc.evidence.length;
+    var progEl = document.getElementById('evProgress');
+    if(progEl) progEl.textContent = viewedCount + ' of ' + total + ' exhibits reviewed';
+    var btn = document.getElementById('toDecisions');
+    if(btn) btn.disabled = viewedCount < total;
+  }
+
+  function trendChartSVG(chart){
+    var w = 640, h = 220, padL = 34, padB = 30, padT = 14, padR = 10;
+    var innerW = w - padL - padR, innerH = h - padT - padB;
+    var max = Math.max.apply(null, chart.values) * 1.15;
+    var n = chart.values.length;
+    var barW = innerW / n * 0.55;
+    var gap = innerW / n;
+    var bars = chart.values.map(function(v, i){
+      var barH = (v / max) * innerH;
+      var x = padL + i * gap + (gap - barW) / 2;
+      var y = padT + innerH - barH;
+      return '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+barH.toFixed(1)+'" fill="var(--green)" rx="2"></rect>' +
+             '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-6).toFixed(1)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink)">'+v+'</text>' +
+             '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(h-padB+16).toFixed(1)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink-soft)">'+chart.labels[i]+'</text>';
+    }).join('');
+    var axisLine = '<line x1="'+padL+'" y1="'+(padT+innerH)+'" x2="'+(padL+innerW)+'" y2="'+(padT+innerH)+'" stroke="var(--line)" stroke-width="1"></line>';
+    return '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+chart.unit+' by period">' + axisLine + bars + '</svg>' +
+      '<div class="chart-legend"><span style="color:var(--green);">'+chart.unit+'</span></div>';
+  }
+
+  /* ============================ RENDER: DECISION ============================ */
+  function renderDecision(){
+    var sc = scenario();
+    var idx = state.decisionIndex;
+    var d = sc.decisions[idx];
+    var s = document.getElementById('screen');
+    var alreadyChosen = state.choices[idx];
+
+    var optionsHTML = d.options.map(function(opt, i){
+      var letter = String.fromCharCode(65 + i);
+      var chosen = alreadyChosen && alreadyChosen.optionIndex === i;
+      var disabled = !!alreadyChosen;
+      return '<button type="button" class="option-btn" data-opt="'+i+'" '+
+        (disabled ? 'disabled' : '') + ' aria-pressed="'+(chosen ? 'true' : 'false')+'">' +
+        '<span class="letter">'+letter+'</span><span>'+opt.label+'</span></button>';
+    }).join('');
+
+    s.innerHTML =
+      '<h1>Decision point '+(idx+1)+' of '+sc.decisions.length+'</h1>' +
+      '<div class="decision-context"><span class="label">Situation</span><p style="margin:0;">'+d.context+'</p></div>' +
+      '<h2>'+d.prompt+'</h2>' +
+      '<div class="options" id="optionsList">'+optionsHTML+'</div>' +
+      '<div id="feedbackArea" role="status" aria-live="polite"></div>' +
+      '<div class="continue-row" id="decisionNavRow"></div>';
+
+    document.querySelectorAll('#optionsList .option-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(btn.disabled) return;
+        var i = parseInt(btn.getAttribute('data-opt'), 10);
+        chooseOption(idx, i);
+      });
+    });
+
+    if(alreadyChosen){
+      showFeedback(idx, alreadyChosen.optionIndex);
+      showDecisionNav(idx);
+    }
+    renderProgress();
+  }
+
+  function chooseOption(decisionIdx, optIdx){
+    var sc = scenario();
+    var d = sc.decisions[decisionIdx];
+    var opt = d.options[optIdx];
+    state.choices[decisionIdx] = {
+      optionIndex: optIdx,
+      strength: opt.strength,
+      concepts: opt.concepts,
+      consequence: opt.consequence,
+      rationale: opt.rationale,
+      optionLabel: opt.label,
+      decisionPrompt: d.prompt
+    };
+    // lock buttons
+    document.querySelectorAll('#optionsList .option-btn').forEach(function(btn, i){
+      btn.disabled = true;
+      btn.setAttribute('aria-pressed', i === optIdx ? 'true' : 'false');
+    });
+    showFeedback(decisionIdx, optIdx);
+    showDecisionNav(decisionIdx);
+  }
+
+  function showFeedback(decisionIdx, optIdx){
+    var sc = scenario();
+    var opt = sc.decisions[decisionIdx].options[optIdx];
+    var area = document.getElementById('feedbackArea');
+    var strengthText = opt.strength === 'strong' ? 'Strong audit judgment' : (opt.strength === 'moderate' ? 'Defensible, but incomplete' : 'Weak — reconsider the reasoning');
+    var conceptTags = opt.concepts.map(function(c){ return '<span class="concept-tag">'+CONCEPTS[c]+'</span>'; }).join('');
+    area.innerHTML =
+      '<div class="feedback" data-strength="'+opt.strength+'">' +
+        '<span class="strength-label">'+strengthText+'</span>' +
+        '<p><strong>What happens next:</strong> '+opt.consequence+'</p>' +
+        '<p style="margin-bottom:.4em;"><strong>Why:</strong> '+opt.rationale+'</p>' +
+        conceptTags +
+      '</div>';
+  }
+
+  function showDecisionNav(decisionIdx){
+    var sc = scenario();
+    var row = document.getElementById('decisionNavRow');
+    var isLast = decisionIdx === sc.decisions.length - 1;
+    row.innerHTML = '<button type="button" class="btn" id="nextDecisionBtn">' +
+      (isLast ? 'View debrief' : 'Continue to decision '+(decisionIdx+2)) + '</button>';
+    document.getElementById('nextDecisionBtn').addEventListener('click', function(){
+      if(isLast){
+        state.screen = 'debrief';
+      } else {
+        state.decisionIndex = decisionIdx + 1;
+      }
+      render();
+    });
+  }
+
+  /* ============================ RENDER: DEBRIEF ============================ */
+  function renderDebrief(){
+    var sc = scenario();
+    var s = document.getElementById('screen');
+
+    var counts = { strong:0, moderate:0, weak:0 };
+    state.choices.forEach(function(c){ counts[c.strength]++; });
+
+    var pathHTML = state.choices.map(function(c, i){
+      var markerChar = c.strength === 'strong' ? '✓' : (c.strength === 'moderate' ? '~' : '!');
+      return '<div class="debrief-item" data-strength="'+c.strength+'">' +
+        '<span class="marker" aria-hidden="true">'+markerChar+'</span>' +
+        '<div><h3 style="margin:0 0 .2em; font-size:.98rem;">Decision '+(i+1)+': '+c.decisionPrompt+'</h3>' +
+        '<p class="muted" style="margin:0 0 .4em;">You chose: '+c.optionLabel+'</p>' +
+        '<span class="concept-tag">'+c.concepts.map(function(x){return CONCEPTS[x];}).join(', ')+'</span></div>' +
+      '</div>';
+    }).join('');
+
+    var overallNote = overallRationale(counts);
+
+    s.innerHTML =
+      '<h1>Debrief — '+sc.orgName+'</h1>' +
+      '<p class="muted">This is a reflection tool, not a pass/fail score. Review how your path compares to the strongest available audit judgment at each point.</p>' +
+      '<div class="score-summary">' +
+        '<span class="score-pill" data-k="strong"><span class="n">'+counts.strong+'</span> strong</span>' +
+        '<span class="score-pill" data-k="moderate"><span class="n">'+counts.moderate+'</span> defensible</span>' +
+        '<span class="score-pill" data-k="weak"><span class="n">'+counts.weak+'</span> weak</span>' +
+      '</div>' +
+      '<div class="panel"><h2 style="margin-top:0;">Overall read</h2><p style="margin:0;">'+overallNote+'</p></div>' +
+      '<h2>Your path</h2>' +
+      '<div class="debrief-path">'+pathHTML+'</div>' +
+      '<div class="panel"><h2 style="margin-top:0;">The strongest audit-professional path</h2>' +
+      '<p style="margin:0;">Across all four decisions in this scenario, the strongest path consistently: (1) treats structural QA independence as a live risk rather than a paperwork issue, especially this close to a strategic milestone; (2) right-sizes quality-framework recommendations to the real timeline instead of either ignoring the gap or over-promising a rollout that can\'t be substantively delivered; (3) keeps governance accountability for strategic alignment distinct from engineering\'s legitimate ownership of day-to-day quality control; and (4) insists that quality KPIs trace to the organization\'s actual strategic objective rather than accepting delivery-mechanics metrics as a proxy for outcomes.</p></div>' +
+      '<div class="replay-row">' +
+        '<button type="button" class="btn secondary" id="replaySame">Try this organization again</button>' +
+        '<button type="button" class="btn" id="replayOther">Audit the other organization</button>' +
+        '<button type="button" class="btn secondary" id="replayGlossary">Review the glossary</button>' +
+      '</div>';
+
+    document.getElementById('replaySame').addEventListener('click', function(){
+      state.decisionIndex = 0; state.evidenceViewed = {}; state.choices = [];
+      state.screen = 'briefing'; render();
+    });
+    document.getElementById('replayOther').addEventListener('click', function(){
+      state.scenarioId = state.scenarioId === 'meridian' ? 'summit' : 'meridian';
+      state.decisionIndex = 0; state.evidenceViewed = {}; state.choices = [];
+      state.screen = 'briefing'; render();
+    });
+    document.getElementById('replayGlossary').addEventListener('click', function(){
+      openGlossary();
+    });
+
+    renderProgress();
+  }
+
+  function overallRationale(counts){
+    if(counts.weak === 0 && counts.moderate === 0){
+      return 'Every decision reflected the strongest available audit judgment: you treated independence as structural, sized recommendations to the real timeline, kept governance and operational quality control distinct, and tied quality KPIs back to the organization\'s strategic objective. That is a defensible, board-ready assessment.';
+    }
+    if(counts.weak === 0){
+      return 'Your path avoided the weaker responses and reflects sound audit reasoning overall. The decisions marked "defensible, but incomplete" are worth a second look — not because they were wrong to consider, but because they tend to understate urgency or accept a partial fix where the evidence supported a firmer recommendation.';
+    }
+    return 'Your path includes at least one response that would weaken an audit assessment in practice — most often by treating a structural issue (independence, scope, or strategic alignment) as something that can be handled informally or deferred. Revisit those decision points and the "Why" explanations above; the underlying pattern to watch for is treating governance-level issues as if they were operational ones.';
+  }
+
+  /* ============================ RENDER ROUTER ============================ */
+  function render(){
+    var s = document.getElementById('screen');
+    if(state.screen === 'start') renderStart();
+    else if(state.screen === 'briefing') renderBriefing();
+    else if(state.screen === 'evidence') renderEvidence();
+    else if(state.screen === 'decision') renderDecision();
+    else if(state.screen === 'debrief') renderDebrief();
+    s.scrollIntoView({ block:'start', behavior:'instant' in window ? 'instant' : 'auto' });
+    window.scrollTo(0,0);
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
