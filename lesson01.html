@@ -42,6 +42,7 @@
       <span class="meta-chip">Session: <strong>Afternoon, Day 1</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>18%</strong> (~27 Qs)</span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>10 Questions</strong></span>
     </div>
   </div>
@@ -650,6 +651,202 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Test data and ITF deliberately push fictitious transactions through production. If those entries aren't completely removed or reversed when testing ends, they corrupt real data and reporting &mdash; a significant risk the auditor owns.</p></div>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>Test data and ITF introduce fictitious data into production. The auditor must ensure all fictitious entries are <strong>completely removed or reversed</strong> before concluding the test &mdash; failure to remove test data is a serious risk.</div>
+
+          <!-- ══ ACTIVITY: Evidence Reliability Ladder ══ -->
+          <h4>Activity &mdash; build the evidence ladder</h4>
+          <p>Eight pieces of evidence from a single access-management audit, dealt in scrambled order. Rank them from <strong>most reliable at the top</strong> to least reliable at the bottom, then check. Two pairs in this deck contain the <em>same underlying data</em> and differ only in how it reached you &mdash; those pairs are the whole exercise.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Tables rank independently, then compare ladders before anyone checks. Where two tables disagree, make them argue provenance &mdash; <em>who produced this, and who could have altered it before it reached the auditor?</em> Expand the activity to full screen when you debrief so the finished ladder reads as one picture.</div>
+
+          <style>
+            .evd{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .evd *{box-sizing:border-box;}
+            .evd-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .evd-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+            .evd-lead{font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;font-weight:700;font-family:'Arial Narrow',Arial,sans-serif;}
+            .evd-lead b{color:var(--gold);font-size:1rem;}
+            .evd-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .evd-scale{display:flex;justify-content:space-between;font-size:0.66rem;color:var(--text-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.35rem;}
+            .evd-list{list-style:none;margin:0;padding:0;display:grid;gap:0.4rem;counter-reset:evd;}
+            .evd-row{display:grid;grid-template-columns:34px 1fr auto;gap:0.6rem;align-items:center;background:var(--card-bg);border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.55rem 0.65rem;transition:border-color .12s,background .12s;}
+            .evd-rank{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:1.05rem;color:var(--text-muted);text-align:center;}
+            .evd-body{min-width:0;}
+            .evd-t{font-size:0.84rem;color:var(--text-primary);line-height:1.4;}
+            .evd-src{display:block;font-size:0.68rem;color:var(--text-muted);margin-top:0.12rem;}
+            .evd-mv{display:flex;flex-direction:column;gap:0.15rem;}
+            .evd-mv button{width:26px;height:20px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-muted);border-radius:3px;cursor:pointer;font-size:0.62rem;line-height:1;padding:0;}
+            .evd-mv button:hover:not([disabled]){border-color:var(--gold);color:var(--gold);}
+            .evd-mv button:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+            .evd-mv button[disabled]{opacity:0.3;cursor:default;}
+            .evd-row.hit{border-left-color:var(--correct);background:var(--correct-bg);}
+            .evd-row.near{border-left-color:var(--navy);background:var(--blue-pale);}
+            .evd-row.miss{border-left-color:var(--wrong);background:var(--wrong-bg);}
+            .evd-delta{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.72rem;letter-spacing:0.04em;white-space:nowrap;}
+            .evd-delta.hit{color:var(--correct);}
+            .evd-delta.near{color:var(--navy-light);}
+            .evd-delta.miss{color:var(--wrong);}
+            .evd-why{grid-column:1/-1;font-size:0.76rem;color:var(--text-secondary);line-height:1.5;border-top:1px dashed var(--border);margin-top:0.45rem;padding-top:0.45rem;}
+            .evd-why b{color:var(--text-primary);}
+            .evd-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .evd-btn:hover{background:var(--gold-light);}
+            .evd-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .evd-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .evd-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .evd-expand:hover{background:var(--gold);color:#fff;}
+            .evd-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .evd-fb{margin-top:0.9rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.83rem;color:var(--text-secondary);line-height:1.6;}
+            .evd-fb b{color:var(--gold);}
+            .evd-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .evd.is-expanded{position:fixed;inset:1.5vh 2vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.85rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .evd.is-expanded .evd-card{max-width:1180px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            /* Expanded: two columns (ranks 1-4 left, 5-8 right) so the whole ladder — rationales and all — fits one viewport without scrolling. */
+            .evd.is-expanded .evd-list{grid-auto-flow:column;grid-template-rows:repeat(4,auto);grid-template-columns:1fr 1fr;gap:0.4rem 0.9rem;}
+            .evd.is-expanded .evd-scale{max-width:calc(50% - 0.45rem);margin-bottom:0.3rem;}
+            .evd.is-expanded .evd-t{font-size:0.82rem;line-height:1.3;}
+            .evd.is-expanded .evd-src{font-size:0.64rem;}
+            .evd.is-expanded .evd-why{font-size:0.74rem;line-height:1.38;margin-top:0.25rem;padding-top:0.25rem;}
+            .evd.is-expanded .evd-row{padding:0.4rem 0.62rem;}
+            .evd.is-expanded .evd-top{margin-bottom:0.5rem;}
+            .evd.is-expanded .evd-fb{font-size:0.78rem;line-height:1.45;padding:0.6rem 0.75rem;margin-top:0.55rem;column-count:2;column-gap:1.3rem;}
+            @media (max-width:600px){ .evd-row{grid-template-columns:26px 1fr auto;} }
+          </style>
+
+          <div class="evd" id="evd-root">
+            <div class="evd-card">
+              <div class="evd-top">
+                <span class="evd-lead">Ranked <b id="evdN">0</b>/8 in the right position</span>
+                <div class="evd-tools">
+                  <button type="button" class="evd-btn" id="evdCheck">Check my ladder</button>
+                  <button type="button" class="evd-btn ghost" id="evdReset">Reshuffle</button>
+                  <button type="button" class="evd-expand" id="evdExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="evd-scale"><span>&#9650; Most reliable</span><span>Least reliable &#9660;</span></div>
+              <ul class="evd-list" id="evdList"></ul>
+              <div class="evd-fb" id="evdFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('evd-root'); if(!root) return;
+            // Correct order, most reliable (0) to least (7).
+            var E=[
+              {t:'You re-perform the quarterly access reconciliation yourself, from the raw AD export you pulled.',
+               s:'Auditor re-performance',
+               w:'<b>Re-performance by the auditor is the top of both ladders.</b> You controlled the data, the procedure, and the result &mdash; nobody stood between the system and your conclusion.'},
+              {t:'You observe the access-review meeting in person and watch the manager challenge and revoke two entitlements.',
+               s:'Auditor observation',
+               w:'Direct auditor observation ranks just below re-performance. It is first-hand, but it proves the control worked <em>while you were watching</em> &mdash; which is not the same as proving it works every quarter.'},
+              {t:'You extract the AD group-membership report yourself using read-only audit credentials.',
+               s:'Auditor-obtained system data',
+               w:'<b>Pair one, half one.</b> System-generated and obtained by you under read-only access &mdash; strong. Compare it with the identical report the administrator emailed you.'},
+              {t:'The bank returns a signed confirmation listing everyone authorized to approve payment files.',
+               s:'Third-party confirmation',
+               w:'Third-party documentary evidence outranks anything the organization produced about itself, because the source has no stake in your conclusion.'},
+              {t:'The administrator emails you an AD group-membership report he exported this morning.',
+               s:'Auditee-produced system data',
+               w:'<b>Pair one, half two.</b> The same underlying data as the report you pulled &mdash; but it passed through the hands of the person whose work you are testing, and could have been filtered before it reached you. Same data, materially weaker evidence.'},
+              {t:'The signed access-review certification forms from the last two quarters, retrieved from the shared drive.',
+               s:'Auditee documentary evidence',
+               w:'Internally produced documentary evidence. It shows the control was <em>documented</em>; it does not show the reviewer actually looked at anything.'},
+              {t:'The IT director tells you in a meeting that terminated users are always removed within 24 hours.',
+               s:'Oral assertion',
+               w:'<b>Pair two, half one.</b> Inquiry sits at the bottom of the test ladder &mdash; an unsupported assertion by the party under audit. It tells you what to test, never what is true.'},
+              {t:'Your notes recording the IT director&rsquo;s statement that terminations are processed within 24 hours.',
+               s:'Auditor notes of an oral assertion',
+               w:'<b>Pair two, half two &mdash; and the trap.</b> Writing an assertion down does not corroborate it. Auditor-prepared notes of a claim inherit the reliability of the claim, so this is the weakest item on the board.'}
+            ];
+            var order=[], checked=false;
+            var list=document.getElementById('evdList'), fb=document.getElementById('evdFb'),
+                bChk=document.getElementById('evdCheck'), bRst=document.getElementById('evdReset'),
+                elN=document.getElementById('evdN'), expBtn=document.getElementById('evdExpand');
+
+            function shuffle(){
+              // fixed, deliberately misleading starting order (notes above the raw export, admin email above the auditor pull)
+              order=[6,2,7,0,4,5,1,3]; checked=false; fb.hidden=true; render();
+            }
+            function render(){
+              list.innerHTML=order.map(function(idx,pos){
+                var e=E[idx], cls='evd-row', delta='', why='';
+                if(checked){
+                  var d=Math.abs(pos-idx);
+                  cls+= d===0?' hit' : d===1?' near' : ' miss';
+                  delta='<span class="evd-delta '+(d===0?'hit':d===1?'near':'miss')+'">'+
+                        (d===0?'&#10003; exact':(pos<idx?'&#9650; ':'&#9660; ')+d+' off')+'</span>';
+                  why='<div class="evd-why"><b>True rank '+(idx+1)+' &mdash; '+e.s+'.</b> '+e.w+'</div>';
+                }
+                return '<li class="'+cls+'">'+
+                  '<span class="evd-rank">'+(pos+1)+'</span>'+
+                  '<span class="evd-body"><span class="evd-t">'+e.t+'</span>'+
+                  (checked?'<span class="evd-src">'+e.s+'</span>':'')+'</span>'+
+                  (checked?delta:'<span class="evd-mv"><button type="button" data-mv="-1" data-pos="'+pos+'" aria-label="Move up"'+(pos===0?' disabled':'')+'>&#9650;</button>'+
+                   '<button type="button" data-mv="1" data-pos="'+pos+'" aria-label="Move down"'+(pos===order.length-1?' disabled':'')+'>&#9660;</button></span>')+
+                  why+'</li>';
+              }).join('');
+              var exact=order.filter(function(idx,pos){return idx===pos;}).length;
+              elN.textContent=checked?exact:0;
+              bChk.textContent=checked?'Checked':'Check my ladder';
+              bChk.disabled=checked;
+            }
+            list.addEventListener('click',function(ev){
+              var b=ev.target.closest('button[data-mv]'); if(!b||checked) return;
+              var p=+b.dataset.pos, d=+b.dataset.mv, q=p+d;
+              if(q<0||q>=order.length) return;
+              var t=order[p]; order[p]=order[q]; order[q]=t;
+              render();
+              var sel=list.children[q].querySelector('button[data-mv="'+d+'"]');
+              if(sel && !sel.disabled) sel.focus();
+            });
+            bChk.addEventListener('click',function(){
+              checked=true; render();
+              var exact=order.filter(function(idx,pos){return idx===pos;}).length;
+              var pair1 = order.indexOf(2) < order.indexOf(4);
+              var pair2 = order.indexOf(6) < order.indexOf(7);
+              fb.innerHTML='<b>'+exact+' of 8 exactly placed.</b> Position is not the point &mdash; the pairs are. '+
+                'The report <em>you</em> pulled sits '+(pair1?'above':'<b>below</b>')+' the identical one the admin emailed'+
+                (pair1?' &mdash; correct. ':' &mdash; same data, different provenance. ')+
+                'The spoken assertion sits '+(pair2?'above':'<b>below</b>')+' your notes of it'+
+                (pair2?' &mdash; correct; writing a claim down adds nothing.':' &mdash; transcribing a claim does not corroborate it.')+
+                ' <b>Carry this rule:</b> reliability is decided by <em>provenance</em>, not format &mdash; ask who produced it and who could have altered it before it reached you.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',shuffle);
+
+            // Expand into a full-viewport overlay (matches the simulators elsewhere in the workshop).
+            var backdrop=document.createElement('div'); backdrop.className='evd-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: evidence reliability ladder');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            shuffle();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <!-- 8 -->
@@ -683,6 +880,226 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>An auditor who uncovers an actively exploitable security hole mid-fieldwork communicates it to management/the audit committee right away. Waiting weeks for the final report would itself be an audit-quality failure.</p></div>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>When a critical issue surfaces during fieldwork, the correct action is to <strong>communicate it immediately</strong> to the appropriate level &mdash; not wait for the final report. Timing of communication matters.</div>
+
+          <!-- ══ ACTIVITY: Write the Finding (CRAF) ══ -->
+          <h4>Activity &mdash; write the finding, then review it</h4>
+          <p>Everything else in this lesson asks you to recognize an answer. This one asks you to <strong>produce</strong> one. Read the fieldwork facts, draft all five CRAF elements in your own words, then reveal the model finding beside your draft and score yourself against the reviewer&rsquo;s checklist. Your draft is saved in this browser, so you can leave and come back to it.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Draft silently for eight minutes &mdash; no reveal. Then swap seats and review a neighbour&rsquo;s draft using the checklist before either of you sees the model. The two questions that produce the most argument, every time: <em>is the cause a root cause or just the condition restated?</em> and <em>does the recommendation leave the work with management?</em> Expand to full screen for the side-by-side comparison.</div>
+
+          <style>
+            .crf{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .crf *{box-sizing:border-box;}
+            .crf-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .crf-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+            .crf-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .crf-lead b{color:var(--gold);font-size:1rem;}
+            .crf-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .crf-facts{background:var(--blue-pale);border-left:3px solid var(--navy-light);border-radius:0 4px 4px 0;padding:0.8rem 0.95rem;font-size:0.84rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1rem;}
+            .crf-facts b{color:var(--text-primary);}
+            .crf-facts ul{list-style:none;margin:0.5rem 0 0;padding:0;display:grid;gap:0.3rem;}
+            .crf-facts li{padding-left:0.95rem;position:relative;font-size:0.81rem;}
+            .crf-facts li::before{content:'\25B8';position:absolute;left:0;color:var(--gold);}
+            .crf-rows{display:grid;gap:0.55rem;}
+            .crf-row{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);}
+            .crf-lab{display:flex;align-items:baseline;gap:0.5rem;margin-bottom:0.35rem;flex-wrap:wrap;}
+            .crf-key{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);}
+            .crf-q{font-size:0.72rem;color:var(--text-muted);}
+            .crf-pair{display:grid;gap:0.5rem;}
+            .crf-pair.split{grid-template-columns:1fr 1fr;}
+            .crf-row textarea{width:100%;min-height:64px;resize:vertical;font-family:Arial,sans-serif;font-size:0.82rem;line-height:1.5;color:var(--text-primary);background:var(--body-bg);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.6rem;}
+            .crf-row textarea:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+            .crf-model{background:var(--correct-bg);border:1px solid var(--correct);border-radius:4px;padding:0.5rem 0.6rem;font-size:0.82rem;line-height:1.5;color:var(--text-secondary);}
+            .crf-model span{display:block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.64rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--correct);margin-bottom:0.2rem;}
+            .crf-trap{margin-top:0.45rem;font-size:0.74rem;color:var(--text-muted);line-height:1.5;border-top:1px dashed var(--border);padding-top:0.4rem;}
+            .crf-trap b{color:var(--wrong);}
+            .crf-check{margin-top:1rem;background:var(--section-alt);border:1px solid var(--border);border-radius:5px;padding:0.85rem 0.95rem;}
+            .crf-check h5{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-primary);margin:0 0 0.55rem;}
+            .crf-check ul{list-style:none;margin:0;padding:0;display:grid;gap:0.4rem;}
+            .crf-check label{display:flex;gap:0.55rem;align-items:flex-start;font-size:0.81rem;color:var(--text-secondary);line-height:1.5;cursor:pointer;}
+            .crf-check input{margin-top:0.25rem;accent-color:var(--gold);flex-shrink:0;}
+            .crf-score{margin-top:0.7rem;padding-top:0.6rem;border-top:1px dashed var(--border);font-size:0.82rem;color:var(--text-secondary);}
+            .crf-score b{color:var(--gold);}
+            .crf-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .crf-btn:hover{background:var(--gold-light);}
+            .crf-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .crf-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .crf-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .crf-expand:hover{background:var(--gold);color:#fff;}
+            .crf-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .crf-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .crf.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            /* Expanded: facts and checklist move to a left rail so all five CRAF elements fit one viewport beside their models. */
+            .crf.is-expanded .crf-card{max-width:1400px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;display:grid;grid-template-columns:320px 1fr;grid-template-rows:auto auto 1fr;gap:0.4rem 0.9rem;align-items:start;}
+            .crf.is-expanded .crf-top{grid-column:1/-1;margin-bottom:0;}
+            .crf.is-expanded .crf-facts{grid-column:1;grid-row:2;margin:0;font-size:0.73rem;line-height:1.45;padding:0.6rem 0.7rem;}
+            .crf.is-expanded .crf-facts li{font-size:0.71rem;line-height:1.42;}
+            .crf.is-expanded .crf-facts ul{gap:0.22rem;margin-top:0.4rem;}
+            .crf.is-expanded .crf-check{grid-column:1;grid-row:3;margin:0;padding:0.55rem 0.7rem;}
+            .crf.is-expanded .crf-check h5{margin-bottom:0.4rem;}
+            .crf.is-expanded .crf-check ul{gap:0.24rem;}
+            .crf.is-expanded .crf-check label{font-size:0.7rem;line-height:1.38;}
+            .crf.is-expanded .crf-score{font-size:0.76rem;}
+            .crf.is-expanded .crf-rows{grid-column:2;grid-row:2/4;gap:0.25rem;}
+            .crf.is-expanded .crf-row{padding:0.35rem 0.55rem;}
+            .crf.is-expanded .crf-row textarea{min-height:28px;font-size:0.78rem;line-height:1.45;padding:0.4rem 0.5rem;}
+            .crf.is-expanded .crf-model{font-size:0.73rem;line-height:1.36;padding:0.32rem 0.48rem;}
+            .crf.is-expanded .crf-model span{font-size:0.6rem;margin-bottom:0.1rem;}
+            .crf.is-expanded .crf-trap{font-size:0.68rem;line-height:1.35;margin-top:0.18rem;padding-top:0.16rem;border-top:none;}
+            .crf.is-expanded .crf-key{font-size:0.76rem;}
+            .crf.is-expanded .crf-q{font-size:0.68rem;}
+            .crf.is-expanded .crf-lab{margin-bottom:0.25rem;}
+            @media (max-width:1100px){ .crf.is-expanded .crf-card{grid-template-columns:1fr;} .crf.is-expanded .crf-rows{grid-column:1;grid-row:auto;} .crf.is-expanded .crf-facts,.crf.is-expanded .crf-check{grid-column:1;grid-row:auto;} }
+            @media (max-width:820px){ .crf-pair.split{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="crf" id="crf-root">
+            <div class="crf-card">
+              <div class="crf-top">
+                <span class="crf-lead">Draft <b id="crfN">0</b>/5 elements</span>
+                <div class="crf-tools">
+                  <button type="button" class="crf-btn" id="crfReveal">Reveal the model finding</button>
+                  <button type="button" class="crf-btn ghost" id="crfClear">Clear my draft</button>
+                  <button type="button" class="crf-expand" id="crfExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+
+              <div class="crf-facts">
+                <b>Fieldwork facts &mdash; user access management, retail banking division.</b>
+                <ul>
+                  <li>You sampled <b>40 employees terminated</b> in the last two quarters and traced each to Active Directory.</li>
+                  <li><b>9 accounts</b> were still enabled at the time of your test. Three had been enabled for more than <b>90 days</b> past the termination date.</li>
+                  <li>One of the nine had <b>authenticated 14 times</b> after the employee&rsquo;s last day; the other eight showed no post-termination logins.</li>
+                  <li>The <b>Access Management Policy (AMP-04, &sect;3.2)</b> requires that access be revoked <b>within 24 hours</b> of termination.</li>
+                  <li>HR sends terminations to IT as a <b>weekly spreadsheet</b>; there is no automated feed and no reconciliation between the HR system and AD.</li>
+                  <li>The quarterly access-recertification certificates were signed on time for both quarters.</li>
+                </ul>
+              </div>
+
+              <div class="crf-rows" id="crfRows"></div>
+
+              <div class="crf-check" id="crfCheck" hidden>
+                <h5>Reviewer&rsquo;s checklist &mdash; score your own draft</h5>
+                <ul id="crfChecks"></ul>
+                <div class="crf-score" id="crfScore"></div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('crf-root'); if(!root) return;
+            var KEY='cisa-l1-craf';
+            var F=[
+              {k:'Condition', q:'What did you actually find?',
+               m:'Nine of 40 sampled terminated employees (22.5%) retained enabled Active Directory accounts after their termination date. Three accounts remained enabled more than 90 days, and one was used to authenticate 14 times following the employee&rsquo;s last day.',
+               trap:'Give the numbers and the population. &ldquo;Terminated users still had access&rdquo; is an impression; <b>9 of 40, three over 90 days, one with 14 post-termination logins</b> is a finding.'},
+              {k:'Criteria', q:'What standard was not met?',
+               m:'Access Management Policy AMP-04, &sect;3.2 requires revocation of all system access within 24 hours of an employee&rsquo;s termination date.',
+               trap:'Cite the source, section and threshold. <b>Without criteria you have an opinion, not a finding</b> &mdash; and management can dismiss it as your preference.'},
+              {k:'Cause', q:'Why did it happen &mdash; the root cause, not a restatement?',
+               m:'Terminations reach IT as a weekly manual spreadsheet, and no reconciliation is performed between the HR system of record and Active Directory. A batched weekly hand-off cannot meet a 24-hour requirement, and nothing detects the terminations it misses.',
+               trap:'&ldquo;IT did not disable the accounts&rdquo; is the condition wearing a different hat. <b>Push to the process</b>: a weekly manual hand-off cannot meet a 24-hour requirement, and nothing detects what it misses.'},
+              {k:'Risk / Effect', q:'What is the consequence, in business terms?',
+               m:'Former employees retain live credentials to banking systems and customer data. One account was demonstrably used after termination, so the exposure is realized rather than theoretical &mdash; and the condition breaches internal policy in an area regulators examine.',
+               trap:'Do not stop at &ldquo;this is a security risk.&rdquo; <b>Name who could do what to which asset</b> &mdash; and use the 14 logins: this one is not hypothetical.'},
+              {k:'Recommendation', q:'What should management do &mdash; and who owns the work?',
+               m:'Management should automate the termination feed from HR to Active Directory and establish a periodic reconciliation of HR terminations against enabled accounts, with exceptions escalated. The nine accounts should be reviewed immediately and the post-termination logins investigated.',
+               trap:'Recommend <b>what must be achieved and who owns it</b> &mdash; not a product, a vendor, or a configuration you would apply yourself. &ldquo;I will build the reconciliation script&rdquo; ends your independence over the control you must test next year.'}
+            ];
+            var CH=[
+              'My <b>condition</b> states the number found, the sample size, and the age of the exceptions.',
+              'My <b>criteria</b> names a specific policy, standard, or regulation &mdash; not my professional opinion.',
+              'My <b>cause</b> describes a process or design failure, not a restatement of the condition.',
+              'My <b>risk/effect</b> names a business consequence, and uses the evidence of realized exposure.',
+              'My <b>recommendation</b> states an outcome management must achieve &mdash; it does not assign the work to me, and it does not name a product.',
+              'Nothing in my finding requires the auditor to implement, operate, or approve a control.'
+            ];
+            var rows=document.getElementById('crfRows'), checkBox=document.getElementById('crfCheck'),
+                checks=document.getElementById('crfChecks'), scoreEl=document.getElementById('crfScore'),
+                bRev=document.getElementById('crfReveal'), bClr=document.getElementById('crfClear'),
+                elN=document.getElementById('crfN'), expBtn=document.getElementById('crfExpand');
+            var revealed=false;
+
+            function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } }
+            function save(){
+              var v=Array.prototype.map.call(rows.querySelectorAll('textarea'),function(t){return t.value;});
+              try{ localStorage.setItem(KEY,JSON.stringify(v)); }catch(e){}
+              elN.textContent=v.filter(function(x){return x.trim().length>0;}).length;
+            }
+            function build(){
+              var saved=load();
+              rows.innerHTML=F.map(function(f,i){
+                return '<div class="crf-row">'+
+                  '<div class="crf-lab"><span class="crf-key">'+f.k+'</span><span class="crf-q">'+f.q+'</span></div>'+
+                  '<div class="crf-pair'+(revealed?' split':'')+'">'+
+                    '<textarea data-i="'+i+'" placeholder="Your draft&hellip;" aria-label="'+f.k+'">'+(saved[i]||'')+'</textarea>'+
+                    (revealed?'<div class="crf-model"><span>Model &mdash; '+f.k+'</span>'+f.m+'</div>':'')+
+                  '</div>'+
+                  (revealed?'<div class="crf-trap">'+f.trap+'</div>':'')+
+                '</div>';
+              }).join('');
+              elN.textContent=saved.filter(function(x){return (x||'').trim().length>0;}).length;
+            }
+            function buildChecks(){
+              checks.innerHTML=CH.map(function(c,i){
+                return '<li><label><input type="checkbox" data-c="'+i+'"><span>'+c+'</span></label></li>';
+              }).join('');
+              tally();
+            }
+            function tally(){
+              var boxes=checks.querySelectorAll('input'), n=0;
+              Array.prototype.forEach.call(boxes,function(b){ if(b.checked) n++; });
+              var msg = n===CH.length ? 'Every box ticked. Now hand it to a colleague &mdash; reviewers find what authors cannot see.'
+                      : n>=4 ? 'Close. The boxes you left empty are where findings get pushed back by management.'
+                      : 'Work the empty boxes before you compare wording. Structure fails before prose does.';
+              scoreEl.innerHTML='<b>'+n+' of '+CH.length+'</b> criteria met. '+msg;
+            }
+            rows.addEventListener('input',save);
+            checks.addEventListener('change',tally);
+            bRev.addEventListener('click',function(){
+              revealed=!revealed; build(); bRev.textContent=revealed?'Hide the model':'Reveal the model finding';
+              checkBox.hidden=!revealed; if(revealed && !checks.children.length) buildChecks();
+            });
+            bClr.addEventListener('click',function(){
+              try{ localStorage.removeItem(KEY); }catch(e){}
+              build(); save();
+            });
+
+            // Expand into a full-viewport overlay — this is where the draft/model comparison actually works.
+            var backdrop=document.createElement('div'); backdrop.className='crf-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: write the finding');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            build();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <!-- 10 -->
