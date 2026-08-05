@@ -37,6 +37,7 @@
       <span class="meta-chip">Session: <strong>Morning, Day 2</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>18%</strong> (Domain 2)</span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -247,6 +248,145 @@
             <li>Policy exceptions must be requested, approved, documented, and monitored.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>A beautifully written policy that nobody has acknowledged &mdash; or that hasn't been reviewed in five years &mdash; is a finding. Existence is not effectiveness.</p></div>
+
+          <!-- ══ ACTIVITY: Document-Hierarchy Repair ══ -->
+          <h4>Activity &mdash; repair the document hierarchy</h4>
+          <p>Six real-looking excerpts pulled from a client&rsquo;s governance library. Each one arrives with the label its author gave it. Decide what tier it <strong>actually</strong> belongs to, then check. Definitions teach you the four tiers; only near-misses teach you to tell them apart &mdash; and one of these six is labelled perfectly and still contains a finding.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Two minutes per excerpt, decided individually, then a show of hands. The argument you want is over #1 and #5 &mdash; the pair that swaps intent and specification. Ask the room: <em>what breaks operationally if this document stays where the author filed it?</em></div>
+
+          <style>
+            .dhr{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .dhr *{box-sizing:border-box;}
+            .dhr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .dhr-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.85rem;}
+            .dhr-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .dhr-lead b{color:var(--gold);font-size:1rem;}
+            .dhr-tools{display:flex;gap:0.5rem;flex-wrap:wrap;}
+            .dhr-key{display:flex;gap:0.8rem;flex-wrap:wrap;font-size:0.7rem;color:var(--text-muted);margin-bottom:0.85rem;padding-bottom:0.7rem;border-bottom:1px solid var(--border);line-height:1.5;}
+            .dhr-key b{color:var(--text-primary);}
+            .dhr-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;}
+            .dhr-item{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.7rem 0.8rem;background:var(--card-bg);display:flex;flex-direction:column;gap:0.5rem;}
+            .dhr-num{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);}
+            .dhr-ex{font-family:Georgia,serif;font-size:0.86rem;line-height:1.5;color:var(--text-primary);border-left:2px solid var(--border);padding-left:0.6rem;font-style:italic;}
+            .dhr-filed{font-size:0.71rem;color:var(--text-muted);}
+            .dhr-filed b{color:var(--text-secondary);font-style:normal;}
+            .dhr-opts{display:grid;grid-template-columns:repeat(4,1fr);gap:0.3rem;}
+            .dhr-opt{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.35rem 0.2rem;cursor:pointer;transition:background .12s,border-color .12s,color .12s;}
+            .dhr-opt:hover:not([disabled]){border-color:var(--gold);color:var(--gold);}
+            .dhr-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .dhr-opt.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .dhr-opt.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .dhr-opt.miss{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .dhr-item.hit{border-left-color:var(--correct);}
+            .dhr-item.miss{border-left-color:var(--wrong);}
+            .dhr-why{font-size:0.77rem;color:var(--text-secondary);line-height:1.5;border-top:1px dashed var(--border);padding-top:0.45rem;}
+            .dhr-why b{color:var(--text-primary);}
+            .dhr-why .flag{color:var(--gold);font-weight:700;}
+            .dhr-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .dhr-btn:hover{background:var(--gold-light);}
+            .dhr-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .dhr-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .dhr-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .dhr-fb{margin-top:0.9rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.83rem;color:var(--text-secondary);line-height:1.6;}
+            .dhr-fb b{color:var(--gold);}
+            @media (max-width:820px){ .dhr-grid{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="dhr" id="dhr-root">
+            <div class="dhr-card">
+              <div class="dhr-top">
+                <span class="dhr-lead">Tier correct on <b id="dhrN">0</b>/6</span>
+                <div class="dhr-tools">
+                  <button type="button" class="dhr-btn" id="dhrCheck" disabled>Check all six</button>
+                  <button type="button" class="dhr-btn ghost" id="dhrReset">Start over</button>
+                </div>
+              </div>
+              <div class="dhr-key">
+                <span><b>Policy</b> &mdash; management intent, board-approved</span>
+                <span><b>Standard</b> &mdash; mandatory, verifiable specification</span>
+                <span><b>Procedure</b> &mdash; ordered operational steps</span>
+                <span><b>Guideline</b> &mdash; recommended, non-binding</span>
+              </div>
+              <div class="dhr-grid" id="dhrGrid"></div>
+              <div class="dhr-fb" id="dhrFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('dhr-root'); if(!root) return;
+            var TIERS=['Policy','Standard','Procedure','Guideline'];
+            var D=[
+              {ex:'&ldquo;Northgate is committed to protecting the confidentiality, integrity and availability of company information. All staff share responsibility for safeguarding it.&rdquo;',
+               filed:'Standard', a:0,
+               w:'This is <b>management intent</b> &mdash; no threshold, nothing to test against. Filed as a standard, it invites an auditor to ask &ldquo;comply with <em>what</em>?&rdquo; A standard must state a mandatory, verifiable specification.'},
+              {ex:'&ldquo;Account passwords shall be a minimum of 14 characters, contain three character classes, and be changed at least every 365 days.&rdquo;',
+               filed:'Standard', a:1,
+               w:'Correctly filed &mdash; mandatory language, a measurable threshold, and testable against a configuration. <span class="flag">This is the one clean document in the set.</span>'},
+              {ex:'&ldquo;1. Open a ticket in ServiceNow. 2. Verify the line manager&rsquo;s written approval. 3. Create the account in Active Directory. 4. Record the ticket number in the access log.&rdquo;',
+               filed:'Guideline', a:2,
+               w:'Ordered operational steps make this a <b>procedure</b>. Filing it as a guideline says &ldquo;optional&rdquo; &mdash; so the manager-approval step in line 2 becomes unenforceable, and every skipped approval is defensible.'},
+              {ex:'&ldquo;Where practical, teams should consider encrypting backup media before it leaves the building.&rdquo;',
+               filed:'Standard', a:3,
+               w:'&ldquo;Where practical&rdquo; and &ldquo;should consider&rdquo; are <b>non-binding</b> &mdash; there is no compliance state to test, so as a standard it is unauditable. If encryption is actually required, it needs mandatory language and a named algorithm.'},
+              {ex:'&ldquo;All production servers shall run Windows Server 2019 at patch level 2024-11 or later, per the platform baseline.&rdquo;',
+               filed:'Policy', a:1,
+               w:'Version-specific technical detail belongs in a <b>standard</b>. Buried in a board-approved policy, every patch cycle would require the board to re-approve the document &mdash; so in practice the policy simply goes stale and the baseline drifts.'},
+              {ex:'&ldquo;Employees shall not use personal email accounts for company business.&rdquo; &nbsp;<i>Approved by: &mdash;&nbsp;&nbsp; Review cycle: not stated</i>',
+               filed:'Policy', a:0,
+               w:'The tier is <b>right</b> &mdash; and it is still a finding. No approval authority and no review cycle means it fails two of the four things the auditor evaluates: <span class="flag">formal approval by the appropriate authority, and review on a defined cycle</span>.'}
+            ];
+            var picks=new Array(D.length).fill(null), checked=false;
+            var grid=document.getElementById('dhrGrid'), fb=document.getElementById('dhrFb'),
+                bChk=document.getElementById('dhrCheck'), bRst=document.getElementById('dhrReset'),
+                elN=document.getElementById('dhrN');
+
+            function render(){
+              grid.innerHTML=D.map(function(d,i){
+                var cls='dhr-item';
+                if(checked) cls+= picks[i]===d.a?' hit':' miss';
+                return '<div class="'+cls+'">'+
+                  '<span class="dhr-num">Excerpt '+(i+1)+'</span>'+
+                  '<div class="dhr-ex">'+d.ex+'</div>'+
+                  '<span class="dhr-filed">Filed by the client as: <b>'+d.filed+'</b></span>'+
+                  '<div class="dhr-opts" role="group" aria-label="Correct tier for excerpt '+(i+1)+'">'+
+                    TIERS.map(function(t,k){
+                      var c='dhr-opt';
+                      if(checked){ if(k===d.a) c+=' hit'; else if(k===picks[i]) c+=' miss'; }
+                      else if(k===picks[i]) c+=' on';
+                      return '<button type="button" class="'+c+'" data-i="'+i+'" data-k="'+k+'"'+(checked?' disabled':'')+'>'+t+'</button>';
+                    }).join('')+
+                  '</div>'+
+                  (checked?'<div class="dhr-why"><b>'+TIERS[d.a]+'.</b> '+d.w+'</div>':'')+
+                '</div>';
+              }).join('');
+              var done=picks.filter(function(p){return p!==null;}).length;
+              bChk.disabled=checked||done<D.length;
+              bChk.textContent=checked?'Checked':(done<D.length?'Check all six ('+done+'/6 answered)':'Check all six');
+              elN.textContent=checked?picks.filter(function(p,i){return p===D[i].a;}).length:0;
+            }
+            grid.addEventListener('click',function(e){
+              var b=e.target.closest('.dhr-opt'); if(!b||checked) return;
+              picks[+b.dataset.i]=+b.dataset.k; render();
+            });
+            bChk.addEventListener('click',function(){
+              checked=true; render();
+              var right=picks.filter(function(p,i){return p===D[i].a;}).length;
+              var gotClean = picks[1]===1, gotDefect = picks[5]===0;
+              fb.innerHTML='<b>'+right+' of 6 filed correctly.</b> '+
+                'Two of these six were not about the label at all: excerpt 2 was already right &mdash; you '+(gotClean?'left it alone, which is what an auditor does with a sound control':'moved it, which is a false positive; raising a non-finding costs you credibility')+'. '+
+                'Excerpt 6 sits in the right tier and is <em>still</em> deficient '+(gotDefect?'&mdash; you kept it as a policy, correctly':'&mdash; it is a policy, and the defect is approval and review, not tier')+'.'+
+                '<br><br><b>Carry this rule:</b> tier is decided by the <em>language</em>, not the title on the cover page. Intent without a threshold is a policy; a threshold you can test is a standard; numbered steps are a procedure; &ldquo;should&rdquo; and &ldquo;where practical&rdquo; are a guideline &mdash; and a correctly-tiered document with no approver and no review date is a finding regardless.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){
+              picks=new Array(D.length).fill(null); checked=false; fb.hidden=true; render();
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
+
           <div class="resource-link">
             <span class="rl-icon" aria-hidden="true">&#128218;</span>
             <div class="rl-body"><span class="rl-label">Explore further</span><span class="rl-text"><strong>Policies, Standards, Procedures &amp; Guidelines</strong> &mdash; an interactive walk-through of the governance documentation hierarchy.</span></div>
@@ -607,6 +747,236 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/risk_analysis/risk_analysis.html" target="_blank" rel="noopener noreferrer">Risk Analysis <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: Board-Packet Gap Hunt ══ -->
+          <h4>Activity &mdash; hunt the gaps in a board packet</h4>
+          <p>One page from a real-looking IT governance packet, of the kind handed to a board twice a year. <strong>Click every line you would raise as a deficiency</strong>, and for each one name the criteria you would cite. Four of these lines are perfectly sound &mdash; flagging them costs you, exactly as it would in a closing meeting. Finding the problem is the easy half; citing what makes it a finding is the job.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Expand it, put it on the screen, and work the packet as a room &mdash; but make people commit to a line <em>and</em> its criteria before you reveal anything. When someone flags a sound line, do not correct it; ask what standard they would cite. The answer runs out, and that is the lesson.</div>
+
+          <style>
+            .bpk{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .bpk *{box-sizing:border-box;}
+            .bpk-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .bpk-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+            .bpk-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .bpk-lead b{color:var(--gold);font-size:1rem;}
+            .bpk-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .bpk-hd{background:var(--navy);color:var(--white);border-radius:5px 5px 0 0;padding:0.6rem 0.85rem;display:flex;justify-content:space-between;align-items:baseline;gap:0.75rem;flex-wrap:wrap;}
+            .bpk-hd b{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.95rem;letter-spacing:0.06em;text-transform:uppercase;}
+            .bpk-hd span{font-size:0.68rem;color:#bcd0e8;}
+            .bpk-doc{border:1px solid var(--border);border-top:none;border-radius:0 0 5px 5px;padding:0.75rem;display:grid;gap:0.75rem;}
+            .bpk-sec h5{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin:0 0 0.4rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border);}
+            .bpk-lines{display:grid;gap:0.35rem;}
+            .bpk-line{width:100%;text-align:left;background:var(--card-bg);border:1px solid var(--border);border-left:3px solid transparent;border-radius:4px;padding:0.5rem 0.6rem;cursor:pointer;font-family:Arial,sans-serif;font-size:0.8rem;line-height:1.45;color:var(--text-secondary);transition:background .12s,border-color .12s;}
+            .bpk-line:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .bpk-line:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .bpk-line b{color:var(--text-primary);}
+            .bpk-line.on{border-left-color:var(--gold);background:var(--gold-pale);border-color:var(--gold);}
+            .bpk-line.hit{border-left-color:var(--correct);border-color:var(--correct);background:var(--correct-bg);}
+            .bpk-line.missed{border-left-color:var(--wrong);border-color:var(--wrong);background:var(--wrong-bg);}
+            .bpk-line.fp{border-left-color:var(--navy-light);border-color:var(--navy-light);background:var(--blue-pale);}
+            .bpk-tag{display:inline-block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.1rem 0.4rem;border-radius:10px;margin-right:0.4rem;vertical-align:0.05rem;color:#fff;}
+            .bpk-tag.hit{background:var(--correct);}
+            .bpk-tag.missed{background:var(--wrong);}
+            .bpk-tag.fp{background:var(--navy-light);}
+            .bpk-crit{margin-top:0.4rem;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;}
+            .bpk-crit label{font-size:0.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;}
+            .bpk-crit select{font-family:Arial,sans-serif;font-size:0.74rem;color:var(--text-primary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.28rem 0.4rem;max-width:100%;}
+            .bpk-crit select:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+            .bpk-why{margin-top:0.4rem;font-size:0.75rem;line-height:1.5;color:var(--text-secondary);border-top:1px dashed var(--border);padding-top:0.35rem;}
+            .bpk-why b{color:var(--text-primary);}
+            .bpk-why em{color:var(--gold);font-style:normal;font-weight:700;}
+            .bpk-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .bpk-btn:hover{background:var(--gold-light);}
+            .bpk-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .bpk-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .bpk-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .bpk-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .bpk-expand:hover{background:var(--gold);color:#fff;}
+            .bpk-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .bpk-fb{margin-top:0.85rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.82rem;color:var(--text-secondary);line-height:1.6;}
+            .bpk-fb b{color:var(--gold);}
+            .bpk-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .bpk.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .bpk.is-expanded .bpk-card{max-width:1400px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            /* Expanded: the four packet sections sit two-up so the whole document reads at once. */
+            .bpk.is-expanded .bpk-doc{grid-template-columns:1fr 1fr;gap:0.55rem 0.9rem;align-items:start;padding:0.6rem;}
+            .bpk.is-expanded .bpk-line{font-size:0.78rem;line-height:1.38;padding:0.34rem 0.5rem;}
+            .bpk.is-expanded .bpk-why{font-size:0.72rem;line-height:1.36;margin-top:0.22rem;padding-top:0.2rem;}
+            .bpk.is-expanded .bpk-top{margin-bottom:0.5rem;}
+            .bpk.is-expanded .bpk-fb{font-size:0.77rem;line-height:1.42;column-count:2;column-gap:1.3rem;margin-top:0.45rem;padding:0.55rem 0.7rem;}
+            @media (max-width:900px){ .bpk.is-expanded .bpk-doc{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="bpk" id="bpk-root">
+            <div class="bpk-card">
+              <div class="bpk-top">
+                <span class="bpk-lead">Flagged <b id="bpkN">0</b> &nbsp;&middot;&nbsp; 6 deficiencies in this packet</span>
+                <div class="bpk-tools">
+                  <button type="button" class="bpk-btn" id="bpkCheck" disabled>Check my findings</button>
+                  <button type="button" class="bpk-btn ghost" id="bpkReset">Start over</button>
+                  <button type="button" class="bpk-expand" id="bpkExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="bpk-hd">
+                <b>Northgate Financial Group &mdash; IT Governance Packet</b>
+                <span>Prepared for the Board &middot; Q3 &middot; Page 1 of 1</span>
+              </div>
+              <div class="bpk-doc" id="bpkDoc"></div>
+              <div class="bpk-fb" id="bpkFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('bpk-root'); if(!root) return;
+            var CRIT=[
+              'IT strategy must align to business strategy with measurable objectives (COBIT APO02)',
+              'Reporting-line independence &mdash; assurance cannot report to the function it assesses',
+              'IT steering committee must include business representation to govern investment',
+              'Risk register requires named individual owners and a board-approved appetite',
+              'Three Lines Model &mdash; the second line must be independent of first-line management',
+              'Policies require formal approval and review on a defined cycle',
+              'Governance (EDM) is the board&rsquo;s role; management (APO/BAI/DSS/MEA) executes'
+            ];
+            var SEC=[
+              {h:'A. IT Strategy &amp; Investment', lines:[
+                {t:'<b>Strategic statement:</b> &ldquo;Northgate will leverage innovative technology to become a digital leader in regional banking.&rdquo;',
+                 bad:true, c:0,
+                 w:'No measurable objective, no stated linkage to a business goal, no time horizon. A board cannot <em>monitor</em> what was never made measurable &mdash; the M in COBIT&rsquo;s Evaluate&ndash;Direct&ndash;Monitor has nothing to act on.'},
+                {t:'<b>Investment:</b> IT investments above &pound;250k are prioritized by the IT steering committee against documented business cases.',
+                 bad:false,
+                 w:'Sound. A defined threshold, a named decision body, and business cases as the basis for prioritization &mdash; this is what portfolio governance is supposed to look like.'}
+              ]},
+              {h:'B. Organization &amp; Accountability', lines:[
+                {t:'<b>Reporting lines:</b> The Chief Information Security Officer reports to the Chief Information Officer.',
+                 bad:true, c:1,
+                 w:'The CISO assures the security of systems the CIO is accountable for delivering. Placing assurance <em>inside</em> the function it assesses means bad news can be filtered before it reaches the board &mdash; the same structural defect as an internal audit function reporting to the CFO.'},
+                {t:'<b>IT steering committee membership:</b> CIO (chair), CTO, Head of Infrastructure, Head of Applications, Enterprise Architect.',
+                 bad:true, c:2,
+                 w:'Every member is from IT. A steering committee with no business representation cannot weigh IT investment against business priorities &mdash; it governs technology in isolation and produces an IT plan, not an enterprise one.'},
+                {t:'<b>Audit:</b> The audit committee approves the annual IT audit plan and receives all significant findings directly.',
+                 bad:false,
+                 w:'Sound. This is exactly the arrangement that preserves the audit function&rsquo;s independence &mdash; plan approval and a direct reporting channel at board level.'}
+              ]},
+              {h:'C. Risk Management', lines:[
+                {t:'<b>Risk register extract:</b> five open risks &mdash; unpatched servers, backup failure rate, legacy OS, storage capacity, network redundancy. Owner recorded for each: &ldquo;IT Department&rdquo;.',
+                 bad:true, c:3,
+                 w:'Two defects in one line. Every entry is a <em>technical</em> risk &mdash; no strategic, compliance, or privacy risk appears, so the register is not an enterprise view. And &ldquo;IT Department&rdquo; is not an owner: accountability that belongs to everyone belongs to no one.'},
+                {t:'<b>Appetite:</b> The board approved the enterprise risk appetite statement in January and reviews it annually.',
+                 bad:false,
+                 w:'Sound. Board-approved, with a defined review cycle &mdash; this is the benchmark residual risk gets measured against.'},
+                {t:'<b>Assurance structure:</b> The Compliance function reports to the Chief Information Officer and monitors control performance across IT.',
+                 bad:true, c:4,
+                 w:'A Three Lines failure. The second line exists to challenge the first line independently &mdash; when compliance reports to the executive whose controls it monitors, the challenge is structurally compromised, whatever the individuals&rsquo; integrity.'}
+              ]},
+              {h:'D. Policy Status', lines:[
+                {t:'<b>Policy index:</b> Information Security Policy &mdash; stated review cycle: annual. Last reviewed: March 2022.',
+                 bad:true, c:5,
+                 w:'Four years against its own one-year cycle. Note the criteria you cite: not your opinion about what is timely, but <em>the organization&rsquo;s own stated cycle</em> &mdash; the strongest criteria available, because the client wrote it.'},
+                {t:'<b>Policy index:</b> Access Control Policy &mdash; approved by the Board, last reviewed February 2026, acknowledged by 98% of staff.',
+                 bad:false,
+                 w:'Sound. Approved at the right level, reviewed within cycle, with acknowledgement evidence to support it.'}
+              ]}
+            ];
+            var items=[]; SEC.forEach(function(s){ s.lines.forEach(function(l){ items.push(l); }); });
+            var TOTAL_BAD=items.filter(function(l){return l.bad;}).length;
+            var flags={}, crits={}, checked=false;
+            var doc=document.getElementById('bpkDoc'), fb=document.getElementById('bpkFb'),
+                bChk=document.getElementById('bpkCheck'), bRst=document.getElementById('bpkReset'),
+                elN=document.getElementById('bpkN'), expBtn=document.getElementById('bpkExpand');
+
+            function render(){
+              var n=0;
+              doc.innerHTML=SEC.map(function(s){
+                return '<div class="bpk-sec"><h5>'+s.h+'</h5><div class="bpk-lines">'+
+                  s.lines.map(function(l){
+                    var i=items.indexOf(l), on=!!flags[i], cls='bpk-line', tag='';
+                    if(checked){
+                      if(l.bad && on){ cls+=' hit'; tag='<span class="bpk-tag hit">Finding</span>'; }
+                      else if(l.bad && !on){ cls+=' missed'; tag='<span class="bpk-tag missed">Missed</span>'; }
+                      else if(!l.bad && on){ cls+=' fp'; tag='<span class="bpk-tag fp">Not a finding</span>'; }
+                    } else if(on){ cls+=' on'; }
+                    var body='<button type="button" class="'+cls+'" data-i="'+i+'"'+(checked?' disabled':'')+'>'+tag+l.t+'</button>';
+                    var extra='';
+                    if(on && !checked){
+                      extra='<div class="bpk-crit"><label for="bpkc'+i+'">Criteria</label>'+
+                        '<select id="bpkc'+i+'" data-c="'+i+'"><option value="">&mdash; choose the criteria you would cite &mdash;</option>'+
+                        CRIT.map(function(c,k){return '<option value="'+k+'"'+(crits[i]===k?' selected':'')+'>'+c+'</option>';}).join('')+
+                        '</select></div>';
+                    }
+                    if(checked && (l.bad || on)){
+                      var cline='';
+                      if(l.bad && on){
+                        var ok=crits[i]===l.c;
+                        cline='<b>Criteria: </b>'+(ok?'&#10003; '+CRIT[l.c]:'&#10007; you cited &ldquo;'+(crits[i]!=null&&crits[i]!==''?CRIT[crits[i]]:'nothing')+'&rdquo; &mdash; the criteria here is <b>'+CRIT[l.c]+'</b>')+'<br>';
+                      }
+                      extra='<div class="bpk-why">'+cline+l.w+'</div>';
+                    }
+                    if(on) n++;
+                    return body+extra;
+                  }).join('')+'</div></div>';
+              }).join('');
+              elN.textContent=Object.keys(flags).filter(function(k){return flags[k];}).length;
+              bChk.disabled=checked||Object.keys(flags).filter(function(k){return flags[k];}).length===0;
+              bChk.textContent=checked?'Checked':'Check my findings';
+            }
+            doc.addEventListener('click',function(e){
+              var b=e.target.closest('.bpk-line'); if(!b||checked) return;
+              var i=+b.dataset.i; flags[i]=!flags[i]; if(!flags[i]) delete crits[i]; render();
+            });
+            doc.addEventListener('change',function(e){
+              var s=e.target.closest('select[data-c]'); if(!s) return;
+              crits[+s.dataset.c]= s.value===''?null:+s.value;
+            });
+            bChk.addEventListener('click',function(){
+              checked=true; render();
+              var found=items.filter(function(l,i){return l.bad&&flags[i];}).length;
+              var fp=items.filter(function(l,i){return !l.bad&&flags[i];}).length;
+              var cited=items.filter(function(l,i){return l.bad&&flags[i]&&crits[i]===l.c;}).length;
+              fb.innerHTML='<b>'+found+' of '+TOTAL_BAD+' deficiencies found &middot; '+cited+' criteria correctly cited &middot; '+fp+' sound line'+(fp===1?'':'s')+' flagged.</b> '+
+                (fp?'Every false positive is a paragraph management will spend the closing meeting demolishing &mdash; and each one makes your real findings easier to dismiss. ':'You raised nothing that could not be supported &mdash; that discipline is what makes the six real findings stick. ')+
+                (cited<found?'Where you found the defect but missed the criteria, you have an observation rather than a finding: management can simply disagree with you. ':'')+
+                '<br><br><b>Carry this rule:</b> a governance defect is almost never a missing document &mdash; it is a <em>reporting line, a committee composition, or an owner</em> that puts someone in a position to mark their own work. Read the org chart before you read the policies.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ flags={}; crits={}; checked=false; fb.hidden=true; render(); });
+
+            // Expand into a full-viewport overlay (matches the simulators and Lesson 1 activities).
+            var backdrop=document.createElement('div'); backdrop.className='bpk-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: board-packet gap hunt');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <!-- 6 -->
