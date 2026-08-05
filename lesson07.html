@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Afternoon, Day 4</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>26% (Domain 5)</strong></span>
+      <span class="meta-chip">Activities: <strong>3 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -474,6 +475,185 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/kerberos/kerberos.html" target="_blank" rel="noopener noreferrer">Kerberos <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: Is that actually multi-factor? ══ -->
+          <h4>Activity &mdash; is that actually multi-factor?</h4>
+          <p>Six ways into the same organisation. Every one of them appears on the security team&rsquo;s slide as &ldquo;MFA enforced.&rdquo; For each, give one of three verdicts &mdash; and note that the hardest is the third, because the control is genuinely there and there is simply another door beside it.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Vote on all six before revealing any. The two that split a room of experienced professionals are the API and the help desk &mdash; both are cases where the login is strong and the <em>other</em> path is not. Ask what evidence would prove the bypass exists; &ldquo;the policy says MFA&rdquo; will be the first answer and it is never enough.</div>
+
+          <style>
+            .mfa{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .mfa *{box-sizing:border-box;}
+            .mfa-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .mfa-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .mfa-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .mfa-lead b{color:var(--gold);font-size:1rem;}
+            .mfa-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .mfa-key{display:flex;gap:0.9rem;flex-wrap:wrap;font-size:0.7rem;color:var(--text-muted);padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:5px;background:var(--section-alt);margin-bottom:0.65rem;line-height:1.5;}
+            .mfa-key b{color:var(--text-primary);}
+            .mfa-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;}
+            .mfa-item{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);display:flex;flex-direction:column;gap:0.4rem;}
+            .mfa-item.ok{border-left-color:var(--correct);}
+            .mfa-item.no{border-left-color:var(--wrong);}
+            .mfa-path{font-size:0.82rem;font-weight:700;color:var(--text-primary);}
+            .mfa-desc{font-size:0.77rem;color:var(--text-secondary);line-height:1.45;}
+            .mfa-desc b{color:var(--text-primary);}
+            .mfa-v{display:grid;grid-template-columns:repeat(3,1fr);gap:0.28rem;}
+            .mfa-v button{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.64rem;letter-spacing:0.03em;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.32rem 0.25rem;cursor:pointer;line-height:1.2;transition:background .12s,border-color .12s,color .12s;}
+            .mfa-v button:hover:not([disabled]){border-color:var(--gold);color:var(--gold);}
+            .mfa-v button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .mfa-v button.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .mfa-v button.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .mfa-v button.miss{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .mfa-why{font-size:0.74rem;color:var(--text-secondary);line-height:1.45;border-top:1px dashed var(--border);padding-top:0.4rem;}
+            .mfa-why b{color:var(--text-primary);}
+            .mfa-test{display:block;margin-top:0.25rem;font-size:0.71rem;color:var(--text-muted);}
+            .mfa-test b{color:var(--gold);}
+            .mfa-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .mfa-btn:hover{background:var(--gold-light);}
+            .mfa-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .mfa-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .mfa-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .mfa-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .mfa-expand:hover{background:var(--gold);color:#fff;}
+            .mfa-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .mfa-fb{margin-top:0.8rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .mfa-fb b{color:var(--gold);}
+            .mfa-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .mfa.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .mfa.is-expanded .mfa-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .mfa.is-expanded .mfa-grid{grid-template-columns:repeat(3,1fr);gap:0.45rem;}
+            .mfa.is-expanded .mfa-desc{font-size:0.74rem;}
+            .mfa.is-expanded .mfa-why{font-size:0.71rem;line-height:1.4;padding-top:0.32rem;}
+            .mfa.is-expanded .mfa-test{font-size:0.68rem;}
+            .mfa.is-expanded .mfa-fb{font-size:0.75rem;line-height:1.42;column-count:2;column-gap:1.3rem;margin-top:0.45rem;}
+            @media (max-width:820px){ .mfa-grid{grid-template-columns:1fr;} }
+            @media (max-width:1200px){ .mfa.is-expanded .mfa-grid{grid-template-columns:1fr 1fr;} }
+          </style>
+
+          <div class="mfa" id="mfa-root">
+            <div class="mfa-card">
+              <div class="mfa-top">
+                <span class="mfa-lead">Verdicts <b id="mfaN">0</b>/6</span>
+                <div class="mfa-tools">
+                  <button type="button" class="mfa-btn" id="mfaCheck" disabled>Check all six</button>
+                  <button type="button" class="mfa-btn ghost" id="mfaReset">Start over</button>
+                  <button type="button" class="mfa-expand" id="mfaExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="mfa-key">
+                <span><b>Genuine MFA</b> &mdash; two or more <em>different</em> factor types, on every path to this system</span>
+                <span><b>Not multi-factor</b> &mdash; the design never combines two different types</span>
+                <span><b>Has a way around it</b> &mdash; a valid MFA design exists, and another route reaches the same access without it</span>
+              </div>
+              <div class="mfa-grid" id="mfaGrid"></div>
+              <div class="mfa-fb" id="mfaFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('mfa-root'); if(!root) return;
+            var V=[{k:'yes',l:'Genuine MFA'},{k:'no',l:'Not multi-factor'},{k:'bypass',l:'Has a way around it'}];
+            var P=[
+              {p:'Staff VPN', d:'Password, then a push approval with number matching on the enrolled authenticator app. No alternative login path exists.', a:'yes',
+               w:'Type 1 (knowledge) plus Type 2 (possession) &mdash; two <b>different</b> categories, which is what makes it multi-factor.',
+               t:'Confirm number matching is enforced rather than simple approve/deny, or push fatigue turns the second factor into a reflex.'},
+              {p:'Cloud admin console', d:'Password, then three security questions &mdash; mother&rsquo;s maiden name, first school, first car. The vendor labels this &ldquo;two-step verification&rdquo;.', a:'no',
+               w:'Both are <b>Type 1 knowledge</b>. Two steps is not two factors, and the second step is answerable from a social-media profile. The vendor&rsquo;s label is marketing, not a control.',
+               t:'Read the configuration, not the policy statement. Ask which factor <em>types</em> are enforced, and treat &ldquo;two-step&rdquo; as a claim to be tested.'},
+              {p:'DBA server access', d:'SSH with a key pair. No password. The private key sits on the DBA&rsquo;s laptop with no passphrase.', a:'no',
+               w:'A single factor &mdash; <b>possession only</b>. Strong single-factor authentication is still single-factor, and anyone with the laptop has the database. A passphrase would add the knowledge factor.',
+               t:'Ask whether keys require passphrases, where they are stored, and whether any are shared between administrators.'},
+              {p:'Payments API', d:'The web portal enforces MFA for every user. The same accounts authenticate to the REST API with a static key held in an application config file.', a:'bypass',
+               w:'The MFA is real and it guards the door nobody needs to use. <b>The API reaches the same data with a secret that never expires</b> and is copied into every deployment of the config.',
+               t:'Always ask: what <em>other</em> interfaces reach this system? Enumerate API, mobile, legacy client and batch paths, then test each &mdash; the exam and the attacker both go around, not through.'},
+              {p:'Break-glass domain admin', d:'MFA is enforced estate-wide. This one account is exempted &ldquo;so it still works during an outage&rdquo;, and its password is sealed in a vault known to four administrators.', a:'bypass',
+               w:'The exemption <em>is</em> the bypass, and the account is the most privileged in the estate. It is also <b>shared</b>, so no action taken with it can be attributed to a person.',
+               t:'Break-glass is legitimate. Test the compensating controls instead: sealed and tracked check-out, automatic alert on use, mandatory password reset afterwards, and documented review of every use.'},
+              {p:'Contractor access via PAM', d:'Smartcard plus PIN to reach a jump host, credentials vaulted rather than known, just-in-time elevation for the task window, full session recording.', a:'yes',
+               w:'Type 2 (smartcard) plus Type 1 (PIN), and the design goes further than the question asks &mdash; the contractor never holds the target credential at all.',
+               t:'Verify the JIT window actually expires and that recordings are retained and reviewed. A control that logs everything and is watched by nobody is a control in name only.'}
+            ];
+            var picks=new Array(P.length).fill(null), done=false;
+            var grid=document.getElementById('mfaGrid'), fb=document.getElementById('mfaFb'),
+                bChk=document.getElementById('mfaCheck'), bRst=document.getElementById('mfaReset'),
+                elN=document.getElementById('mfaN'), expBtn=document.getElementById('mfaExpand');
+
+            function render(){
+              grid.innerHTML=P.map(function(x,i){
+                var p=picks[i], cls='mfa-item';
+                if(done) cls += (p===x.a?' ok':' no');
+                var v=V.map(function(o){
+                  var c='';
+                  if(done){ if(o.k===x.a) c=' class="hit"'; else if(o.k===p) c=' class="miss"'; }
+                  else if(o.k===p) c=' class="on"';
+                  return '<button type="button"'+c+' data-i="'+i+'" data-v="'+o.k+'"'+(done?' disabled':'')+'>'+o.l+'</button>';
+                }).join('');
+                return '<div class="'+cls+'">'+
+                  '<span class="mfa-path">'+x.p+'</span>'+
+                  '<span class="mfa-desc">'+x.d+'</span>'+
+                  '<div class="mfa-v" role="group" aria-label="Verdict for '+x.p+'">'+v+'</div>'+
+                  (done?'<div class="mfa-why">'+x.w+'<span class="mfa-test"><b>How you would test it:</b> '+x.t+'</span></div>':'')+
+                '</div>';
+              }).join('');
+              var n=picks.filter(function(p){return p!==null;}).length;
+              elN.textContent=done?picks.filter(function(p,i){return p===P[i].a;}).length:n;
+              bChk.disabled=done||n<P.length;
+              bChk.textContent=done?'Checked':(n<P.length?'Check all six ('+n+'/6)':'Check all six');
+            }
+            grid.addEventListener('click',function(e){
+              var b=e.target.closest('.mfa-v button'); if(!b||done) return;
+              picks[+b.dataset.i]=b.dataset.v; render();
+            });
+            bChk.addEventListener('click',function(){
+              done=true; render();
+              var right=picks.filter(function(p,i){return p===P[i].a;}).length;
+              var byp=[3,4].filter(function(i){return picks[i]==='bypass';}).length;
+              fb.innerHTML='<b>'+right+' of 6 correct'+(byp<2?' &mdash; and you called '+byp+' of the 2 bypass paths.':'.')+'</b> '+
+                'Three findings live in this set, and only one of them is about factors at all. The console pairs two knowledge factors and calls it two-step. The DBA holds one factor and calls it strong. '+
+                'The other two &mdash; the API and the break-glass account &mdash; have a <em>correct</em> MFA design that something else walks around.'+
+                '<br><br>That is the shape of most Domain 5 findings: the control is implemented, documented and demonstrably working on the path you were shown. The auditor&rsquo;s job is to ask which paths you were <em>not</em> shown &mdash; the API, the batch job, the legacy client, the recovery flow, the emergency account. '+
+                'A recovery process weaker than the login it restores is not a gap in MFA; it is a replacement for it.'+
+                '<br><br><b>Carry this rule:</b> multi-factor means two different <em>types</em> &mdash; knowledge, possession, inherence &mdash; never two of the same type and never two steps. And before accepting any authentication control, enumerate every interface that reaches the asset, because MFA on one door is a lock on one door.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ picks=new Array(P.length).fill(null); done=false; fb.hidden=true; render(); });
+
+            var backdrop=document.createElement('div'); backdrop.className='mfa-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: is that actually multi-factor');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s4">
@@ -550,6 +730,211 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/WirelessSec/WirelessSecurity.html" target="_blank" rel="noopener noreferrer">Wireless Security <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: Draw the responsibility line ══ -->
+          <h4>Activity &mdash; draw the responsibility line</h4>
+          <p>Eight controls, three service models. Click every cell where <strong>the customer</strong> owns the control &mdash; and watch the line move up the stack as you go from IaaS to SaaS. Then the question that actually matters in fieldwork: for the cells you did <em>not</em> tick, what evidence can you possibly obtain?</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Run the top six rows first and let the pattern emerge, then stop before the last two and ask the room outright: <em>who is responsible for backing up your SaaS data?</em> The confident wrong answer is worth more than the right one here.</div>
+
+          <style>
+            .shr{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .shr *{box-sizing:border-box;}
+            .shr-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .shr-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .shr-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .shr-lead b{color:var(--gold);font-size:1rem;}
+            .shr-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .shr-hint{font-size:0.73rem;color:var(--text-muted);margin-bottom:0.55rem;}
+            .shr-wrap{overflow-x:auto;}
+            .shr-tbl{width:100%;min-width:520px;border-collapse:separate;border-spacing:0;}
+            .shr-tbl thead th{background:var(--navy);color:var(--white);font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 0.5rem;text-align:center;}
+            .shr-tbl thead th span{display:block;font-family:Arial,sans-serif;font-weight:400;font-size:0.6rem;letter-spacing:0;text-transform:none;color:#bcd0e8;margin-top:0.1rem;}
+            .shr-corner{background:var(--navy-mid)!important;text-align:left!important;border-top-left-radius:5px;}
+            .shr-tbl th.shr-row{text-align:left;font-family:Arial,sans-serif;font-weight:400;font-size:0.78rem;color:var(--text-primary);background:var(--section-alt);padding:0.45rem 0.6rem;border-bottom:1px solid var(--border);line-height:1.35;}
+            .shr-tbl th.shr-row span{display:block;font-size:0.67rem;color:var(--text-muted);margin-top:0.1rem;}
+            .shr-tbl td{padding:0.25rem;text-align:center;border-bottom:1px solid var(--border);}
+            .shr-cell{width:100%;min-width:70px;height:38px;border:1px solid var(--border);border-radius:5px;background:var(--card-bg);cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.68rem;letter-spacing:0.04em;color:var(--text-muted);transition:background .12s,border-color .12s,color .12s;}
+            .shr-cell:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);color:var(--gold);}
+            .shr-cell:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .shr-cell.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .shr-cell.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .shr-cell.missed{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .shr-cell.fp{background:var(--blue-pale);border-color:var(--navy-light);color:var(--navy-light);}
+            .shr-notes{display:grid;gap:0.32rem;margin-top:0.6rem;}
+            .shr-note{font-size:0.75rem;line-height:1.45;color:var(--text-secondary);border-left:3px solid var(--navy-light);background:var(--section-alt);border-radius:0 4px 4px 0;padding:0.4rem 0.6rem;}
+            .shr-note b{color:var(--text-primary);}
+            .shr-note.key{border-left-color:var(--gold);}
+            .shr-note.key b{color:var(--gold);}
+            .shr-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .shr-btn:hover{background:var(--gold-light);}
+            .shr-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .shr-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .shr-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .shr-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .shr-expand:hover{background:var(--gold);color:#fff;}
+            .shr-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .shr-fb{margin-top:0.75rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .shr-fb b{color:var(--gold);}
+            .shr-tally{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:0.45rem;padding-bottom:0.4rem;border-bottom:1px dashed var(--border);}
+            .shr-tally span{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.74rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .shr-tally span b{display:block;font-size:1.15rem;color:var(--gold);}
+            .shr-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .shr.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .shr.is-expanded .shr-card{max-width:1400px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .shr.is-expanded .shr-body{display:grid;grid-template-columns:1.15fr 1fr;gap:0.9rem;align-items:start;}
+            .shr.is-expanded .shr-cell{height:34px;}
+            .shr.is-expanded .shr-note{font-size:0.73rem;}
+            .shr.is-expanded .shr-fb{margin-top:0;font-size:0.76rem;}
+            @media (max-width:1000px){ .shr.is-expanded .shr-body{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="shr" id="shr-root">
+            <div class="shr-card">
+              <div class="shr-top">
+                <span class="shr-lead">Cells ticked <b id="shrN">0</b></span>
+                <div class="shr-tools">
+                  <button type="button" class="shr-btn" id="shrCheck">Check the line</button>
+                  <button type="button" class="shr-btn ghost" id="shrReset">Start over</button>
+                  <button type="button" class="shr-expand" id="shrExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <p class="shr-hint">Tick a cell when <strong>the customer</strong> carries the control in that service model. Leave it blank when the provider does.</p>
+              <div class="shr-body">
+                <div class="shr-wrap">
+                  <table class="shr-tbl">
+                    <thead><tr>
+                      <th class="shr-corner">Control</th>
+                      <th>IaaS<span>you rent the machine</span></th>
+                      <th>PaaS<span>you rent the platform</span></th>
+                      <th>SaaS<span>you rent the application</span></th>
+                    </tr></thead>
+                    <tbody id="shrBody"></tbody>
+                  </table>
+                </div>
+                <div id="shrPanel">
+                  <div class="shr-notes" id="shrNotes" hidden></div>
+                  <div class="shr-fb" id="shrFb" hidden aria-live="polite"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('shr-root'); if(!root) return;
+            var MODELS=['IaaS','PaaS','SaaS'];
+            // a[m] = true when the CUSTOMER owns the control in that model
+            var C=[
+              {n:'Physical data-centre security', s:'guards, cages, media destruction', a:[false,false,false],
+               w:'Provider in every model. You will never test this yourself &mdash; you read it in their <b>SOC 2 Type II</b> or ISO 27001 certificate and assess the scope and period covered.'},
+              {n:'Hypervisor hardening &amp; tenant isolation', s:'VM escape, host patching', a:[false,false,false],
+               w:'Provider in every model, including IaaS. Renting a virtual machine does not make the host yours.'},
+              {n:'Guest OS patching', s:'the operating system inside your instance', a:[true,false,false],
+               w:'<b>The classic IaaS finding.</b> The provider patches the platform beneath you and nothing above it &mdash; unpatched guest operating systems in IaaS are the customer&rsquo;s, every time.'},
+              {n:'Runtime &amp; middleware patching', s:'app server, language runtime, managed DB engine', a:[true,false,false],
+               w:'The first thing you buy when you move to PaaS. In IaaS it is yours; in PaaS the provider maintains the runtime &mdash; which is the whole commercial argument for PaaS.'},
+              {n:'Application code security', s:'input validation, dependencies, secrets in code', a:[true,true,false],
+               w:'Yours wherever the code is yours. In SaaS the application is the vendor&rsquo;s, so your control shifts to <em>configuration</em> and to what you demanded in the contract.'},
+              {n:'Network controls', s:'security groups, segmentation, private endpoints', a:[true,true,false],
+               w:'Yours to configure in IaaS and PaaS. In SaaS you get whatever tenant restrictions the vendor exposes &mdash; IP allow-listing if you are lucky.'},
+              {n:'Identity, roles &amp; console MFA', s:'who has access to the tenant and how they prove it', a:[true,true,true],
+               w:'<b>Yours in every model, without exception.</b> Misconfigured IAM is the single most common cloud finding, and no service model takes it off your hands.'},
+              {n:'Data classification &amp; a recoverable copy of your data', s:'what it is, who may see it, and getting it back', a:[true,true,true],
+               w:'<b>The customer always owns the data.</b> Note the second half: most SaaS contracts guarantee <em>availability of the service</em>, not recoverability of your records after you delete them or a tenant is compromised. If nobody exports it, nobody has it.'}
+            ];
+            var picks=C.map(function(){return [false,false,false];}), done=false;
+            var body=document.getElementById('shrBody'), notes=document.getElementById('shrNotes'),
+                fb=document.getElementById('shrFb'), bChk=document.getElementById('shrCheck'),
+                bRst=document.getElementById('shrReset'), elN=document.getElementById('shrN'),
+                expBtn=document.getElementById('shrExpand');
+
+            function render(){
+              body.innerHTML=C.map(function(c,i){
+                var cells=MODELS.map(function(m,k){
+                  var on=picks[i][k], right=c.a[k], cls='shr-cell', label=on?'Customer':'&nbsp;';
+                  if(done){
+                    if(right&&on){ cls+=' hit'; label='Customer'; }
+                    else if(right&&!on){ cls+=' missed'; label='Customer'; }
+                    else if(!right&&on){ cls+=' fp'; label='Provider'; }
+                    else { label='Provider'; }
+                  } else if(on) cls+=' on';
+                  return '<td><button type="button" class="'+cls+'" data-i="'+i+'" data-k="'+k+'"'+(done?' disabled':'')+
+                    ' aria-label="'+MODELS[k]+' &mdash; '+c.n+'" aria-pressed="'+(on?'true':'false')+'">'+label+'</button></td>';
+                }).join('');
+                return '<tr><th class="shr-row" scope="row">'+c.n+'<span>'+c.s+'</span></th>'+cells+'</tr>';
+              }).join('');
+              var n=0; picks.forEach(function(r){ r.forEach(function(v){ if(v) n++; }); });
+              elN.textContent=n;
+              bChk.disabled=done;
+              bChk.textContent=done?'Checked':'Check the line';
+              if(done){
+                notes.innerHTML=C.map(function(c){ return '<div class="shr-note'+(c.a[2]?' key':'')+'"><b>'+c.n.replace(/&amp;/g,'&')+'.</b> '+c.w+'</div>'; }).join('');
+                notes.hidden=false;
+              } else { notes.hidden=true; }
+            }
+            body.addEventListener('click',function(e){
+              var b=e.target.closest('.shr-cell'); if(!b||done) return;
+              var i=+b.dataset.i, k=+b.dataset.k;
+              picks[i][k]=!picks[i][k]; render();
+            });
+            bChk.addEventListener('click',function(){
+              done=true; render();
+              var hit=0, missed=0, fp=0, total=0;
+              C.forEach(function(c,i){ c.a.forEach(function(right,k){
+                if(right) total++;
+                if(right&&picks[i][k]) hit++;
+                else if(right&&!picks[i][k]) missed++;
+                else if(!right&&picks[i][k]) fp++;
+              });});
+              fb.innerHTML='<div class="shr-tally">'+
+                  '<span>Customer controls found<b>'+hit+' / '+total+'</b></span>'+
+                  '<span>Missed<b>'+missed+'</b></span>'+
+                  '<span>Claimed that are the provider&rsquo;s<b>'+fp+'</b></span>'+
+                '</div>'+
+                'Read the grid as a staircase: responsibility moves <em>up</em> the stack as you move IaaS &rarr; PaaS &rarr; SaaS, and the bottom two rows never move at all. '+
+                '<b>Identity and data stay with the customer in every model</b> &mdash; which is why the two most common cloud findings in practice are a misconfigured role and an unexported SaaS dataset.'+
+                '<br><br>Now the fieldwork question. For the cells you left blank, you cannot test the control yourself; you rely on the provider&rsquo;s <b>SOC 2 Type II</b> &mdash; and that report is only as useful as its scope, its period, and the <b>complementary user entity controls</b> listed in it. CUECs are the controls the report assumes <em>you</em> operate: if you have not implemented them, the provider&rsquo;s clean opinion does not cover you. Reading the CUEC section is the audit step almost everyone skips.'+
+                '<br><br><b>Carry this rule:</b> the service model tells you who <em>performs</em> the control; it never tells you who is <em>accountable</em> for the outcome. Accountability for the data does not transfer to a supplier &mdash; and that is a Domain 2 vendor-management point that Domain 5 keeps testing.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){
+              picks=C.map(function(){return [false,false,false];}); done=false; fb.hidden=true; render();
+            });
+
+            var backdrop=document.createElement('div'); backdrop.className='shr-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: draw the responsibility line');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
       </div>
