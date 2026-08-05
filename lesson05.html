@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Afternoon, Day 3</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>26% (Domain 4)</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>5 Questions</strong></span>
     </div>
   </div>
@@ -514,6 +515,248 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/ConfigMgmt/ConfigMgmt.html" target="_blank" rel="noopener noreferrer">Config Management <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: The incident log that never became a problem ══ -->
+          <h4>Activity &mdash; the quarter&rsquo;s register</h4>
+          <p>One quarter of an operations register: thirteen records, every one logged, categorized, approved and closed inside its SLA. Read row by row and there is nothing to report. The findings in this register only exist <strong>across</strong> the rows &mdash; which is why an auditor reads the population, not the ticket.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Do not let anyone verdict a row for the first three minutes &mdash; just read. Ask what they notice. If nobody sees it, that <em>is</em> the lesson, and the &ldquo;group by root cause&rdquo; button at the reveal will land properly. Expand it for the regroup.</div>
+
+          <style>
+            .reg{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .reg *{box-sizing:border-box;}
+            .reg-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .reg-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .reg-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .reg-lead b{color:var(--gold);font-size:1rem;}
+            .reg-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .reg-hd{background:var(--navy);color:var(--white);border-radius:5px 5px 0 0;padding:0.5rem 0.8rem;display:flex;justify-content:space-between;gap:0.6rem;flex-wrap:wrap;align-items:baseline;}
+            .reg-hd b{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.9rem;letter-spacing:0.05em;text-transform:uppercase;}
+            .reg-hd span{font-size:0.66rem;color:#bcd0e8;}
+            .reg-key{display:flex;gap:0.9rem;flex-wrap:wrap;font-size:0.68rem;color:var(--text-muted);padding:0.45rem 0.8rem;border:1px solid var(--border);border-top:none;background:var(--section-alt);}
+            .reg-key b{color:var(--text-primary);}
+            .reg.done .reg-key{display:none;}
+            .reg.done .reg-hd{border-radius:5px 5px 0 0;}
+            .reg-list{border:1px solid var(--border);border-top:none;border-radius:0 0 5px 5px;padding:0.55rem;display:grid;gap:0.35rem;}
+            .reg-row{border:1px solid var(--border);border-left:3px solid var(--border);border-radius:4px;padding:0.45rem 0.55rem;background:var(--card-bg);display:grid;grid-template-columns:78px 1fr auto;gap:0.55rem;align-items:center;}
+            .reg-ref{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.74rem;color:var(--text-primary);line-height:1.2;}
+            .reg-ref span{display:block;font-family:Arial,sans-serif;font-weight:400;font-size:0.64rem;color:var(--text-muted);}
+            .reg-what{font-size:0.78rem;color:var(--text-primary);line-height:1.35;min-width:0;}
+            .reg-out{display:block;font-size:0.69rem;color:var(--text-muted);margin-top:0.1rem;line-height:1.35;}
+            .reg-v{display:flex;gap:0.2rem;}
+            .reg-v button{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.63rem;letter-spacing:0.04em;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:3px;padding:0.26rem 0.4rem;cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s,color .12s;}
+            .reg-v button:hover:not([disabled]){border-color:var(--gold);color:var(--gold);}
+            .reg-v button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .reg-v button.on{background:var(--navy);border-color:var(--navy);color:var(--white);}
+            .reg-v button.hit{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+            .reg-v button.miss{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);}
+            .reg-row.ok{border-left-color:var(--correct);}
+            .reg-row.no{border-left-color:var(--wrong);}
+            .reg-note{grid-column:1/-1;font-size:0.71rem;color:var(--text-secondary);line-height:1.4;border-top:1px dashed var(--border);padding-top:0.32rem;margin-top:0.1rem;}
+            .reg-note b{color:var(--text-primary);}
+            .reg-cl{display:inline-block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.08rem 0.4rem;border-radius:10px;color:#fff;margin-right:0.35rem;}
+            .reg-cl.c1{background:#8a1a2c;}
+            .reg-cl.c2{background:#155a8a;}
+            .reg-cl.c3{background:var(--text-muted);}
+            .reg-group{grid-column:1/-1;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);padding:0.35rem 0.1rem 0.1rem;border-top:1px solid var(--border);}
+            .reg-group:first-child{border-top:none;padding-top:0;}
+            .reg-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .reg-btn:hover{background:var(--gold-light);}
+            .reg-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .reg-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .reg-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .reg-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .reg-expand:hover{background:var(--gold);color:#fff;}
+            .reg-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .reg-fb{margin-top:0.8rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .reg-fb b{color:var(--gold);}
+            .reg-find{display:grid;gap:0.35rem;margin:0.5rem 0 0.6rem;}
+            .reg-find div{border-left:3px solid var(--wrong);background:var(--card-bg);border-radius:0 4px 4px 0;padding:0.4rem 0.6rem;font-size:0.78rem;line-height:1.45;}
+            .reg-find div b{color:var(--text-primary);}
+            .reg-find div.got{border-left-color:var(--correct);}
+            .reg-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .reg.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .reg.is-expanded .reg-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .reg.is-expanded .reg-list{grid-template-columns:1fr 1fr;gap:0.25rem 0.7rem;align-items:start;padding:0.45rem;}
+            .reg.is-expanded .reg-row{grid-template-columns:70px 1fr auto;padding:0.3rem 0.45rem;}
+            .reg.is-expanded .reg-what{font-size:0.75rem;}
+            .reg.is-expanded .reg-note{font-size:0.65rem;line-height:1.34;padding-top:0.24rem;margin-top:0;}
+            .reg.is-expanded .reg-out{font-size:0.66rem;}
+            .reg.is-expanded .reg-find div{font-size:0.72rem;padding:0.32rem 0.5rem;line-height:1.38;}
+            .reg.is-expanded .reg-group{grid-column:1/-1;padding:0.28rem 0.1rem 0.05rem;}
+            .reg.is-expanded .reg-top{margin-bottom:0.5rem;}
+            .reg.is-expanded .reg-fb{font-size:0.73rem;line-height:1.4;column-count:2;column-gap:1.3rem;margin-top:0.42rem;padding:0.6rem 0.7rem;}
+            .reg.is-expanded .reg-find{column-span:all;}
+            @media (max-width:820px){ .reg-row{grid-template-columns:1fr;} .reg-v{flex-wrap:wrap;} }
+            @media (max-width:1100px){ .reg.is-expanded .reg-list{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="reg" id="reg-root">
+            <div class="reg-card">
+              <div class="reg-top">
+                <span class="reg-lead" id="regLead">Verdicts entered <b>0</b>/13</span>
+                <div class="reg-tools">
+                  <button type="button" class="reg-btn" id="regCheck" disabled>Check the quarter</button>
+                  <button type="button" class="reg-btn ghost" id="regGroup" hidden>Group by root cause</button>
+                  <button type="button" class="reg-btn ghost" id="regReset">Start over</button>
+                  <button type="button" class="reg-expand" id="regExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="reg-hd">
+                <b>Helix Logistics &mdash; IT operations register, Q3</b>
+                <span>13 records &middot; every one closed within SLA &middot; 13 changes raised this quarter, 4 via the emergency path</span>
+              </div>
+              <div class="reg-key">
+                <span><b>Clean</b> &mdash; nothing to raise</span>
+                <span><b>Problem</b> &mdash; should have triggered problem management</span>
+                <span><b>Change</b> &mdash; change-control failure</span>
+                <span><b>Major</b> &mdash; major-incident process failure</span>
+              </div>
+              <div class="reg-list" id="regList"></div>
+              <div class="reg-fb" id="regFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('reg-root'); if(!root) return;
+            var V=[{k:'clean',l:'Clean'},{k:'problem',l:'Problem'},{k:'change',l:'Change'},{k:'major',l:'Major'}];
+            var CL={c1:'Root cause 1 &mdash; order-service memory leak',c2:'Root cause 2 &mdash; billing interface breaks on every release',c3:'No shared root cause'};
+            var R=[
+              {id:'INC-1041', d:'12 Jul', w:'Order service unavailable &mdash; 38 minutes, P2', o:'Resolved: service restarted. Closed within SLA.', a:'problem', cl:'c1',
+               n:'First of <b>three</b> identical outages this quarter, each closed by restarting the service. Restarting removes the symptom and preserves the cause.'},
+              {id:'CHG-2210', d:'14 Jul', w:'Emergency change &mdash; firewall rule restored after a failed deployment', o:'Approved by emergency CAB. Documented. Post-implementation review completed.', a:'clean', cl:'c3',
+               n:'This is what the emergency path is <em>supposed</em> to look like: expedited approval, still documented, PIR performed. Flagging it would be a false positive.'},
+              {id:'INC-1072', d:'22 Jul', w:'Payment gateway outage &mdash; 2 hrs 10 mins, P1', o:'Service restored. Ticket closed 22 minutes later. No post-incident review recorded.', a:'major', cl:'c3',
+               n:'A P1 requires a documented major-incident process and a <b>post-incident review</b>. Closing a two-hour payment outage without one means nothing was learned and no problem record could arise from it.'},
+              {id:'CHG-2244', d:'3 Aug', w:'Emergency change &mdash; schema update to correct a reporting error', o:'Approved retrospectively the following day. No post-implementation review.', a:'change', cl:'c3',
+               n:'A reporting error is not an emergency. Retrospective approval with no PIR turns the emergency path into a route around the CAB.'},
+              {id:'INC-1063', d:'5 Aug', w:'Nightly billing interface failed &mdash; P2', o:'Resolved: job re-run manually. Occurred the night after release 24.7.', a:'problem', cl:'c2',
+               n:'Second cluster. Note the date against the release calendar &mdash; the interface fails <em>the night after every release</em>. Re-running the job by hand is a workaround, not a fix.'},
+              {id:'SR-3301', d:'8 Aug', w:'Service request &mdash; new-starter access provisioning', o:'Fulfilled in 2 days, within the service catalogue target.', a:'clean', cl:'c3',
+               n:'A service request, correctly categorized as one and fulfilled on time. Nothing to raise.'},
+              {id:'CHG-2261', d:'21 Aug', w:'Emergency change &mdash; vendor patch applied ahead of the deployment window', o:'Approved by emergency CAB. No post-implementation review.', a:'change', cl:'c3',
+               n:'The approval was sound; the <b>mandatory post-implementation review never happened</b>. An emergency change without its PIR is an incomplete control, however urgent the patch.'},
+              {id:'INC-1088', d:'26 Aug', w:'Order service unavailable &mdash; 51 minutes, P2', o:'Resolved: service restarted. Closed within SLA.', a:'problem', cl:'c1',
+               n:'Second occurrence, six weeks after the first, and longer. By now the recurrence is visible to anyone reading the register &mdash; and still no problem record exists.'},
+              {id:'INC-1095', d:'1 Sep', w:'Print queue stuck at the depot &mdash; P3', o:'Resolved in 40 minutes. Closed.', a:'clean', cl:'c3',
+               n:'An ordinary, isolated incident, handled properly. Not everything in a register is a finding.'},
+              {id:'INC-1101', d:'9 Sep', w:'Nightly billing interface failed &mdash; P2', o:'Resolved: job re-run manually. Occurred the night after release 24.9.', a:'problem', cl:'c2',
+               n:'The pattern is now confirmed: two failures, both the night after a release. This is a known error waiting to be documented, and a release-testing gap feeding it.'},
+              {id:'INC-1109', d:'12 Sep', w:'VPN saturation at peak hours &mdash; P2', o:'Resolved by adding concurrent-user licences. Capacity plan updated.', a:'clean', cl:'c3',
+               n:'Handled as capacity management should be &mdash; the fix addressed the constraint and the plan was updated. Clean.'},
+              {id:'CHG-2288', d:'15 Sep', w:'Emergency change &mdash; configuration change during the month-end freeze', o:'Approved by the implementer&rsquo;s own line manager. No CAB record.', a:'change', cl:'c3',
+               n:'Two failures in one row: a change inside a <b>declared freeze</b>, and approval by someone in the implementer&rsquo;s own reporting line rather than an independent authority.'},
+              {id:'INC-1120', d:'19 Sep', w:'Order service unavailable &mdash; 44 minutes, P2', o:'Resolved: service restarted. Closed within SLA.', a:'problem', cl:'c1',
+               n:'Third occurrence. Three P2 outages, one root cause, one quarter &mdash; and the register still contains no problem record. This is the finding the individual tickets cannot show you.'}
+            ];
+            var picks=new Array(R.length).fill(null), checked=false, grouped=false;
+            var list=document.getElementById('regList'), fb=document.getElementById('regFb'),
+                bChk=document.getElementById('regCheck'), bGrp=document.getElementById('regGroup'),
+                bRst=document.getElementById('regReset'), elLead=document.getElementById('regLead'),
+                expBtn=document.getElementById('regExpand');
+
+            function rowHTML(r,i){
+              var p=picks[i], cls='reg-row';
+              if(checked) cls += (p===r.a?' ok':' no');
+              var v=V.map(function(o){
+                var c='';
+                if(checked){ if(o.k===r.a) c=' class="hit"'; else if(o.k===p) c=' class="miss"'; }
+                else if(o.k===p) c=' class="on"';
+                return '<button type="button"'+c+' data-i="'+i+'" data-v="'+o.k+'"'+(checked?' disabled':'')+'>'+o.l+'</button>';
+              }).join('');
+              return '<div class="'+cls+'">'+
+                '<span class="reg-ref">'+r.id+'<span>'+r.d+'</span></span>'+
+                '<span class="reg-what">'+(checked&&r.cl!=='c3'?'<span class="reg-cl '+r.cl+'">'+(r.cl==='c1'?'Cause 1':'Cause 2')+'</span>':'')+r.w+
+                  '<span class="reg-out">'+r.o+'</span></span>'+
+                '<span class="reg-v">'+v+'</span>'+
+                (checked?'<span class="reg-note">'+r.n+'</span>':'')+
+              '</div>';
+            }
+            function render(){
+              var order=R.map(function(r,i){return i;});
+              if(grouped){
+                var rank={c1:0,c2:1,c3:2};
+                order.sort(function(a,b){ return rank[R[a].cl]-rank[R[b].cl] || a-b; });
+              }
+              var html='', last=null;
+              order.forEach(function(i){
+                if(grouped && R[i].cl!==last){ html+='<div class="reg-group">'+CL[R[i].cl]+'</div>'; last=R[i].cl; }
+                html+=rowHTML(R[i],i);
+              });
+              list.innerHTML=html;
+              root.classList.toggle('done',checked);
+              var answered=picks.filter(function(p){return p!==null;}).length;
+              elLead.innerHTML=checked
+                ? 'Correct verdicts <b>'+picks.filter(function(p,i){return p===R[i].a;}).length+'</b>/13'
+                : 'Verdicts entered <b>'+answered+'</b>/13';
+              bChk.disabled=checked||answered<R.length;
+              bChk.textContent=checked?'Checked':(answered<R.length?'Check the quarter ('+answered+'/13)':'Check the quarter');
+              bGrp.hidden=!checked;
+              bGrp.textContent=grouped?'Back to chronological':'Group by root cause';
+            }
+            list.addEventListener('click',function(e){
+              var b=e.target.closest('.reg-v button'); if(!b||checked) return;
+              picks[+b.dataset.i]=b.dataset.v; render();
+            });
+            bGrp.addEventListener('click',function(){ grouped=!grouped; render(); });
+            bChk.addEventListener('click',function(){
+              checked=true; render();
+              var right=picks.filter(function(p,i){return p===R[i].a;}).length;
+              var c1=[0,7,12].filter(function(i){return picks[i]==='problem';}).length;
+              var c2=[4,9].filter(function(i){return picks[i]==='problem';}).length;
+              var major=picks[2]==='major';
+              var chg=[3,6,11].filter(function(i){return picks[i]==='change';}).length;
+              function f(got,txt){ return '<div class="'+(got?'got':'')+'">'+(got?'&#10003; ':'&#10007; ')+txt+'</div>'; }
+              fb.innerHTML='<b>'+right+' of 13 verdicts correct.</b> The three findings this register actually contains:'+
+                '<div class="reg-find">'+
+                  f(c1===3,'<b>Three P2 outages, one root cause, no problem record.</b> INC-1041, 1088 and 1120 were each closed by restarting the order service. Repeat incidents must trigger problem management &mdash; you caught '+c1+' of the 3.')+
+                  f(c2===2,'<b>A billing interface that fails after every release.</b> INC-1063 and 1101 both followed a release by one night, both were &ldquo;fixed&rdquo; by re-running the job. A known error, undocumented, plus a release-testing gap &mdash; you caught '+c2+' of the 2.')+
+                  f(major&&chg===3,'<b>The emergency path is carrying the planning failure.</b> Four of thirteen changes went emergency &mdash; 31% &mdash; and three of those four are defective: retrospective approval, a missing PIR, and a freeze-period change approved inside the implementer&rsquo;s own reporting line. Plus a P1 payment outage closed with no post-incident review.')+
+                '</div>'+
+                'Now use <b>Group by root cause</b> and read it again. Nothing about the records changed &mdash; only their order &mdash; and the finding becomes impossible to miss. That is the whole argument for testing a population rather than sampling tickets.'+
+                '<br><br>Every record here was logged, categorized, approved and closed inside SLA. If you had audited any single row you would have found nothing, and the operations manager&rsquo;s dashboard is entirely green. '+
+                '<b>Carry this rule:</b> incident management closes tickets; <em>problem management closes causes</em>. When a register shows the same symptom recurring, the finding is not the outage &mdash; it is the absent problem record, and the process that let three of them close without one.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){
+              picks=new Array(R.length).fill(null); checked=false; grouped=false; fb.hidden=true; render();
+            });
+
+            // Expand into a full-viewport overlay.
+            var backdrop=document.createElement('div'); backdrop.className='reg-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the quarter&rsquo;s register');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s8">
