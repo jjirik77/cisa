@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Afternoon, Day 5</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Coverage: <strong>All 5 Domains</strong></span>
+      <span class="meta-chip">Activities: <strong>2 Interactive</strong></span>
       <span class="meta-chip">Focus: <strong>Review & Exam Prep</strong></span>
     </div>
   </div>
@@ -313,6 +314,170 @@
             <li>Second full timed exam; final reading on the highest-frequency topics (patch management, BIA/DRP alignment, IAM controls, audit independence, sampling); review ISACA standards S1&ndash;S16; re-review the trap patterns; a 50-question exam daily for the last 5 days.</li>
             <li><strong>Checkpoint:</strong> 1,500+ questions; consistent 75%+ on full exams; exam confirmed; logistics set.</li>
           </ul>
+
+          <!-- ══ ACTIVITY: Build your 30/60/90 ══ -->
+          <h4>Activity &mdash; build your 30/60/90</h4>
+          <p>The plan above is generic. This one is yours. Enter your practice-exam score for each domain and the date you intend to sit the exam &mdash; the planner weights every gap by that domain&rsquo;s share of the exam, so a weak Domain 4 outranks a weaker Domain 3, and turns the result into dated checkpoints. Your plan is saved in this browser.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Close the workshop with this, and do not let anyone leave the date field empty &mdash; an unscheduled exam is the single strongest predictor that it never gets sat. Then have people pair up and exchange their first checkpoint date; a named person expecting a message beats any study plan.</div>
+
+          <style>
+            .pln{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .pln *{box-sizing:border-box;}
+            .pln-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .pln-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem;}
+            .pln-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .pln-body{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;align-items:start;}
+            .pln-in{display:grid;gap:0.35rem;}
+            .pln-row{display:grid;grid-template-columns:1fr 74px 66px;gap:0.5rem;align-items:center;border:1px solid var(--border);border-radius:5px;padding:0.4rem 0.55rem;background:var(--card-bg);}
+            .pln-dom{font-size:0.78rem;color:var(--text-primary);line-height:1.3;}
+            .pln-dom span{display:block;font-size:0.67rem;color:var(--text-muted);}
+            .pln-row input{width:100%;font-family:Arial,sans-serif;font-size:0.8rem;text-align:center;color:var(--text-primary);background:var(--body-bg);border:1px solid var(--border);border-radius:4px;padding:0.3rem 0.2rem;}
+            .pln-row input:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+            .pln-wt{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.78rem;color:var(--gold);text-align:right;}
+            .pln-date{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;border:1px solid var(--border);border-radius:5px;padding:0.45rem 0.55rem;background:var(--section-alt);margin-top:0.15rem;}
+            .pln-date label{font-size:0.76rem;color:var(--text-primary);font-weight:700;}
+            .pln-date input{font-family:Arial,sans-serif;font-size:0.78rem;color:var(--text-primary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.28rem 0.4rem;}
+            .pln-out{border:1px solid var(--blue-pale-border);border-radius:5px;background:var(--blue-pale);padding:0.7rem 0.8rem;min-height:120px;}
+            .pln-h{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.75rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;}
+            .pln-alloc{display:grid;gap:0.28rem;margin-bottom:0.6rem;}
+            .pln-a{display:grid;grid-template-columns:118px 1fr 96px;gap:0.5rem;align-items:center;font-size:0.75rem;color:var(--text-secondary);}
+            .pln-a b{color:var(--text-primary);font-weight:700;}
+            .pln-bar{height:10px;background:var(--section-alt);border-radius:5px;overflow:hidden;}
+            .pln-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:5px;}
+            .pln-q{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.74rem;color:var(--gold);text-align:right;white-space:nowrap;}
+            .pln-ph{display:grid;gap:0.3rem;}
+            .pln-p{background:var(--card-bg);border-left:3px solid var(--navy-light);border-radius:0 4px 4px 0;padding:0.4rem 0.6rem;font-size:0.75rem;line-height:1.45;color:var(--text-secondary);}
+            .pln-p b{color:var(--text-primary);display:block;}
+            .pln-p.now{border-left-color:var(--gold);}
+            .pln-warn{margin-top:0.5rem;font-size:0.75rem;line-height:1.45;color:var(--text-secondary);border-top:1px dashed var(--border);padding-top:0.45rem;}
+            .pln-warn b{color:var(--wrong);}
+            .pln-warn.good b{color:var(--correct);}
+            .pln-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .pln-btn:hover{background:var(--gold-light);}
+            .pln-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .pln-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            @media (max-width:860px){ .pln-body{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="pln" id="pln-root">
+            <div class="pln-card">
+              <div class="pln-top">
+                <span class="pln-lead">Your practice-exam profile</span>
+                <button type="button" class="pln-btn ghost" id="plnClear">Clear my plan</button>
+              </div>
+              <div class="pln-body">
+                <div>
+                  <div class="pln-in" id="plnIn"></div>
+                  <div class="pln-date">
+                    <label for="plnDate">Target exam date</label>
+                    <input type="date" id="plnDate">
+                    <span id="plnDays" style="font-size:0.73rem;color:var(--text-muted)"></span>
+                  </div>
+                </div>
+                <div class="pln-out" id="plnOut"></div>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('pln-root'); if(!root) return;
+            var KEY='cisa-l9-plan';
+            var D=[
+              {n:'D1 &mdash; IS Auditing Process', w:18},
+              {n:'D2 &mdash; Governance &amp; Management', w:18},
+              {n:'D3 &mdash; Acquisition &amp; Development', w:12},
+              {n:'D4 &mdash; Operations &amp; Resilience', w:26},
+              {n:'D5 &mdash; Protection of Info Assets', w:26}
+            ];
+            var inWrap=document.getElementById('plnIn'), out=document.getElementById('plnOut'),
+                dateEl=document.getElementById('plnDate'), daysEl=document.getElementById('plnDays'),
+                bClr=document.getElementById('plnClear');
+
+            inWrap.innerHTML=D.map(function(d,i){
+              return '<div class="pln-row"><span class="pln-dom">'+d.n+'<span>share of the exam</span></span>'+
+                '<input type="number" min="0" max="100" step="1" placeholder="score %" data-i="'+i+'" aria-label="Practice score for '+d.n.replace(/&[a-z]+;/g,' ')+'">'+
+                '<span class="pln-wt">'+d.w+'%</span></div>';
+            }).join('');
+
+            function load(){ try{ return JSON.parse(localStorage.getItem(KEY))||{}; }catch(e){ return {}; } }
+            function save(){
+              var s={scores:Array.prototype.map.call(inWrap.querySelectorAll('input'),function(t){return t.value;}), date:dateEl.value};
+              try{ localStorage.setItem(KEY,JSON.stringify(s)); }catch(e){}
+            }
+            function fmt(d){
+              var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+              return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear();
+            }
+            function render(){
+              var vals=Array.prototype.map.call(inWrap.querySelectorAll('input'),function(t){
+                var v=parseFloat(t.value); return isNaN(v)?null:Math.max(0,Math.min(100,v));
+              });
+              var have=vals.filter(function(v){return v!==null;}).length;
+              var days=null;
+              if(dateEl.value){
+                var target=new Date(dateEl.value+'T00:00:00'), now=new Date();
+                now.setHours(0,0,0,0);
+                days=Math.round((target-now)/86400000);
+                daysEl.innerHTML=days>0?'<b style="color:var(--gold)">'+days+'</b> days from today':(days===0?'today':'that date has passed');
+              } else { daysEl.textContent='not scheduled'; }
+
+              if(have<D.length){
+                out.innerHTML='<div class="pln-h">Your plan</div><p style="font-size:0.78rem;line-height:1.5;color:var(--text-secondary)">Enter a practice score for all five domains &mdash; and a target exam date &mdash; and the planner will weight your gaps by exam share, convert them into question targets, and date the three checkpoints from the plan above.<br><br><span style="color:var(--text-muted);font-size:0.74rem">'+have+' of 5 scores entered.</span></p>';
+                return;
+              }
+              // weight each gap by the domain's share of the exam
+              var gaps=D.map(function(d,i){ return Math.max(0,100-vals[i])*d.w; });
+              var sum=gaps.reduce(function(a,b){return a+b;},0);
+              var alloc=D.map(function(d,i){ return sum? gaps[i]/sum : 1/D.length; });
+              var order=D.map(function(d,i){return i;}).sort(function(a,b){return alloc[b]-alloc[a];});
+              var rows=order.map(function(i){
+                var pct=Math.round(alloc[i]*100), qs=Math.round(1500*alloc[i]/25)*25;
+                return '<div class="pln-a"><span><b>'+D[i].n.replace(/D(\d) &mdash; /,'D$1 ')+'</b></span>'+
+                  '<span class="pln-bar"><i style="width:'+Math.min(100,pct*2.2)+'%"></i></span>'+
+                  '<span class="pln-q">'+pct+'% &middot; ~'+qs+' Qs</span></div>';
+              }).join('');
+              var weakest=order[0];
+              var below65=D.filter(function(d,i){return vals[i]<65;}).length;
+              var below70=D.filter(function(d,i){return vals[i]<70;}).length;
+              var phases='';
+              if(days&&days>0){
+                var p1=new Date(), p2=new Date(), p3=new Date();
+                p1.setDate(p1.getDate()+Math.round(days/3));
+                p2.setDate(p2.getDate()+Math.round(days*2/3));
+                p3.setDate(p3.getDate()+days);
+                phases='<div class="pln-ph">'+
+                  '<div class="pln-p now"><b>Phase 1 &mdash; by '+fmt(p1)+'</b>CRM Domains 1&ndash;3; 500+ questions; D1 and D2 above 70%; exam booked.</div>'+
+                  '<div class="pln-p"><b>Phase 2 &mdash; by '+fmt(p2)+'</b>CRM complete, weighted to '+D[weakest].n.replace(/D(\d) &mdash; /,'D$1 ')+'; 1,000+ questions; first full 150-question timed exam, every wrong answer reviewed.</div>'+
+                  '<div class="pln-p"><b>Phase 3 &mdash; by '+fmt(p3)+'</b>1,500+ questions; second full timed exam; standards S1&ndash;S16; re-run the trap autopsy; 50 questions daily for the last five days.</div>'+
+                  '</div>';
+              } else {
+                phases='<div class="pln-p"><b>No exam date set</b>Pick a date. The phases below only become a plan once they have deadlines &mdash; and an unscheduled exam is the one that quietly never happens.</div>';
+              }
+              var warn;
+              if(below70===0) warn='<div class="pln-warn good"><b>&#10003; Every domain is at or above 70%.</b> Book the exam if you have not, and spend the remaining time on timed full-length papers rather than more content.</div>';
+              else if(below65>0) warn='<div class="pln-warn"><b>'+below65+' domain'+(below65>1?'s are':' is')+' below 65%.</b> The plan above says re-read those sub-areas rather than pushing more questions through them &mdash; question volume does not fix a topic you have not read.</div>';
+              else warn='<div class="pln-warn"><b>'+below70+' domain'+(below70>1?'s':'')+' between 65% and 70%.</b> Close those before booking &mdash; the checkpoint for scheduling the exam is 70%+ on D1 and D2.</div>';
+
+              out.innerHTML='<div class="pln-h">Where your study time should go</div>'+
+                '<div class="pln-alloc">'+rows+'</div>'+
+                '<div class="pln-h">Your checkpoints</div>'+phases+warn+
+                '<p style="font-size:0.72rem;color:var(--text-muted);margin-top:0.5rem;line-height:1.45">Weighted by exam share: a gap in Domain 4 or 5 (26% each) costs more than the same gap in Domain 3 (12%). Question targets assume the 1,500-question total from the plan above.</p>';
+            }
+            var st=load();
+            if(st.scores) Array.prototype.forEach.call(inWrap.querySelectorAll('input'),function(t,i){ t.value=st.scores[i]||''; });
+            if(st.date) dateEl.value=st.date;
+            inWrap.addEventListener('input',function(){ save(); render(); });
+            dateEl.addEventListener('change',function(){ save(); render(); });
+            bClr.addEventListener('click',function(){
+              try{ localStorage.removeItem(KEY); }catch(e){}
+              Array.prototype.forEach.call(inWrap.querySelectorAll('input'),function(t){ t.value=''; });
+              dateEl.value=''; render();
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s8">
@@ -341,6 +506,257 @@
             <li>Don't change answers without a specific, logical reason &mdash; first instinct is usually right. Don't let one hard question spiral; every question is independent.</li>
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>Every question on the exam is really asking one of three things: <strong>What would a competent IS auditor DO? What is the MOST significant risk or finding? Which control BEST addresses this specific risk?</strong> The CISA is a test of judgment, not memorization &mdash; and you have spent five days sharpening exactly that.</p></div>
+
+          <!-- ══ ACTIVITY: The trap autopsy ══ -->
+          <h4>Activity &mdash; the trap autopsy</h4>
+          <p>Ten mixed-domain questions. Answer them normally &mdash; but the scoring is not normal. Every wrong option in this set was built from one of <strong>five recurring traps</strong>, and when you check, you will not be told which domains you are weak in. You will be told <strong>which instinct is costing you marks</strong>, and how many times you followed it.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Run it after the practice exam, not before. Then have people compare their trap profile with their domain scores &mdash; almost everyone finds their misses cluster by pattern rather than by topic, which is why re-reading a domain rarely fixes them. The remedy for a trap is a rule, not another chapter.</div>
+
+          <style>
+            .tra{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .tra *{box-sizing:border-box;}
+            .tra-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;display:flex;flex-direction:column;}
+            .tra-card .tra-top{order:0}
+            .tra-card .tra-list{order:2}
+            .tra-card .tra-fb{order:1;margin:0 0 0.8rem;}   /* the diagnosis reads first; the questions become the evidence below it */
+            .tra-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .tra-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .tra-lead b{color:var(--gold);font-size:1rem;}
+            .tra-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .tra-q{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);margin-bottom:0.45rem;}
+            .tra-q.ok{border-left-color:var(--correct);}
+            .tra-q.no{border-left-color:var(--wrong);}
+            .tra-stem{font-size:0.82rem;color:var(--text-primary);line-height:1.45;margin-bottom:0.4rem;}
+            .tra-stem b{color:var(--gold);font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;letter-spacing:0.06em;margin-right:0.35rem;}
+            .tra-stem em{color:var(--text-muted);font-style:normal;font-size:0.7rem;}
+            .tra-opts{display:grid;gap:0.24rem;}
+            .tra-opt{display:flex;gap:0.5rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.77rem;line-height:1.42;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.36rem 0.5rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .tra-opt:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .tra-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .tra-opt i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .tra-opt.on{border-color:var(--navy);background:var(--blue-pale);}
+            .tra-opt.hit{border-color:var(--correct);background:var(--correct-bg);}
+            .tra-opt.miss{border-color:var(--wrong);background:var(--wrong-bg);}
+            .tra-tag{display:inline-block;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.06rem 0.38rem;border-radius:10px;background:var(--wrong);color:#fff;margin-left:0.3rem;vertical-align:0.06rem;}
+            .tra-why{font-size:0.73rem;color:var(--text-secondary);line-height:1.42;border-top:1px dashed var(--border);padding-top:0.35rem;margin-top:0.35rem;}
+            .tra-why b{color:var(--text-primary);}
+            .tra-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .tra-btn:hover{background:var(--gold-light);}
+            .tra-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .tra-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .tra-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .tra-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .tra-expand:hover{background:var(--gold);color:#fff;}
+            .tra-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .tra-fb{margin-top:0.75rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.8rem;color:var(--text-secondary);line-height:1.55;}
+            .tra-fb b{color:var(--gold);}
+            .tra-prof{display:grid;gap:0.3rem;margin:0.55rem 0 0.6rem;}
+            .tra-row{display:grid;grid-template-columns:210px 1fr 74px;gap:0.6rem;align-items:center;background:var(--card-bg);border-radius:4px;padding:0.32rem 0.55rem;border-left:3px solid var(--border);}
+            .tra-row.hot{border-left-color:var(--wrong);}
+            .tra-row.clean{border-left-color:var(--correct);}
+            .tra-tname{font-size:0.76rem;font-weight:700;color:var(--text-primary);line-height:1.3;}
+            .tra-tname span{display:block;font-weight:400;font-size:0.68rem;color:var(--text-muted);}
+            .tra-bar{height:9px;background:var(--section-alt);border-radius:5px;overflow:hidden;}
+            .tra-bar i{display:block;height:100%;background:var(--wrong);border-radius:5px;}
+            .tra-cnt{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.76rem;color:var(--text-muted);text-align:right;white-space:nowrap;}
+            .tra-cnt.hot{color:var(--wrong);}
+            .tra-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .tra.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .tra.is-expanded .tra-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .tra.is-expanded .tra-list{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem 0.8rem;align-items:start;}
+            @media (min-width:1500px){ .tra.is-expanded .tra-list{grid-template-columns:repeat(3,1fr);} }
+            .tra.is-expanded .tra-opt{font-size:0.73rem;padding:0.3rem 0.42rem;}
+            .tra.is-expanded .tra-stem{font-size:0.78rem;}
+            .tra.is-expanded .tra-why{font-size:0.69rem;line-height:1.38;}
+            .tra.is-expanded .tra-fb{font-size:0.75rem;column-count:2;column-gap:1.3rem;}
+            .tra.is-expanded .tra-prof{column-span:all;}
+            @media (max-width:700px){ .tra-row{grid-template-columns:1fr;} .tra-bar{display:none;} }
+            @media (max-width:1100px){ .tra.is-expanded .tra-list{grid-template-columns:1fr;} }
+          </style>
+
+          <div class="tra" id="tra-root">
+            <div class="tra-card">
+              <div class="tra-top">
+                <span class="tra-lead">Answered <b id="traN">0</b>/10</span>
+                <div class="tra-tools">
+                  <button type="button" class="tra-btn" id="traCheck" disabled>Run the autopsy</button>
+                  <button type="button" class="tra-btn ghost" id="traReset">Start over</button>
+                  <button type="button" class="tra-expand" id="traExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="tra-list" id="traList"></div>
+              <div class="tra-fb" id="traFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('tra-root'); if(!root) return;
+            var T={
+              fix:{n:'Do it yourself', s:'implement, configure, approve or fix'},
+              time:{n:'The wrong moment to report', s:'sitting on a critical finding, or analysing when you should escalate'},
+              exist:{n:'Existence mistaken for effectiveness', s:'it exists, it ran, it worked &mdash; therefore the control is sound'},
+              assert:{n:'Management&rsquo;s word as evidence', s:'accepting an assertion instead of corroborating it'},
+              wrong:{n:'Right control, wrong party or type', s:'detective offered for prevention, or the reviewer reviewing themselves'}
+            };
+            var Q=[
+              {d:'Domain 1', q:'During fieldwork you find a firewall rule permitting any-source inbound access to a production segment. What should the IS auditor do FIRST?',
+               o:[{t:'Have the network team disable the rule immediately and verify the change.',x:'fix'},
+                  {t:'Document the condition, assess the exposure it creates, and report it to management.',ok:1},
+                  {t:'Note it in the workpapers and raise it in the final report in six weeks.',x:'time'},
+                  {t:'Ask the firewall administrator whether the rule is required and accept the answer.',x:'assert'}],
+               w:'The auditor evaluates and reports. Directing the change makes you part of the control you are testing &mdash; and if the rule turns out to be needed, you have caused the outage.'},
+              {d:'Domain 2', q:'An information security policy has been approved by the board and published on the intranet. The IS auditor should conclude that:',
+               o:[{t:'The control is effective &mdash; the policy exists and carries board approval.',x:'exist'},
+                  {t:'No further work is needed once management confirms staff have read it.',x:'assert'},
+                  {t:'The policy establishes adequacy; effectiveness requires evidence that it is implemented, followed, and producing records.',ok:1},
+                  {t:'The auditor should draft the missing sections to bring it up to standard.',x:'fix'}],
+               w:'Adequacy is what the document says. Effectiveness is what the organisation does. Only one of them can be tested with evidence.'},
+              {d:'Domain 4', q:'Nightly backup jobs complete successfully and media is shipped offsite weekly. Which is the BEST evidence that backups are effective?',
+               o:[{t:'The backup software&rsquo;s job-success report for the last twelve months.',x:'exist'},
+                  {t:'A documented restoration test showing data recovered within the RTO.',ok:1},
+                  {t:'The backup administrator&rsquo;s confirmation that restores have worked before.',x:'assert'},
+                  {t:'The auditor performing a test restore into production to prove it works.',x:'fix'}],
+               w:'A completed job proves data was written. Only a restore proves data can come back &mdash; and only a timed restore proves it comes back inside the RTO.'},
+              {d:'Domain 5', q:'A database administrator reviews the audit logs of their own privileged activity each month and signs the review. The IS auditor should conclude:',
+               o:[{t:'Acceptable &mdash; the DBA has the technical knowledge to interpret the logs correctly.',x:'wrong'},
+                  {t:'This is a control weakness: privileged activity must be reviewed by someone independent of the person performing it.',ok:1},
+                  {t:'Acceptable provided the logs are retained for twelve months.',x:'exist'},
+                  {t:'The auditor should take over the monthly review.',x:'fix'}],
+               w:'Technical competence is not independence. Anyone reviewing their own activity can omit exactly what the review exists to catch.'},
+              {d:'Domain 1', q:'You find evidence suggesting a senior manager has approved fictitious invoices. What should you do FIRST?',
+               o:[{t:'Complete the remaining fieldwork and present it in the final report.',x:'time'},
+                  {t:'Interview the manager to obtain an explanation before going further.',x:'fix'},
+                  {t:'Escalate immediately, in line with the escalation policy, to the audit committee.',ok:1},
+                  {t:'Quantify the total value involved before informing anyone.',x:'time'}],
+               w:'Suspected fraud is the classic exception to &ldquo;gather evidence first&rdquo;. Escalation comes immediately &mdash; and interviewing the suspect can destroy the evidence and the investigation.'},
+              {d:'Domain 3', q:'A critical zero-day patch was applied directly to production with no change request, no testing and no CAB approval. The system has been stable since.',
+               o:[{t:'No finding &mdash; the outcome was successful and the risk was genuinely urgent.',x:'exist'},
+                  {t:'Report the absence of a documented emergency-change process and the missing post-implementation review.',ok:1},
+                  {t:'Recommend the change be backed out and reapplied through the CAB.',x:'fix'},
+                  {t:'Accept management&rsquo;s position that emergencies do not require documentation.',x:'assert'}],
+               w:'A good outcome does not validate a bypassed process. The risk was taken without being assessed; that it did not materialise this time is luck, not control.'},
+              {d:'Domain 4', q:'The DR plan states an RTO of 4 hours. The most recent test recovered the system in 11 hours, noted as &ldquo;acceptable given current infrastructure&rdquo;.',
+               o:[{t:'No finding &mdash; management has considered it and accepted the position.',x:'assert'},
+                  {t:'The DR capability defines what is achievable, so the BIA should be revised to an 11-hour RTO.',x:'wrong'},
+                  {t:'Report that tested recovery does not meet the BIA-defined RTO, and that the acceptance is neither documented nor made by an authorised party.',ok:1},
+                  {t:'Design a revised recovery architecture that closes the gap.',x:'fix'}],
+               w:'The BIA sets the requirement from business impact; the DRP must be built to meet it. A plan that quietly redefines the RTO to match what it can already do has inverted the control.'},
+              {d:'Domain 5', q:'Access to a financial application is recertified annually by the IT security team, who confirm the entitlement lists &ldquo;look reasonable&rdquo;.',
+               o:[{t:'Adequate &mdash; IT security is independent of the business users being reviewed.',x:'wrong'},
+                  {t:'A deficiency: recertification must be performed by the business owner, who alone knows what each person should be able to do.',ok:1},
+                  {t:'Adequate as long as the review is documented and signed.',x:'exist'},
+                  {t:'The auditor should perform the recertification during the audit.',x:'fix'}],
+               w:'IT can tell you who has access. Only the business owner can tell you who <em>should</em>. Independence is not the issue here &mdash; competence to judge entitlement is.'},
+              {d:'Domain 5', q:'Customer data is encrypted at rest with AES-256. The IS auditor&rsquo;s PRIMARY follow-up should be to:',
+               o:[{t:'Confirm the algorithm is current and on the approved list.',x:'exist'},
+                  {t:'Establish where the keys are held, who can access them, and how they are rotated and revoked.',ok:1},
+                  {t:'Accept the security team&rsquo;s statement that encryption is correctly configured.',x:'assert'},
+                  {t:'Recommend an upgrade to a stronger algorithm.',x:'fix'}],
+               w:'Encryption is only as strong as its key management. Keys stored beside the data, never rotated, or with no revocation path make AES-256 decorative.'},
+              {d:'Domain 2', q:'A critical finding from last year remains open. The CIO has signed a risk acceptance.',
+               o:[{t:'Close the finding &mdash; management has accepted the risk, which is their right.',x:'assert'},
+                  {t:'Verify the acceptance sits within the board-approved appetite, is documented, and was made by an authority empowered to accept it &mdash; and continue to report the finding as open.',ok:1},
+                  {t:'Remove it from the follow-up register now that it has a named owner.',x:'exist'},
+                  {t:'Design and implement the missing control on management&rsquo;s behalf.',x:'fix'}],
+               w:'Acceptance is a legitimate risk response &mdash; when it is within appetite, documented, and made at the right level. The auditor reports it either way; a signature is not a remediation.'}
+            ];
+            var picks=new Array(Q.length).fill(null), done=false;
+            var list=document.getElementById('traList'), fb=document.getElementById('traFb'),
+                bChk=document.getElementById('traCheck'), bRst=document.getElementById('traReset'),
+                elN=document.getElementById('traN'), expBtn=document.getElementById('traExpand');
+
+            function render(){
+              list.innerHTML=Q.map(function(x,i){
+                var p=picks[i], ai=x.o.findIndex(function(o){return o.ok;}), cls='tra-q';
+                if(done) cls += (p===ai?' ok':' no');
+                var opts=x.o.map(function(o,k){
+                  if(done && !o.ok && k!==p) return '';   // on reveal keep only the answer and your pick
+                  var c='tra-opt';
+                  if(done){ if(o.ok) c+=' hit'; else if(k===p) c+=' miss'; }
+                  else if(k===p) c+=' on';
+                  var tag=(done&&k===p&&!o.ok)?'<span class="tra-tag">'+T[o.x].n+'</span>':'';
+                  return '<button type="button" class="'+c+'" data-i="'+i+'" data-k="'+k+'"'+(done?' disabled':'')+'>'+
+                    '<i>'+String.fromCharCode(65+k)+'.</i><span>'+o.t+tag+'</span></button>';
+                }).join('');
+                return '<div class="'+cls+'"><p class="tra-stem"><b>Q'+(i+1)+'</b>'+x.q+' <em>'+x.d+'</em></p>'+
+                  '<div class="tra-opts">'+opts+'</div>'+(done?'<div class="tra-why">'+x.w+'</div>':'')+'</div>';
+              }).join('');
+              var n=picks.filter(function(p){return p!==null;}).length;
+              elN.textContent=done?picks.filter(function(p,i){return Q[i].o[p]&&Q[i].o[p].ok;}).length:n;
+              bChk.disabled=done||n<Q.length;
+              bChk.textContent=done?'Autopsy complete':(n<Q.length?'Run the autopsy ('+n+'/10)':'Run the autopsy');
+            }
+            list.addEventListener('click',function(e){
+              var b=e.target.closest('.tra-opt'); if(!b||done) return;
+              picks[+b.dataset.i]=+b.dataset.k; render();
+            });
+            bChk.addEventListener('click',function(){
+              done=true; render();
+              var right=picks.filter(function(p,i){return Q[i].o[p]&&Q[i].o[p].ok;}).length;
+              var opp={}, hit={};
+              Object.keys(T).forEach(function(k){opp[k]=0;hit[k]=0;});
+              Q.forEach(function(x,i){
+                var seen={};
+                x.o.forEach(function(o,k){ if(!o.ok && !seen[o.x]){ opp[o.x]++; seen[o.x]=true; } });
+                var p=x.o[picks[i]];
+                if(p && !p.ok) hit[p.x]++;
+              });
+              var order=Object.keys(T).sort(function(a,b){ return hit[b]-hit[a]; });
+              var rows=order.map(function(k){
+                var pct=opp[k]?Math.round(hit[k]/opp[k]*100):0;
+                var hot=hit[k]>=2;
+                return '<div class="tra-row '+(hit[k]?(hot?'hot':''):'clean')+'">'+
+                  '<span class="tra-tname">'+T[k].n+'<span>'+T[k].s+'</span></span>'+
+                  '<span class="tra-bar"><i style="width:'+pct+'%"></i></span>'+
+                  '<span class="tra-cnt '+(hot?'hot':'')+'">'+hit[k]+' of '+opp[k]+'</span></div>';
+              }).join('');
+              var top=order[0], topN=hit[top];
+              fb.innerHTML='<b>'+right+' of 10 correct &mdash; but that is not the useful number.</b> Here is what you actually did, counted by the trap each wrong option was built from. The count on the right is how many times you took that answer, out of the times it was offered.'+
+                '<div class="tra-prof">'+rows+'</div>'+
+                (topN>=2
+                  ? '<b>Your dominant trap is &ldquo;'+T[top].n+'&rdquo;</b> &mdash; '+topN+' times. That is not a knowledge gap and re-reading a domain will not fix it. It is a reflex, and reflexes are corrected with a rule you apply before you read the options.'
+                  : 'No single trap caught you twice, which is the profile you want walking into the exam. Keep the discipline: the pressure of the clock is what turns a known rule back into an old reflex.')+
+                '<br><br><b>Five questions, one per trap.</b> Am I <em>doing</em> something rather than evaluating it? Am I delaying a report that cannot wait &mdash; or analysing when I should escalate? Am I treating an artefact, a job log or a signature as proof the control works? Am I accepting what management said instead of what evidence shows? Am I putting the right control in the wrong hands or the wrong phase?'+
+                '<br><br><b>Carry this rule:</b> misses cluster by pattern, not by domain. Take the trap at the top of this list into the exam room as one sentence you check every uncertain question against &mdash; worth more in the last week than another hundred questions.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ picks=new Array(Q.length).fill(null); done=false; fb.hidden=true; render(); });
+
+            var backdrop=document.createElement('div'); backdrop.className='tra-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the trap autopsy');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s10">

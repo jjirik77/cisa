@@ -35,6 +35,7 @@
       <span class="meta-chip">Session: <strong>Morning, Day 5</strong></span>
       <span class="meta-chip">Duration: <strong>~3 hrs</strong></span>
       <span class="meta-chip">Exam Weight: <strong>26% (Domain 5)</strong></span>
+      <span class="meta-chip">Activities: <strong>3 Interactive</strong></span>
       <span class="meta-chip">Knowledge Check: <strong>6 Questions</strong></span>
     </div>
   </div>
@@ -462,6 +463,148 @@
               <a class="btn secondary" href="https://d2hie3dpn9wvbb.cloudfront.net/pen_testing/pen_testing.html" target="_blank" rel="noopener noreferrer">Pen Testing <span class="ext">&#8599;</span></a>
             </div>
           </div>
+
+          <!-- ══ ACTIVITY: Scope the test ══ -->
+          <h4>Activity &mdash; scope the test</h4>
+          <p>An email lands on Monday: <em>&ldquo;We go live with the new payment app in three weeks. Can you get it tested by Friday?&rdquo;</em> Make the five decisions that define the engagement. Then read the auditor&rsquo;s half &mdash; what you verify <strong>before</strong> anyone touches a keyboard, because an unauthorised test is an incident with paperwork.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Have tables commit to all five, then ask the one question that decides the engagement: <em>who is allowed to say yes to this?</em> Most rooms have at least one person who has run a test on a verbal go-ahead, and that story is worth more than the slide.</div>
+
+          <style>
+            .stc{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .stc *{box-sizing:border-box;}
+            .stc-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .stc-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .stc-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .stc-lead b{color:var(--gold);font-size:1rem;}
+            .stc-brief{background:var(--blue-pale);border-left:3px solid var(--navy-light);border-radius:0 4px 4px 0;padding:0.6rem 0.8rem;font-size:0.79rem;color:var(--text-secondary);line-height:1.5;margin-bottom:0.7rem;}
+            .stc-brief b{color:var(--text-primary);}
+            .stc-step{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.6rem 0.7rem;background:var(--card-bg);margin-bottom:0.5rem;}
+            .stc-step.ok{border-left-color:var(--correct);}
+            .stc-step.no{border-left-color:var(--wrong);}
+            .stc-q{display:flex;align-items:baseline;gap:0.5rem;margin-bottom:0.4rem;flex-wrap:wrap;}
+            .stc-num{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);}
+            .stc-qt{font-size:0.83rem;font-weight:700;color:var(--text-primary);}
+            .stc-opts{display:grid;gap:0.28rem;}
+            .stc-opt{display:flex;gap:0.5rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.78rem;line-height:1.45;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.42rem 0.55rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .stc-opt:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .stc-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .stc-opt i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .stc-opt.on{border-color:var(--navy);background:var(--blue-pale);}
+            .stc-opt.hit{border-color:var(--correct);background:var(--correct-bg);}
+            .stc-opt.miss{border-color:var(--wrong);background:var(--wrong-bg);}
+            .stc-res{display:block;font-size:0.72rem;color:var(--text-muted);line-height:1.4;margin-top:0.15rem;}
+            .stc-res b{color:var(--text-primary);}
+            .stc-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .stc-btn:hover{background:var(--gold-light);}
+            .stc-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .stc-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .stc-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .stc-fb{margin-top:0.7rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.81rem;color:var(--text-secondary);line-height:1.55;}
+            .stc-fb b{color:var(--gold);}
+            .stc-chk{display:grid;gap:0.3rem;margin:0.5rem 0 0.6rem;}
+            .stc-chk div{background:var(--card-bg);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:0.38rem 0.6rem;font-size:0.77rem;line-height:1.45;}
+            .stc-chk div b{color:var(--text-primary);}
+          </style>
+
+          <div class="stc" id="stc-root">
+            <div class="stc-card">
+              <div class="stc-top">
+                <span class="stc-lead">Decisions made <b id="stcN">0</b>/5</span>
+                <div>
+                  <button type="button" class="stc-btn" id="stcCheck" disabled>Commission the test</button>
+                  <button type="button" class="stc-btn ghost" id="stcReset">Start over</button>
+                </div>
+              </div>
+              <div class="stc-brief">
+                <b>The brief.</b> A customer-facing payment application, built in-house, handling card data for the first time. Go-live in three weeks. A staging environment exists, built from the same infrastructure-as-code as production. The development team has offered to &ldquo;run the tools themselves, since they know the app.&rdquo; The CISO says to go ahead.
+              </div>
+              <div id="stcSteps"></div>
+              <div class="stc-fb" id="stcFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('stc-root'); if(!root) return;
+            var Q=[
+              {q:'What kind of testing do you commission?', a:2, o:[
+                {t:'A vulnerability assessment only &mdash; automated scanning, no exploitation.', r:'Scanning finds known weaknesses but never demonstrates whether they can be chained into an actual compromise. For a first-time card-handling application it is not enough on its own.'},
+                {t:'A penetration test only.', r:'You will spend a large share of a short engagement rediscovering findings a scanner would have handed you in an hour.'},
+                {t:'A vulnerability assessment first, then a penetration test against what it surfaces.', r:'<b>Correct.</b> The scan clears the known-vulnerability noise cheaply; the pen test spends its expensive hours on exploitation and business-logic flaws a scanner cannot see. Two different techniques answering two different questions.'},
+                {t:'A code review only &mdash; SAST across the repository.', r:'Valuable, and blind to configuration, deployment and runtime issues. It complements the other two rather than replacing them.'}
+              ]},
+              {q:'What does the tester get to start with?', a:1, o:[
+                {t:'Nothing &mdash; black box, discover it all from outside like a real attacker.', r:'Realistic, and the wrong trade for a five-day window before go-live. Most of the time goes on reconnaissance rather than on the payment logic you are trying to assure.'},
+                {t:'Grey box &mdash; architecture documentation plus valid credentials for every user role.', r:'<b>Correct.</b> Authenticated testing of <em>each role</em> is what finds privilege escalation and broken access control between customer, merchant and administrator. Unauthenticated testing never reaches them.'},
+                {t:'Full source code, reviewed offline, with no runtime testing.', r:'Thorough on code quality and silent on how the thing behaves once deployed and configured.'},
+                {t:'Whatever the developers think is relevant.', r:'The scope of the test then belongs to the people whose work is under test.'}
+              ]},
+              {q:'Where does the testing run?', a:0, o:[
+                {t:'The staging environment, provisioned from the same infrastructure-as-code as production, with masked production-like data.', r:'<b>Correct.</b> Parity is what makes staging results meaningful &mdash; and this is the environment question Domain 3 tests: if the tested environment differs from the deployed one, the results describe a system that does not exist.'},
+                {t:'Production, out of hours, before go-live.', r:'A payment platform in its go-live window is the last place to run exploitation attempts. If parity is genuinely absent, that is a finding to raise &mdash; not a reason to test live.'},
+                {t:'A developer&rsquo;s local build.', r:'Nothing about a laptop build reflects the deployed configuration, the network controls or the identity integration.'},
+                {t:'Staging, but with the real production card data copied in for realism.', r:'You would create a second, less-protected copy of live cardholder data to test the protection of the first. The test itself becomes the breach.'}
+              ]},
+              {q:'On what authority does the test proceed?', a:3, o:[
+                {t:'The CISO said go ahead.', r:'A verbal instruction from someone who does not own the system. If something breaks at 02:00, nothing on paper says this was sanctioned.'},
+                {t:'The testing firm&rsquo;s standard terms and conditions.', r:'That protects the firm. It authorises nothing on your side.'},
+                {t:'A signed contract with the testing firm.', r:'Commercial terms are not permission to attack a system. The two documents do different jobs.'},
+                {t:'Written authorization from the system owner, with defined rules of engagement: scope and exclusions, test window, stop conditions, a named emergency contact, and how findings will be handled and stored.', r:'<b>Correct.</b> This is the difference between a penetration test and an intrusion. Note what the rules of engagement add beyond permission: a <em>stop condition</em>, so the tester knows when to halt, and <b>handling of findings</b>, because the report is now a list of live exploitable weaknesses in a payment system.'}
+              ]},
+              {q:'Who performs it?', a:2, o:[
+                {t:'The development team &mdash; they know the application best.', r:'Self-review. Knowing the application best is exactly what disqualifies them from assuring it, and this is the same threat you met in Lesson 0.'},
+                {t:'The internal security team who designed the application&rsquo;s controls.', r:'Also self-review, one step removed. They would be testing their own design decisions.'},
+                {t:'An independent third party, or an internal team with no involvement in building or configuring the application &mdash; with their competence and certifications verified.', r:'<b>Correct.</b> Independence plus demonstrated competence. Under Standard S12 you may rely on a specialist&rsquo;s work, but you remain responsible for the conclusion &mdash; so you assess their qualifications rather than assuming them.'},
+                {t:'The cloud provider&rsquo;s security team.', r:'They secure their platform, not your application, and their testing scope stops at the shared-responsibility line.'}
+              ]}
+            ];
+            var picks=new Array(Q.length).fill(null), done=false;
+            var steps=document.getElementById('stcSteps'), fb=document.getElementById('stcFb'),
+                bChk=document.getElementById('stcCheck'), bRst=document.getElementById('stcReset'),
+                elN=document.getElementById('stcN');
+
+            function render(){
+              steps.innerHTML=Q.map(function(x,i){
+                var p=picks[i], cls='stc-step';
+                if(done) cls += (p===x.a?' ok':' no');
+                var opts=x.o.map(function(o,k){
+                  var c='stc-opt';
+                  if(done){ if(k===x.a) c+=' hit'; else if(k===p) c+=' miss'; }
+                  else if(k===p) c+=' on';
+                  return '<button type="button" class="'+c+'" data-i="'+i+'" data-k="'+k+'"'+(done?' disabled':'')+'>'+
+                    '<i>'+String.fromCharCode(65+k)+'.</i><span>'+o.t+(done?'<span class="stc-res">'+o.r+'</span>':'')+'</span></button>';
+                }).join('');
+                return '<div class="'+cls+'"><div class="stc-q"><span class="stc-num">Decision '+(i+1)+'</span><span class="stc-qt">'+x.q+'</span></div>'+
+                  '<div class="stc-opts">'+opts+'</div></div>';
+              }).join('');
+              var n=picks.filter(function(p){return p!==null;}).length;
+              elN.textContent=done?picks.filter(function(p,i){return p===Q[i].a;}).length:n;
+              bChk.disabled=done||n<Q.length;
+              bChk.textContent=done?'Commissioned':(n<Q.length?'Commission the test ('+n+'/5)':'Commission the test');
+            }
+            steps.addEventListener('click',function(e){
+              var b=e.target.closest('.stc-opt'); if(!b||done) return;
+              picks[+b.dataset.i]=+b.dataset.k; render();
+            });
+            bChk.addEventListener('click',function(){
+              done=true; render();
+              var right=picks.filter(function(p,i){return p===Q[i].a;}).length;
+              fb.innerHTML='<b>'+right+' of 5.</b> Now the auditor&rsquo;s half of this engagement. You are not the tester &mdash; you are the person who has to be satisfied the test was worth relying on. Before it starts, obtain and read:'+
+                '<div class="stc-chk">'+
+                  '<div><b>The written authorization</b> &mdash; signed by someone who actually owns the system, not by the person who commissioned the work.</div>'+
+                  '<div><b>The rules of engagement</b> &mdash; scope, exclusions, window, stop conditions, named contact. Anything outside this scope is untested, and the report will not say so.</div>'+
+                  '<div><b>The tester&rsquo;s independence and competence</b> &mdash; no involvement in building the system, and qualifications you have verified rather than accepted (Standard S12).</div>'+
+                  '<div><b>The handling agreement for findings</b> &mdash; the report is a working list of exploitable weaknesses in a payment system. Where does it live, who may read it, and when is it destroyed?</div>'+
+                '</div>'+
+                'And afterwards, the check almost everyone forgets: <b>findings tracked to remediation, with a retest.</b> A pen-test report with twelve highs and no closure evidence is not assurance &mdash; it is a documented list of ways into your payment platform.'+
+                '<br><br><b>Carry this rule:</b> a vulnerability assessment asks <em>what is weak</em>; a penetration test asks <em>what can be reached</em>; neither answers the other&rsquo;s question. And authorization is not paperwork around the test &mdash; without it, the test is the incident.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ picks=new Array(Q.length).fill(null); done=false; fb.hidden=true; render(); });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s3">
@@ -476,6 +619,230 @@
           </ul>
           <div class="in-practice"><span class="ip-label">&#128270; In practice</span><p>When a security incident is <em>also</em> a reportable breach, the IR plan must branch into the <strong>regulatory notification</strong> path &mdash; the direct link between Domain&nbsp;5B response and Domain&nbsp;2 privacy. One exfiltration of EU cardholder data can trigger GDPR (72 hours), PCI DSS, and contractual notice at once; the plan must name who declares a breach and who notifies each party.</p></div>
           <div class="tip"><span class="tip-label">&#128161; Exam Tip</span>IR questions often test sequence: Preparation &rarr; Detection &rarr; <strong>Containment &rarr; Eradication</strong> &rarr; Recovery &rarr; Lessons Learned. Watch for scenarios that eradicate before containing &mdash; wrong, because it risks the attack spreading. <strong>Contain first, then eradicate.</strong></div>
+
+          <!-- ══ ACTIVITY: The notification clock ══ -->
+          <h4>Activity &mdash; the notification clock</h4>
+          <p>Containment is under way and the technical work is going well. Now the harder question: <strong>who has to be told, and by when?</strong> For each obligated party, choose the deadline &mdash; and notice that every option encodes a different answer to the only question that matters, which is <em>when the clock started</em>.</p>
+          <div class="tip"><span class="tip-label">&#127891; How to run this in class</span>Put the timeline on screen and ask the room to point at the moment the GDPR clock starts, before anyone touches the widget. You will get three different answers. That disagreement, in a real incident, is how organisations arrive at Friday having missed Thursday&rsquo;s deadline.</div>
+
+          <style>
+            .clk{font-family:Arial,Helvetica,sans-serif;margin:1rem 0 0.25rem;}
+            .clk *{box-sizing:border-box;}
+            .clk-card{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:1.1rem 1.15rem 1rem;}
+            .clk-top{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.7rem;}
+            .clk-lead{font-family:'Arial Narrow',Arial,sans-serif;font-size:0.76rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-muted);}
+            .clk-lead b{color:var(--gold);font-size:1rem;}
+            .clk-tools{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;}
+            .clk-tl{border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-bottom:0.7rem;}
+            .clk-tlh{background:var(--navy);color:var(--white);padding:0.45rem 0.8rem;font-family:'Arial Narrow',Arial,sans-serif;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;}
+            .clk-tlb{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--section-alt);}
+            .clk-ev{padding:0.5rem 0.6rem;border-right:1px solid var(--border);position:relative;}
+            .clk-ev:last-child{border-right:none;}
+            .clk-when{font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;font-size:0.74rem;letter-spacing:0.05em;color:var(--gold);display:block;margin-bottom:0.15rem;}
+            .clk-what{font-size:0.73rem;color:var(--text-secondary);line-height:1.4;}
+            .clk-what b{color:var(--text-primary);}
+            .clk-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;}
+            .clk-party{border:1px solid var(--border);border-left:4px solid var(--navy-light);border-radius:5px;padding:0.55rem 0.65rem;background:var(--card-bg);display:flex;flex-direction:column;gap:0.35rem;}
+            .clk-party.ok{border-left-color:var(--correct);}
+            .clk-party.no{border-left-color:var(--wrong);}
+            .clk-name{font-size:0.81rem;font-weight:700;color:var(--text-primary);}
+            .clk-name span{display:block;font-weight:400;font-size:0.7rem;color:var(--text-muted);margin-top:0.08rem;}
+            .clk-opts{display:grid;gap:0.24rem;}
+            .clk-opt{display:flex;gap:0.45rem;align-items:flex-start;text-align:left;width:100%;font-family:Arial,sans-serif;font-size:0.75rem;line-height:1.4;color:var(--text-secondary);background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:0.35rem 0.45rem;cursor:pointer;transition:background .12s,border-color .12s;}
+            .clk-opt:hover:not([disabled]){border-color:var(--gold);background:var(--gold-pale);}
+            .clk-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .clk-opt i{font-style:normal;font-family:'Arial Narrow',Arial,sans-serif;font-weight:900;color:var(--gold);flex-shrink:0;}
+            .clk-opt.on{border-color:var(--navy);background:var(--blue-pale);}
+            .clk-opt.hit{border-color:var(--correct);background:var(--correct-bg);}
+            .clk-opt.miss{border-color:var(--wrong);background:var(--wrong-bg);}
+            .clk-why{font-size:0.72rem;color:var(--text-secondary);line-height:1.42;border-top:1px dashed var(--border);padding-top:0.35rem;}
+            .clk-why b{color:var(--text-primary);}
+            .clk-why em{color:var(--gold);font-style:normal;font-weight:700;}
+            .clk-btn{font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--gold);color:#fff;border:1px solid var(--gold);border-radius:3px;padding:0.48rem 1rem;cursor:pointer;transition:background .15s;}
+            .clk-btn:hover{background:var(--gold-light);}
+            .clk-btn[disabled]{opacity:0.45;cursor:not-allowed;}
+            .clk-btn.ghost{background:transparent;color:var(--text-muted);border-color:var(--border);}
+            .clk-btn.ghost:hover{color:var(--gold);border-color:var(--gold);}
+            .clk-expand{font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);background:var(--gold-pale);border:1px solid var(--gold);border-radius:5px;padding:0.42rem 0.85rem;cursor:pointer;white-space:nowrap;line-height:1;display:inline-flex;align-items:center;gap:0.4rem;}
+            .clk-expand:hover{background:var(--gold);color:#fff;}
+            .clk-expand:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+            .clk-fb{margin-top:0.75rem;border-radius:5px;border:1px solid var(--blue-pale-border);background:var(--blue-pale);padding:0.8rem 0.9rem;font-size:0.8rem;color:var(--text-secondary);line-height:1.55;}
+            .clk-fb b{color:var(--gold);}
+            .clk-board{display:grid;gap:0.28rem;margin:0.5rem 0 0.55rem;}
+            .clk-board div{display:flex;gap:0.6rem;align-items:baseline;background:var(--card-bg);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:0.32rem 0.55rem;font-size:0.76rem;line-height:1.4;}
+            .clk-board div b{color:var(--text-primary);min-width:130px;display:inline-block;}
+            .clk-board div.late{border-left-color:var(--wrong);}
+            .clk-backdrop{position:fixed;inset:0;background:rgba(6,24,42,0.6);z-index:9998;}
+            .clk.is-expanded{position:fixed;inset:1.2vh 1.8vw;width:auto;max-width:none;z-index:9999;margin:0;overflow:auto;background:var(--body-bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem;box-shadow:0 24px 70px rgba(0,0,0,.45);}
+            .clk.is-expanded .clk-card{max-width:1500px;margin:0 auto;border:none;box-shadow:none;padding:0.25rem;}
+            .clk.is-expanded .clk-grid{grid-template-columns:repeat(3,1fr);gap:0.45rem;}
+            .clk.is-expanded .clk-opt{font-size:0.72rem;padding:0.3rem 0.42rem;}
+            .clk.is-expanded .clk-why{font-size:0.69rem;line-height:1.38;padding-top:0.3rem;}
+            .clk.is-expanded .clk-top{margin-bottom:0.5rem;}
+            .clk.is-expanded .clk-fb{font-size:0.74rem;line-height:1.4;column-count:2;column-gap:1.3rem;margin-top:0.45rem;}
+            .clk.is-expanded .clk-board{column-span:all;}
+            @media (max-width:820px){ .clk-grid{grid-template-columns:1fr;} .clk-tlb{grid-template-columns:1fr 1fr;} }
+            @media (max-width:1200px){ .clk.is-expanded .clk-grid{grid-template-columns:1fr 1fr;} }
+          </style>
+
+          <div class="clk" id="clk-root">
+            <div class="clk-card">
+              <div class="clk-top">
+                <span class="clk-lead">Deadlines set <b id="clkN">0</b>/6</span>
+                <div class="clk-tools">
+                  <button type="button" class="clk-btn" id="clkCheck" disabled>Check the clock</button>
+                  <button type="button" class="clk-btn ghost" id="clkReset">Start over</button>
+                  <button type="button" class="clk-expand" id="clkExpand" aria-expanded="false" title="Open a larger, full-screen view">&#10530; Expand</button>
+                </div>
+              </div>
+              <div class="clk-tl">
+                <div class="clk-tlh">Meridian Retail Group &mdash; what happened, and when</div>
+                <div class="clk-tlb">
+                  <div class="clk-ev"><span class="clk-when">Tue 09:12</span><span class="clk-what">SIEM flags a large outbound transfer from the customer database. <b>Unverified alert.</b></span></div>
+                  <div class="clk-ev"><span class="clk-when">Tue 11:40</span><span class="clk-what">Analyst confirms it: <b>personal data has left the network.</b> Extent unknown.</span></div>
+                  <div class="clk-ev"><span class="clk-when">Wed 15:00</span><span class="clk-what">Forensics quantifies: <b>40,000 customer records</b>, incl. EU residents, <b>6,000 card numbers</b>, <b>900 health-plan members</b>.</span></div>
+                  <div class="clk-ev"><span class="clk-when">Thu 10:00</span><span class="clk-what">CEO asks whether this is &ldquo;material&rdquo;. <b>The IR plan names nobody to decide.</b></span></div>
+                </div>
+              </div>
+              <div class="clk-grid" id="clkGrid"></div>
+              <div class="clk-fb" id="clkFb" hidden aria-live="polite"></div>
+            </div>
+          </div>
+
+          <script>
+          (function(){
+            var root=document.getElementById('clk-root'); if(!root) return;
+            var P=[
+              {n:'GDPR supervisory authority', s:'Article 33', a:1, o:[
+                {t:'72 hours from Tue 09:12, the alert &rarr; Fri 09:12'},
+                {t:'72 hours from Tue 11:40, when the breach was confirmed &rarr; Fri 11:40'},
+                {t:'72 hours from Wed 15:00, when the scope was quantified &rarr; Sat 15:00'},
+                {t:'Once the investigation concludes and the facts are established'}
+               ],
+               w:'The clock runs from <em>awareness</em> &mdash; a reasonable degree of certainty that a breach has occurred, which is <b>Tue 11:40</b>, not the unverified alert two hours earlier and not the scoping on Wednesday. Article 33(4) expressly allows information to be supplied <b>in phases</b>, so &ldquo;we were still investigating&rdquo; is not a defence for missing 72 hours. Where notification is late, the reasons must be given to the authority.'},
+              {n:'Affected data subjects', s:'GDPR Article 34', a:1, o:[
+                {t:'Within 72 hours, the same deadline as the authority'},
+                {t:'Without undue delay &mdash; there is no fixed hour count, and high risk is what triggers it'},
+                {t:'Within 30 days of the incident'},
+                {t:'Only if the supervisory authority instructs it'}
+               ],
+               w:'Article 34 has <b>no fixed clock</b> &mdash; it is &ldquo;without undue delay&rdquo;, and it bites only where there is a <b>high risk to rights and freedoms</b>. Card numbers plus health data clears that bar comfortably. A frequent exam trap is assuming 72 hours applies to individuals; it does not.'},
+              {n:'Acquirer &amp; card brands', s:'PCI DSS', a:0, o:[
+                {t:'Immediately on suspicion of card-data compromise &mdash; Tue, before scope is known'},
+                {t:'Within 72 hours, aligned to the GDPR notification'},
+                {t:'After the forensic investigation determines how many cards were taken'},
+                {t:'In the next quarterly compliance report'}
+               ],
+               w:'PCI expects notification <b>immediately upon suspicion</b>, and the acquirer typically engages a PFI (PCI Forensic Investigator) whose appointment you do not control. Waiting to count the cards is the standard mistake &mdash; the obligation is triggered by suspicion, not by arithmetic.'},
+              {n:'Individuals, HHS &amp; media', s:'HIPAA breach notification', a:2, o:[
+                {t:'HHS within 60 days; no individual notice needed below 1,000 people'},
+                {t:'Included in the annual submission to HHS at year end'},
+                {t:'Individuals and HHS without unreasonable delay and no later than 60 days &mdash; plus prominent media notice, because it exceeds 500 individuals'},
+                {t:'Only the health plan is obliged to notify; you are not'}
+               ],
+               w:'900 affected individuals crosses the <b>500-person threshold</b>, which converts the annual-log route into contemporaneous notice to HHS <em>and</em> a prominent media notice in the affected state. The annual submission (option B) is the correct route only for breaches <b>under</b> 500.'},
+              {n:'The SEC', s:'Form 8-K, Item 1.05', a:1, o:[
+                {t:'Within four business days of discovering the incident &mdash; Tue'},
+                {t:'Within four business days of determining the incident is material'},
+                {t:'In the next quarterly filing'},
+                {t:'Not required &mdash; the SEC does not regulate breach notification'}
+               ],
+               w:'The clock runs from the <b>materiality determination</b>, which must be made without unreasonable delay &mdash; not from discovery. And here is the finding: <em>the plan names nobody to make that determination</em>, so a clock that cannot start looks like compliance right up to the moment a regulator asks when you decided.'},
+              {n:'The cyber insurer', s:'Policy terms', a:0, o:[
+                {t:'As soon as practicable, per the policy &mdash; a contractual obligation, not a regulatory one'},
+                {t:'Within 72 hours, the same as GDPR'},
+                {t:'After remediation, when costs are known'},
+                {t:'Not required unless a claim is made'}
+               ],
+               w:'Not a regulator &mdash; and still a deadline, because most policies make prompt notice a <b>condition of cover</b> and many require the insurer&rsquo;s consent before you engage forensics or counsel. Engaging your own responders first can void the claim. This one belongs on the IR plan&rsquo;s contact list next to the regulators.'}
+            ];
+            var picks=new Array(P.length).fill(null), done=false;
+            var grid=document.getElementById('clkGrid'), fb=document.getElementById('clkFb'),
+                bChk=document.getElementById('clkCheck'), bRst=document.getElementById('clkReset'),
+                elN=document.getElementById('clkN'), expBtn=document.getElementById('clkExpand');
+
+            function render(){
+              grid.innerHTML=P.map(function(x,i){
+                var p=picks[i], cls='clk-party';
+                if(done) cls += (p===x.a?' ok':' no');
+                var opts=x.o.map(function(o,k){
+                  if(done && k!==x.a && k!==p) return '';   // on reveal keep only the answer and your pick
+                  var c='clk-opt';
+                  if(done){ if(k===x.a) c+=' hit'; else if(k===p) c+=' miss'; }
+                  else if(k===p) c+=' on';
+                  return '<button type="button" class="'+c+'" data-i="'+i+'" data-k="'+k+'"'+(done?' disabled':'')+'>'+
+                    '<i>'+String.fromCharCode(65+k)+'.</i><span>'+o.t+'</span></button>';
+                }).join('');
+                return '<div class="'+cls+'">'+
+                  '<span class="clk-name">'+x.n+'<span>'+x.s+'</span></span>'+
+                  '<div class="clk-opts" role="group" aria-label="Deadline for '+x.n+'">'+opts+'</div>'+
+                  (done?'<div class="clk-why">'+x.w+'</div>':'')+
+                '</div>';
+              }).join('');
+              var n=picks.filter(function(p){return p!==null;}).length;
+              elN.textContent=done?picks.filter(function(p,i){return p===P[i].a;}).length:n;
+              bChk.disabled=done||n<P.length;
+              bChk.textContent=done?'Checked':(n<P.length?'Check the clock ('+n+'/6)':'Check the clock');
+            }
+            grid.addEventListener('click',function(e){
+              var b=e.target.closest('.clk-opt'); if(!b||done) return;
+              picks[+b.dataset.i]=+b.dataset.k; render();
+            });
+            bChk.addEventListener('click',function(){
+              done=true; render();
+              var right=picks.filter(function(p,i){return p===P[i].a;}).length;
+              var gdpr = picks[0]===1;
+              fb.innerHTML='<b>'+right+' of 6.</b> Laid against the timeline, the obligations fall like this:'+
+                '<div class="clk-board">'+
+                  '<div class="late"><b>Tue 11:40</b> Acquirer and card brands &mdash; immediately on suspicion. The team was still writing the containment plan.</div>'+
+                  '<div><b>Fri 11:40</b> Supervisory authority &mdash; 72 hours from awareness, in phases if necessary.</div>'+
+                  '<div><b>Without undue delay</b> Data subjects &mdash; high risk is established the moment card and health data are in scope.</div>'+
+                  '<div><b>Within 60 days</b> Individuals and HHS, plus media notice above 500 people.</div>'+
+                  '<div class="late"><b>Never started</b> SEC &mdash; four business days from a materiality determination nobody is empowered to make.</div>'+
+                '</div>'+
+                'Two of these were already running before anyone thought about notification, and the technical response consumed them. '+
+                (gdpr?'You started the GDPR clock in the right place. ':'Note where the GDPR clock actually starts &mdash; at confirmation on Tuesday, not at the alert and not at the scoping. ')+
+                'The instinct to wait until the facts are settled is professionally reasonable and legally wrong: regulators built phased notification precisely because they expect you to report before you know everything.'+
+                '<br><br>The auditor&rsquo;s findings here are not about hours at all. <b>The plan does not name who declares a breach, who determines materiality, or who is authorised to notify each party</b> &mdash; so every clock depends on somebody improvising under pressure. And the insurer sits outside the regulatory list entirely, where prompt notice is a condition of cover and engaging your own forensics first can void it.'+
+                '<br><br><b>Carry this rule:</b> ask when the clock <em>starts</em>, not how long it runs &mdash; awareness for GDPR, suspicion for PCI, materiality determination for the SEC. Then test the plan for the three names that make those moments happen: who declares, who decides, who notifies.';
+              fb.hidden=false;
+            });
+            bRst.addEventListener('click',function(){ picks=new Array(P.length).fill(null); done=false; fb.hidden=true; render(); });
+
+            var backdrop=document.createElement('div'); backdrop.className='clk-backdrop';
+            var lastFocused=null;
+            function focusables(){return Array.prototype.filter.call(
+              root.querySelectorAll('button,input,select,textarea,a[href],[tabindex]:not([tabindex="-1"])'),
+              function(el){return !el.disabled && el.offsetParent!==null;});}
+            function setExpanded(on){
+              root.classList.toggle('is-expanded',on);
+              if(on){document.body.appendChild(backdrop); lastFocused=document.activeElement;
+                root.setAttribute('role','dialog'); root.setAttribute('aria-modal','true'); root.setAttribute('aria-label','Expanded activity: the notification clock');}
+              else {if(backdrop.parentNode)backdrop.parentNode.removeChild(backdrop);
+                root.removeAttribute('role'); root.removeAttribute('aria-modal'); root.removeAttribute('aria-label');}
+              document.body.style.overflow=on?'hidden':'';
+              expBtn.innerHTML=on?'&#10005; Close':'&#10530; Expand';
+              expBtn.setAttribute('aria-expanded',on?'true':'false');
+              if(on){root.scrollTop=0; expBtn.focus();}
+              else if(lastFocused&&lastFocused.focus){lastFocused.focus();}
+            }
+            expBtn.addEventListener('click',function(){setExpanded(!root.classList.contains('is-expanded'));});
+            backdrop.addEventListener('click',function(){setExpanded(false);});
+            document.addEventListener('keydown',function(e){
+              if(!root.classList.contains('is-expanded')) return;
+              if(e.key==='Escape'){setExpanded(false); return;}
+              if(e.key==='Tab'){
+                var f=focusables(); if(!f.length) return;
+                var first=f[0], last=f[f.length-1];
+                if(!root.contains(document.activeElement)){e.preventDefault(); first.focus();}
+                else if(e.shiftKey && document.activeElement===first){e.preventDefault(); last.focus();}
+                else if(!e.shiftKey && document.activeElement===last){e.preventDefault(); first.focus();}
+              }
+            });
+            render();
+          })();
+          </script>
+          <!-- ══ END ACTIVITY ══ -->
         </article>
 
         <article class="content-section" id="s4">
