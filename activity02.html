@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A2 Risk-Based Audit Planning and Sampling | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A2',
+  title: 'Risk-Based Audit Planning and Sampling',
+  accent: 'Planning and Sampling',
+  domain: 'Domain 1',
+  time: '40–50 min',
+  level: 'Foundational to Intermediate',
+  lessonHref: 'lesson01.html#s3',
+  lessonLabel: 'Lesson 1, Risk-Based Audit Planning',
+  lede: 'The audit plan covers the highest residual risk. It does not follow management preference, the most recent audit, or the most interesting technology. Sampling then answers a second question: is the evidence enough to rely on a control? Practice both decisions the way the exam tests them.',
+  concepts: [
+    { key: 'planning', name: 'Risk-based plan ranking', review: 'Lesson 1, Risk-Based Audit Planning' },
+    { key: 'method', name: 'Choosing a sampling method', review: 'Lesson 1, Audit Testing & Sampling Methodology' },
+    { key: 'deviation', name: 'Deviation-rate math', review: 'Lesson 1, Audit Testing & Sampling Methodology' },
+    { key: 'conclusion', name: 'Concluding against tolerance', review: 'Lesson 1, sampling and tolerable deviation' }
+  ],
+  stations: [
+    {
+      type: 'order', short: 'Rank the universe', title: 'Rank the audit universe', concept: 'planning',
+      instr: 'You are the new IS audit manager at Halvorsen Freight. The audit universe has six auditable entities, and you have capacity for <b>three</b> engagements this year. Weigh inherent risk, control maturity, regulatory exposure, and time since the last audit. Then order the entities from <b>highest residual risk</b> at the top to <b>lowest</b> at the bottom. Where two entities are close, either order is accepted.',
+      hint: 'Start with inherent risk: impact sets the ceiling. Weak controls raise residual risk, and strong controls lower it. High regulatory exposure and a long gap since the last audit push an entity up. A weakly controlled entity with low impact still has low residual risk.',
+      topLabel: 'Highest residual risk', bottomLabel: 'Lowest residual risk',
+      review: { href: 'lesson01.html#s3', label: 'Lesson 1, Risk-Based Audit Planning' },
+      table: {
+        caption: 'Halvorsen Freight audit universe',
+        head: ['Entity', 'Inherent risk', 'Control maturity', 'Months since last audit', 'Regulatory exposure'],
+        rows: [
+          ['Payment processing', 'High', 'Moderate', '26', 'High (PCI DSS)'],
+          ['Customer web app', 'High', 'Weak', '14', 'High (GDPR)'],
+          ['HR / payroll', 'Medium', 'Strong', '10', 'Medium'],
+          ['Data-center facilities', 'Medium', 'Moderate', '30', 'Low'],
+          ['Internal wiki', 'Low', 'Weak', '40', 'Low'],
+          ['Procurement system', 'Medium', 'Moderate', '12', 'Medium']
+        ]
+      },
+      items: [
+        { text: 'HR / payroll', rank: 4, why: 'Medium inherent risk with strong controls leaves modest residual risk. It was audited 10 months ago, so it falls below the other medium entities.' },
+        { text: 'Internal wiki', rank: 5, why: 'Low impact keeps residual risk low even with weak controls and 40 months since the last audit. Time since audit adjusts a score; it does not override impact.' },
+        { text: 'Customer web app', rank: 0, accept: [0, 1], why: 'High inherent risk, weak controls, and GDPR exposure give it the highest residual risk in the universe. It belongs in the plan with payment processing.' },
+        { text: 'Procurement system', rank: 3, accept: [2, 3], why: 'Medium inherent risk, moderate controls, and medium regulatory exposure make it one of the two strongest medium candidates for the third slot.' },
+        { text: 'Payment processing', rank: 1, accept: [0, 1], why: 'High inherent risk, PCI DSS exposure, and 26 months without an audit place it in the top tier. Moderate controls keep it just behind the web app in most models.' },
+        { text: 'Data-center facilities', rank: 2, accept: [2, 3], why: 'Medium inherent risk with moderate controls, and 30 months since the last audit. It competes with procurement for the third slot; document the weights you used to break the tie.' }
+      ]
+    },
+    {
+      type: 'sort', short: 'Pick the method', title: 'Pick the sampling method', concept: 'method',
+      instr: 'Read each test objective. Decide which sampling approach fits it best: <b>Attribute</b> (estimates how often a control fails), <b>Variable</b> (estimates a monetary amount or quantity), <b>Discovery</b> (finds at least one occurrence when the expected rate is near zero), or <b>Judgmental</b> (auditor-selected items whose results are not projected).',
+      hint: 'Ask what the answer looks like. A yes-or-no result per item that becomes a rate is attribute sampling. A dollar or quantity estimate is variable sampling. "Is there even one?" is discovery sampling. If the auditor picks items for a reason and will not project the result, it is judgmental.',
+      buckets: ['Attribute', 'Variable', 'Discovery', 'Judgmental'],
+      review: { href: 'lesson01.html#s6', label: 'Lesson 1, Audit Testing & Sampling Methodology' },
+      items: [
+        { text: 'Estimate the percentage of production changes deployed without documented approval, to decide whether to rely on the change control.', answer: 0, why: 'Each change either has approval or does not. The test produces a deviation rate for a control, which is attribute sampling.' },
+        { text: 'Estimate the total dollar value of overbilled invoices in a population of 18,000 vendor payments.', answer: 1, why: 'The objective is a monetary amount, so variable sampling is the fit.' },
+        { text: 'Determine whether any fictitious vendors exist in the vendor master file, where a single case would be serious and the expected rate is near zero.', answer: 2, why: 'Discovery sampling is designed to find at least one occurrence of a rare, critical event such as fraud.' },
+        { text: 'Select the 15 privileged-account changes made by departing administrators, because they carry the most risk, without projecting the result.', answer: 3, why: 'The auditor chose the items for a risk reason and will not project the result. That is judgmental, non-statistical sampling.' },
+        { text: 'Estimate the total misstatement in the recorded cost of the fixed-asset register.', answer: 1, why: 'A misstatement in a recorded amount is a quantity estimate, which calls for variable sampling.' },
+        { text: 'Test whether help-desk password resets followed the required identity check, and conclude on the control for the year.', answer: 0, why: 'Each reset passed or failed the identity check. A pass-or-fail test projected as a rate is attribute sampling.' },
+        { text: 'Look for at least one case of payroll paid to an employee after the termination date, following a tip to the ethics hotline.', answer: 2, why: 'The question is whether any instance exists, and even one would be significant. Discovery sampling fits.' },
+        { text: 'Pull journal entries posted on weekends by senior finance staff, because the timing is unusual, to look for override.', answer: 3, why: 'The auditor targets items by a risk characteristic. The selection is judgmental and the results describe only those items.' },
+        { text: 'Determine the rate at which quarterly access recertifications were signed by the correct manager.', answer: 0, why: 'Each certification was signed by the right person or not. The result is a deviation rate, so attribute sampling applies.' },
+        { text: 'Walk through five changes chosen by the auditor to understand the process before designing the formal test.', answer: 3, why: 'A small, auditor-selected set used to understand a process is judgmental. Nothing is projected to the population.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Deviation cases', title: 'Deviation rate and the audit conclusion',
+      instr: 'Each case gives a control test. Compute the <b>sample deviation rate</b> (deviations divided by sample size), compare it to the tolerable rate set at planning, and choose the <b>BEST</b> conclusion.',
+      hint: 'The rate uses the sample size, not the population. If the rate exceeds the tolerable rate, the control cannot be relied on. Expanding the sample is legitimate only when the plan called for it before testing, or when the sample did not cover the period. Never resample until the result passes, and never move the tolerable rate to fit the result.',
+      review: { href: 'lesson01.html#s6', label: 'Lesson 1, Audit Testing & Sampling Methodology' },
+      items: [
+        {
+          title: 'Case 1', text: 'Ines Carvalho is testing the quarterly user-access recertification control at Halvorsen Freight. Unrecertified accounts count as deviations.',
+          table: { head: ['Test fact', 'Value'], rows: [['Population', '1,200 user accounts'], ['Tolerable deviation rate (set at planning)', '5%'], ['Sample size (random)', '40'], ['Deviations found', '4 accounts never recertified']] },
+          parts: [
+            { q: 'What is the sample deviation rate?', concept: 'deviation', options: ['4%', '10%', '0.33%', '5%'], answer: 1, why: 'The rate is 4 divided by 40, which is 10%. Dividing by the population (0.33%) is a common error; the rate comes from the sample.' },
+            { q: 'What is the audit conclusion?', concept: 'conclusion', options: ['Rely on the control, because 36 of 40 accounts passed', 'Expand the sample until the combined rate falls within 5%', 'Conclude the control is not effective and report the deficiency', 'Have management recertify the four accounts, then rely on the control'], answer: 2, why: 'A 10% rate exceeds the 5% tolerable rate, so the control is not effective. Fixing the four accounts after the fact does not change how the control operated during the period.' }
+          ]
+        },
+        {
+          title: 'Case 2', text: 'Darnell Okafor is testing change approval over the full fiscal year. The sample was sized from the audit methodology\'s table for the planned confidence level and tolerable rate.',
+          table: { head: ['Test fact', 'Value'], rows: [['Population', '2,400 standard changes'], ['Tolerable deviation rate', '5%'], ['Sample size (random across 12 months)', '60'], ['Deviations found', '1 change deployed before approval']] },
+          parts: [
+            { q: 'What is the sample deviation rate?', concept: 'deviation', options: ['0.04%', '1%', '6%', '1.7%'], answer: 3, why: 'The rate is 1 divided by 60, which is about 1.7%. Reporting the count (1) as a percentage, or dividing by the population, gives the wrong figure.' },
+            { q: 'What is the audit conclusion?', concept: 'conclusion', options: ['Report a deficiency, because any single deviation means the control has failed', 'Rely on the control, after checking the one exception for cause and pattern', 'Expand the sample to 120 items to confirm the result', 'Disregard the exception entirely, since the rate is below tolerance'], answer: 1, why: 'A 1.7% rate is within the 5% tolerable rate, so the auditor can rely on the control. The single exception is still examined, because a deliberate override could signal a different risk.' }
+          ]
+        },
+        {
+          title: 'Case 3', text: 'Mei Lin Zhou is testing help-desk password resets. Before testing began, audit management approved a stop-or-go sampling plan.',
+          table: { head: ['Test fact', 'Value'], rows: [['Population', '900 password resets'], ['Tolerable deviation rate', '5%'], ['Approved plan', 'Test 30. With 0 deviations, rely. With 1, extend to 60. With 2 or more, do not rely.'], ['Deviations in the first 30', '1 reset without an identity check']] },
+          parts: [
+            { q: 'What is the sample deviation rate so far?', concept: 'deviation', options: ['3.3%', '1%', '30%', '5%'], answer: 0, why: 'The rate is 1 divided by 30, which is about 3.3%.' },
+            { q: 'What is the BEST next step?', concept: 'conclusion', options: ['Rely on the control, since 3.3% is below 5%', 'Report a deficiency now, because the plan tolerates no deviations at all', 'Extend the sample to 60, as the approved sampling plan specifies', 'Pick a fresh sample of 30 and use whichever result is better'], answer: 2, why: 'The expansion was defined before testing, so following it is sound methodology rather than result-shopping. Drawing a new sample to replace the first one would be result-shopping.' }
+          ]
+        },
+        {
+          title: 'Case 4', text: 'Tomasz Nowak is testing emergency-change approvals for the full year. To save time, he drew all 25 sample items from January.',
+          table: { head: ['Test fact', 'Value'], rows: [['Period under audit', 'January to December'], ['Tolerable deviation rate', '5%'], ['Sample size', '25, all from January'], ['Deviations found', '0']] },
+          parts: [
+            { q: 'What is the sample deviation rate?', concept: 'deviation', options: ['4%', '0%', '5%', '100%'], answer: 1, why: 'No deviations in 25 items is a 0% rate.' },
+            { q: 'What is the BEST conclusion?', concept: 'conclusion', options: ['Rely on the control for all twelve months, since no deviations were found', 'Report a deficiency, because the sample was too small', 'Rely on the control, but only for the month of January', 'Extend testing so the sample covers the whole period before concluding'], answer: 3, why: 'A clean result means little if the sample does not represent the population. The audit objective covers the year, so the sample must cover the year before the auditor can conclude.' }
+          ]
+        },
+        {
+          title: 'Case 5', text: 'Back to Case 1. When Ines shares the 10% result, the IT manager proposes two changes: pull 40 more accounts and report the combined rate, and treat 10% as the tolerable rate because "5% is unrealistic for a team this size."',
+          parts: [
+            { q: 'What is the BEST response?', concept: 'conclusion', options: ['Keep the planned criterion and report the deficiency with management\'s response', 'Agree to the extra 40 items, since a larger sample is always more reliable evidence', 'Agree to reset the tolerable rate to 10%, since management owns the risk decision', 'Withdraw the finding and retest the control in next year\'s audit'], answer: 0, why: 'Resampling until the rate passes is result-shopping, and moving the tolerable rate rationalizes the failure. The auditor reports against the criterion set at planning and records management\'s view in its response.' },
+            { q: 'Management adds that three of the four deviations belonged to staff on extended leave. How does this affect the finding?', concept: 'conclusion', options: ['It removes those three deviations from the count', 'It helps explain the cause, but the deviations still count', 'It shows the control design is sound, so no finding is needed', 'It requires restarting the test with a new sample'], answer: 1, why: 'The explanation is useful context for the cause and the recommendation. It does not change the fact that the control did not operate on those accounts.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'justify', label: 'Write the two-to-three-sentence justification you would give the audit committee for the entity you ranked first. Name the risk factors that drove the ranking.' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

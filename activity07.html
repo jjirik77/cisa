@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A7 IT Operations Triage: Incident, Problem, Change, and Service Levels | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A7',
+  title: 'IT Operations Triage: Incident, Problem, Change, and Service Levels',
+  accent: 'Incident, Problem, Change, and Service Levels',
+  domain: 'Domain 4',
+  time: '40 min',
+  level: 'Foundational to Intermediate',
+  lessonHref: 'lesson05.html#s6',
+  lessonLabel: 'Lesson 5, Incident & Problem Management',
+  lede: 'Domain 4 is the heaviest domain on the exam. Many of its questions turn on one distinction: whether an event belongs to incident, problem, or change management, and which control should catch it. Route the tickets, judge the emergency changes and spreadsheets, and read a service report the way an auditor does.',
+  concepts: [
+    { key: 'itsm', name: 'Incident, problem, change, or request', review: 'Lesson 5, Incident & Problem Management' },
+    { key: 'change', name: 'Emergency change and job scheduling', review: 'Lesson 5, Change, Configuration & Patch Management' },
+    { key: 'euc', name: 'Shadow IT and end-user computing', review: 'Lesson 5, Shadow IT & End-User Computing' },
+    { key: 'slm', name: 'Service-level reporting', review: 'Lesson 5, Availability, Capacity & Service-Level Management' }
+  ],
+  stations: [
+    {
+      type: 'sort', short: 'Ticket queue', title: 'Route the service-desk queue', concept: 'itsm',
+      instr: 'Fifteen tickets are waiting in the queue at Larkspur Insurance. Route each one to <b>Incident</b>, <b>Problem</b>, <b>Change</b>, or <b>Service request</b>. Then select <b>Check answers</b>.',
+      hint: 'An incident is an unplanned disruption, and the goal is to restore service fast. A problem is the unknown cause behind one or more incidents, and the goal is to find and remove it. A change adds, modifies, or removes something in production. A service request is a routine, pre-approved ask from a catalog, where nothing is broken.',
+      buckets: ['Incident', 'Problem', 'Change', 'Service request'],
+      review: { href: 'lesson05.html#s6', label: 'Lesson 5, Incident & Problem Management' },
+      items: [
+        { text: 'Staff at the Dayton branch cannot open email. Other branches are working normally.', answer: 0, why: 'Service is disrupted now, and the priority is to restore it. That is incident management.' },
+        { text: 'The file server has run out of disk space three times this month. Each time, the team cleared temporary files. Find out why it keeps happening.', answer: 1, why: 'Repeat incidents with an unknown cause should trigger problem management. Clearing files restored service but did not remove the cause.' },
+        { text: 'A new hire starting Monday needs a standard laptop and the standard office software bundle.', answer: 3, why: 'Nothing is broken, and the item comes from a pre-approved catalog. That is a service request.' },
+        { text: 'Add a firewall rule so a new logistics partner can reach the SFTP server.', answer: 2, why: 'Modifying a production configuration item is a change. It needs assessment and approval before it is made.' },
+        { text: 'The overnight payroll batch job failed, and direct-deposit files were not created.', answer: 0, why: 'A failed production job that stops a business service is an incident. Restoring the run comes first.' },
+        { text: 'A user forgot her password and asks for a reset through the self-service portal.', answer: 3, why: 'A password reset is a routine, pre-defined request. It is handled through request fulfillment.' },
+        { text: 'Root-cause analysis found a memory leak in the order service. The vendor patch that fixes it must now be deployed to production.', answer: 2, why: 'Problem management found the fix, but deploying it to production is a change. The problem record stays open until the change is verified.' },
+        { text: 'Forty printer crashes have occurred since last month\'s driver update. Each was fixed with a restart. Analyze the pattern.', answer: 1, why: 'Trend analysis across many incidents to find a common cause is problem management.' },
+        { text: 'The customer website is returning errors for every visitor.', answer: 0, why: 'A live outage affecting customers is an incident, likely a major one with its own escalation path.' },
+        { text: 'A manager asks for read access to a standard sales report that the role catalog already lists for his position.', answer: 3, why: 'Access that is pre-defined in the role catalog is a service request. It still needs the documented approval the catalog requires.' },
+        { text: 'Upgrade the database server to the next major version during the weekend maintenance window.', answer: 2, why: 'A planned upgrade of a production component is a normal change. It goes through assessment, testing, and CAB approval.' },
+        { text: 'A workaround is documented for intermittent database deadlocks, but the underlying cause is still unknown.', answer: 1, why: 'A cause still under investigation, with a documented workaround, is a problem tracked as a known error.' },
+        { text: 'A sales representative\'s laptop will not connect to the VPN from a hotel, and she cannot reach the CRM.', answer: 0, why: 'One user has lost access to a service she needs. Even when only one person is affected, it is an incident.' },
+        { text: 'A team asks for a second monitor from the approved hardware catalog.', answer: 3, why: 'A catalog item with nothing broken is a service request.' },
+        { text: 'After a major outage, the post-incident review asks for an investigation into why automatic failover did not trigger.', answer: 1, why: 'The outage is resolved. Finding why failover failed, so it does not happen again, is problem management.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Change and EUC', title: 'Emergency changes and end-user computing', concept: 'change',
+      instr: 'Case 1 is an emergency change log. Judge each change for approval, testing, documentation, and review. Cases 2 to 5 describe spreadsheets and cloud tools that business teams run outside IT. Choose the <b>BEST</b> answer for each part.',
+      hint: 'An emergency change may move faster, but it still needs an authorized approver, a record, and a post-implementation review. The emergency path is for urgent threats or outages, not missed deadlines. For end-user computing, match the control to the impact: a spreadsheet that feeds financial statements or holds regulated data needs governance, and a low-impact tool does not.',
+      review: { href: 'lesson05.html#s7', label: 'Lesson 5, Change, Configuration & Patch Management' },
+      items: [
+        {
+          title: 'Case 1: Larkspur Insurance emergency change log', text: 'The IS auditor samples five emergency changes from the third quarter. Emergency changes made up 31 percent of all production changes in the quarter.',
+          table: { caption: 'Emergency changes, third quarter', head: ['Change', 'Description', 'Approval', 'Testing', 'Record and review'], rows: [
+            ['EC-1', 'Patch for an actively exploited flaw on the internet-facing portal', 'Designated emergency approver, by phone, before deployment', 'Smoke tested in staging for one hour', 'Ticket opened the same day; review completed in 2 days'],
+            ['EC-2', 'Hotfix to the claims calculation at 2 a.m.', 'None', 'None', 'Developer deployed it with his own production access; ticket created a week later when operations noticed'],
+            ['EC-3', 'Firewall rule to block a malicious IP range', 'Emergency CAB, before deployment', 'Verified after deployment', 'Ticket complete; no review after 60 days'],
+            ['EC-4', 'New quoting feature', 'Marked emergency because the team missed the normal CAB deadline', 'Unit tests only', 'Ticket complete'],
+            ['EC-5', 'Month-end batch job failed; the operator edited the production schedule to skip it so later jobs could run', 'None', 'None', 'No ticket; finance was not told the job was skipped']
+          ] },
+          parts: [
+            { q: 'What is the auditor\'s conclusion about EC-1?', options: ['Finding: the patch skipped the full CAB review process', 'Finding: one hour of testing can never be sufficient', 'Controlled: approval, record, and review are present', 'Finding: phone approval is never valid approval evidence'], answer: 2, why: 'EC-1 shows the emergency path working as designed. An authorized approver acted before deployment, the change was recorded, and a review followed.' },
+            { q: 'What is the MOST serious weakness in EC-2?', options: ['A developer changed production with no approval', 'The change was made outside business hours', 'The ticket was missing a business risk rating', 'Testing was skipped because the change was small'], answer: 0, why: 'A developer with production access bypassed approval and segregation of duties. The ticket exists only because operations noticed, so the auditor should check production logs for other unrecorded changes.' },
+            { q: 'What should the auditor recommend for EC-3?', options: ['Re-submit the change to the normal CAB for approval', 'Complete the missing post-implementation review', 'Reverse the firewall rule until it has been reviewed', 'No action, because the emergency CAB approved it'], answer: 1, why: 'Approval was proper, but every emergency change needs a post-implementation review. The auditor should also ask how overdue reviews are tracked.' },
+            { q: 'What does EC-4 show?', options: ['A valid use of the emergency path to protect a date', 'An acceptable exception, because the ticket is complete', 'A testing gap only, since the approval was appropriate', 'Misuse of the emergency path to skip normal review'], answer: 3, why: 'A missed deadline is not an emergency. Routing planned work through the emergency path avoids CAB review and full testing.' },
+            { q: 'What is the auditor\'s main concern with EC-5?', options: ['The operator should have rerun the entire batch', 'An unauthorized schedule change hid a failed job', 'The scheduler should not allow job dependencies', 'Month-end jobs should run during business hours'], answer: 1, why: 'Changes to the production schedule belong under change management, and job failures should reach business users through exception reports. Finance may close the month on incomplete data.' },
+            { q: 'Emergency changes were 31 percent of all changes this quarter. What does this MOST likely indicate?', options: ['Weak planning that leans on the emergency path', 'A mature and highly responsive operations team', 'A need to add more members to the emergency CAB', 'Strong monitoring that is catching more threats'], answer: 0, why: 'A high share of emergency changes is a quality signal of poor planning. EC-4 suggests some of that volume is planned work using the faster path.' }
+          ]
+        },
+        {
+          title: 'Case 2: The reserve spreadsheet', text: 'Tamsin Okafor, a treasury analyst at Larkspur, maintains a spreadsheet that calculates the loss reserve booked in the quarterly financial statements. Only she understands its macros. The current file is named reserve_final_v7, and no one else checks the formulas.',
+          parts: [
+            { q: 'What is the BEST control response?', concept: 'euc', options: ['Ban spreadsheets from all financial reporting work', 'Ask Tamsin to save a backup copy of it each week', 'Govern it as a critical EUC with independent review', 'Rebuild it as a custom application this quarter'], answer: 2, why: 'A spreadsheet that drives financial statements is a critical EUC. It needs inventory, version and access control, a change log, and independent validation of its output. A backup alone does nothing for integrity or key-person risk.' }
+          ]
+        },
+        {
+          title: 'Case 3: The referral letters', text: 'The intake team at a Northfield Health clinic signed up for a free file-sharing service with a personal email address. They use it to send referral letters, which contain patient details, to outside specialists.',
+          parts: [
+            { q: 'Which risk should the auditor rank HIGHEST?', concept: 'euc', options: ['Staff time lost while learning a new tool', 'Interface changes that confuse clinic staff', 'License spending duplicated across departments', 'Patient data stored in an unvetted cloud service'], answer: 3, why: 'Regulated health data now sits in a service with no security review, contract, or organizational control of the account. That is a governance, privacy, and operations finding at once.' },
+            { q: 'What is the BEST first response?', concept: 'euc', options: ['Block the service and discipline the staff involved', 'Assess exposure, then move to an approved tool', 'Ask staff to password-protect every letter', 'Accept the risk because the service is free'], answer: 1, why: 'The auditor needs to know what data is exposed and who can reach it, then the business need should move to a sanctioned tool. Blocking alone pushes staff to the next workaround.' }
+          ]
+        },
+        {
+          title: 'Case 4: The coffee order sheet', text: 'The facilities team at Alder County tracks conference-room coffee orders in a shared spreadsheet. It holds no personal or financial data and feeds no other system.',
+          parts: [
+            { q: 'How should the auditor treat this spreadsheet?', concept: 'euc', options: ['Low risk; no added controls are warranted', 'Critical, needing version and change control', 'A finding, since every spreadsheet needs IT approval', 'Shadow IT that should be shut down at once'], answer: 0, why: 'EUC controls should match impact. Applying critical-EUC controls to a low-impact sheet wastes effort that belongs on high-risk tools.' }
+          ]
+        },
+        {
+          title: 'Case 5: The commission database', text: 'The sales operations team at Juniper Outfitters uses a desktop database to calculate monthly commission payouts. The output file goes to payroll. Any of six team members can edit the payout queries, and no change log exists.',
+          parts: [
+            { q: 'Which control gap matters MOST?', concept: 'euc', options: ['The database runs on an older desktop version', 'Payroll receives the output file by email', 'No change control or log for the payout logic', 'The work is spread across six team members'], answer: 2, why: 'Anyone on the team can change how pay is calculated, and nothing records it. That is an integrity and fraud risk on a payment process.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'scenario', short: 'SLA scorecard', title: 'Read the SLA scorecard', concept: 'slm',
+      instr: 'Brightwater Logistics outsources hosting and service desk work to a managed provider. Read the provider\'s monthly report and notes, then answer each part as the IS auditor.',
+      hint: 'A green status is a claim, not evidence. Check how each metric is defined, what it excludes, and who produced the numbers. Averages can hide the failures that matter most, and a metric that is easy to inflate is weak evidence of quality.',
+      review: { href: 'lesson05.html#s5', label: 'Lesson 5, Availability, Capacity & Service-Level Management' },
+      items: [
+        {
+          title: 'Case 1: September service report', text: 'Notes from the report: planned maintenance totaled 31 hours, including 18 hours on two weekday afternoons during peak shipping. Password resets made up 61 percent of first-contact resolutions. Reopened tickets are closed and logged as new tickets. All figures come from the provider\'s own monitoring and ticketing tools.',
+          table: { caption: 'Brightwater Logistics: managed service report, September', head: ['Metric', 'SLA target', 'Reported', 'Provider status'], rows: [
+            ['Availability (excludes planned maintenance)', '99.5%', '99.8%', 'Met'],
+            ['P1 incidents resolved within 4 hours', '95%', '88%', 'Missed'],
+            ['P2 incidents responded to within 30 minutes', '90%', '93%', 'Met'],
+            ['Average resolution time, all incidents', '8 hours', '6.1 hours', 'Met'],
+            ['First-contact resolution, service desk', '70%', '82%', 'Met'],
+            ['Changes that caused an incident', 'Under 5%', '3%', 'Met']
+          ] },
+          parts: [
+            { q: 'Which metric clearly missed its target?', options: ['Availability', 'P1 resolution within 4 hours', 'First-contact resolution', 'Average resolution time'], answer: 1, why: 'P1 resolution reached 88 percent against a 95 percent target. The other results are reported as met, although some need a closer look.' },
+            { q: 'Given the maintenance note, which result MOST overstates the service users received?', options: ['P2 response time', 'Change failure rate', 'Availability', 'First-contact resolution'], answer: 2, why: 'The 99.8 percent excludes 31 hours of maintenance, 18 of them during peak business hours. Users lost the system even though the metric stayed green.' },
+            { q: 'What should the auditor ask FIRST about the availability figure?', options: ['Does the signed SLA allow weekday maintenance?', 'Can the provider reach 99.9 percent next month?', 'Why was so much maintenance needed in September?', 'Which vendor makes the provider\'s monitoring tool?'], answer: 0, why: 'The exclusion is valid only if the SLA defines it. If the contract limits maintenance to agreed windows, the weekday outages count as downtime and the SLA was missed.' },
+            { q: 'Why is the first-contact resolution figure weak evidence of service quality?', options: ['The 70 percent target is set too low to matter', 'Service desks should not be measured on this', 'It beats the target by an implausibly wide margin', 'Easy resets inflate it and reopens are hidden'], answer: 3, why: 'Simple password resets push the rate up, and logging reopened tickets as new ones hides failed fixes. The metric can look strong while users keep calling back.' },
+            { q: 'All figures come from the provider\'s own tools. What is the BEST audit response?', options: ['Accept them, since the provider signed the SLA', 'Test a sample against independent company data', 'Ask the provider to certify the report in writing', 'Recommend replacing the provider at renewal'], answer: 1, why: 'Self-reported figures need corroboration. The auditor compares a sample with the company\'s own monitoring, ticket, or user records before relying on the report.' },
+            { q: 'For the missed P1 target, what evidence should the auditor expect to see?', options: ['A provider note blaming the miss on staffing', 'A lowered P1 target that takes effect next month', 'A recorded breach with cause, fix, and credits', 'Nothing, since a single monthly miss is immaterial'], answer: 2, why: 'SLA breaches should be documented, analyzed, and remediated, with any service credits applied. Repeat P1 incidents should also feed problem management.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'blur', label: 'Which pair of processes (incident and problem, or problem and change) is easiest to blur in your own workplace? How would you tell them apart on an exam question?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

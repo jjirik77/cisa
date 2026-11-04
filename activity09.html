@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A9 Access Control, Encryption, and Key Management Decisions | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A9',
+  title: 'Access Control, Encryption, and Key Management Decisions',
+  accent: 'Encryption, and Key Management Decisions',
+  domain: 'Domain 5',
+  time: '40 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson07.html#s3',
+  lessonLabel: 'Lesson 7, Identity & Access Management',
+  lede: 'Domain 5 questions ask which control is BEST for a stated risk. To answer them, you need to know what each control actually protects and where it fails. Encryption without key management is the classic trap, and it appears in several forms.',
+  concepts: [
+    { key: 'access', name: 'Authentication and access models', review: 'Lesson 7, Identity & Access Management' },
+    { key: 'crypto', name: 'Choosing cryptographic controls', review: 'Lesson 7, Data Encryption & PKI' },
+    { key: 'keys', name: 'Key management and defense in depth', review: 'Lesson 7, Physical controls and Encryption & PKI' },
+    { key: 'dlp', name: 'DLP placement', review: 'Lesson 7, Data Loss Prevention' }
+  ],
+  stations: [
+    {
+      type: 'scenario', short: 'Factors and models', title: 'Factor and model check', concept: 'access',
+      instr: 'First, classify each mechanism by <b>authentication factor</b> type. Then identify the <b>access control model</b> at work: <b>DAC</b> (the owner decides), <b>MAC</b> (the system enforces labels and clearances), <b>RBAC</b> (permissions follow a job role), or <b>ABAC</b> (a policy evaluates attributes of the user, resource, and context).',
+      hint: 'Knowledge is something you know, possession is something you have, and inherence is something you are, including behavioral traits. A claim of identity is not proof of it. For models, ask who decides: the owner, the label, the role, or a policy over several attributes.',
+      review: { href: 'lesson07.html#s3', label: 'Lesson 7, Identity & Access Management' },
+      items: [
+        {
+          title: 'Authentication factors', text: 'Riverbend Credit Union is reviewing how members and staff sign in. Classify each mechanism.',
+          parts: [
+            { q: 'A PIN typed into a smart-card reader', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 0, why: 'The PIN is something the user knows. The card itself would be a separate possession factor.' },
+            { q: 'A hardware token that displays a new one-time code every 30 seconds', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 1, why: 'The code proves the user holds the token. The user does not memorize it, so it is a possession factor.' },
+            { q: 'A fingerprint read by a laptop sensor', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 2, why: 'A biometric is something the user is.' },
+            { q: 'A user ID entered on the login screen', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 3, why: 'A user ID claims an identity; it does not prove one. User IDs are often known to others, so they are not an authentication factor.' },
+            { q: 'A push approval sent to an authenticator app on a registered phone', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 1, why: 'Approving the push proves control of the registered device, which is a possession factor.' },
+            { q: 'Keystroke dynamics: the rhythm and timing of how a user types', options: ['Knowledge (Type 1)', 'Possession (Type 2)', 'Inherence (Type 3)', 'Identification only'], answer: 2, why: 'Typing rhythm is a behavioral biometric. Behavioral traits count as inherence, along with physical traits such as fingerprints.' },
+            { q: 'Online banking asks for a password, then for the answer to a security question. Is this multi-factor authentication?', options: ['Yes, because two separate secrets are checked', 'No, because both are knowledge factors', 'Yes, because the question arrives on a second screen', 'No, because MFA always requires a biometric'], answer: 1, why: 'MFA requires two or more different factor categories. Two things the user knows are single-factor authentication, however many steps there are.' }
+          ]
+        },
+        {
+          title: 'Access control models', text: 'Identify the model each situation describes.',
+          parts: [
+            { q: 'Maya owns a project folder and grants a contractor read access herself.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 0, why: 'The data owner decides who gets access. That is discretionary access control.' },
+            { q: 'Records carry labels such as Confidential and Restricted. The system compares each label with the user\'s clearance, and record owners cannot override it.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 1, why: 'System-enforced labels and clearances that owners cannot change are the mark of mandatory access control.' },
+            { q: 'A new accounts payable clerk receives all needed permissions when HR assigns her the AP Clerk role.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 2, why: 'Permissions attach to the job role, and users inherit them through role assignment. That is role-based access control.' },
+            { q: 'A policy engine allows access only when the user\'s department is Finance, the device is managed, and the request falls within business hours.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 3, why: 'The decision combines attributes of the user, the device, and the context. That is attribute-based access control.' },
+            { q: 'An analyst with Secret clearance cannot open a Top Secret file, even when the file\'s author tries to share it with him.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 1, why: 'The author\'s wishes do not matter; the label and clearance decide. That is mandatory access control.' },
+            { q: 'A clinician can open a patient chart only if she is on the patient\'s care team, is at an approved location, and the chart\'s sensitivity tag permits it.', options: ['DAC', 'MAC', 'RBAC', 'ABAC'], answer: 3, why: 'Several attributes of the user, the resource, and the setting are evaluated together at each request. That is ABAC.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'sort', short: 'Pick the crypto', title: 'Pick the cryptographic control', concept: 'crypto',
+      instr: 'Match each business need to the control that meets it. <b>Asymmetric encryption</b> here means encrypting with the <b>recipient\'s public key</b>, so only the recipient\'s private key can decrypt. A <b>digital signature</b> is a hash of the message signed with the <b>sender\'s private key</b> and verified with the sender\'s public key.',
+      hint: 'Confidentiality for large volumes of data uses symmetric encryption. Confidentiality to a specific recipient without a shared secret uses the recipient\'s public key. Integrity alone uses a hash. Proof of who sent something, which the sender cannot later deny, needs a digital signature.',
+      buckets: ['Symmetric encryption', 'Asymmetric encryption', 'Hashing', 'Digital signature'],
+      review: { href: 'lesson07.html#s5', label: 'Lesson 7, Data Encryption & PKI' },
+      items: [
+        { text: 'Encrypt a 4 TB customer database at rest without slowing queries noticeably.', answer: 0, why: 'Symmetric algorithms such as AES-256 are fast enough for bulk data. Asymmetric encryption is far too slow for this volume.' },
+        { text: 'Store user passwords so that even database administrators cannot recover them.', answer: 2, why: 'Passwords should be stored as salted hashes. A one-way function lets the system verify a password without ever storing or decrypting it.' },
+        { text: 'Prove to a regulator that a specific officer approved a wire transfer, so she cannot later deny it.', answer: 3, why: 'Only the officer holds her private key, so a valid signature binds the approval to her. This is non-repudiation.' },
+        { text: 'Send a confidential file to a new partner, with whom no shared key exists, so that only the partner can read it.', answer: 1, why: 'Encrypting with the partner\'s public key means only the partner\'s private key can decrypt it. No shared secret is needed.' },
+        { text: 'Confirm that an archived backup file has not changed since it was written, by comparing it with a value recorded at creation.', answer: 2, why: 'A hash such as SHA-256 detects any change to the file. This need is integrity only, with no proof of origin required.' },
+        { text: 'Let customers verify that a software update came from the vendor and was not altered in transit.', answer: 3, why: 'Code signing uses the vendor\'s private key. Customers verify with the vendor\'s public key, which proves both origin and integrity.' },
+        { text: 'Protect the large stream of traffic inside a VPN tunnel once the session key has been agreed.', answer: 0, why: 'After key exchange, bulk traffic is encrypted with a fast symmetric session key.' },
+        { text: 'An HR director, Daniel Okafor, must be the only person able to open a salary file emailed to him. He has published his certificate.', answer: 1, why: 'The sender encrypts with Daniel\'s public key from his certificate. Only his private key can decrypt the file.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Findings and DLP', title: 'Findings review and DLP placement',
+      instr: 'The first two cases revisit former Lab 9 and a related key-management finding. Rank significance and choose the <b>BEST</b> recommendation. The last case asks where data loss prevention belongs for each leakage path.',
+      hint: 'A strong algorithm with poorly protected keys is a weak control. Defense in depth means independent layers, so replacing one control with a better version of itself does not add a layer. For DLP, ask where the data is when it leaks: stored, crossing the network, on a device, or inside a cloud service.',
+      review: { href: 'lesson07.html#s5', label: 'Lesson 7, Data Encryption & PKI' },
+      items: [
+        {
+          title: 'Case 1: Northgate Freight data center (former Lab 9)', concept: 'keys',
+          text: 'A review of Northgate Freight\'s data center records three observations.',
+          table: {
+            head: ['Area', 'Observation'],
+            rows: [
+              ['Physical', 'The server room\'s only access control is a single badge-reader door.'],
+              ['Cryptographic', 'Data is encrypted with AES-256 at rest and TLS 1.2 in transit. The encryption keys are stored on the same database server as the encrypted data.'],
+              ['Network', 'IoT environmental sensors share the production network segment.']
+            ]
+          },
+          parts: [
+            { q: 'Which finding should the auditor rank as MOST significant?', options: ['The single badge-reader door to the server room', 'Keys stored on the same server as the encrypted data', 'IoT sensors sharing the production network segment', 'Use of TLS 1.2 rather than TLS 1.3 for data in transit'], answer: 1, why: 'Co-located keys undermine the entire encryption control for every record on the server. TLS 1.2 is still acceptable, so it is not a finding.' },
+            { q: 'Why is the key storage a finding when AES-256 and TLS 1.2 are both acceptable?', options: ['AES-256 is weakened when its keys are stored on disk', 'Anyone who compromises the server gets both data and key', 'ISACA guidance requires keys to be stored in the cloud', 'TLS 1.2 keys expire sooner when kept on a database server'], answer: 1, why: 'The algorithm is sound; the key handling is not. The most common encryption finding is weak key management, not a weak algorithm.' },
+            { q: 'What is the BEST recommendation for the keys?', options: ['Re-encrypt the data with a longer key and keep the same storage', 'Encrypt the key file with a password kept in the app config file', 'Limit administrator logins to the database server to two staff', 'Move keys to an HSM with rotation, revocation, and dual control'], answer: 3, why: 'Keys must be stored apart from the data, rotated, and revocable, ideally in a hardware security module. A password in a config file just moves the problem.' },
+            { q: 'What is the BEST recommendation for the server room door?', options: ['Add an independent layer, such as a mantrap with biometrics', 'Replace the badge reader with a newer model that logs more detail', 'Post a sign warning that the room is for authorized staff only', 'Issue badges with photos so staff can recognize each other better'], answer: 0, why: 'One door is one layer. Defense in depth needs a second, independent control at the zone boundary, so a better badge reader alone does not fix the finding.' },
+            { q: 'What is the BEST recommendation for the IoT sensors?', options: ['Remove the sensors and check temperatures by hand each shift', 'Install anti-malware on each sensor before the next audit', 'Move the sensors to an isolated segment with filtered traffic', 'Change each sensor\'s default password and leave the network as is'], answer: 2, why: 'IoT devices are often hard to patch or harden, so they belong on a separate segment. Removing them would lose environmental monitoring.' },
+            { q: 'Which principle ties the three findings together?', options: ['Strong encryption makes the other layers less important', 'No layer is trusted alone, and each control needs sound support', 'Physical controls matter more than logical controls in a data center', 'Every finding should be rated high so management acts on all of them'], answer: 1, why: 'No single layer is trusted alone, and a strong control is only as good as its weakest supporting practice.' }
+          ]
+        },
+        {
+          title: 'Case 2: Backup tape encryption', concept: 'keys',
+          text: 'Lumen Health encrypts its backup tapes with AES-256. The same key has been used since 2019. Only one administrator, Tomás Reyes, knows where the key is kept, and no copy is held in escrow.',
+          parts: [
+            { q: 'What is the MOST significant risk?', options: ['AES-256 is too weak to protect health records on tape', 'Tapes should be kept on-site so the administrator can reach them', 'Tape is an outdated medium for backup storage', 'If the one key holder leaves, the backups may be unrecoverable'], answer: 3, why: 'With a single custodian and no escrow, losing that person can mean losing every backup. The fix is key escrow under dual control, plus documented rotation.' }
+          ]
+        },
+        {
+          title: 'Case 3: Leakage paths at Corvid Analytics', concept: 'dlp',
+          text: 'The privacy officer, Aisha Bello, lists five ways sensitive data has left the company or could. For each path, choose the DLP placement that BEST addresses it.',
+          parts: [
+            { q: 'A sales manager copies the customer list to a USB drive.', options: ['Data-at-rest DLP', 'Data-in-motion DLP', 'Endpoint DLP', 'Cloud DLP (CASB)'], answer: 2, why: 'USB copying happens on the device and never crosses the network. Endpoint DLP can see and block it.' },
+            { q: 'Spreadsheets of Social Security numbers sit unprotected on an open file share.', options: ['Data-at-rest DLP', 'Data-in-motion DLP', 'Endpoint DLP', 'Cloud DLP (CASB)'], answer: 0, why: 'Storage DLP scans repositories to find sensitive data where it should not be, so it can be moved, restricted, or encrypted.' },
+            { q: 'Staff email patient records from the office network to personal webmail accounts.', options: ['Data-at-rest DLP', 'Data-in-motion DLP', 'Endpoint DLP', 'Cloud DLP (CASB)'], answer: 1, why: 'The data leaves through corporate network traffic, where network DLP can inspect and block it.' },
+            { q: 'Employees share files from the company\'s SaaS document platform to external accounts, entirely within the cloud service.', options: ['Data-at-rest DLP', 'Data-in-motion DLP', 'Endpoint DLP', 'Cloud DLP (CASB)'], answer: 3, why: 'The sharing never touches the corporate network or a managed endpoint. A CASB or cloud-native DLP policy is needed to see it.' },
+            { q: 'A remote employee prints card numbers on a home printer while off the corporate network.', options: ['Data-at-rest DLP', 'Data-in-motion DLP', 'Endpoint DLP', 'Cloud DLP (CASB)'], answer: 2, why: 'Network DLP cannot see traffic that never passes through the corporate network. An endpoint agent enforces policy wherever the device is.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'shift', label: 'Where in an environment you know is a strong control relying on a weak supporting practice, such as key storage, a single physical layer, or an unreviewed alert queue? How would you write it up as a finding?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

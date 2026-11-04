@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B3 Application Controls Testing with Test Data | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+.b3-env { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font: .78rem Arial, sans-serif; color: var(--text-secondary); background: #f7f9fc; border: 1px solid var(--border); border-left: 4px solid var(--navy); border-radius: 4px; padding: .55rem .8rem; margin-bottom: 1rem; }
+.b3-env b { color: var(--text-primary); }
+.b3-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 1.1rem; }
+.b3-f label { display: block; font: 700 .82rem Arial, sans-serif; color: var(--text-primary); margin: .8rem 0 .3rem; }
+.b3-f .sub { font-weight: 400; color: var(--text-muted); }
+.b3-f input, .b3-f select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: .5rem .6rem; font: .88rem Arial, sans-serif; color: var(--text-primary); background: #fff; }
+.b3-f input:focus, .b3-f select:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px var(--gold-pale); }
+.b3-f input.mono { font-family: 'Courier New', monospace; }
+.b3-design { margin: 1.1rem 0 0; border: 1px dashed var(--blue-pale-border); background: var(--blue-pale); border-radius: 4px; padding: .2rem .9rem .9rem; }
+.b3-design legend { font: 700 .68rem Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--navy); padding: 0 .3rem; }
+.b3-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-top: 1rem; }
+.b3-res { margin-top: 1rem; border: 1px solid var(--border); border-left: 4px solid var(--text-muted); border-radius: 0 4px 4px 0; padding: .7rem .9rem; font: .88rem/1.55 Arial, sans-serif; color: var(--text-primary); background: #fff; }
+.b3-res:empty { display: none; }
+.b3-res.acc { border-left-color: var(--correct); }
+.b3-res.rej { border-left-color: var(--wrong); }
+.b3-res.held { border-left-color: var(--gold); }
+.b3-res .tag { font: 900 .7rem Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; margin-right: .4rem; }
+.b3-t td, .b3-t th { font-size: .8rem; }
+.b3-t td.mono { font-family: 'Courier New', monospace; white-space: nowrap; color: var(--text-primary); }
+.b3-t td.num, .b3-t th.num { text-align: right; white-space: nowrap; }
+.b3-t tfoot td { font-weight: 700; color: var(--text-primary); background: var(--section-alt); border-top: 2px solid var(--border); }
+.b3-pf { font: 900 .72rem Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.b3-pf.pass { color: var(--correct); } .b3-pf.fail { color: var(--wrong); } .b3-pf.na { color: var(--text-muted); }
+.b3-small { font: .8rem/1.5 Arial, sans-serif; color: var(--text-muted); margin: .5rem 0 0; }
+.b3-del { font: 700 .72rem Arial, sans-serif; border: 1px solid var(--wrong); color: var(--wrong); background: #fff; border-radius: 3px; padding: .25rem .5rem; cursor: pointer; }
+.b3-del:hover { background: var(--wrong-bg); }
+.b3-tot { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0 1rem; max-width: 520px; }
+.b3-h { font: 700 1rem Georgia, serif; color: var(--text-primary); margin: 1.3rem 0 .5rem; }
+.b3-h:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script>
+/* ===================== OrderDesk 2.0 simulator =====================
+   Larkspur Industrial Supply. Twelve documented controls; each has a `works` flag that
+   the processing logic below actually reads. Four are planted to fail: a check digit that
+   is not enforced, a range check that lets negative quantities through, a missing credit
+   limit hold, and batch totals that are not reduced when a line is deleted. Each failure
+   is visible only when a suitable test transaction is submitted. */
+(function () {
+  var CONTROLS = [
+    { id: 'C01', type: 'Input', name: 'Required fields', design: 'Customer ID, customer PO, SKU, quantity, and ship date are all required. A blank field rejects the order.', works: true },
+    { id: 'C02', type: 'Input', name: 'Customer existence', design: 'The customer number must exist in the customer master. Unknown customers are rejected.', works: true },
+    { id: 'C03', type: 'Input', name: 'Customer ID check digit', design: 'Customer ID is five digits, a hyphen, and a mod-11 check digit. The system recomputes the check digit and rejects a mismatch.', works: false },
+    { id: 'C04', type: 'Input', name: 'Quantity format', design: 'Quantity must be a whole number. Decimals and text are rejected.', works: true },
+    { id: 'C05', type: 'Input', name: 'Quantity range', design: 'Quantity per order must be from 1 to 500 units. Values outside the range are rejected.', works: false },
+    { id: 'C06', type: 'Input', name: 'Product validity', design: 'The SKU must exist in the product master and be active. Discontinued SKUs are rejected.', works: true },
+    { id: 'C07', type: 'Authorization', name: 'Customer on-hold block', design: 'Orders for customers with status On hold are rejected.', works: true },
+    { id: 'C08', type: 'Processing', name: 'Credit limit hold', design: 'If the open balance plus this order would exceed the credit limit, the order is held for credit review instead of accepted.', works: false },
+    { id: 'C09', type: 'Authorization', name: 'Price override limit', design: 'A unit price override may not be more than 10 percent below list price. Larger discounts are rejected.', works: true },
+    { id: 'C10', type: 'Input', name: 'Duplicate PO check', design: 'A customer PO number already used by the same customer (on any order not deleted) is rejected as a duplicate.', works: true },
+    { id: 'C11', type: 'Processing', name: 'Batch control totals', design: 'A batch posts only when the system record count and amount equal the control totals entered for the batch, including after any line is deleted.', works: false },
+    { id: 'C12', type: 'Input', name: 'Ship date reasonableness', design: 'The requested ship date must be on or after the system date and no more than 90 days after it.', works: true }
+  ];
+  function cd(base) { var w = [6, 5, 4, 3, 2], s = 0; String(base).split('').forEach(function (d, i) { s += +d * w[i]; }); return (11 - s % 11) % 11; }
+  var CUSTOMERS = [
+    [40217, 'Fairhaven Machine Works', 50000, 12400, 'Active'],
+    [41385, 'Osei Fabrication', 20000, 18750, 'Active'],
+    [42660, 'Brightline Pump and Valve', 75000, 8100, 'Active'],
+    [43912, 'Marisol Construction Group', 30000, 4250, 'On hold'],
+    [45078, 'Tran Electric Supply', 15000, 2900, 'Active'],
+    [46231, 'Redcliff Mining Services', 100000, 61300, 'Active'],
+    [47704, 'Nakamura Robotics', 40000, 39200, 'Active'],
+    [48159, 'Hollins Agricultural Co-op', 25000, 0, 'Active']
+  ].map(function (r) { return { base: String(r[0]), id: r[0] + '-' + cd(r[0]), name: r[1], limit: r[2], balance: r[3], status: r[4] }; });
+  var PRODUCTS = [
+    ['HX-1020', 'Hex bolt kit, grade 8', 42.50, true], ['BR-2210', 'Ball bearing 6204', 18.75, true], ['PV-3305', 'Pressure valve, 2 in', 214.00, true],
+    ['MT-4410', 'Motor, 5 HP', 1280.00, true], ['CB-5120', 'Conveyor belt, 10 m', 865.00, true], ['GL-6015', 'Nitrile gloves, case', 96.00, true],
+    ['WR-7730', 'Wire rope, 100 ft', 310.00, false], ['FL-8840', 'Hydraulic filter', 57.25, true]
+  ].map(function (r) { return { sku: r[0], desc: r[1], price: r[2], active: r[3] }; });
+  var SYSDATE = '2026-11-16';
+  var DAY = 86400000;
+  function ms(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function r2(x) { return Math.round(x * 100) / 100; }
+  function usd(x) { return (x < 0 ? '−$' : '$') + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  /* makeEngine(works): works(id) returns whether a control operates. The live app passes the
+     control table's own flags; the self-test also builds an all-working engine to prove each
+     scripted test would pass against a correct implementation. */
+  function makeEngine(works) {
+    function newState() { return { seq: 100001, bseq: 1001, batches: [{ no: 'B-1001', status: 'Open', ctlCount: null, ctlAmount: null, runCount: 0, runAmount: 0 }], orders: [], log: [] }; }
+    function openBatch(st) { return st.batches.filter(function (b) { return b.status === 'Open'; })[0]; }
+    function cust(base) { return CUSTOMERS.filter(function (c) { return c.base === base; })[0]; }
+    function prod(sku) { return PRODUCTS.filter(function (p) { return p.sku === sku; })[0]; }
+    function rej(ctl, msg) { return { outcome: 'Rejected', control: ctl, msg: msg }; }
+    function submit(st, f) {
+      var v = {}; ['cust', 'po', 'sku', 'qty', 'price', 'ship'].forEach(function (k) { v[k] = String(f[k] == null ? '' : f[k]).trim(); });
+      v.sku = v.sku.toUpperCase(); v.po = v.po.toUpperCase();
+      if (works('C01')) { var miss = [['cust', 'Customer ID'], ['po', 'Customer PO'], ['sku', 'SKU'], ['qty', 'Quantity'], ['ship', 'Ship date']].filter(function (x) { return !v[x[0]]; }); if (miss.length) return rej('C01', 'Required field missing: ' + miss.map(function (x) { return x[1]; }).join(', ') + '.'); }
+      var m = /^(\d{5})-(\d)$/.exec(v.cust);
+      if (!m) return rej('C03', 'Customer ID must be five digits, a hyphen, and a check digit (for example 12345-6).');
+      if (works('C03') && cd(m[1]) !== +m[2]) return rej('C03', 'Customer ID check digit is not valid.');
+      var c = cust(m[1]);
+      if (works('C02') && !c) return rej('C02', 'Customer ' + v.cust + ' is not in the customer master.');
+      if (works('C07') && c.status === 'On hold') return rej('C07', c.name + ' is on hold. Orders cannot be entered.');
+      var p = prod(v.sku);
+      if (works('C06') && (!p || !p.active)) return rej('C06', p ? 'SKU ' + v.sku + ' is discontinued.' : 'SKU ' + v.sku + ' is not in the product master.');
+      if (works('C04') && !/^[-+]?\d+$/.test(v.qty)) return rej('C04', 'Quantity must be a whole number.');
+      var q = parseInt(v.qty, 10);
+      if (works('C05')) { if (q < 1 || q > 500) return rej('C05', 'Quantity must be from 1 to 500.'); }
+      else { if (q === 0 || q > 500) return rej('C05', 'Quantity must be from 1 to 500.'); }   // planted flaw: lower bound only rejects zero
+      var price = p.price;
+      if (v.price) {
+        var pv = Number(v.price.replace(/[$,]/g, ''));
+        if (!(pv > 0)) return rej('C09', 'Unit price override must be a positive amount.');
+        if (works('C09') && pv < r2(p.price * 0.9)) return rej('C09', 'Price override is more than 10 percent below list ($' + p.price.toFixed(2) + '). Supervisor pricing approval is required.');
+        price = pv;
+      }
+      if (works('C12')) { var sd = /^\d{4}-\d{2}-\d{2}$/.test(v.ship) ? ms(v.ship) : NaN; if (isNaN(sd) || sd < ms(SYSDATE) || sd > ms(SYSDATE) + 90 * DAY) return rej('C12', 'Ship date must be from ' + SYSDATE + ' to 90 days after it.'); }
+      if (works('C10') && st.orders.some(function (o) { return o.base === c.base && o.po === v.po && o.status !== 'Deleted'; })) return rej('C10', 'PO ' + v.po + ' has already been used by ' + c.name + '.');
+      var amount = r2(q * price);
+      var exposure = c.balance + st.orders.filter(function (o) { return o.base === c.base && (o.status === 'Accepted' || o.status === 'Posted'); }).reduce(function (s, o) { return s + o.amount; }, 0) + amount;
+      var b = openBatch(st);
+      var o = { no: String(st.seq++), batch: b.no, base: c.base, cust: v.cust, custName: c.name, po: v.po, sku: p.sku, qty: q, price: price, amount: amount, ship: v.ship, status: 'Accepted' };
+      if (works('C08') && exposure > c.limit) { o.status = 'Held'; o.batch = ''; st.orders.push(o); return { outcome: 'Held', control: 'C08', msg: 'Order ' + o.no + ' for ' + c.name + ' is held for credit review. Open balance plus this order (' + usd(exposure) + ') exceeds the credit limit.', order: o }; }
+      st.orders.push(o); b.runCount += 1; b.runAmount = r2(b.runAmount + amount);
+      return { outcome: 'Accepted', control: '', msg: 'Order ' + o.no + ' accepted for ' + c.name + ' into batch ' + b.no + '.', order: o };
+    }
+    function sysTotals(st, b) {
+      if (works('C11')) { var live = st.orders.filter(function (o) { return o.batch === b.no && (o.status === 'Accepted' || o.status === 'Posted'); }); return { count: live.length, amount: r2(live.reduce(function (s, o) { return s + o.amount; }, 0)) }; }
+      return { count: b.runCount, amount: b.runAmount };   // planted flaw: running totals are never reduced on delete
+    }
+    function listed(st, b) { var live = st.orders.filter(function (o) { return o.batch === b.no && (o.status === 'Accepted' || o.status === 'Posted'); }); return { count: live.length, amount: r2(live.reduce(function (s, o) { return s + o.amount; }, 0)) }; }
+    function del(st, no) { var o = st.orders.filter(function (x) { return x.no === no; })[0], b = openBatch(st); if (!o || o.status !== 'Accepted' || o.batch !== b.no) return false; o.status = 'Deleted'; return true; }
+    function setTotals(st, count, amount) { var b = openBatch(st); b.ctlCount = count; b.ctlAmount = r2(amount); }
+    function post(st) {
+      var b = openBatch(st);
+      if (b.ctlCount == null || b.ctlAmount == null) return { outcome: 'Blocked', msg: 'Enter the batch control totals before posting.' };
+      var t = sysTotals(st, b);
+      if (t.count !== b.ctlCount || Math.abs(t.amount - b.ctlAmount) > 0.005) return { outcome: 'Blocked', msg: 'Batch ' + b.no + ' is out of balance and cannot post. System totals: ' + t.count + ' orders, ' + usd(t.amount) + '. Control totals: ' + b.ctlCount + ' orders, ' + usd(b.ctlAmount) + '.' };
+      st.orders.forEach(function (o) { if (o.batch === b.no && o.status === 'Accepted') o.status = 'Posted'; });
+      b.status = 'Posted'; b.posted = { count: t.count, amount: t.amount };
+      st.bseq += 1; st.batches.push({ no: 'B-' + st.bseq, status: 'Open', ctlCount: null, ctlAmount: null, runCount: 0, runAmount: 0 });
+      return { outcome: 'Posted', msg: 'Batch ' + b.no + ' balanced and posted: ' + t.count + ' orders, ' + usd(t.amount) + '. Batch B-' + st.bseq + ' is now open.' };
+    }
+    return { newState: newState, submit: submit, del: del, setTotals: setTotals, post: post, sysTotals: sysTotals, listed: listed, openBatch: openBatch };
+  }
+  function flag(id) { return CONTROLS.filter(function (c) { return c.id === id; })[0].works; }
+  window.B3 = { CONTROLS: CONTROLS, CUSTOMERS: CUSTOMERS, PRODUCTS: PRODUCTS, SYSDATE: SYSDATE, cd: cd, makeEngine: makeEngine, app: makeEngine(flag) };
+})();
+</script>
+
+<script>
+function b3Tests() { var s = window.LAB_API && LAB_API.note('app'); return s ? s.log.filter(function (l) { return l.kind === 'test'; }).length : 0; }
+window.LAB = {
+  id: 'B3',
+  title: 'Application Controls Testing with Test Data',
+  accent: 'Testing with Test Data',
+  domain: 'Domain 3',
+  time: '45–60 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson04.html#s4',
+  lessonLabel: 'Lesson 4, Control Identification & Design',
+  lede: 'Test the controls, not the screens. Design valid and invalid transactions, run them through a working order-entry application, compare actual with expected results, and decide which failures block go-live.',
+  workbenchTitle: 'Application test bench',
+  ticket: {
+    number: 'IA-2026-0588',
+    priority: 'High priority',
+    from: 'Esperanza Quintero, IT Audit Manager',
+    to: 'IS audit staff (you)',
+    subject: 'Pre-go-live application controls test: OrderDesk 2.0 order entry',
+    due: 'Go-live recommendation before the November 23 steering committee',
+    body: '<p>Larkspur Industrial Supply replaces its order-entry system with <b>OrderDesk 2.0</b> on November 30. The project team reports that user acceptance testing passed. The steering committee has asked internal audit for an independent view of the application controls before it approves release.</p>' +
+      '<p>The release candidate, build <b>2.0.4-rc118</b>, is installed in the QA environment with a copy of the customer and product masters. The design document lists <b>twelve controls</b>: input edits, authorization checks, and batch processing controls. Your job is to test each one with <b>test data</b>: transactions you design, with the result you expect written down before you submit them.</p>' +
+      '<p>Use valid and invalid values, and test both sides of every limit. Record every test in the test log. Do not ask the developers what the code does; the test results are the evidence.</p>' +
+      '<p><b>Release criteria (steering committee charter):</b> no open critical or high defects. A <b>critical or high</b> defect lets an unauthorized or incorrect financial transaction post, or lets an incomplete batch post. A <b>medium</b> defect lets an input error through that another working control or a routine manual check is likely to catch. Medium defects may be released with an approved compensating control and a fix date within 30 days.</p>'
+  },
+  howTo: 'The <b>Application test bench</b> in step 2 is a working copy of OrderDesk. Enter an order, choose the control you are testing and the result you expect, then submit it. Use <b>Batch totals</b> to enter control totals and post a batch, and <b>Order register</b> to review or delete orders. Every test lands in the <b>Test log</b> with pass or fail. The <b>Test plan</b> tab lists the twelve controls and the master data. The failed-controls item unlocks after six logged tests. A hint is available for every item, and a revealed debrief earns no points. Team mode: one person drives the application while the team designs the next test.',
+  workIntro: 'Design each test before you submit it: pick the control, choose the expected result, then compare. The application processes every transaction with its real logic, flaws included.',
+  checklist: [
+    { id: 'boundary', type: 'choice', points: 10, short: 'Boundary values', title: 'Design the range test',
+      task: 'Control C05 limits quantity to <b>1 to 500</b> units. Which set of test quantities tests that control properly?',
+      options: ['250, a typical quantity well inside the range', '−1, 0, 1, 500, and 501, at and beyond each limit', '1 and 500, the two documented limits only', '501 and 5,000, values above the maximum'],
+      answer: 1,
+      hint: 'A range check has two edges. Test each limit, one value just outside it, and a value well outside the lower edge, including a negative.',
+      debrief: '<p>Boundary value analysis tests each edge and the values just beyond it. A quantity of 501 is rejected, so a test of the upper bound alone passes. Only a test below the lower bound reveals the flaw in OrderDesk: zero is rejected, but a negative quantity is accepted and creates a negative line amount.</p><p>The auditor’s lesson is that one passing test proves very little. Test data is only as good as the conditions the auditor designs into it, so every limit needs a test on each side.</p>',
+      reviewNote: 'Test both edges of a range and the values just outside each edge.' },
+    { id: 'failed', type: 'set', points: 20, short: 'Failed controls', title: 'Controls that failed testing',
+      task: 'Using your test log, enter the ID of every control in the test plan that <b>did not operate as designed</b>.',
+      label: 'Control IDs that failed', placeholder: 'e.g., C01, C02',
+      locked: function () { return window.__b3unlock || b3Tests() >= 6 ? false : 'Run at least six test transactions in the application first. This item unlocks when six tests are in the test log (' + b3Tests() + ' so far).'; },
+      answer: function () { return B3.CONTROLS.filter(function (c) { return !c.works; }).map(function (c) { return c.id; }); },
+      hint: 'Write one invalid transaction per control, plus a valid baseline. For C08, pick a customer close to its credit limit. For C11, enter control totals, add two orders, delete one, then try to post.',
+      debrief: '<p>Four controls failed. <b>C03</b>: a valid customer number with a wrong check digit (for example 40217-5) is accepted, so only the format is checked. <b>C05</b>: a negative quantity is accepted and produces a credit line. <b>C08</b>: an order that takes Osei Fabrication or Nakamura Robotics over its credit limit is accepted, not held. <b>C11</b>: after a line is deleted, the system totals still include it, so a batch balanced to the original totals posts while the register is one order short.</p><p>The other eight controls rejected or held every invalid transaction as designed. Each failure needs its test log entry as evidence: input, expected result, actual result. That is what lets the project team reproduce the defect and lets the auditor retest the fix.</p>',
+      reviewNote: 'Design an invalid transaction for every control and compare actual with expected results.' },
+    { id: 'batch', type: 'choice', points: 10, short: 'Batch total risk', title: 'The risk in the batch total failure',
+      task: 'In your C11 test, the batch posted after a line was deleted. What risk does this failure create?',
+      options: ['The same batch can be posted twice, duplicating every order in it', 'Users can delete orders from a batch that has already been posted', 'A batch posts after a line is deleted, so totals stop proving completeness', 'Control totals are hidden from the user who enters the orders'],
+      answer: 2,
+      hint: 'Batch control totals exist to prove that what posts is exactly what was entered and authorized. What happens to that proof when the system totals stop changing?',
+      debrief: '<p>Batch control totals are a completeness and accuracy control. They work only if the system recomputes its totals from the lines that actually remain. OrderDesk adds to its running totals but never subtracts, so the batch reconciles to the original control totals even though fewer orders post. The register shows the difference; the batch screen does not.</p><p>Without this control, orders can be dropped or removed after balancing and no one is alerted. That meets the charter’s definition of a high defect: it lets an incomplete batch post.</p>',
+      reviewNote: 'Batch totals prove completeness only if the system recomputes them after every change.' },
+    { id: 'block', type: 'choice', points: 15, short: 'Go-live blockers', title: 'Which failures block go-live',
+      task: 'Apply the release criteria in the ticket to the four failed controls. Which statement is the best recommendation?',
+      options: ['C05, C08, and C11 block release; C03 can go live with a compensating check', 'Only C08 blocks release, because it is the only failure with financial exposure', 'None block release, because users can correct errors after orders are entered', 'All four block release, and the developers who fixed them should retest them'],
+      answer: 0,
+      hint: 'For each failure, ask whether it lets an unauthorized or incorrect transaction post, or an incomplete batch post. Then ask whether another working control catches most of the error.',
+      debrief: '<p>C05, C08, and C11 each let an incorrect or unauthorized transaction post: negative quantities create unapproved credits, orders bypass the credit limit, and incomplete batches post. Under the charter they are high defects and block release. C03 is medium: the existence check still rejects unknown customers, and the acceptance message shows the customer name, so a clerk can catch most keying errors. It can go live with that confirmation step as an approved compensating control and a fix date within 30 days.</p><p>Retesting matters as much as fixing. Developers should not be the ones to confirm their own fixes; the auditor or an independent tester reruns the failed test transactions against the corrected build.</p>',
+      reviewNote: 'Rate each failure against the release criteria and consider compensating controls.' },
+    { id: 'tech', type: 'choice', points: 10, short: 'Technique', title: 'Name the technique and its limit',
+      task: 'In this lab you entered fictitious transactions into a test copy of OrderDesk and compared the actual results with results you predicted. Which statement about this technique is accurate?',
+      options: ['It is parallel simulation, because the auditor reprocesses production data', 'It is an integrated test facility, because it uses a dummy entity in live files', 'It proves the controls work on every transaction processed in production', 'It is test data, and it tests only the conditions the auditor includes'],
+      answer: 3,
+      hint: 'Where did the transactions come from, who designed them, and which copy of the program processed them?',
+      debrief: '<p>This is the <b>test data</b> technique: auditor-designed transactions with predetermined expected results, run through the program in a controlled environment. Its strength is precision: each test targets one control. Its limit is coverage: it tests only the conditions the auditor thinks of, at one point in time, on one version of the program.</p><p>That limit is why the boundary item mattered. A test plan without a negative quantity would have reported C05 as working.</p>',
+      reviewNote: 'Test data uses auditor-designed transactions with predetermined results in a test environment.' },
+    { id: 'itf', type: 'choice', points: 10, short: 'ITF and simulation', title: 'Testing after go-live',
+      task: 'After go-live, internal audit wants continuing assurance. <b>Option 1:</b> enter transactions for a fictitious customer in live OrderDesk, then reverse them. <b>Option 2:</b> rerun a month of real orders through audit software that replicates the pricing and credit logic, then compare the outputs. Which pair names the techniques correctly?',
+      options: ['Option 1 is test data; Option 2 is an integrated test facility', 'Option 1 is an integrated test facility; Option 2 is parallel simulation', 'Option 1 is parallel simulation; Option 2 is a snapshot technique', 'Option 1 is a snapshot technique; Option 2 is test data'],
+      answer: 1,
+      hint: 'One technique puts auditor transactions into the live system. The other leaves the live system alone and reprocesses real data with the auditor’s own program.',
+      debrief: '<p>An <b>integrated test facility</b> (ITF) processes auditor transactions against a dummy entity inside the live system, alongside real transactions. It tests the production program as it actually runs, but the dummy entries must be reversed or excluded so they do not contaminate live balances and reports. <b>Parallel simulation</b> reprocesses real production data with the auditor’s own program and compares the results with the application’s output.</p><p>Both work after go-live. Parallel simulation tests real transactions at full volume, but the auditor’s program must be kept in step with every change to the production logic.</p>',
+      reviewNote: 'ITF uses dummy entities in live processing; parallel simulation reprocesses real data with audit software.' },
+    { id: 'version', type: 'choice', points: 10, short: 'Program version', title: 'Make the results count',
+      task: 'Your results come from build 2.0.4-rc118 in the QA environment. Before they can support a go-live decision, what must the auditor confirm?',
+      options: ['That the developers reviewed and agreed with every failed result', 'That QA runs on the same server hardware that production uses', 'That the build released is the build tested, including retested fixes', 'That the test transactions used real customer names and balances'],
+      answer: 2,
+      hint: 'Test data tests a program. Which program actually reaches production on November 30?',
+      debrief: '<p>Test data results apply only to the program version that processed them. The fixes for C03, C05, C08, and C11 will produce a new build. The auditor confirms through change and release records that the build promoted to production is the one that passed retesting, and that nothing else changed between test and release.</p><p>This links application testing to change management. Without version control evidence, a clean retest proves nothing about the code in production.</p>',
+      reviewNote: 'Confirm the version tested is the version released.' },
+    { id: 'memo', type: 'text', points: 15, short: 'Go-live memo', title: 'Write the go-live recommendation', reportTitle: 'Go-live recommendation memo',
+      task: 'Write a short memo to the steering committee. Give your recommendation, the failed controls with the evidence from your test log, and the conditions for release.',
+      fields: [
+        { key: 'rec', label: 'Recommendation', min: 40, placeholder: 'Go, no-go, or conditional go, and why.' },
+        { key: 'evidence', label: 'Failed controls and test evidence', min: 60, placeholder: 'Each failed control: the test input, the expected result, and the actual result.' },
+        { key: 'conditions', label: 'Conditions for release and retest', min: 50, placeholder: 'What must be fixed, how it will be retested, by whom, and any compensating control.' }
+      ],
+      hint: 'Recommend against release on November 30 unless the three high defects are fixed and independently retested. Cite your test log entries for each failure.',
+      debrief: '<p><b>Model memo.</b> <b>Recommendation:</b> Do not release OrderDesk 2.0 build 2.0.4-rc118. Release once C05, C08, and C11 are fixed and pass an independent retest; C03 may follow within 30 days under a compensating control. <b>Evidence:</b> C05: quantity −5 was expected to be rejected and was accepted, creating a credit line. C08: Osei Fabrication, balance $18,750 against a $20,000 limit, ordered one MT-4410 motor ($1,280); expected a credit hold, actual accepted. C11: control totals of 2 orders were entered, one order was deleted, and the batch posted as balanced with one order in the register. C03: customer 40217-5 (valid check digit 6) was expected to be rejected and was accepted. The other eight controls operated as designed. <b>Conditions:</b> Development fixes all four defects in a new build. Internal audit reruns the logged test transactions against that build, and release management confirms the build promoted to production is the build retested. Until C03 is fixed, order clerks confirm the customer name on every acknowledgment, and the credit manager reviews a daily report of orders over customer limits during the first month.</p><p>Your wording will differ. Check that the recommendation follows the release criteria, that each failure cites a specific test, and that the retest is independent of the developers.</p>',
+      reviewNote: 'Ground the recommendation in the release criteria and cite specific test evidence.' }
+  ],
+
+  /* ===================== Workbench: OrderDesk simulator ===================== */
+  workbench: function (root, api) {
+    var esc = api.esc, A = B3.app;
+    var st = api.note('app') || A.newState();
+    var wasLocked = b3Tests() < 6;
+    function save() { api.note('app', st); var nowLocked = b3Tests() < 6; if (wasLocked || nowLocked) { wasLocked = nowLocked; api.refresh(); } }
+    function money(x) { return (x < 0 ? '−$' : '$') + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    var ctlOpts = '<option value="Baseline">Baseline: valid order</option>' + B3.CONTROLS.map(function (c) { return '<option value="' + c.id + '">' + c.id + ' ' + esc(c.name) + '</option>'; }).join('');
+    var TABS = [['entry', 'Order entry'], ['batch', 'Batch totals'], ['reg', 'Order register'], ['log', 'Test log'], ['plan', 'Test plan']];
+    root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="OrderDesk test bench">' +
+      TABS.map(function (t, i) { return '<button role="tab" id="b3t-' + t[0] + '" aria-controls="b3p-' + t[0] + '" aria-selected="' + (i === 0) + '"' + (i ? ' tabindex="-1"' : '') + '>' + t[1] + (t[0] === 'log' ? ' <span id="b3-logn" class="lb-pts"></span>' : '') + '</button>'; }).join('') + '</div>' +
+      '<div class="lb-panel" style="padding-bottom:0"><div class="b3-env" id="b3-env" style="margin-bottom:0"></div></div>' +
+      '<div class="lb-panel" role="tabpanel" id="b3p-entry" aria-labelledby="b3t-entry">' +
+        '<form id="b3-form" class="b3-f" novalidate autocomplete="off"><div class="b3-grid">' +
+          '<div><label for="b3-cust">Customer ID <span class="sub">(12345-6)</span></label><input id="b3-cust" class="mono" list="b3-custs" spellcheck="false"></div>' +
+          '<div><label for="b3-po">Customer PO number</label><input id="b3-po" class="mono" spellcheck="false"></div>' +
+          '<div><label for="b3-sku">SKU</label><input id="b3-sku" class="mono" list="b3-skus" spellcheck="false"></div>' +
+          '<div><label for="b3-qty">Quantity</label><input id="b3-qty" class="mono" inputmode="numeric" spellcheck="false"></div>' +
+          '<div><label for="b3-price">Unit price override <span class="sub">(optional)</span></label><input id="b3-price" class="mono" inputmode="decimal" spellcheck="false"></div>' +
+          '<div><label for="b3-ship">Requested ship date</label><input id="b3-ship" type="date"></div>' +
+        '</div>' +
+        '<datalist id="b3-custs">' + B3.CUSTOMERS.map(function (c) { return '<option value="' + c.id + '">' + esc(c.name) + '</option>'; }).join('') + '</datalist>' +
+        '<datalist id="b3-skus">' + B3.PRODUCTS.map(function (p) { return '<option value="' + p.sku + '">' + esc(p.desc) + '</option>'; }).join('') + '</datalist>' +
+        '<fieldset class="b3-design"><legend>Test design (recorded in the test log)</legend><div class="b3-grid">' +
+          '<div><label for="b3-ctl">Control under test</label><select id="b3-ctl">' + ctlOpts + '</select></div>' +
+          '<div><label for="b3-exp">Expected result</label><select id="b3-exp"><option value="">Choose before submitting</option><option>Accepted</option><option>Rejected</option><option>Held</option></select></div>' +
+        '</div></fieldset>' +
+        '<div class="b3-row"><button type="submit" class="btn">Submit order</button><button type="button" class="btn ghost" id="b3-clear">Clear form</button></div></form>' +
+        '<div class="b3-res" id="b3-res" role="status" aria-live="polite"></div></div>' +
+      '<div class="lb-panel" role="tabpanel" id="b3p-batch" aria-labelledby="b3t-batch" hidden></div>' +
+      '<div class="lb-panel" role="tabpanel" id="b3p-reg" aria-labelledby="b3t-reg" hidden></div>' +
+      '<div class="lb-panel" role="tabpanel" id="b3p-log" aria-labelledby="b3t-log" hidden></div>' +
+      '<div class="lb-panel" role="tabpanel" id="b3p-plan" aria-labelledby="b3t-plan" hidden>' + PLAN() + '</div></div>';
+
+    var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+    function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { sel(t); });
+      t.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft') n = tabs[(i + tabs.length - 1) % tabs.length];
+        if (e.key === 'Home') n = tabs[0];
+        if (e.key === 'End') n = tabs[tabs.length - 1];
+        if (n) { e.preventDefault(); sel(n); n.focus(); }
+      });
+    });
+    if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+
+    function addLog(o) { o.n = st.log.length + 1; st.log.push(o); }
+    function pf(exp, act) { return !exp ? 'Not stated' : (exp === act ? 'Pass' : 'Fail'); }
+
+    var form = root.querySelector('#b3-form'), res = root.querySelector('#b3-res');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = { cust: val('b3-cust'), po: val('b3-po'), sku: val('b3-sku'), qty: val('b3-qty'), price: val('b3-price'), ship: val('b3-ship') };
+      var ctl = val('b3-ctl'), exp = val('b3-exp');
+      var r = A.submit(st, f);
+      var input = ['Cust ' + (f.cust || '(blank)'), 'PO ' + (f.po || '(blank)'), (f.sku || '(no SKU)'), 'Qty ' + (f.qty || '(blank)'), f.price ? 'Price ' + f.price : '', 'Ship ' + (f.ship || '(blank)')].filter(Boolean).join('; ');
+      addLog({ kind: 'test', ctl: ctl, input: input, exp: exp, act: r.outcome, msg: r.msg, result: pf(exp, r.outcome) });
+      save();
+      res.className = 'b3-res ' + (r.outcome === 'Accepted' ? 'acc' : r.outcome === 'Held' ? 'held' : 'rej');
+      res.innerHTML = '<span class="tag">' + r.outcome + '</span>' + esc(r.msg) + '<p class="b3-small">Logged as test ' + st.log.length + ': expected ' + esc(exp || 'not stated') + ', actual ' + r.outcome + ', ' + pf(exp, r.outcome).toLowerCase() + '.</p>';
+      renderAll();
+    });
+    root.querySelector('#b3-clear').addEventListener('click', function () { ['b3-cust', 'b3-po', 'b3-sku', 'b3-qty', 'b3-price', 'b3-ship'].forEach(function (id) { document.getElementById(id).value = ''; }); document.getElementById('b3-exp').value = ''; res.innerHTML = ''; res.className = 'b3-res'; document.getElementById('b3-cust').focus(); });
+    function val(id) { return document.getElementById(id).value; }
+
+    function renderAll() {
+      var b = A.openBatch(st);
+      document.getElementById('b3-env').innerHTML = '<span>Environment: <b>QA</b></span><span>Build: <b>2.0.4-rc118</b></span><span>System date: <b>' + B3.SYSDATE + '</b></span><span>Open batch: <b>' + b.no + '</b></span><span>Tests logged: <b>' + b3Tests() + '</b></span>';
+      document.getElementById('b3-logn').textContent = b3Tests();
+      BATCH(b); REG(b); LOG();
+    }
+    function BATCH(b) {
+      var t = A.sysTotals(st, b), p = document.getElementById('b3p-batch');
+      var posted = st.batches.filter(function (x) { return x.status === 'Posted'; });
+      p.innerHTML = '<h4 class="b3-h">Batch ' + b.no + ' (open)</h4>' +
+        '<p class="b3-small" style="margin-top:0">Enter the control totals from the batch header slip: the number of orders and the total amount you intend to post. The system compares them with its own totals when you post.</p>' +
+        '<div class="b3-f b3-tot"><div><label for="b3-cc">Control total: orders</label><input id="b3-cc" class="mono" inputmode="numeric" value="' + (b.ctlCount == null ? '' : b.ctlCount) + '"></div>' +
+        '<div><label for="b3-ca">Control total: amount ($)</label><input id="b3-ca" class="mono" inputmode="decimal" value="' + (b.ctlAmount == null ? '' : b.ctlAmount.toFixed(2)) + '"></div></div>' +
+        '<div class="b3-row"><button type="button" class="btn secondary" id="b3-savect">Save control totals</button></div>' +
+        '<div class="table-wrap" style="margin-top:1rem;max-width:620px"><table class="data b3-t"><thead><tr><th scope="col">Batch ' + b.no + '</th><th scope="col" class="num">Orders</th><th scope="col" class="num">Amount</th></tr></thead><tbody>' +
+          '<tr><td>Control totals (entered)</td><td class="num mono">' + (b.ctlCount == null ? 'Not entered' : b.ctlCount) + '</td><td class="num mono">' + (b.ctlAmount == null ? 'Not entered' : money(b.ctlAmount)) + '</td></tr>' +
+          '<tr><td>System totals (OrderDesk)</td><td class="num mono">' + t.count + '</td><td class="num mono">' + money(t.amount) + '</td></tr>' +
+          '<tr><td>Difference</td><td class="num mono">' + (b.ctlCount == null ? '' : b.ctlCount - t.count) + '</td><td class="num mono">' + (b.ctlAmount == null ? '' : money(b.ctlAmount - t.amount)) + '</td></tr></tbody></table></div>' +
+        '<fieldset class="b3-design b3-f" style="max-width:620px"><legend>Test design (recorded in the test log)</legend><div class="b3-grid">' +
+          '<div><label for="b3-pctl">Control under test</label><select id="b3-pctl">' + ctlOpts.replace('value="C11"', 'value="C11" selected') + '</select></div>' +
+          '<div><label for="b3-pexp">Expected result</label><select id="b3-pexp"><option value="">Choose before posting</option><option>Posted</option><option>Blocked</option></select></div></div></fieldset>' +
+        '<div class="b3-row"><button type="button" class="btn" id="b3-post">Post batch</button></div>' +
+        '<div class="b3-res" id="b3-pres" role="status" aria-live="polite"></div>' +
+        (posted.length ? '<h4 class="b3-h">Posted batches</h4><div class="table-wrap" style="max-width:620px"><table class="data b3-t"><thead><tr><th scope="col">Batch</th><th scope="col" class="num">Orders posted (system)</th><th scope="col" class="num">Amount posted (system)</th></tr></thead><tbody>' + posted.map(function (x) { return '<tr><td class="mono">' + x.no + '</td><td class="num mono">' + x.posted.count + '</td><td class="num mono">' + money(x.posted.amount) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '');
+      p.querySelector('#b3-savect').addEventListener('click', function () {
+        var c = p.querySelector('#b3-cc').value.trim(), a = p.querySelector('#b3-ca').value.trim().replace(/[$,]/g, '');
+        var out = p.querySelector('#b3-pres');
+        if (!/^\d+$/.test(c) || a === '' || isNaN(Number(a))) { out.className = 'b3-res rej'; out.textContent = 'Enter a whole number of orders and a numeric amount.'; return; }
+        A.setTotals(st, +c, Number(a)); addLog({ kind: 'step', ctl: '', input: 'Control totals for ' + b.no + ' set to ' + c + ' orders, ' + money(Number(a)), exp: '', act: 'Saved', msg: '', result: 'Step' }); save(); renderAll();
+        var o2 = document.getElementById('b3-pres'); o2.className = 'b3-res acc'; o2.textContent = 'Control totals saved for batch ' + b.no + '.';
+      });
+      p.querySelector('#b3-post').addEventListener('click', function () {
+        var exp = p.querySelector('#b3-pexp').value, ctl = p.querySelector('#b3-pctl').value, bn = b.no;
+        var r = A.post(st);
+        addLog({ kind: 'test', ctl: ctl, input: 'Post batch ' + bn + ' (control totals ' + (b.ctlCount == null ? 'not entered' : b.ctlCount + ' orders, ' + money(b.ctlAmount)) + ')', exp: exp, act: r.outcome, msg: r.msg, result: pf(exp, r.outcome) });
+        save(); renderAll();
+        var o2 = document.getElementById('b3-pres'); o2.className = 'b3-res ' + (r.outcome === 'Posted' ? 'acc' : 'rej');
+        o2.innerHTML = '<span class="tag">' + r.outcome + '</span>' + esc(r.msg) + '<p class="b3-small">Logged as test ' + st.log.length + ': expected ' + esc(exp || 'not stated') + ', actual ' + r.outcome + ', ' + pf(exp, r.outcome).toLowerCase() + '.</p>';
+      });
+    }
+    function REG(b) {
+      var p = document.getElementById('b3p-reg'), rows = st.orders.slice().reverse();
+      var L = A.listed(st, b);
+      p.innerHTML = '<p class="b3-small" style="margin-top:0">Every order that passed the input edits, newest first. Accepted orders in the open batch can be deleted before the batch posts.</p>' +
+        (rows.length ? '<div class="table-wrap"><table class="data b3-t"><thead><tr><th scope="col">Order</th><th scope="col">Batch</th><th scope="col">Customer</th><th scope="col">PO</th><th scope="col">SKU</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Unit price</th><th scope="col" class="num">Amount</th><th scope="col">Ship date</th><th scope="col">Status</th><th scope="col"><span class="sr-only">Action</span></th></tr></thead><tbody>' +
+          rows.map(function (o) { var canDel = o.status === 'Accepted' && o.batch === b.no; return '<tr><td class="mono">' + o.no + '</td><td class="mono">' + (o.batch || '') + '</td><td>' + esc(o.cust) + ' ' + esc(o.custName) + '</td><td class="mono">' + esc(o.po) + '</td><td class="mono">' + o.sku + '</td><td class="num mono">' + o.qty + '</td><td class="num mono">' + money(o.price) + '</td><td class="num mono">' + money(o.amount) + '</td><td class="mono">' + esc(o.ship) + '</td><td>' + (o.status === 'Held' ? 'Held: credit review' : o.status) + '</td><td>' + (canDel ? '<button type="button" class="b3-del" data-del="' + o.no + '">Delete<span class="sr-only"> order ' + o.no + '</span></button>' : '') + '</td></tr>'; }).join('') +
+          '</tbody><tfoot><tr><td colspan="5">Orders listed in open batch ' + b.no + '</td><td class="num mono">' + L.count + '</td><td></td><td class="num mono">' + money(L.amount) + '</td><td colspan="3"></td></tr></tfoot></table></div>' : '<p class="lead-p">No orders yet. Submit a test transaction from Order entry.</p>') +
+        '<div class="b3-res" id="b3-rres" role="status" aria-live="polite"></div>';
+      p.querySelectorAll('[data-del]').forEach(function (btn) { btn.addEventListener('click', function () {
+        var no = btn.dataset.del; if (!A.del(st, no)) return;
+        addLog({ kind: 'step', ctl: '', input: 'Deleted order ' + no + ' from batch ' + b.no, exp: '', act: 'Deleted', msg: '', result: 'Step' }); save(); renderAll();
+        var o2 = document.getElementById('b3-rres'); o2.className = 'b3-res'; o2.textContent = 'Order ' + no + ' deleted from batch ' + b.no + '. Check Batch totals before posting.'; o2.setAttribute('tabindex', '-1'); o2.focus();
+      }); });
+    }
+    function LOG() {
+      var p = document.getElementById('b3p-log');
+      p.innerHTML = '<p class="b3-small" style="margin-top:0">Pass means the actual result matched your expected result. A fail is evidence only if your expected result follows the control design in the Test plan. Setup steps (control totals, deletions) are listed so a test can be reproduced.</p>' +
+        (st.log.length ? '<div class="table-wrap"><table class="data b3-t"><thead><tr><th scope="col">#</th><th scope="col">Control</th><th scope="col">Input or action</th><th scope="col">Expected</th><th scope="col">Actual</th><th scope="col">Result</th></tr></thead><tbody>' +
+          st.log.map(function (l) { var c = l.result === 'Pass' ? 'pass' : l.result === 'Fail' ? 'fail' : 'na'; return '<tr><td class="mono">' + l.n + '</td><td class="mono">' + esc(l.ctl) + '</td><td>' + esc(l.input) + (l.msg ? '<br><span class="b3-small">' + esc(l.msg) + '</span>' : '') + '</td><td>' + esc(l.exp || (l.kind === 'step' ? '' : 'Not stated')) + '</td><td>' + esc(l.act) + '</td><td><span class="b3-pf ' + c + '">' + (c === 'pass' ? '&#10003; ' : c === 'fail' ? '&#10007; ' : '') + esc(l.result) + '</span></td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="lead-p">No tests yet.</p>') +
+        '<div class="b3-row"><button type="button" class="btn ghost" id="b3-reset">Reset test environment</button></div><p class="b3-small">Reset clears orders, batches, and the test log, and reloads the master data.</p>';
+      p.querySelector('#b3-reset').addEventListener('click', function () { if (!confirm('Reset the test environment? This clears all orders, batches, and the test log.')) return; st = A.newState(); save(); renderAll(); });
+    }
+    function PLAN() {
+      return '<h4 class="b3-h">Control test plan: OrderDesk 2.0 order entry</h4>' +
+        '<div class="table-wrap"><table class="data b3-t"><thead><tr><th scope="col">ID</th><th scope="col">Type</th><th scope="col">Control</th><th scope="col">Designed behavior</th></tr></thead><tbody>' +
+        B3.CONTROLS.map(function (c) { return '<tr><td class="mono">' + c.id + '</td><td>' + c.type + '</td><td>' + esc(c.name) + '</td><td>' + esc(c.design) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+        '<h4 class="b3-h">Customer master (QA copy)</h4><div class="table-wrap"><table class="data b3-t"><thead><tr><th scope="col">Customer ID</th><th scope="col">Name</th><th scope="col" class="num">Credit limit</th><th scope="col" class="num">Open balance</th><th scope="col">Status</th></tr></thead><tbody>' +
+        B3.CUSTOMERS.map(function (c) { return '<tr><td class="mono">' + c.id + '</td><td>' + esc(c.name) + '</td><td class="num mono">' + money(c.limit) + '</td><td class="num mono">' + money(c.balance) + '</td><td>' + c.status + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+        '<p class="b3-small">Open balance excludes orders entered in this test session. The credit check adds accepted and posted session orders for the customer.</p>' +
+        '<h4 class="b3-h">Product master (QA copy)</h4><div class="table-wrap"><table class="data b3-t"><thead><tr><th scope="col">SKU</th><th scope="col">Description</th><th scope="col" class="num">List price</th><th scope="col">Status</th></tr></thead><tbody>' +
+        B3.PRODUCTS.map(function (p) { return '<tr><td class="mono">' + p.sku + '</td><td>' + esc(p.desc) + '</td><td class="num mono">' + money(p.price) + '</td><td>' + (p.active ? 'Active' : 'Discontinued') + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+        '<p class="b3-small">Check digit rule (mod 11): multiply the five digits by 6, 5, 4, 3, and 2, add the products, and take the remainder after dividing by 11. The check digit is 11 minus the remainder; a result of 11 becomes 0. Example: 40217 gives 4×6 + 0×5 + 2×4 + 1×3 + 7×2 = 49, remainder 5, check digit 6.</p>';
+    }
+    renderAll();
+  }
+};
+
+window.LAB_TEST_UNLOCK = function () { window.__b3unlock = true; };
+
+/* Scripted transactions run through the same engine. Each script states the result the
+   control design calls for. Against the real control table exactly the four planted
+   controls must fail; against an all-working engine every script must pass. */
+window.LAB_SELFTEST = function () {
+  var log = [], P = [];
+  var good = B3.CUSTOMERS[0].id;   // 40217-6
+  var wrongCd = B3.CUSTOMERS[0].base + '-' + ((B3.cd(B3.CUSTOMERS[0].base) + 1) % 10);
+  var ghost = '49999'; var ghostId = ghost + '-' + B3.cd(ghost);
+  var V = { cust: good, po: 'T-001', sku: 'HX-1020', qty: '10', price: '', ship: '2026-11-20' };
+  function w(o) { var r = {}; for (var k in V) r[k] = V[k]; for (var j in o) r[j] = o[j]; return r; }
+  var scripts = [
+    ['Baseline', function (E, s) { return E.submit(s, w({})).outcome; }, 'Accepted'],
+    ['C01', function (E, s) { return E.submit(s, w({ po: '' })).outcome; }, 'Rejected'],
+    ['C02', function (E, s) { return E.submit(s, w({ cust: ghostId })).outcome; }, 'Rejected'],
+    ['C03', function (E, s) { return E.submit(s, w({ cust: wrongCd })).outcome; }, 'Rejected'],
+    ['C04', function (E, s) { return E.submit(s, w({ qty: '2.5' })).outcome; }, 'Rejected'],
+    ['C05', function (E, s) { var a = E.submit(s, w({ qty: '-5' })).outcome, b = E.submit(s, w({ qty: '501', po: 'T-002' })).outcome; return a === 'Rejected' && b === 'Rejected' ? 'Rejected' : 'Accepted'; }, 'Rejected'],
+    ['C06', function (E, s) { return E.submit(s, w({ sku: 'WR-7730' })).outcome; }, 'Rejected'],
+    ['C07', function (E, s) { return E.submit(s, w({ cust: B3.CUSTOMERS[3].id })).outcome; }, 'Rejected'],
+    ['C08', function (E, s) { return E.submit(s, w({ cust: B3.CUSTOMERS[1].id, sku: 'MT-4410', qty: '1' })).outcome; }, 'Held'],
+    ['C09', function (E, s) { return E.submit(s, w({ price: '30.00' })).outcome; }, 'Rejected'],
+    ['C10', function (E, s) { E.submit(s, w({})); return E.submit(s, w({ qty: '4' })).outcome; }, 'Rejected'],
+    ['C11', function (E, s) { var a = E.submit(s, w({ po: 'T-101' })), b = E.submit(s, w({ po: 'T-102', qty: '3' })); E.setTotals(s, 2, a.order.amount + b.order.amount); E.del(s, b.order.no); return E.post(s).outcome; }, 'Blocked'],
+    ['C12', function (E, s) { return E.submit(s, w({ ship: '2026-11-01' })).outcome; }, 'Rejected']
+  ];
+  function run(E) { return scripts.filter(function (sc) { return sc[1](E, E.newState()) !== sc[2]; }).map(function (sc) { return sc[0]; }); }
+  var real = run(B3.app), ideal = run(B3.makeEngine(function () { return true; }));
+  var flagged = B3.CONTROLS.filter(function (c) { return !c.works; }).map(function (c) { return c.id; });
+  log.push('failing=' + real.join(',')); log.push('allWorkingFailures=' + (ideal.join(',') || 'none'));
+  if (real.join(',') !== flagged.join(',')) P.push('scripted failures ' + real.join(',') + ' differ from control table ' + flagged.join(','));
+  if (flagged.join(',') !== 'C03,C05,C08,C11') P.push('control table does not plant C03, C05, C08, C11');
+  if (ideal.length) P.push('scripts fail even on a correct engine: ' + ideal.join(','));
+  // Check digits: no master customer may have a check digit of 10, and the example in the plan must hold.
+  B3.CUSTOMERS.forEach(function (c) { if (B3.cd(c.base) > 9) P.push('check digit 10 for ' + c.base); });
+  if (B3.cd('40217') !== 6) P.push('plan example check digit is wrong');
+  if (B3.CUSTOMERS.some(function (c) { return c.base === ghost; })) P.push('ghost customer exists');
+  // The credit script must exceed the limit by design, and a normal baseline must stay under it.
+  var osei = B3.CUSTOMERS[1]; if (!(osei.balance + 1280 > osei.limit)) P.push('C08 script would not exceed the limit');
+  // Visible symptom of C11: listed register totals differ from system totals after a delete.
+  var E = B3.app, s = E.newState(), a = E.submit(s, w({ po: 'X1' })), b = E.submit(s, w({ po: 'X2' })); E.del(s, b.order.no);
+  var bt = E.openBatch(s); if (E.sysTotals(s, bt).count === E.listed(s, bt).count) P.push('C11 failure not visible in the register');
+  return { log: log, problems: P };
+};
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

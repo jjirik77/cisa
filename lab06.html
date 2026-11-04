@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B6 Identity and Access Recertification Review | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+.b6-pol { font: .86rem/1.6 Arial, sans-serif; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script src="evidence.js"></script>
+<script>
+/* ===================== Synthetic evidence (deterministic) =====================
+   Sablewood Manufacturing: HR roster, directory export, ERP role export, privileged
+   group list, and recertification sign-offs. Export date October 15, 2026.
+   Planted: 3 terminated-but-enabled, 2 transferred with old roles, 2 orphaned, 2 shared,
+   2 dormant, 2 excessive privileged. Every other row is kept clean for the same tests. */
+(function () {
+  var seed = 6061;
+  function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+  function ri(a, b) { return a + Math.floor(rnd() * (b - a + 1)); }
+  function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
+  var DAY = 86400000;
+  function d10(ms) { var d = new Date(ms); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1, 2) + '-' + pad(d.getUTCDate(), 2); }
+  function ts(ms) { var d = new Date(ms); return d10(ms) + ' ' + pad(d.getUTCHours(), 2) + ':' + pad(d.getUTCMinutes(), 2); }
+  function ms(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  var EXPORT = Date.UTC(2026, 9, 15), DORMANT_BEFORE = EXPORT - 90 * DAY;
+
+  var first = ['Aaliyah', 'Bruno', 'Chiara', 'Dmitri', 'Esi', 'Felipe', 'Gwen', 'Hamid', 'Ingrid', 'Jamal', 'Keiko', 'Lorenzo', 'Maya', 'Nikhil', 'Olga', 'Paulo', 'Quinn', 'Rania', 'Stefan', 'Thandiwe', 'Uriel', 'Valeria', 'Wesley', 'Ximena', 'Yaw', 'Zofia', 'Arjun', 'Bianca', 'Cedric', 'Deepa', 'Emeka', 'Freya', 'Gustavo', 'Hye-jin', 'Isaac', 'Jolene', 'Kofi', 'Leah', 'Marco', 'Nadia'];
+  var last = ['Abernathy', 'Bianchi', 'Castellanos', 'Dlamini', 'Eriksen', 'Fofana', 'Gallagher', 'Hosseini', 'Ivanova', 'Jablonski', 'Kimura', 'Lindgren', 'Mbeki', 'Nwachukwu', 'Ortega', 'Popescu', 'Quintero', 'Rasmussen', 'Sato', 'Torres', 'Uddin', 'Varga', 'Whitaker', 'Xu', 'Yilmaz', 'Zielinski', 'Achebe', 'Brandt', 'Cardenas', 'Dubois', 'Ekström', 'Ferraro', 'Grant', 'Huang', 'Iyer', 'Jansen', 'Kowalczyk', 'Lopez', 'Moreau', 'Novak'];
+  var DEPTS = ['Finance', 'Procurement', 'Sales', 'Human Resources', 'Warehouse', 'Production', 'IT'];
+  var ROLES = {
+    'Finance': ['GL_JOURNAL_ENTRY', 'AP_INVOICE_ENTRY', 'AP_PAYMENT_APPROVE', 'AR_CASH_APPLY', 'FIN_REPORTS'],
+    'Procurement': ['PO_CREATE', 'PO_APPROVE', 'VENDOR_MASTER_MAINT'],
+    'Sales': ['SO_ENTRY', 'PRICING_MAINT', 'CUSTOMER_MASTER_MAINT'],
+    'Human Resources': ['HR_EMPLOYEE_MAINT', 'PAYROLL_PROCESS'],
+    'Warehouse': ['INV_RECEIPT', 'INV_ADJUST', 'SHIP_CONFIRM'],
+    'Production': ['MFG_WORK_ORDER', 'BOM_VIEW'],
+    'IT': ['ERP_JOB_SCHED', 'ERP_USER_ADMIN', 'ERP_CONFIG_ADMIN']
+  };
+  var AREA = {}; Object.keys(ROLES).forEach(function (d) { ROLES[d].forEach(function (r) { AREA[r] = d; }); });
+  var TITLES = { 'Finance': ['Financial Analyst', 'AP Specialist', 'Senior Accountant'], 'Procurement': ['Buyer', 'Procurement Specialist'], 'Sales': ['Account Manager', 'Sales Coordinator'], 'Human Resources': ['HR Generalist', 'Payroll Specialist'], 'Warehouse': ['Warehouse Lead', 'Inventory Clerk'], 'Production': ['Production Planner', 'Shift Supervisor'], 'IT': ['Systems Administrator', 'Help Desk Technician', 'ERP Developer'] };
+  var MGR = { 'Finance': 'Patrice Holloway', 'Procurement': 'Gareth Mwangi', 'Sales': 'Lena Sorensen', 'Human Resources': 'Ana Ruiz', 'Warehouse': 'Tobias Reinholt', 'Production': 'Mehmet Aydin', 'IT': 'Corinne Lafleur' };
+
+  // ---- HR roster ----
+  var hr = [], usedName = {}, usedAcct = {};
+  function person(dept) {
+    var f, l, a; do { f = pick(first); l = pick(last); a = (f[0] + l).toLowerCase().replace(/[^a-z]/g, ''); } while (usedName[f + l] || usedAcct[a]);
+    usedName[f + l] = 1; usedAcct[a] = 1;
+    var p = { emp_id: '', name: f + ' ' + l, account: a, department: dept, title: pick(TITLES[dept]), status: 'Active', hire: Date.UTC(2014, 0, 1) + ri(0, 4200) * DAY, term: null, transfer: null, prior: '' };
+    if (p.hire > EXPORT - 120 * DAY) p.hire -= 900 * DAY;
+    hr.push(p); return p;
+  }
+  var deptPlan = { 'Finance': 11, 'Procurement': 7, 'Sales': 10, 'Human Resources': 5, 'Warehouse': 11, 'Production': 12, 'IT': 10 };
+  Object.keys(deptPlan).forEach(function (d) { for (var i = 0; i < deptPlan[d]; i++) person(d); });
+  function special(dept, name, account, title) { var p = person(dept); p.name = name; p.account = account; usedAcct[account] = 1; if (title) p.title = title; return p; }
+  var lfer = special('Finance', 'Lucia Ferreira', 'lferreira', 'Financial Analyst'); lfer.hire = Date.UTC(2019, 4, 6); lfer.transfer = Date.UTC(2025, 3, 14); lfer.prior = 'IT'; lfer.plant = 'transfer'; lfer.oldRole = 'ERP_CONFIG_ADMIN';
+  var ohad = special('Sales', 'Omar Haddad', 'ohaddad', 'Account Manager'); ohad.hire = Date.UTC(2020, 8, 14); ohad.transfer = Date.UTC(2026, 5, 1); ohad.prior = 'Procurement'; ohad.plant = 'transfer'; ohad.oldRole = 'VENDOR_MASTER_MAINT';
+  var kbap = special('IT', 'Kervens Baptiste', 'kbaptiste', 'Help Desk Technician'); kbap.plant = 'priv';
+  var tngu = special('IT', 'Thao Nguyen', 'tnguyen', 'ERP Developer'); tngu.plant = 'priv';
+  var pool = shuffle(hr.filter(function (p) { return !p.plant; }));
+  // terminations: 3 planted (still enabled), 5 clean (disabled)
+  pool.slice(0, 8).forEach(function (p, k) {
+    p.status = 'Terminated';
+    if (k < 3) { p.term = Date.UTC(2026, 7, 3) + ri(0, 50) * DAY; p.plant = 'term'; }
+    else p.term = Date.UTC(2026, 0, 10) + ri(0, 250) * DAY;
+  });
+  // clean transfers: roles were updated
+  pool.slice(8, 11).forEach(function (p) { var others = DEPTS.filter(function (d) { return d !== p.department; }); p.prior = pick(others); p.transfer = Math.min(EXPORT - 60 * DAY, Math.max(p.hire + 60 * DAY, EXPORT - ri(60, 500) * DAY)); });
+  pool.slice(11, 13).forEach(function (p) { p.plant = 'dormant'; });
+  shuffle(hr);
+  var eid = 10230, gaps = []; hr.slice().sort(function (a, b) { return a.hire - b.hire; }).forEach(function (p) { var st = ri(1, 4); if (st > 1) gaps.push(eid + 1); eid += st; p.emp_id = 'E' + eid; });
+  var orphanIds = [gaps[Math.floor(gaps.length * 0.3)], gaps[Math.floor(gaps.length * 0.75)]];
+
+  // ---- Directory accounts ----
+  var dir = [];
+  hr.forEach(function (p) {
+    var enabled = p.status === 'Active' || p.plant === 'term', ll;
+    if (p.status === 'Terminated' && p.plant !== 'term') ll = p.term - ri(0, 3) * DAY;
+    else if (p.plant === 'term') ll = (p.term === null ? EXPORT : (dir.filter(function (x) { return x.plant === 'term'; }).length === 1 ? p.term + 4 * DAY : p.term - ri(1, 5) * DAY));
+    else if (p.plant === 'dormant') ll = DORMANT_BEFORE - ri(20, 110) * DAY;
+    else ll = EXPORT - ri(0, 24) * DAY;
+    ll += ri(7, 18) * 3600000 + ri(0, 59) * 60000;
+    dir.push({ account: p.account, emp_id: p.emp_id, display_name: p.name, enabled: enabled ? 'Yes' : 'No', last_logon: ts(ll), created: d10(p.hire), description: p.department + ', ' + p.title, plant: p.plant, p: p });
+  });
+  var admins = hr.filter(function (p) { return p.department === 'IT' && p.status === 'Active' && !p.plant && !p.prior; }).slice(0, 3);
+  admins.forEach(function (p) { p.title = 'Systems Administrator'; });
+  admins.forEach(function (p) { dir.push({ account: 'adm-' + p.account, emp_id: p.emp_id, display_name: p.name + ' (admin)', enabled: 'Yes', last_logon: ts(EXPORT - ri(0, 9) * DAY + ri(8, 17) * 3600000), created: d10(p.hire + 30 * DAY), description: 'Administrative account, IT', p: p }); });
+  admins.forEach(function (p) { dir.forEach(function (d) { if (d.p === p) d.description = p.department + ', ' + p.title; }); });
+  [['svc-backup', 'Service: nightly backup (owner: IT Operations)'], ['svc-erp-batch', 'Service: ERP batch jobs (owner: ERP team)'], ['svc-scan', 'Service: copier scan-to-folder (owner: IT Operations)']].forEach(function (s) {
+    dir.push({ account: s[0], emp_id: '', display_name: s[0], enabled: 'Yes', last_logon: ts(EXPORT - ri(0, 1) * DAY + ri(0, 6) * 3600000), created: d10(Date.UTC(2019, 2, 1) + ri(0, 900) * DAY), description: s[1] });
+  });
+  dir.push({ account: 'ap.shared', emp_id: '', display_name: 'AP Team', enabled: 'Yes', last_logon: ts(EXPORT - 1 * DAY + 14 * 3600000 + 22 * 60000), created: '2021-06-07', description: 'Accounts payable team shared login', plant: 'shared' });
+  dir.push({ account: 'frontdesk', emp_id: '', display_name: 'Front Desk', enabled: 'Yes', last_logon: ts(EXPORT - 3 * DAY + 8 * 3600000 + 5 * 60000), created: '2020-01-20', description: 'Reception PC login used by all front-desk staff', plant: 'shared' });
+  dir.push({ account: 'kfoster', emp_id: 'E' + orphanIds[0], display_name: 'Kendra Foster', enabled: 'Yes', last_logon: ts(EXPORT - 6 * DAY + 10 * 3600000), created: '2025-02-17', description: 'ERP upgrade project', plant: 'orphan' });
+  dir.push({ account: 'mbrennan', emp_id: 'E' + orphanIds[1], display_name: 'Malik Brennan', enabled: 'Yes', last_logon: ts(EXPORT - 19 * DAY + 15 * 3600000), created: '2024-08-05', description: 'Production', plant: 'orphan' });
+  dir.sort(function (a, b) { return a.account < b.account ? -1 : 1; });
+
+  // ---- ERP role export ----
+  var erp = [];
+  hr.forEach(function (p) {
+    if (p.status === 'Terminated' && p.plant !== 'term') return;  // removed with the disabled account
+    var since = p.transfer || p.hire, rs = shuffle(ROLES[p.department].slice());
+    if (p.plant === 'priv') rs = rs.filter(function (r) { return r !== 'ERP_CONFIG_ADMIN'; });
+    rs.slice(0, ri(1, Math.min(3, rs.length))).forEach(function (r) { erp.push({ erp_user: p.account, emp_id: p.emp_id, role: r, role_area: AREA[r], granted_on: d10(since + ri(1, 40) * DAY) }); });
+    if (p.oldRole) erp.push({ erp_user: p.account, emp_id: p.emp_id, role: p.oldRole, role_area: AREA[p.oldRole], granted_on: d10(p.transfer - ri(300, 700) * DAY) });
+  });
+  erp.push({ erp_user: 'svc-erp-batch', emp_id: '', role: 'ERP_JOB_SCHED', role_area: 'IT', granted_on: '2019-09-12' });
+  erp.push({ erp_user: 'ap.shared', emp_id: '', role: 'AP_INVOICE_ENTRY', role_area: 'Finance', granted_on: '2021-06-08' });
+  erp.sort(function (a, b) { return a.erp_user < b.erp_user ? -1 : a.erp_user > b.erp_user ? 1 : (a.role < b.role ? -1 : 1); });
+
+  // ---- Privileged groups ----
+  var ciso = 'Rafael Okonjo, CISO';
+  var priv = [];
+  admins.forEach(function (p, k) { priv.push({ group: 'Domain Admins', member: 'adm-' + p.account, holder: p.name, approved_by: ciso, approved_on: d10(p.hire + 45 * DAY), justification: 'Directory and server administration' }); });
+  priv.push({ group: 'Enterprise Admins', member: 'adm-' + admins[0].account, holder: admins[0].name, approved_by: ciso, approved_on: '2024-03-11', justification: 'Forest-level changes (break-glass use only)' });
+  priv.push({ group: 'DB_Prod_Owner', member: 'adm-' + admins[1].account, holder: admins[1].name, approved_by: ciso, approved_on: '2023-10-02', justification: 'Production database administration' });
+  priv.push({ group: 'Backup Operators', member: 'svc-backup', holder: 'IT Operations (service)', approved_by: ciso, approved_on: '2019-04-22', justification: 'Nightly backup jobs' });
+  priv.push({ group: 'Domain Admins', member: 'kbaptiste', holder: 'Kervens Baptiste', approved_by: '', approved_on: '', justification: 'Temporary: file server migration (March 2025)' });
+  priv.push({ group: 'DB_Prod_Owner', member: 'tnguyen', holder: 'Thao Nguyen', approved_by: '', approved_on: '', justification: '' });
+  priv.push({ group: 'ERP SysAdmin', member: 'adm-' + admins[2].account, holder: admins[2].name, approved_by: ciso, approved_on: '2025-01-27', justification: 'ERP platform administration' });
+  priv.sort(function (a, b) { return a.group < b.group ? -1 : a.group > b.group ? 1 : (a.member < b.member ? -1 : 1); });
+
+  // ---- Recertification sign-offs ----
+  var recert = [];
+  var revs = [['Dana Whitlock', 'IT Security Analyst'], ['Ravi Menon', 'IT Security Lead']];
+  var scopes = DEPTS.map(function (d) { return ['ERP roles: ' + d, erp.filter(function (e) { return e.role_area === d; }).length]; }).concat([['Directory: all accounts', dir.length], ['Privileged groups', priv.length]]);
+  scopes.forEach(function (s, k) { var r = revs[k % 2]; recert.push({ campaign: '2026 annual', scope: s[0], reviewer: r[0], reviewer_title: r[1], reviewer_dept: 'IT Security', items_reviewed: String(s[1]), changes_requested: '0', signed_on: ts(Date.UTC(2026, 8, 18, 13, 5) + k * 11 * 60000), comment: k % 3 === 0 ? 'Reviewed system access report. Looks reasonable.' : 'Confirmed against system report. No changes.' }); });
+
+  function accts(f) { return dir.filter(f).map(function (d) { return d.account; }).sort(); }
+  window.B6DATA = {
+    hr: hr.map(function (p) { return { emp_id: p.emp_id, name: p.name, department: p.department, job_title: p.title, manager: MGR[p.department], status: p.status, hire_date: d10(p.hire), termination_date: p.term ? d10(p.term) : '', transfer_date: p.transfer ? d10(p.transfer) : '', prior_department: p.prior }; }).sort(function (a, b) { return a.emp_id < b.emp_id ? -1 : 1; }),
+    dir: dir.map(function (d) { return { account: d.account, emp_id: d.emp_id, display_name: d.display_name, enabled: d.enabled, last_logon: d.last_logon, created: d.created, description: d.description }; }),
+    erp: erp, priv: priv, recert: recert, exportDate: d10(EXPORT), dormantBefore: d10(DORMANT_BEFORE),
+    answers: {
+      term: accts(function (d) { return d.plant === 'term'; }),
+      transfer: ['lferreira', 'ohaddad'],
+      orphan: accts(function (d) { return d.plant === 'orphan'; }),
+      shared: accts(function (d) { return d.plant === 'shared'; }),
+      dormant: accts(function (d) { return d.plant === 'dormant'; }),
+      priv: ['kbaptiste', 'tnguyen']
+    }
+  };
+})();
+</script>
+
+<script>
+(function () {
+  var X = window.B6DATA;
+  function A(k) { return function () { return X.answers[k]; }; }
+  window.LAB = {
+    id: 'B6',
+    title: 'Identity and Access Recertification Review',
+    accent: 'Recertification Review',
+    domain: 'Domain 5',
+    time: '50 to 60 min',
+    level: 'Intermediate',
+    lessonHref: 'lesson07.html#s3',
+    lessonLabel: 'Lesson 7, Identity & Access Management',
+    lede: 'Access reviews fail in predictable ways: the wrong people sign them, terminated users stay active, and privileged accounts escape review. Reconcile the raw exports yourself, then judge whether the recertification proves anything.',
+    workbenchTitle: 'Evidence workbench',
+    ticket: {
+      number: 'IA-2026-0612',
+      priority: 'Normal priority',
+      from: 'Ines Carvalho, Chief Audit Executive',
+      to: 'IS audit staff (you)',
+      subject: 'Annual access review: ERP and directory, Sablewood Manufacturing',
+      due: 'Findings draft by October 30',
+      body: '<p>Sablewood Manufacturing completed its 2026 annual access recertification in September. Every scope was signed off with no changes requested, and IT has asked us to rely on that result for the SOX ITGC walkthrough.</p>' +
+        '<p>Before we rely on it, I want our own reconciliation. I pulled five exports on October 15, 2026: the <b>HR roster</b> (including terminations and transfers), the <b>directory account export</b> with last logon, the <b>ERP role export</b>, the <b>privileged group membership list</b>, and the <b>recertification sign-off log</b>.</p>' +
+        '<p>Identify each account exception by type, evaluate who performed the recertification, and draft one finding I can take to the CIO. Use the Identity and Access Standard in the Policies tab as your criteria.</p>'
+    },
+    howTo: 'The <b>Evidence workbench</b> shows two panes at a time. Choose the export for pane A and pane B, filter and sort each pane, and use <b>Match</b>, <b>Lookup</b>, and <b>Compare</b> to test pane A against pane B. For example, put the directory in pane A and the HR roster in pane B, match on emp_id, and look up each account’s HR status. Check each checklist item as you go. A hint is available for every item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points.',
+    workIntro: 'All exports were taken on ' + X.exportDate + '. Account IDs are the same in the directory and the ERP system. Record exceptions by account ID in the checklist below.',
+    checklist: [
+      { id: 'term', type: 'set', points: 14, short: 'Terminated, still enabled', title: 'Terminated users with enabled accounts',
+        task: 'Which directory accounts belong to people HR shows as <b>terminated</b> but are still <b>enabled</b>? Enter the account IDs.',
+        label: 'Account IDs', placeholder: 'e.g., jdoe, asmith',
+        answer: A('term'),
+        hint: 'Put the directory export in pane A and the HR roster in pane B. Match emp_id to emp_id and use Lookup to bring in status. Then filter pane A on: Terminated Yes',
+        debrief: '<p>Three people terminated in August and September still have enabled accounts, and each still holds ERP roles. One account logged on four days after the termination date, which means someone used it after the person left. The five earlier terminations were disabled correctly, so the process works only some of the time.</p><p>The auditor should report this as a deprovisioning failure, ask security to review activity on the account used after termination, and recommend that HR terminations trigger automatic disablement through the HR feed rather than a manual ticket.</p>',
+        reviewNote: 'Reconcile HR terminations to enabled accounts.' },
+      { id: 'transfer', type: 'set', points: 12, short: 'Transfers, old roles', title: 'Transferred users who kept old roles',
+        task: 'Which users <b>transferred</b> departments but still hold ERP roles that belong to their <b>former</b> department? Enter the account IDs.',
+        label: 'Account IDs', placeholder: 'e.g., jdoe',
+        answer: A('transfer'),
+        hint: 'Put the ERP role export in pane A and the HR roster in pane B. Match emp_id, look up department, then compare role_area with the new department column using “differs from.”',
+        debrief: '<p>Two transferred users kept access from their old jobs. A financial analyst who moved from IT eighteen months ago still holds ERP_CONFIG_ADMIN, an administrator role that lets her change system configuration in the same ERP where she posts journal entries. A sales account manager who left procurement in June still holds VENDOR_MASTER_MAINT. Three other transfers were cleaned up correctly.</p><p>This is access creep. The transfer process adds new access but does not remove the old. The auditor should recommend that a transfer in HR trigger a role review by the former and new managers, and that the two roles be removed now.</p>',
+        reviewNote: 'Compare each role’s business area with the user’s current HR department.' },
+      { id: 'orphan', type: 'set', points: 11, short: 'Orphaned accounts', title: 'Orphaned accounts',
+        task: 'Which enabled accounts carry an employee ID that has <b>no record in the HR roster</b>? Enter the account IDs. (Service and shared accounts have no employee ID; they are tested separately.)',
+        label: 'Account IDs', placeholder: 'e.g., jdoe',
+        answer: A('orphan'),
+        hint: 'Directory in pane A, HR roster in pane B, match emp_id and flag rows with no match. Then set aside the rows whose emp_id is blank.',
+        debrief: '<p>Two enabled accounts have employee IDs that do not exist in HR. One is described as an ERP upgrade contractor, the other has no meaningful description. Neither has an owner the company can hold accountable, and both logged on within the last three weeks.</p><p>Every account must map to a person in HR or a registered non-person account with a named owner. The auditor should recommend that IT find out who uses these accounts, disable them if no sponsor is found, and bring contractors into a sponsored identity process with end dates.</p>',
+        reviewNote: 'Match the directory to HR and investigate employee IDs with no HR record.' },
+      { id: 'shared', type: 'set', points: 10, short: 'Shared accounts', title: 'Shared and generic accounts',
+        task: 'Which enabled accounts are <b>shared or generic logins used by people</b>, as opposed to registered service accounts? Enter the account IDs.',
+        label: 'Account IDs', placeholder: 'e.g., team.login',
+        answer: A('shared'),
+        hint: 'Filter the directory for accounts with a blank emp_id (match against HR and flag no match), then read the descriptions. Service accounts name an owning team and a system purpose.',
+        debrief: '<p>Two interactive accounts are shared by groups of people: an accounts payable team login and a front-desk login. The AP login also holds the ERP role AP_INVOICE_ENTRY, so invoices entered under it cannot be traced to an individual. The three service accounts are documented with an owner and a purpose.</p><p>Shared accounts defeat accountability and make the audit trail meaningless. The auditor should recommend named accounts for each person, and a documented, approved exception with compensating controls for any shared login that truly cannot be replaced.</p>',
+        reviewNote: 'Shared logins used by people break individual accountability.' },
+      { id: 'dormant', type: 'set', points: 11, short: 'Dormant accounts', title: 'Dormant accounts',
+        task: 'The standard requires disabling any account with <b>no logon for 90 days</b>. Which enabled accounts last logged on before <b>' + X.dormantBefore + '</b>? Enter the account IDs.',
+        label: 'Account IDs', placeholder: 'e.g., jdoe',
+        answer: A('dormant'),
+        hint: 'Sort the directory by last_logon, oldest first. Disabled accounts do not count, so check the enabled column.',
+        debrief: '<p>Two enabled accounts of active employees have not logged on for more than 90 days. The oldest logons in the export belong to disabled former employees, which is expected. These two are different: they are still open and nobody is using them.</p><p>An unused, enabled account is an easy target because its owner will not notice misuse. The auditor should recommend the automated dormancy job the standard already requires, and confirm with the managers whether these users still need access.</p>',
+        reviewNote: 'Sort by last logon and test enabled accounts against the 90-day rule.' },
+      { id: 'priv', type: 'set', points: 12, short: 'Privileged access', title: 'Excessive privileged access',
+        task: 'Which members of privileged groups do <b>not</b> meet the standard (a separate admin account or registered service account, approved by the CISO, with a justification)? Enter the account IDs.',
+        label: 'Account IDs', placeholder: 'e.g., adm-jdoe',
+        answer: A('priv'),
+        hint: 'Open the privileged groups list. Sort by approved_by. Check whether each member is an adm- account or a service account.',
+        debrief: '<p>Two daily-use accounts sit in privileged groups with no CISO approval. A help desk technician’s everyday account is a Domain Admin under a “temporary” justification from March 2025, and a developer’s everyday account owns the production database with no justification at all. Every other member is a separate admin account or a registered service account with CISO approval.</p><p>Privileged rights on daily accounts expose the domain to anything the user clicks. The auditor should recommend removing both memberships, enforcing separate admin accounts, and putting temporary privileged grants on an expiry date.</p>',
+        reviewNote: 'Privileged members need a separate admin account, CISO approval, and a justification.' },
+      { id: 'process', type: 'choice', points: 15, short: 'Recertification process', title: 'Evaluate the recertification itself',
+        task: 'Read the recertification sign-off log and the standard. What is the most significant weakness in how the 2026 recertification was performed?',
+        options: ['IT security reviewed every scope from system reports, which makes the review complete and reliable', 'The reports came straight from the systems rather than from managers, so their accuracy is unproven', 'IT security, not the business owners, certified access, so nobody judged each user’s business need', 'The review was annual, and the standard should be changed to require a quarterly review instead'],
+        answer: 2,
+        hint: 'Who is in the reviewer column, and who does the standard say must certify? Then consider what the reviewers could have known about each user’s job.',
+        debrief: '<p>All nine scopes were signed by two IT security staff in under two hours, with zero changes requested, while the exports contain at least thirteen account exceptions. IT security can confirm that a report matches the system. It cannot judge whether a buyer should still approve purchase orders or whether an analyst needs a configuration role. That judgment belongs to the business owners named in the standard.</p><p>System-generated reports are the right input, so they are not the problem. The reviewer is. The recertification gives no assurance and should not be relied on for the ITGC walkthrough. The auditor should recommend manager and data-owner certification, with IT security coordinating the campaign and the CISO certifying privileged groups.</p>',
+        reviewNote: 'Recertification must be performed by business owners who can judge business need.' },
+      { id: 'finding', type: 'text', points: 15, short: 'Draft the finding', title: 'Draft the five-part finding', reportTitle: 'Draft finding',
+        task: 'Write one finding on the access recertification control. Use specific counts from your reconciliation.',
+        fields: [
+          { key: 'condition', label: 'Condition: what you found', min: 40, placeholder: 'Who performed the review, and what the reconciliation found that the review missed.' },
+          { key: 'criteria', label: 'Criteria: the policy or standard', min: 25, placeholder: 'Cite the Identity and Access Standard sections.' },
+          { key: 'cause', label: 'Cause: why it happened', min: 25, placeholder: 'Explain the process design gap.' },
+          { key: 'effect', label: 'Effect: the risk or impact', min: 25, placeholder: 'Describe the exposure.' },
+          { key: 'rec', label: 'Recommendation: what management should do', min: 30, placeholder: 'Address the cause.' }
+        ],
+        hint: 'Lead with the process failure: the wrong reviewers. Then use the account exceptions as evidence that the review did not work.',
+        debrief: '<p><b>Model finding.</b> <b>Condition:</b> The 2026 access recertification was signed off by two IT security staff for all nine scopes, with no changes requested. Our reconciliation of the October 15 exports found 13 exceptions the review missed: 3 terminated users with enabled accounts (one used after termination), 2 transferred users holding roles from their former departments (including an ERP configuration administrator role), 2 orphaned accounts, 2 shared logins, 2 dormant accounts, and 2 unapproved privileged memberships. <b>Criteria:</b> Identity and Access Standard IAM-04 requires business owners to certify access, HR-triggered disablement within one business day, removal of prior roles on transfer, disablement after 90 days of inactivity, no shared accounts, and CISO approval for privileged access. <b>Cause:</b> The recertification was delegated to IT security, who cannot judge business need, and joiner, mover, and leaver steps depend on manual tickets. <b>Effect:</b> Unauthorized or excessive access, including post-termination use and segregation-of-duties conflicts in the ERP, can persist undetected, and management cannot rely on the review for ITGC purposes. <b>Recommendation:</b> Assign certification to department managers and data owners, with the CISO certifying privileged groups; automate HR-driven disablement and transfer reviews; remediate the 13 exceptions; and re-perform the recertification.</p><p>Your wording will differ. Check that the condition is specific and the recommendation addresses the cause.</p>',
+        reviewNote: 'Each element needs specific evidence; the recommendation should address the cause.' }
+    ],
+
+    workbench: function (root, api) {
+      root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-ev" aria-controls="pn-ev" aria-selected="true">Evidence</button>' +
+        '<button role="tab" id="tb-pol" aria-controls="pn-pol" aria-selected="false" tabindex="-1">Policies</button></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-ev" aria-labelledby="tb-ev"></div>' +
+        '<div class="lb-panel b6-pol" role="tabpanel" id="pn-pol" aria-labelledby="tb-pol" hidden>' + POL() + '</div></div>';
+      var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+      function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+      tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+      if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+      function cols(list) { return list.map(function (c) { return typeof c === 'string' ? { k: c, h: c } : c; }); }
+      EV.create(document.getElementById('pn-ev'), { id: 'b6', api: api, a: 'dir', b: 'hr', panes: [
+        { id: 'dir', title: 'Directory accounts', source: 'Directory export of all user, admin, service, and other accounts, with the employeeID attribute and last logon (UTC).', rows: X.dir, cols: cols(['account', 'emp_id', 'display_name', 'enabled', 'last_logon', 'created', { k: 'description', h: 'description', wrap: true }]) },
+        { id: 'hr', title: 'HR roster', source: 'HR system extract of all employees active at any point in 2026, with terminations and transfers.', rows: X.hr, cols: cols(['emp_id', 'name', 'department', 'job_title', 'manager', 'status', 'hire_date', 'termination_date', 'transfer_date', 'prior_department']) },
+        { id: 'erp', title: 'ERP role export', source: 'ERP security export: one row per user and role. role_area is the business area that owns the role.', rows: X.erp, cols: cols(['erp_user', 'emp_id', 'role', 'role_area', 'granted_on']) },
+        { id: 'priv', title: 'Privileged groups', source: 'Membership of privileged directory, database, and ERP administration groups.', rows: X.priv, cols: cols(['group', 'member', 'holder', 'approved_by', 'approved_on', { k: 'justification', h: 'justification', wrap: true }]) },
+        { id: 'recert', title: 'Recertification sign-offs', source: 'Sign-off log from the 2026 annual access recertification campaign.', rows: X.recert, cols: cols(['campaign', 'scope', 'reviewer', 'reviewer_title', 'reviewer_dept', 'items_reviewed', 'changes_requested', 'signed_on', { k: 'comment', h: 'comment', wrap: true }]) }
+      ] });
+      function POL() {
+        return '<div class="lb-doc"><p class="eyebrow">Policy</p><h4>Identity and Access Standard IAM-04 (excerpt)</h4><ul>' +
+          '<li><b>4.1 Recertification.</b> Access is recertified at least annually. Each department manager, as business owner, certifies the access of the people in the department and of the roles their area owns. The CISO certifies privileged group membership. IT security coordinates the campaign and tracks removals.</li>' +
+          '<li><b>4.2 Leavers.</b> HR terminations must result in account disablement within one business day.</li>' +
+          '<li><b>4.3 Movers.</b> On a transfer, roles that belong to the former department are removed unless the new manager approves them in writing.</li>' +
+          '<li><b>4.4 Accountability.</b> Every account maps to one person in the HR roster, or is a registered service account with a named owning team. Shared logins used by people are prohibited.</li>' +
+          '<li><b>4.5 Dormancy.</b> Enabled accounts with no logon for 90 days are disabled.</li>' +
+          '<li><b>4.6 Privileged access.</b> Privileged groups contain only separate administrative accounts (prefix <code>adm-</code>) or registered service accounts, each approved by the CISO with a documented justification.</li></ul></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Note</p><h4>About the evidence</h4><ul><li>The auditor took all five exports directly from the source systems on ' + X.exportDate + '.</li><li>emp_id links the directory and ERP exports to HR. A blank emp_id means the account is not tied to a person.</li><li>The 90-day dormancy cutoff for this export is ' + X.dormantBefore + '.</li></ul></div>';
+      }
+    }
+  };
+
+  window.LAB_SELFTEST = function () {
+    var log = [], P = [];
+    var hr = {}; X.hr.forEach(function (h) { hr[h.emp_id] = h; });
+    var got = { term: [], transfer: [], orphan: [], shared: [], dormant: [], priv: [] };
+    X.dir.forEach(function (d) {
+      var h = d.emp_id ? hr[d.emp_id] : null, on = d.enabled === 'Yes';
+      if (on && h && h.status === 'Terminated') got.term.push(d.account);
+      if (on && d.emp_id && !h) got.orphan.push(d.account);
+      if (on && !d.emp_id && !/^Service:/.test(d.description)) got.shared.push(d.account);
+      if (on && d.last_logon.slice(0, 10) < X.dormantBefore) got.dormant.push(d.account);
+    });
+    X.erp.forEach(function (e) { var h = hr[e.emp_id]; if (h && e.role_area !== h.department && got.transfer.indexOf(e.erp_user) < 0) got.transfer.push(e.erp_user); });
+    X.priv.forEach(function (p) { var ok = (/^adm-/.test(p.member) || /^svc-/.test(p.member)) && /CISO/.test(p.approved_by) && p.justification; if (!ok) got.priv.push(p.member); });
+    var seen = {};
+    Object.keys(got).forEach(function (k) {
+      got[k].sort();
+      if (got[k].join() !== X.answers[k].join()) P.push(k + ': derived ' + got[k].join(' ') + ' vs key ' + X.answers[k].join(' '));
+      got[k].forEach(function (a) { if (seen[a]) P.push(a + ' trips two tests'); seen[a] = 1; });
+      log.push(k + ' ' + got[k].join(' '));
+    });
+    X.dir.forEach(function (d) { var h = hr[d.emp_id]; if (h && h.status === 'Terminated' && d.enabled === 'Yes' && d.last_logon.slice(0, 10) > h.termination_date) log.push('post-termination logon ' + d.account); });
+    if (X.recert.some(function (r) { return r.reviewer_dept !== 'IT Security'; })) P.push('recert reviewer not IT Security');
+    return { log: log, problems: P };
+  };
+})();
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

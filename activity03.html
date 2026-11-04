@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A3 Evidence Strength and the Five-Part Audit Finding | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A3',
+  title: 'Evidence Strength and the Five-Part Audit Finding',
+  accent: 'the Five-Part Audit Finding',
+  domain: 'Domain 1',
+  time: '40–50 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson01.html#s7',
+  lessonLabel: 'Lesson 1, Audit Evidence Collection',
+  lede: 'Most candidates know that a bank confirmation beats a verbal assurance. Fewer can rank two documents that hold the same data, decide when evidence is not yet enough, or write a finding that management can act on. Practice all three.',
+  concepts: [
+    { key: 'reliability', name: 'Ranking evidence reliability', review: 'Lesson 1, Audit Evidence Collection' },
+    { key: 'sufficiency', name: 'Sufficient, appropriate evidence', review: 'Lesson 1, Audit Evidence Collection' },
+    { key: 'elements', name: 'Elements of a finding', review: 'Lesson 1, Reporting & Communication' },
+    { key: 'writing', name: 'Writing an actionable finding', review: 'Lesson 1, Reporting & Communication' }
+  ],
+  stations: [
+    {
+      type: 'order', short: 'Evidence ladder', title: 'Build the evidence ladder', concept: 'reliability',
+      instr: 'Each set holds four pieces of evidence for the same audit question. Order each set from <b>weakest</b> at the top to <b>strongest</b> at the bottom. Ask who produced the evidence, how it reached you, and how much of the period it covers.',
+      hint: 'Inquiry is weakest and always needs corroboration. Documents prepared by the auditee rank below documents from independent third parties, and both rank below evidence the auditor obtains directly. Evidence that covers the whole period beats evidence from a single moment.',
+      topLabel: 'Weakest', bottomLabel: 'Strongest',
+      review: { href: 'lesson01.html#s7', label: 'Lesson 1, Audit Evidence Collection' },
+      groups: [
+        {
+          title: 'Set 1: Terminated-user access',
+          text: 'Audit question at Brightwater Credit Union: were leavers\' network accounts disabled within 24 hours of termination?',
+          items: [
+            { text: 'The auditor watches an analyst disable one leaver\'s account during a walk-through.', rank: 2, accept: [1, 2], why: 'Direct observation is first-hand, but it covers one instance on one day, and people may behave differently while observed. It and the emailed screenshot are close, so either order between them is accepted.' },
+            { text: 'The IAM manager states that all leavers are disabled the same day.', rank: 0, why: 'Inquiry is the weakest form of evidence. It must be corroborated before it supports a conclusion.' },
+            { text: 'The auditor pulls the HR termination list and the directory account status directly, and matches every leaver for the year.', rank: 3, why: 'The auditor obtained both sources directly and reperformed the comparison across the full period. Provenance and coverage are both strong.' },
+            { text: 'A screenshot of the disabled-accounts list, emailed to the auditor by the IAM manager.', rank: 1, accept: [1, 2], why: 'Documentary evidence beats inquiry, but this document was produced and handled by the auditee, so it could be incomplete or altered.' }
+          ]
+        },
+        {
+          title: 'Set 2: Cash balance',
+          text: 'Audit question at Pellucid Outfitters: does the year-end operating account balance agree to the bank\'s records?',
+          items: [
+            { text: 'A bank statement PDF supplied by the treasury team.', rank: 2, why: 'The bank produced it, which helps, but it passed through the auditee\'s hands before reaching the auditor.' },
+            { text: 'A confirmation sent by the bank directly to the auditor.', rank: 3, why: 'Third-party evidence that travels directly to the auditor, without passing through the auditee, is the most reliable in this set.' },
+            { text: 'The treasury analyst\'s explanation of the balance in a meeting.', rank: 0, why: 'An oral explanation is inquiry, the lowest level of reliability.' },
+            { text: 'The bank reconciliation spreadsheet prepared by treasury.', rank: 1, why: 'An internally prepared document is stronger than inquiry but weaker than anything the bank produced.' }
+          ]
+        },
+        {
+          title: 'Set 3: Cloud vendor assurance',
+          text: 'Audit question at Corvane Analytics: are the hosting vendor\'s access controls operating effectively for the year?',
+          items: [
+            { text: 'A SOC 2 Type I report on the vendor\'s controls as of one date.', rank: 2, why: 'An independent auditor\'s report is strong, but Type I addresses design at a point in time, not operation over the year.' },
+            { text: 'The vendor\'s security white paper on its public website.', rank: 0, why: 'Marketing material is written by the vendor for sales purposes and carries no assurance.' },
+            { text: 'A SOC 2 Type II report covering twelve months of the audit year.', rank: 3, why: 'An independent auditor tested operating effectiveness over a period, which matches the audit question.' },
+            { text: 'The vendor\'s completed answers to your security questionnaire.', rank: 1, why: 'A questionnaire answers your specific questions, which adds relevance, but it is still the vendor describing itself.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'sort', short: 'Anatomy of a finding', title: 'Anatomy of a finding', concept: 'elements',
+      instr: 'The sentences below come from three draft findings, labeled A, B, and C. Tag each sentence with its element: <b>Condition</b> (what was found), <b>Criteria</b> (what should be), <b>Cause</b> (why the gap exists), <b>Effect</b> (the risk or consequence), or <b>Recommendation</b> (how to close the gap).',
+      hint: 'Condition is the fact you observed, usually with numbers. Criteria names the policy, standard, or requirement. Cause explains why the gap happened, at the root. Effect says what could go wrong for the business. Recommendation tells management what to do.',
+      buckets: ['Condition', 'Criteria', 'Cause', 'Effect', 'Recommendation'],
+      review: { href: 'lesson01.html#s9', label: 'Lesson 1, Reporting & Communication' },
+      items: [
+        { text: 'Finding A: 31 of 120 firewall rules reviewed allow traffic from any source to any destination and have no named owner.', answer: 0, why: 'This is the fact the auditor observed, stated with numbers. It is the condition.' },
+        { text: 'Finding B: Change Management Procedure CM-02 requires approval before any non-emergency change is deployed to production.', answer: 1, why: 'The named procedure states what should happen. That is the criteria.' },
+        { text: 'Finding A: Unneeded open paths increase the chance that an attacker who compromises one server can reach the payment network.', answer: 3, why: 'This describes the consequence for the business if the gap remains. It is the effect.' },
+        { text: 'Finding C: The backup team measures success by job completion status and has never been assigned responsibility for test restores.', answer: 2, why: 'This explains why restores are not tested: no one owns the task. That is the root cause.' },
+        { text: 'Finding B: IT management should configure the deployment pipeline to block any release until an approved change ticket is linked.', answer: 4, why: 'This tells management what to do and targets the cause. It is the recommendation.' },
+        { text: 'Finding A: The Network Security Standard requires every firewall rule to have a named owner and a business justification, reviewed every six months.', answer: 1, why: 'The standard defines the expected state, so it is the criteria.' },
+        { text: 'Finding B: 7 of 45 sampled production changes were deployed before the change advisory board approved them.', answer: 0, why: 'This is the observed fact from the sample. It is the condition.' },
+        { text: 'Finding C: If restores fail during an outage, the company may miss its four-hour recovery time objective for the order system.', answer: 3, why: 'This states the business consequence. It is the effect.' },
+        { text: 'Finding A: The semiannual rule review has not been assigned to anyone since the network team was reorganized last year.', answer: 2, why: 'This explains why the rules went unreviewed. It is the cause.' },
+        { text: 'Finding B: The pipeline does not check for an approved ticket, so developers can release whenever automated tests pass.', answer: 2, why: 'This is the root cause: the system does not enforce the approval step. Restating that changes went unapproved would only repeat the condition.' },
+        { text: 'Finding C: The Business Continuity Policy requires a test restore of each critical system every quarter.', answer: 1, why: 'The policy sets the expectation. It is the criteria.' },
+        { text: 'Finding B: Unapproved changes can introduce errors or unauthorized code into the patient billing system without detection.', answer: 3, why: 'This describes what could go wrong for the business. It is the effect.' },
+        { text: 'Finding A: Network management should assign an owner for the rule review, remove or justify the 31 rules, and track each review to completion.', answer: 4, why: 'This is an actionable step for management that addresses the cause. It is the recommendation.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Enough? Fix it', title: 'Is it enough? Then fix the finding',
+      instr: 'Cases 1 to 5: decide whether the evidence supports the conclusion and choose the <b>BEST</b> next step. Cases 6 to 8: review a weak draft finding and choose the <b>BEST</b> correction.',
+      hint: 'Sufficient means enough evidence; appropriate means relevant and reliable. Check whether the evidence covers the whole period, whether the auditor can trust where it came from, and whether it addresses the actual question. A good finding is specific, names a root cause, and leaves remediation with management.',
+      review: { href: 'lesson01.html#s7', label: 'Lesson 1, Audit Evidence Collection' },
+      items: [
+        {
+          title: 'Case 1', text: 'Farah Siddiqui concludes that quarterly access reviews at Brightwater Credit Union operated effectively. Her evidence is the approved access-review policy and an interview in which the IAM manager confirmed the reviews took place.',
+          parts: [
+            { q: 'Does the evidence support the conclusion?', concept: 'sufficiency', options: ['Yes, because the policy and the manager agree', 'No. Inspect a sample of completed reviews for the period', 'Yes, if the manager also signs a written representation letter', 'No. Every account in the population must be retested'], answer: 1, why: 'A policy shows design and an interview is inquiry. Neither shows the control operated, so she needs to inspect completed reviews. Testing the whole population is not required.' }
+          ]
+        },
+        {
+          title: 'Case 2', text: 'Gabriel Moreau tested change approvals using a random sample drawn across all twelve months, sized from the audit methodology\'s table for the planned tolerable rate. He found no deviations and concluded the control operated effectively for the year.',
+          parts: [
+            { q: 'Does the evidence support the conclusion?', concept: 'sufficiency', options: ['No, because only a sample was tested', 'No, because management should also confirm the result', 'No, because a zero-deviation result usually means the test was weak', 'Yes. The sample is representative and properly sized'], answer: 3, why: 'A random, properly sized sample across the full period is sufficient and appropriate. Sampling exists precisely so the auditor does not need to test everything.' }
+          ]
+        },
+        {
+          title: 'Case 3', text: 'Corvane Analytics relies on a hosting vendor. The auditor has the vendor\'s SOC 2 Type II report, whose period ended five months before the audit\'s reliance date, and concludes the vendor\'s controls are effective through today.',
+          parts: [
+            { q: 'What is the BEST next step?', concept: 'sufficiency', options: ['Obtain a bridge letter or perform gap-period procedures', 'Accept the report, since Type II covers operating effectiveness', 'Replace the report with the vendor\'s completed questionnaire', 'Ask the vendor\'s account manager to confirm nothing has changed'], answer: 0, why: 'The report says nothing about the five months after its period. A bridge letter or additional procedures address that gap. A verbal assurance from the vendor is inquiry.' }
+          ]
+        },
+        {
+          title: 'Case 4', text: 'To test terminated-user access, the auditor relies on a list of active accounts that the system administrator under audit produced and emailed. The auditor did not check how the list was generated.',
+          parts: [
+            { q: 'What is the BEST next step?', concept: 'sufficiency', options: ['Accept the list, since system reports are objective', 'Ask the administrator to sign the list as complete', 'Verify the list\'s completeness and accuracy before relying on it', 'Discard the list and rely on interviews with the HR team about leavers'], answer: 2, why: 'Information produced by the auditee must be tested for completeness and accuracy before the auditor relies on it. A signature adds no reliability, and interviews are weaker evidence.' }
+          ]
+        },
+        {
+          title: 'Case 5', text: 'On one Tuesday morning, the auditor watched the data-center guard check every badge at the entrance. The draft report concludes that physical access controls operated effectively all year.',
+          parts: [
+            { q: 'Does the evidence support the conclusion?', concept: 'sufficiency', options: ['Yes. Direct observation is the most reliable form of evidence', 'No. Inspect badge logs and visitor records for the year', 'Yes, if a second auditor confirms the observation', 'No. Observation can never be used as audit evidence'], answer: 1, why: 'Observation is reliable for the moment observed, and the guard knew the auditor was watching. A conclusion about the full year needs evidence that covers the year.' }
+          ]
+        },
+        {
+          title: 'Case 6', text: 'Review this draft finding from Ostrander Mills.',
+          table: { head: ['Element', 'Draft text'], rows: [['Condition', 'Several servers were not patched on time.'], ['Criteria', 'The Patch Standard requires critical patches within 30 days of release.'], ['Effect', 'Unpatched servers can be exploited by known attacks.'], ['Recommendation', 'IT should patch servers on time.']] },
+          parts: [
+            { q: 'Which element is missing entirely?', concept: 'writing', options: ['Criteria', 'Effect', 'Condition', 'Cause'], answer: 3, why: 'The draft never says why patches were late. Without a cause, the recommendation can only restate the criteria.' }
+          ]
+        },
+        {
+          title: 'Case 7', text: 'The Ostrander Mills condition reads: "Several servers were not patched on time." The sample covered 40 critical patches; 12 were deployed between 37 and 60 days after release.',
+          parts: [
+            { q: 'Which rewrite of the condition is strongest?', concept: 'writing', options: ['12 of 40 sampled critical patches were deployed 37 to 60 days after release', 'Patch management is weak and needs significant improvement across the IT team', 'Many critical patches were deployed late, which is a serious risk to the company', 'IT staff failed to follow the Patch Standard and should be held accountable'], answer: 0, why: 'A condition states the facts with numbers so the finding is supported. The other options add opinion, blame, or effect without the evidence.' }
+          ]
+        },
+        {
+          title: 'Case 8', text: 'The auditor has now documented the cause: critical patches wait for a single shared test environment that is booked weeks in advance.',
+          parts: [
+            { q: 'Which recommendation is strongest?', concept: 'writing', options: ['IT should improve patch management overall and try harder to meet the 30-day standard', 'The audit team will apply the 12 late patches itself before the final report is issued', 'Management should add critical-patch test capacity and report 30-day compliance monthly', 'IT should purchase the market-leading automated patching tool so the problem cannot recur'], answer: 2, why: 'The strongest recommendation addresses the root cause, is specific and measurable, and leaves the work with management. Applying the patches would impair the auditor\'s independence, and a tool purchase does not address the testing bottleneck.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect and build your finding template',
+      instr: 'Rate your confidence on each concept. Then write one complete five-part finding, either from your own work or from the Lesson 1 fieldwork facts on terminated-user access. Your finding appears in the summary report as a template you can reuse in the labs.',
+      prompts: [
+        { key: 'condition', label: 'Condition: what did you find? State it with numbers.' },
+        { key: 'criteria', label: 'Criteria: which policy, standard, or requirement sets the expected state?' },
+        { key: 'cause', label: 'Cause: why does the gap exist? Name the root cause, not a restatement of the condition.' },
+        { key: 'effect', label: 'Effect: what could go wrong for the business if the gap remains?' },
+        { key: 'recommendation', label: 'Recommendation: what should management do to address the cause?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

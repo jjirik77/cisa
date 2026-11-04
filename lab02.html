@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B2 Third-Party Assurance: SOC 2 Report Review | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+.b2-rpt { border: 1px solid var(--border); border-radius: 4px; padding: 1rem 1.2rem; background: #fff; margin-bottom: 1.2rem; }
+.b2-rpt p { font: .9rem/1.65 Georgia, serif; color: var(--text-primary); margin: 0 0 .75rem; }
+.b2-rpt h4 { font: 700 1rem Georgia, serif; color: var(--text-primary); margin: 1rem 0 .45rem; }
+.b2-rpt h4:first-child { margin-top: 0; }
+.b2-rpt ol, .b2-rpt ul { font: .9rem/1.6 Georgia, serif; color: var(--text-primary); margin: 0 0 .75rem; padding-left: 1.4rem; }
+.b2-hdr { font: 700 .7rem Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 .5rem; }
+.b2-sig { font-style: italic; }
+.b2-ctl td { font-size: .8rem; }
+.b2-ctl td:first-child, .b2-ev td.id { font-family: 'Courier New', monospace; white-space: nowrap; color: var(--text-primary); font-weight: 700; }
+.b2-ev td { font-size: .8rem; }
+.b2-ev td.mono { font-family: 'Courier New', monospace; white-space: nowrap; color: var(--text-primary); }
+.b2-sub { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1rem; }
+.b2-sub a { font: 700 .72rem Arial, sans-serif; letter-spacing: .05em; color: var(--navy); border: 1px solid var(--border); border-radius: 3px; padding: .3rem .55rem; text-decoration: none; background: var(--card-bg); }
+.b2-sub a:hover { border-color: var(--gold); }
+.b2-ev-sec { scroll-margin-top: 80px; }
+.b2-note { font: .82rem/1.55 Arial, sans-serif; color: var(--text-secondary); margin: .5rem 0 0; }
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script>
+/* ===================== Report and evidence data (fixed) =====================
+   Ledgerline Payroll Services, Inc. (service organization) and Kestrel Ridge Foods, Inc.
+   (user entity). Planted issues: a qualified opinion and three tested-control exceptions,
+   a carved-out subservice data center, a three-month gap between the report period end
+   and the customer's fiscal year end, and three CUECs that the customer is not operating.
+   The checklist keys are computed from these arrays, not typed in. */
+(function () {
+  var DAY = 86400000;
+  function ms(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function days(a, b) { return Math.round((ms(b) - ms(a)) / DAY); }
+  function iso(m) { var d = new Date(m); return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2); }
+
+  var period = { start: '2025-07-01', end: '2026-06-30', issued: '2026-08-21' };
+  var fiscal = { start: '2025-10-01', end: '2026-09-30' };
+
+  var controls = [
+    ['LP-01', 'CC1.4', 'Background checks are completed for new workforce members before access is granted.', 'Inspected background check results for a sample of 25 new hires.', 'No exceptions noted.'],
+    ['LP-02', 'CC2.2', 'Workforce members complete security awareness training at hire and annually.', 'Inspected training completion records for a sample of 40 workforce members.', 'No exceptions noted.'],
+    ['LP-03', 'CC6.1', 'Access to production systems requires single sign-on with multi-factor authentication.', 'Inspected identity provider configuration and observed a production sign-on.', 'No exceptions noted.'],
+    ['LP-04', 'CC6.2', 'Access for terminated workforce members is removed within one business day of termination.', 'Compared termination dates with access removal dates for a sample of 25 terminations.', 'Exception noted. For 6 of 25 terminations sampled, production access was removed 4 to 23 days after the termination date.'],
+    ['LP-05', 'CC6.2', 'New and changed access requests are approved by the requester’s manager and the system owner.', 'Inspected approvals for a sample of 25 access requests.', 'No exceptions noted.'],
+    ['LP-06', 'CC6.3', 'Security staff review privileged production access quarterly and remove access that is no longer needed.', 'Inspected the four quarterly reviews and the resulting removal tickets.', 'No exceptions noted.'],
+    ['LP-07', 'CC6.6', 'Firewalls restrict inbound traffic to approved services. Rule sets are reviewed semiannually.', 'Inspected firewall configurations and both semiannual rule reviews.', 'No exceptions noted.'],
+    ['LP-08', 'CC6.7', 'Customer data is encrypted in transit with TLS 1.2 or higher and at rest with AES-256.', 'Inspected encryption settings for databases, file storage, and public endpoints.', 'No exceptions noted.'],
+    ['LP-09', 'CC8.1', 'Production changes are approved by the change advisory board before deployment.', 'Inspected approval evidence for a sample of 40 production changes.', 'Exception noted. For 3 of 40 changes sampled, no approval was documented before deployment.'],
+    ['LP-10', 'CC8.1', 'Developers cannot deploy to production. Deployments are performed by the release team.', 'Inspected deployment pipeline permissions and re-performed a deployment attempt with a developer account.', 'No exceptions noted.'],
+    ['LP-11', 'CC7.4', 'Security incidents are logged, classified, and resolved under the incident response plan.', 'Inquired of management and inspected the incident ticket queue for the period.', 'The circumstances that warrant the operation of this control did not occur during the period. No security incidents were logged, so operating effectiveness was not tested.'],
+    ['LP-12', 'CC7.2', 'Security events are monitored around the clock and alerts are triaged within 30 minutes.', 'Inspected the monitoring configuration and a sample of 25 alerts with triage times.', 'No exceptions noted.'],
+    ['LP-13', 'A1.2', 'Production databases are backed up daily and replicated to the secondary site.', 'Inspected backup job logs for a sample of 25 days and the replication status.', 'No exceptions noted.'],
+    ['LP-14', 'A1.3', 'Backup restoration is tested quarterly and the results are reviewed by operations management.', 'Inspected restoration test records for the four quarters in the period.', 'Exception noted. The restoration test for the quarter ended March 31, 2026 was not performed.'],
+    ['LP-15', 'C1.2', 'Customer data is returned or destroyed within 60 days of contract termination.', 'Inspected destruction certificates for the 3 customer terminations in the period.', 'No exceptions noted.'],
+    ['LP-16', 'CC9.2', 'Subservice organizations are reviewed annually, including review of their SOC reports.', 'Inspected the annual review file for each subservice organization.', 'No exceptions noted.']
+  ].map(function (r) { return { id: r[0], tsc: r[1], activity: r[2], test: r[3], result: r[4], exception: /^Exception noted/.test(r[4]) }; });
+
+  var cuecs = [
+    { id: 'CUEC-1', tsc: 'PI / CC8.1', text: 'User entities review and approve the payroll register in Ledgerline Pay before each payroll is released for funding.', ev: 'E4' },
+    { id: 'CUEC-2', tsc: 'CC6.2', text: 'User entities remove Ledgerline Pay access for their own users promptly when those users leave or change roles.', ev: 'E2' },
+    { id: 'CUEC-3', tsc: 'PI', text: 'User entities reconcile the control totals of time and attendance files they submit with the totals Ledgerline Pay reports as imported.', ev: 'E5' },
+    { id: 'CUEC-4', tsc: 'CC6.1', text: 'User entities that federate sign-on enforce multi-factor authentication for every interactive user who signs in to Ledgerline Pay.', ev: 'E6' },
+    { id: 'CUEC-5', tsc: 'CC6.8', text: 'User entities review the Ledgerline Pay audit report of changes to employee bank account details each month.', ev: 'E7' },
+    { id: 'CUEC-6', tsc: 'CC6.3', text: 'User entities review their users’ Ledgerline Pay access and roles at least quarterly.', ev: 'E3' }
+  ];
+
+  // Kestrel Ridge access standard AS-2: remove access within 3 calendar days; quarterly review within 30 days of quarter end.
+  var standard = { removeDays: 3, reviewDays: 30, bankReviewDays: 10 };
+
+  var users = [
+    ['dwhitlock', 'K1043', 'Dana Whitlock', 'Payroll Administrator', 'Active', '', '2026-10-19'],
+    ['rcastellanos', 'K1188', 'Ruben Castellanos', 'Payroll Administrator', 'Active', '', '2026-10-16'],
+    ['tabernathy', 'K1302', 'Tessa Abernathy', 'HR Analyst', 'Active', '', '2026-10-14'],
+    ['mokafor', 'K1077', 'Michael Okafor', 'Payroll Specialist', 'Disabled', '2025-11-03', '2025-10-30'],
+    ['lnguyen', 'K1215', 'Linh Nguyen', 'Payroll Specialist', 'Active', '', '2026-10-19'],
+    ['jharjo', 'K1129', 'Jonas Harjo', 'HR Analyst', 'Disabled', '2025-12-03', '2025-11-20'],
+    ['spatel', 'K1351', 'Sanjay Patel', 'Benefits Coordinator', 'Active', '', '2026-10-12'],
+    ['afarouk', 'K1260', 'Amira Farouk', 'Payroll Specialist', 'Active', '', '2026-03-09'],
+    ['bkowalski', 'K1096', 'Brianna Kowalski', 'Finance Viewer', 'Disabled', '2026-01-16', '2026-01-14'],
+    ['cmensah', 'K1324', 'Cyrus Mensah', 'Finance Viewer', 'Active', '', '2026-10-05'],
+    ['ewatanabe', 'K1147', 'Emi Watanabe', 'HR Analyst', 'Disabled', '2026-04-10', '2026-04-09'],
+    ['gsalazar', 'K1283', 'Gabriel Salazar', 'Payroll Specialist', 'Active', '', '2026-10-15'],
+    ['hbello', 'K1366', 'Halima Bello', 'Benefits Coordinator', 'Disabled', '2026-06-01', '2026-05-28'],
+    ['ilindgren', 'K1059', 'Ingrid Lindgren', 'Finance Viewer', 'Active', '', '2026-10-01'],
+    ['jtorres', 'K1239', 'Javier Torres', 'HR Analyst', 'Active', '', '2026-08-13'],
+    ['kdubois', 'K1310', 'Kendra Dubois', 'Payroll Specialist', 'Active', '', '2026-10-18'],
+    ['mhassan', 'K1172', 'Mariam Hassan', 'Finance Viewer', 'Disabled', '2026-07-24', '2026-07-23'],
+    ['ochen', 'K1387', 'Oliver Chen', 'HR Analyst', 'Active', '', '2026-10-13'],
+    ['pmorales', 'K1204', 'Paloma Morales', 'Benefits Coordinator', 'Disabled', '2026-09-11', '2026-09-10'],
+    ['svc-ledger-sync', 'SVC', 'Integration service account', 'API Integration', 'Active', '', '2026-10-20']
+  ].map(function (r) { return { user: r[0], emp: r[1], name: r[2], role: r[3], status: r[4], disabled: r[5], lastLogin: r[6] }; });
+
+  var terms = [
+    ['K1077', 'Michael Okafor', '2025-11-03'],
+    ['K1129', 'Jonas Harjo', '2025-11-21'],
+    ['K1096', 'Brianna Kowalski', '2026-01-15'],
+    ['K1260', 'Amira Farouk', '2026-02-27'],
+    ['K1147', 'Emi Watanabe', '2026-04-09'],
+    ['K1366', 'Halima Bello', '2026-05-29'],
+    ['K1172', 'Mariam Hassan', '2026-07-24'],
+    ['K1239', 'Javier Torres', '2026-08-14'],
+    ['K1204', 'Paloma Morales', '2026-09-10']
+  ].map(function (r) { return { emp: r[0], name: r[1], date: r[2] }; });
+
+  var reviews = [
+    { q: 'FY Q1 (Oct to Dec 2025)', qEnd: '2025-12-31', done: '2026-01-12', by: 'Dana Whitlock, Payroll Manager', result: 'Changed 1 role: ewatanabe moved from Payroll Specialist to HR Analyst.' },
+    { q: 'FY Q2 (Jan to Mar 2026)', qEnd: '2026-03-31', done: '2026-04-08', by: 'Dana Whitlock, Payroll Manager', result: 'No changes required.' },
+    { q: 'FY Q3 (Apr to Jun 2026)', qEnd: '2026-06-30', done: '', by: '', result: 'No review record on file. Ticket HR-4471 note: “Deferred until Ledgerline role redesign is complete.”' },
+    { q: 'FY Q4 (Jul to Sep 2026)', qEnd: '2026-09-30', done: '2026-10-06', by: 'Dana Whitlock, Payroll Manager', result: 'No changes required.' }
+  ];
+
+  // Biweekly payrolls: Fridays from 2025-10-10. Register approved 3 days before pay date; Ledgerline releases funding 2 days before.
+  var approvers = ['Dana Whitlock', 'Dana Whitlock', 'Dana Whitlock', 'Ruben Castellanos (designated backup)'];
+  var payrolls = [];
+  for (var i = 0; i < 26; i++) {
+    var pd = ms('2025-10-10') + i * 14 * DAY;
+    var hh = 9 + (i * 5) % 7, mm = (i * 17) % 60;
+    payrolls.push({ run: 'PR-' + (2601 + i), payDate: iso(pd), approved: iso(pd - 3 * DAY) + ' ' + ('0' + hh).slice(-2) + ':' + ('0' + mm).slice(-2), by: approvers[i % 7 === 3 ? 3 : 0], released: iso(pd - 2 * DAY) + ' 06:00' });
+  }
+  var authorizedApprovers = ['Dana Whitlock', 'Ruben Castellanos (designated backup)'];
+
+  var months = ['2025-10', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09'];
+  var recon = months.map(function (m, k) {
+    var sent = 41200 + (k * 1373) % 3900 + (k % 3) * 0.5, got = sent, note = 'Agreed. Signed L. Nguyen.';
+    if (m === '2026-02') { got = sent - 6.5; note = 'Difference of 6.5 hours traced to late Plant 3 punches. File resubmitted 2026-03-04 and re-reconciled to zero. Signed L. Nguyen.'; }
+    return { month: m, sent: sent, got: got, resolved: m === '2026-02' ? '2026-03-04' : '', note: note };
+  });
+
+  var idp = {
+    app: 'Ledgerline Pay (SAML federation)', policy: 'Require MFA: Yes, every sign-in', exclusion: 'MFA-Exempt',
+    exempt: [
+      { acct: 'svc-ledger-sync', type: 'Service account', note: 'API key authentication only. Interactive sign-in disabled.' },
+      { acct: 'rcastellanos', type: 'User', note: 'Added 2025-12-08 by IT help desk. Reason: “phone replacement, temporary.” No removal date.' },
+      { acct: 'tabernathy', type: 'User', note: 'Added 2026-05-19 by IT help desk. Reason: “travel.” No removal date.' }
+    ], exported: '2026-10-20'
+  };
+
+  var bank = months.map(function (m, k) {
+    var end = ms(m + '-01'); var d = new Date(end); d.setUTCMonth(d.getUTCMonth() + 1); d = d.getTime() - DAY;
+    var done = iso(d + (3 + (k * 2) % 6) * DAY);
+    return { month: m, changes: 9 + (k * 7) % 11, done: done, by: k % 4 === 2 ? 'Cyrus Mensah, Payroll Controller (backup)' : 'Ingrid Lindgren, Payroll Controller', monthEnd: iso(d), note: k === 5 ? '1 change call-back verified with employee by phone.' : 'All changes agreed to signed employee requests.' };
+  });
+
+  // ---------- Key derivation (used by the checklist) ----------
+  function termLate() {
+    return terms.filter(function (t) {
+      var u = users.filter(function (x) { return x.emp === t.emp; })[0];
+      if (!u) return false;
+      return u.status !== 'Disabled' || days(t.date, u.disabled) > standard.removeDays;
+    });
+  }
+  var cuecTests = {
+    E4: function () { return payrolls.every(function (p) { return p.approved < p.released && authorizedApprovers.indexOf(p.by) >= 0; }); },
+    E2: function () { return termLate().length === 0; },
+    E5: function () { return recon.every(function (r) { return r.sent === r.got || !!r.resolved; }); },
+    E6: function () { return idp.exempt.every(function (x) { return x.type !== 'User'; }); },
+    E7: function () { return bank.every(function (b) { return b.done && days(b.monthEnd, b.done) <= standard.bankReviewDays; }); },
+    E3: function () { return reviews.every(function (r) { return r.done && days(r.qEnd, r.done) <= standard.reviewDays; }); }
+  };
+  function monthsBetween(a, b) { var A = new Date(ms(a)), B = new Date(ms(b) + DAY); return (B.getUTCFullYear() - A.getUTCFullYear()) * 12 + B.getUTCMonth() - A.getUTCMonth(); }
+
+  window.B2DATA = {
+    period: period, fiscal: fiscal, controls: controls, cuecs: cuecs, standard: standard, users: users, terms: terms, reviews: reviews,
+    payrolls: payrolls, recon: recon, idp: idp, bank: bank, days: days, monthsBetween: monthsBetween,
+    answers: {
+      exc: controls.filter(function (c) { return c.exception; }).map(function (c) { return c.id; }),
+      cuec: cuecs.filter(function (c) { return !cuecTests[c.ev](); }).map(function (c) { return c.id; }),
+      term: termLate().length,
+      gapMonths: monthsBetween(iso(ms(period.end) + DAY), fiscal.end),
+      overlapMonths: monthsBetween(fiscal.start, period.end)
+    }
+  };
+})();
+</script>
+
+<script>
+window.LAB = {
+  id: 'B2',
+  title: 'Third-Party Assurance: SOC 2 Report Review',
+  accent: 'SOC 2 Report Review',
+  domain: 'Domain 2',
+  time: '45–60 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson03.html#s3',
+  lessonLabel: 'Lesson 3, IT Vendor Management',
+  lede: 'A SOC 2 report is evidence only when the auditor reads it critically. Check the report type, period, opinion, exceptions, and carve-outs, then test whether your own organization operates the controls the vendor depends on.',
+  workbenchTitle: 'Report viewer',
+  ticket: {
+    number: 'VRM-2026-0193',
+    priority: 'High priority',
+    from: 'Priya Venkataraman, Chief Audit Executive',
+    to: 'IS audit staff (you)',
+    subject: 'Annual vendor review: Ledgerline Payroll Services, FY2026 reliance',
+    due: 'Reliance memo before the November audit committee meeting',
+    body: '<p>Kestrel Ridge Foods runs payroll for 1,400 employees on <b>Ledgerline Pay</b>, a SaaS platform operated by Ledgerline Payroll Services, Inc. Ledgerline is a critical vendor: it holds employee bank details and Social Security numbers, and it releases every payroll for funding.</p>' +
+      '<p>Vendor management has received Ledgerline’s <b>SOC 2 Type II</b> report and a bridge letter. Our fiscal year runs <b>October 1, 2025 to September 30, 2026</b>, and the audit committee wants to know whether we can rely on Ledgerline’s controls for that year.</p>' +
+      '<p>Read the report critically. Confirm the report type and period, what the opinion says, which tested controls had exceptions, and what the carve-out leaves out. Then test our side: the report lists controls Kestrel Ridge must operate, and I have pulled our evidence for each one. Do not take the vendor’s word for our controls, and do not take our word for them either.</p>' +
+      '<p>Finish with a short reliance memo: your conclusion, the gaps, and the follow-up actions. Do not contact Ledgerline directly. Requests go through vendor management.</p>'
+  },
+  howTo: 'The <b>Report viewer</b> in step 2 has a tab for each section of Ledgerline’s SOC 2 report, a tab for the bridge letter, and a <b>Customer evidence</b> tab with Kestrel Ridge’s own records. Use the arrow keys to move between tabs. Check each checklist item as you go. A hint is available for every item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points. Team mode: split the report sections and the customer evidence, then agree on the answers together.',
+  workIntro: 'Read the report sections and the customer evidence, then record your conclusions in the checklist below. The report and evidence are fixed records; nothing in them changes as you work.',
+  checklist: [
+    { id: 'fit', type: 'choice', points: 15, short: 'Report type and period', title: 'Report type and period fit',
+      task: 'Compare the report type and period in the <b>Opinion</b> tab with Kestrel Ridge’s fiscal year (October 1, 2025 to September 30, 2026). What does this report give Kestrel Ridge for the fiscal year?',
+      options: ['Design assurance at a single point in time, because it is a Type I report', 'Operating effectiveness for nine months of the fiscal year, with a gap to cover', 'Operating effectiveness for the full fiscal year, since the period is twelve months', 'No usable assurance, because the period ended before the fiscal year ended'],
+      answer: 1,
+      hint: 'A Type II report covers operating effectiveness over a period. Lay the report period (July 1, 2025 to June 30, 2026) over the fiscal year and count the overlapping months.',
+      debrief: '<p>The report is a Type II, so it tests operating effectiveness, not just design. Its period runs July 1, 2025 to June 30, 2026. Only October 2025 through June 2026 falls inside Kestrel Ridge’s fiscal year: nine months of coverage. July through September 2026, three months, is not covered by any tested assurance.</p><p>A twelve-month period is not the same as twelve months of the customer’s year. The auditor maps the report period onto the reliance period, then decides how to cover the gap: a bridge letter, inquiry, and the customer’s own monitoring, or additional procedures if the gap carries significant change.</p>',
+      reviewNote: 'Overlay the SOC report period on the reliance period and identify the uncovered months.' },
+    { id: 'opinion', type: 'choice', points: 10, short: 'Opinion meaning', title: 'What the qualified opinion means',
+      task: 'Read the <b>Basis for qualified opinion</b> and <b>Opinion</b> paragraphs. What does this opinion tell Kestrel Ridge?',
+      options: ['The service auditor could not gather enough evidence to express any opinion', 'Controls were suitably designed, but none were tested for operating effectiveness', 'Except for access removal under CC6.2, controls were designed and operated effectively', 'Controls failed across most criteria, so the report gives no assurance at all'],
+      answer: 2,
+      hint: 'Four opinion types: unmodified (clean), qualified (“except for”), adverse (pervasive failure), and disclaimer (no opinion). Look for the words “except for” and what they point to.',
+      debrief: '<p>A qualified opinion says the controls met the criteria <b>except for</b> a specific matter. Here the matter is LP-04: terminated Ledgerline staff kept production access for 4 to 23 days in 6 of 25 sampled cases, so criterion CC6.2 was not met. The rest of the report still provides assurance.</p><p>The qualification is not a reason to discard the report, and it is not a formality either. Ledgerline staff with lingering access could reach Kestrel Ridge payroll data. The auditor asks whether the matter affects the services Kestrel Ridge uses, confirms the remediation that management describes, and records the residual risk in the reliance memo.</p>',
+      reviewNote: 'Distinguish unmodified, qualified, adverse, and disclaimer opinions.' },
+    { id: 'exc', type: 'set', points: 15, short: 'Control exceptions', title: 'Tested controls with exceptions',
+      task: 'Read the results column in <b>Controls and tests</b>. Enter the control ID of every control for which the service auditor <b>noted an exception</b>.',
+      label: 'Control IDs with exceptions', placeholder: 'e.g., LP-01, LP-02',
+      answer: function () { return B2DATA.answers.exc; },
+      hint: 'Read every result, not only the management responses tab. A control that was not tested because the triggering event never occurred is not the same as an exception.',
+      debrief: '<p>Three controls have exceptions: LP-04 (terminated access removed late, the qualification), LP-09 (3 of 40 changes deployed without documented approval), and LP-14 (the March 2026 backup restoration test was skipped). LP-11 is not an exception: no incidents occurred, so the control was never tested. That is a gap in evidence, not a failure, and the auditor should note that the incident response process has no tested assurance.</p><p>For each exception, the auditor judges its relevance to Kestrel Ridge. LP-09 matters because an unapproved change can alter payroll calculations. LP-14 matters for availability: an untested restore is an assumption. Management responses describe remediation, but remediation after June 30, 2026 is outside the opinion and needs its own evidence.</p>',
+      reviewNote: 'Separate exceptions from untested controls; read every result.' },
+    { id: 'carve', type: 'choice', points: 10, short: 'Carve-out implication', title: 'What the carve-out leaves out',
+      task: 'Read <b>Subservice organizations</b>. Ledgerline hosts its production systems at Northvale Data Centers under the carve-out method. What does that mean for Kestrel Ridge’s reliance?',
+      options: ['Northvale’s physical and environmental controls are untested here and need separate assurance', 'Northvale’s controls were tested by Hargrove Lindqvist and are covered by this opinion', 'The carve-out matters only if Northvale also stores Kestrel Ridge’s backup media', 'The CSOC list in the report is evidence that Northvale’s controls operated effectively'],
+      answer: 0,
+      hint: 'Compare the carve-out method with the inclusive method used for Sable Print and Mail. Under which method did the service auditor test the subservice organization’s controls?',
+      debrief: '<p>Under the carve-out method, the report excludes Northvale’s controls. The service auditor did not test physical access, environmental protection, or power at the data centers that run Ledgerline Pay. The listed complementary subservice organization controls (CSOCs) are only assumptions Ledgerline makes about Northvale. Sable Print and Mail, by contrast, was included and tested.</p><p>The auditor obtains separate assurance over Northvale, usually Northvale’s own SOC 2 report, and reviews its period, opinion, and exceptions the same way. LP-16 shows that Ledgerline reviews Northvale annually, which helps, but the vendor file shows Kestrel Ridge has never received Northvale’s report.</p>',
+      reviewNote: 'Carve-out excludes the subservice organization’s controls; inclusive tests them.' },
+    { id: 'term', type: 'number', points: 10, short: 'Late access removals', title: 'Kestrel Ridge access removals (CUEC-2)',
+      task: 'In <b>Customer evidence</b>, compare the HR terminations with the Ledgerline Pay user list. Kestrel Ridge’s Access Standard AS-2 requires removal within <b>3 calendar days</b> of termination. How many terminated employees did <b>not</b> have their access removed within that standard, including any whose account is still active?',
+      answer: function () { return B2DATA.answers.term; }, unit: 'terminated employees',
+      hint: 'Match each termination to the user list by employee number. For disabled accounts, count the days from the termination date to the disabled date. An account still active counts as a failure.',
+      debrief: '<p>Three terminated employees exceeded the standard. Jonas Harjo’s account was disabled 12 days after termination. Amira Farouk’s account is still active, and it was used on March 9, 2026, ten days after her termination. Javier Torres’s account is still active more than two months after he left. Halima Bello’s account was disabled exactly 3 days after termination, which meets the standard.</p><p>This is the customer’s side of the same risk that qualified Ledgerline’s opinion. Ledgerline cannot know when Kestrel Ridge employees leave, which is why the report lists CUEC-2. The login after termination should be referred for investigation, and the two active accounts disabled through the normal access request process.</p>',
+      reviewNote: 'Match terminations to accounts and measure the removal lag against the standard.' },
+    { id: 'cuec', type: 'set', points: 15, short: 'CUECs not operating', title: 'CUECs not operating at Kestrel Ridge',
+      task: 'For each complementary user entity control in the <b>CUECs</b> tab, examine the matching evidence in <b>Customer evidence</b>. Enter the ID of every CUEC that Kestrel Ridge is <b>not operating effectively</b>.',
+      label: 'CUEC IDs not operating', placeholder: 'e.g., CUEC-1',
+      answer: function () { return B2DATA.answers.cuec; },
+      hint: 'Each CUEC names its evidence section. A difference that was investigated and resolved is evidence the control operated. A missing quarter, a late removal, or a human user excluded from MFA is not.',
+      debrief: '<p>Three CUECs are not operating. CUEC-2 fails on the late and missing access removals. CUEC-4 fails because two interactive users, including a payroll administrator, sit in the MFA exemption group with no removal date. CUEC-6 fails because no access review was performed for April to June 2026, and the October review missed two active accounts for terminated employees. The service account exemption is acceptable, because it cannot sign in interactively.</p><p>CUEC-1, CUEC-3, and CUEC-5 operated: every register was approved before release by an authorized approver, the February hours difference was traced and resolved, and every monthly bank-change review was on time. The point of the exercise: Ledgerline’s report assumes these controls. Where Kestrel Ridge does not operate them, the related criteria are not met for Kestrel Ridge, whatever the opinion says.</p>',
+      reviewNote: 'Test each CUEC against the customer’s own evidence; resolved differences show the control working.' },
+    { id: 'bridge', type: 'choice', points: 10, short: 'Bridge letter', title: 'Bridge letter sufficiency',
+      task: 'Read the <b>Bridge letter</b> for July 1 to September 30, 2026. How should Kestrel Ridge treat it?',
+      options: ['It is sufficient alone, because Ledgerline’s chief financial officer signed it', 'It is tested assurance, because the service auditor issued it with the report', 'It is unnecessary, because a twelve-month report always covers the next quarter', 'It is a management assertion that discloses a change, so more work is needed'],
+      answer: 3,
+      hint: 'Who wrote the letter, and did any independent party test what it says? Then read what changed during the gap period.',
+      debrief: '<p>A bridge letter is Ledgerline management’s own representation. The service auditor did not examine it. It is reasonable support for a quiet gap period, but this one discloses a significant change: on August 17, 2026 Ledgerline moved payroll job scheduling to a new platform. It also states the access-removal fix went live in September, which no one has tested.</p><p>The auditor combines the letter with other evidence: inquiry about the scheduler migration, Kestrel Ridge’s own register approvals and reconciliations for July to September (which detect payroll processing errors), and a request for the next SOC 2 report. If the scheduler change affected payroll calculations, the auditor asks for the change testing evidence through vendor management.</p>',
+      reviewNote: 'Bridge letters are management assertions; weigh them against changes in the gap period.' },
+    { id: 'memo', type: 'text', points: 15, short: 'Reliance memo', title: 'Write the vendor reliance memo', reportTitle: 'Vendor reliance memo',
+      task: 'Write a short memo to the chief audit executive. State your reliance conclusion, the gaps and limitations that support it, and the follow-up actions with an owner for each.',
+      fields: [
+        { key: 'conclusion', label: 'Reliance conclusion', min: 40, placeholder: 'Can Kestrel Ridge rely on the report for FY2026? Fully, partly, or not at all, and for what?' },
+        { key: 'gaps', label: 'Gaps and limitations', min: 60, placeholder: 'Period gap, opinion, exceptions, carve-out, and the CUECs not operating.' },
+        { key: 'actions', label: 'Follow-up actions and owners', min: 60, placeholder: 'What to obtain or fix, who owns it, and by when.' }
+      ],
+      hint: 'A good memo gives partial reliance with conditions. Link each gap to an action: the carve-out to Northvale’s report, the gap period to the scheduler change, the exceptions to remediation evidence, and each failed CUEC to a Kestrel Ridge owner.',
+      debrief: '<p><b>Model memo.</b> <b>Conclusion:</b> Kestrel Ridge can place <b>partial reliance</b> on Ledgerline’s SOC 2 Type II report for October 2025 through June 2026, excluding logical access removal (CC6.2, qualified) and physical and environmental controls at Northvale (carved out). Reliance for July to September 2026 rests on a management bridge letter and is limited. <b>Gaps:</b> three-month gap period with an undocumented scheduler migration; qualified opinion on LP-04; exceptions on LP-09 change approvals and LP-14 restoration testing; Northvale carve-out with no Northvale report on file; and three Kestrel Ridge CUECs not operating (CUEC-2 access removal, CUEC-4 MFA exemptions, CUEC-6 quarterly review), including a sign-in by a terminated employee. <b>Actions:</b> Vendor management to obtain Northvale’s current SOC 2 report and Ledgerline’s scheduler change testing by December 15. Payroll manager to disable the two terminated accounts now and complete a catch-up access review. IT security to remove the two human MFA exemptions within 5 days. Internal audit to refer the post-termination sign-in for investigation and retest the CUECs next quarter.</p><p>Your wording will differ. Check that the conclusion is qualified, that every gap ties to evidence you examined, and that each action has an owner.</p>',
+      reviewNote: 'Tie the reliance conclusion to specific gaps, and give every action an owner.' }
+  ],
+
+  /* ===================== Workbench: tabbed SOC 2 report viewer ===================== */
+  workbench: function (root, api) {
+    var esc = api.esc, D = window.B2DATA;
+    function fd(s) { if (!s) return ''; var p = s.split('-'), m = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; return m[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0]; }
+    function tbl(cls, head, rows) { return '<div class="table-wrap"><table class="data ' + cls + '"><thead><tr>' + head.map(function (h) { return '<th scope="col">' + h + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>'; }
+    var TABS = [
+      ['op', 'Opinion', OPINION],
+      ['sys', 'System description', SYSTEM],
+      ['ctl', 'Controls and tests', CONTROLS],
+      ['mgmt', 'Management responses', MGMT],
+      ['cuec', 'CUECs', CUEC],
+      ['sub', 'Subservice organizations', SUBSERVICE],
+      ['br', 'Bridge letter', BRIDGE],
+      ['ev', 'Customer evidence', EVIDENCE]
+    ];
+    root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="SOC 2 report sections and evidence">' +
+      TABS.map(function (t, i) { return '<button role="tab" id="b2t-' + t[0] + '" aria-controls="b2p-' + t[0] + '" aria-selected="' + (i === 0) + '"' + (i ? ' tabindex="-1"' : '') + '>' + t[1] + '</button>'; }).join('') + '</div>' +
+      TABS.map(function (t, i) { return '<div class="lb-panel" role="tabpanel" id="b2p-' + t[0] + '" aria-labelledby="b2t-' + t[0] + '" tabindex="0"' + (i ? ' hidden' : '') + '>' + t[2]() + '</div>'; }).join('') + '</div>';
+
+    var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+    function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { sel(t); });
+      t.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+        if (e.key === 'ArrowLeft') n = tabs[(i + tabs.length - 1) % tabs.length];
+        if (e.key === 'Home') n = tabs[0];
+        if (e.key === 'End') n = tabs[tabs.length - 1];
+        if (n) { e.preventDefault(); sel(n); n.focus(); }
+      });
+    });
+    if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+    root.querySelectorAll('.b2-sub a').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); var t = document.getElementById(a.getAttribute('href').slice(1)); if (t) { t.scrollIntoView({ block: 'start' }); t.focus({ preventScroll: true }); } }); });
+
+    function OPINION() {
+      return '<div class="b2-rpt"><p class="b2-hdr">Section 1 &middot; Independent service auditor’s report</p>' +
+        '<p>To the Board of Directors, Ledgerline Payroll Services, Inc.</p>' +
+        '<h4>Scope</h4><p>We have examined Ledgerline’s description of its Ledgerline Pay payroll processing system titled “Description of the Ledgerline Pay System” <b>throughout the period ' + fd(D.period.start) + ' to ' + fd(D.period.end) + '</b>, and the suitability of the design and <b>operating effectiveness</b> of controls stated in the description to provide reasonable assurance that Ledgerline’s service commitments and system requirements were achieved based on the trust services criteria relevant to <b>Security, Availability, and Confidentiality</b> (applicable trust services criteria). This is a <b>SOC 2 Type II</b> report.</p>' +
+        '<p>Ledgerline uses <b>Northvale Data Centers, LLC</b> (Northvale), a subservice organization, to provide colocation, physical security, and environmental protection for its production systems. The description includes only the controls of Ledgerline and <b>excludes controls of Northvale</b>. The description also indicates that certain applicable trust services criteria can be met only if complementary subservice organization controls assumed in the design of Ledgerline’s controls are suitably designed and operating effectively. Our examination did not extend to the services provided by Northvale, and we have not evaluated those controls.</p>' +
+        '<p>Ledgerline uses <b>Sable Print and Mail Co.</b> (Sable), a subservice organization, to print and mail payroll checks. The description includes the relevant controls of Sable, and our examination included those controls.</p>' +
+        '<p>The description indicates that certain applicable trust services criteria can be met only if <b>complementary user entity controls</b> assumed in the design of Ledgerline’s controls are suitably designed and operating effectively. Our examination did not extend to such complementary user entity controls.</p>' +
+        '<h4>Basis for qualified opinion</h4><p>Ledgerline states in its description that access for terminated workforce members is removed within one business day of termination (control LP-04). As discussed in Section 4, for 6 of 25 terminations sampled, access was removed 4 to 23 days after the termination date. As a result, controls were not operating effectively to provide reasonable assurance that Ledgerline’s service commitments and system requirements were achieved based on criterion <b>CC6.2</b> throughout the period.</p>' +
+        '<h4>Opinion</h4><p>In our opinion, <b>except for the matter described in the preceding paragraph</b>, in all material respects:</p><ol type="a"><li>the description presents the Ledgerline Pay system that was designed and implemented throughout the period ' + fd(D.period.start) + ' to ' + fd(D.period.end) + ', in accordance with the description criteria;</li><li>the controls stated in the description were suitably designed throughout the period to provide reasonable assurance that the service commitments and system requirements would be achieved, if the controls operated effectively and if the subservice organization and user entities applied the complementary controls assumed in the design;</li><li>the controls stated in the description operated effectively throughout the period, if complementary subservice organization controls and complementary user entity controls also operated effectively.</li></ol>' +
+        '<h4>Restricted use</h4><p>This report is intended solely for the information and use of Ledgerline, user entities of the Ledgerline Pay system during some or all of the period, and their auditors.</p>' +
+        '<p class="b2-sig">Hargrove Lindqvist LLP, Certified Public Accountants<br>Columbus, Ohio, ' + fd(D.period.issued) + '</p></div>';
+    }
+    function SYSTEM() {
+      return '<div class="b2-rpt"><p class="b2-hdr">Section 3 &middot; Description of the Ledgerline Pay system (excerpt)</p>' +
+        '<h4>Services provided</h4><p>Ledgerline Pay calculates gross-to-net pay, withholds and files payroll taxes, produces direct deposit files, and releases each payroll for funding two days before the pay date. Customers submit time and attendance files, approve the payroll register, and maintain their own users.</p>' +
+        '<h4>Infrastructure</h4><p>Production and secondary systems run in two Northvale Data Centers facilities (Columbus, Ohio and Reno, Nevada). Ledgerline owns and manages the servers, network devices, and databases. Northvale provides the buildings, physical access control, power, cooling, and fire suppression.</p>' +
+        '<h4>Software and data</h4><p>The Ledgerline Pay application, a relational database for payroll and employee master data, and a job scheduler that sequences payroll calculations and file releases. Data includes employee names, addresses, Social Security numbers, pay rates, and bank account details.</p>' +
+        '<h4>People and procedures</h4><p>Ledgerline has 210 workforce members. Security, release management, and operations report to the chief technology officer. Customers may federate sign-on through SAML with their own identity provider, in which case the customer’s identity provider enforces authentication for customer users.</p>' +
+        '<h4>Significant changes during the period</h4><p>No significant changes to the system occurred during the period ' + fd(D.period.start) + ' to ' + fd(D.period.end) + '.</p></div>';
+    }
+    function CONTROLS() {
+      return '<p class="lead-p">Section 4 &middot; Trust services criteria, Ledgerline’s controls, the service auditor’s tests of operating effectiveness, and the results of tests.</p>' +
+        tbl('b2-ctl', ['Control', 'Criteria', 'Control activity', 'Test performed', 'Results of tests'], D.controls.map(function (c) { return '<tr><td>' + c.id + '</td><td>' + c.tsc + '</td><td>' + esc(c.activity) + '</td><td>' + esc(c.test) + '</td><td>' + esc(c.result) + '</td></tr>'; }));
+    }
+    function MGMT() {
+      return '<div class="b2-rpt"><p class="b2-hdr">Section 5 &middot; Other information provided by Ledgerline management (not examined)</p>' +
+        '<p>The information in this section is presented by Ledgerline management to provide additional information. It is not part of Ledgerline’s description of the system, and it has not been subjected to the procedures applied in the examination. Accordingly, Hargrove Lindqvist LLP expresses no opinion on it.</p>' +
+        '<h4>Terminated workforce access</h4><p>Several delays resulted from managers submitting termination notices late. In September 2026 Ledgerline implemented an automated feed from its HR system that disables accounts on the termination date.</p>' +
+        '<h4>Change approvals</h4><p>The three changes were emergency fixes deployed during a processing outage on February 6, 2026. Approvals were obtained by chat message but not recorded in the change system. The change advisory board has since added an emergency approval step to the change tool.</p>' +
+        '<p>Ledgerline believes these matters did not result in any unauthorized access to customer data or any processing error.</p></div>';
+    }
+    function CUEC() {
+      return '<p class="lead-p">From Section 3 of the report. Ledgerline’s controls were designed on the assumption that each user entity operates these controls. The service auditor did not test them.</p>' +
+        tbl('b2-ev', ['CUEC', 'Related criteria', 'Complementary user entity control', 'Kestrel Ridge evidence'], D.cuecs.map(function (c) { return '<tr><td class="id">' + c.id + '</td><td>' + c.tsc + '</td><td>' + esc(c.text) + '</td><td>Section ' + c.ev + ' in Customer evidence</td></tr>'; }));
+    }
+    function SUBSERVICE() {
+      return '<div class="b2-rpt"><p class="b2-hdr">Section 3 &middot; Subservice organizations</p>' +
+        '<div class="table-wrap"><table class="data"><thead><tr><th scope="col">Subservice organization</th><th scope="col">Services</th><th scope="col">Method</th></tr></thead><tbody>' +
+        '<tr><td>Northvale Data Centers, LLC</td><td>Colocation, physical security, power, cooling, and fire suppression for production and secondary sites</td><td><b>Carve-out</b>: controls excluded from the description and from the examination</td></tr>' +
+        '<tr><td>Sable Print and Mail Co.</td><td>Printing and mailing of payroll checks and tax forms</td><td><b>Inclusive</b>: relevant controls included in the description and tested</td></tr></tbody></table></div>' +
+        '<h4>Complementary subservice organization controls (CSOCs) expected of Northvale</h4><ul>' +
+        '<li>Physical access to data center floors is restricted to authorized personnel and reviewed quarterly.</li>' +
+        '<li>Visitors are escorted and logged, and CCTV recordings are retained for 90 days.</li>' +
+        '<li>Environmental systems (power, cooling, fire suppression) are monitored and maintained on schedule.</li>' +
+        '<li>Northvale notifies Ledgerline of physical security incidents affecting Ledgerline equipment.</li></ul>' +
+        '<p>Ledgerline monitors Northvale through an annual review that includes Northvale’s SOC 2 Type II report (control LP-16).</p></div>';
+    }
+    function BRIDGE() {
+      return '<div class="b2-rpt"><p class="b2-hdr">Bridge letter (gap letter) &middot; Ledgerline letterhead</p>' +
+        '<p>October 12, 2026</p><p>To: Customers of Ledgerline Pay</p>' +
+        '<p>Ledgerline Payroll Services, Inc. engaged Hargrove Lindqvist LLP to examine its Ledgerline Pay system for the period July 1, 2025 to June 30, 2026. The next examination will cover July 1, 2026 to June 30, 2027, and the report is expected in August 2027.</p>' +
+        '<p>For the period <b>July 1, 2026 to September 30, 2026</b>, we confirm the following:</p><ol>' +
+        '<li>We are not aware of any material changes to the controls described in the report, other than those listed below.</li>' +
+        '<li>On <b>August 17, 2026</b>, we migrated payroll job scheduling from our legacy scheduler to the Orbit Scheduler platform. Payroll calculations and file releases now run on the new platform.</li>' +
+        '<li>In September 2026 we implemented an automated HR feed that disables workforce accounts on the termination date, addressing the matter described in the report.</li>' +
+        '<li>We are not aware of any security incidents or control failures that would have a material effect on the services provided to customers.</li></ol>' +
+        '<p>This letter is provided by Ledgerline management. It has not been examined by Hargrove Lindqvist LLP or any other independent party.</p>' +
+        '<p class="b2-sig">Camille Desrosiers, Chief Financial Officer, Ledgerline Payroll Services, Inc.</p></div>';
+    }
+    function EVIDENCE() {
+      var u = {}; D.users.forEach(function (x) { u[x.emp] = x; });
+      var nav = '<nav class="b2-sub" aria-label="Customer evidence sections">' + [['b2e-E1', 'E1 Vendor file'], ['b2e-E2', 'E2 Terminations and users'], ['b2e-E3', 'E3 Access reviews'], ['b2e-E4', 'E4 Register approvals'], ['b2e-E5', 'E5 Time-file reconciliations'], ['b2e-E6', 'E6 MFA policy'], ['b2e-E7', 'E7 Bank-change reviews']].map(function (x) { return '<a href="#' + x[0] + '">' + x[1] + '</a>'; }).join('') + '</nav>';
+      function sec(id, title, body) { return '<div class="lb-doc b2-ev-sec" id="b2e-' + id + '" tabindex="-1"><p class="eyebrow">Evidence ' + id + '</p><h4>' + title + '</h4>' + body + '</div>'; }
+      return '<p class="lead-p">Kestrel Ridge Foods records, pulled by internal audit on October 20, 2026. Kestrel Ridge Access Standard AS-2 requires Ledgerline Pay access to be removed within <b>' + D.standard.removeDays + ' calendar days</b> of termination and each quarterly access review to be completed within <b>' + D.standard.reviewDays + ' days</b> of quarter end. Bank-change reviews are due within <b>' + D.standard.bankReviewDays + ' days</b> of month end.</p>' + nav +
+        sec('E1', 'Vendor file inventory: Ledgerline Payroll Services', tbl('b2-ev', ['Document', 'Status'], [
+          '<tr><td>Master services agreement (right-to-audit clause, breach notice within 72 hours)</td><td>On file, signed March 2024</td></tr>',
+          '<tr><td>Ledgerline SOC 2 Type II report, July 1, 2025 to June 30, 2026</td><td>Received September 2, 2026</td></tr>',
+          '<tr><td>Ledgerline bridge letter, July 1 to September 30, 2026</td><td>Received October 14, 2026</td></tr>',
+          '<tr><td>Northvale Data Centers SOC 2 report</td><td>Not requested. Not on file.</td></tr>',
+          '<tr><td>Ledgerline scheduler migration test evidence</td><td>Not requested. Not on file.</td></tr>'])) +
+        sec('E2', 'HR terminations and Ledgerline Pay user list (for CUEC-2)', '<p class="b2-note">HR terminations, FY2026, for employees who held a Ledgerline Pay account.</p>' +
+          tbl('b2-ev', ['Employee no.', 'Name', 'Termination date'], D.terms.map(function (t) { return '<tr><td class="mono">' + t.emp + '</td><td>' + esc(t.name) + '</td><td class="mono">' + t.date + '</td></tr>'; })) +
+          '<p class="b2-note" style="margin-top:1rem">Ledgerline Pay user list for the Kestrel Ridge tenant, exported October 20, 2026.</p>' +
+          tbl('b2-ev', ['Username', 'Employee no.', 'Name', 'Role', 'Status', 'Disabled on', 'Last sign-in'], D.users.map(function (x) { return '<tr><td class="mono">' + x.user + '</td><td class="mono">' + x.emp + '</td><td>' + esc(x.name) + '</td><td>' + esc(x.role) + '</td><td>' + x.status + '</td><td class="mono">' + (x.disabled || '') + '</td><td class="mono">' + x.lastLogin + '</td></tr>'; }))) +
+        sec('E3', 'Quarterly Ledgerline Pay access reviews (for CUEC-6)', tbl('b2-ev', ['Quarter', 'Completed', 'Reviewer', 'Result'], D.reviews.map(function (r) { return '<tr><td>' + r.q + '</td><td class="mono">' + (r.done || 'None') + '</td><td>' + esc(r.by || '') + '</td><td>' + esc(r.result) + '</td></tr>'; }))) +
+        sec('E4', 'Payroll register approvals (for CUEC-1)', '<p class="b2-note">Authorized register approvers: Dana Whitlock (Payroll Manager) and Ruben Castellanos (designated backup). Ledgerline releases funding at the time shown.</p>' +
+          tbl('b2-ev', ['Payroll run', 'Pay date', 'Register approved', 'Approved by', 'Released for funding'], D.payrolls.map(function (p) { return '<tr><td class="mono">' + p.run + '</td><td class="mono">' + p.payDate + '</td><td class="mono">' + p.approved + '</td><td>' + esc(p.by) + '</td><td class="mono">' + p.released + '</td></tr>'; }))) +
+        sec('E5', 'Monthly time-file reconciliations (for CUEC-3)', tbl('b2-ev', ['Month', 'Hours sent', 'Hours imported', 'Difference', 'Resolution'], D.recon.map(function (r) { return '<tr><td class="mono">' + r.month + '</td><td class="mono">' + r.sent.toFixed(1) + '</td><td class="mono">' + r.got.toFixed(1) + '</td><td class="mono">' + (r.sent - r.got).toFixed(1) + '</td><td>' + esc(r.note) + '</td></tr>'; }))) +
+        sec('E6', 'Identity provider sign-on policy export (for CUEC-4)', '<p class="b2-note">Application: ' + esc(D.idp.app) + '. Policy: ' + esc(D.idp.policy) + '. Policy exclusion group: <code>' + D.idp.exclusion + '</code>. Exported ' + D.idp.exported + '.</p>' +
+          tbl('b2-ev', ['Member of ' + D.idp.exclusion, 'Account type', 'Note'], D.idp.exempt.map(function (x) { return '<tr><td class="mono">' + x.acct + '</td><td>' + x.type + '</td><td>' + esc(x.note) + '</td></tr>'; }))) +
+        sec('E7', 'Monthly bank-account change reviews (for CUEC-5)', tbl('b2-ev', ['Month', 'Bank changes', 'Review completed', 'Reviewer', 'Note'], D.bank.map(function (b) { return '<tr><td class="mono">' + b.month + '</td><td class="mono">' + b.changes + '</td><td class="mono">' + b.done + '</td><td>' + esc(b.by) + '</td><td>' + esc(b.note) + '</td></tr>'; })));
+    }
+  }
+};
+
+/* Independent re-derivation of the key from the displayed data. */
+window.LAB_SELFTEST = function () {
+  var D = window.B2DATA, log = [], P = [];
+  function same(a, b) { return a.slice().sort().join(',') === b.slice().sort().join(','); }
+  var exc = D.controls.filter(function (c) { return c.result.indexOf('Exception') === 0; }).map(function (c) { return c.id; });
+  log.push('exceptions=' + exc.join(','));
+  if (!same(exc, D.answers.exc) || !same(exc, ['LP-04', 'LP-09', 'LP-14'])) P.push('exception key mismatch');
+  if (D.controls.filter(function (c) { return /did not occur/.test(c.result); }).length !== 1) P.push('expected one untested control');
+  var late = D.terms.filter(function (t) { var u = D.users.filter(function (x) { return x.emp === t.emp; })[0]; return !u.disabled || D.days(t.date, u.disabled) > 3; });
+  log.push('lateRemovals=' + late.map(function (t) { return t.emp; }).join(','));
+  if (late.length !== D.answers.term || late.length !== 3) P.push('term count mismatch');
+  var ok = {};
+  ok.E2 = late.length === 0;
+  ok.E3 = D.reviews.every(function (r) { return r.done && D.days(r.qEnd, r.done) <= 30; });
+  ok.E4 = D.payrolls.length === 26 && D.payrolls.every(function (p) { return p.approved < p.released && /^(Dana Whitlock|Ruben Castellanos)/.test(p.by); });
+  ok.E5 = D.recon.every(function (r) { return Math.abs(r.sent - r.got) < 1e-9 || r.resolved; });
+  ok.E6 = !D.idp.exempt.some(function (x) { return x.type === 'User'; });
+  ok.E7 = D.bank.every(function (b) { return D.days(b.monthEnd, b.done) <= 10; });
+  var failed = D.cuecs.filter(function (c) { return !ok[c.ev]; }).map(function (c) { return c.id; });
+  log.push('cuecNotOperating=' + failed.join(','));
+  if (!same(failed, D.answers.cuec) || !same(failed, ['CUEC-2', 'CUEC-4', 'CUEC-6'])) P.push('CUEC key mismatch');
+  log.push('overlap=' + D.answers.overlapMonths + ' gap=' + D.answers.gapMonths);
+  if (D.answers.overlapMonths !== 9 || D.answers.gapMonths !== 3) P.push('period fit does not match the fit item (9 months covered, 3 months gap)');
+  // Near-miss checks: the 3-day removal and the resolved reconciliation must not trip the tests.
+  var bello = D.users.filter(function (x) { return x.emp === 'K1366'; })[0];
+  if (D.days('2026-05-29', bello.disabled) !== 3) P.push('near-miss removal not at exactly 3 days');
+  return { log: log, problems: P };
+};
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

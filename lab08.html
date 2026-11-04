@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B8 Incident Response and Evidence Review | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+.b8-pol { font: .86rem/1.6 Arial, sans-serif; color: var(--text-secondary); }
+.b8-tl-bar { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: flex-end; margin: 0 0 1rem; padding: .8rem 1rem; background: #f7f9fc; border: 1px solid var(--border); border-left: 4px solid var(--navy); border-radius: 0 4px 4px 0; font: .84rem Arial, sans-serif; color: var(--text-primary); }
+.b8-tl-bar label { display: block; font-weight: 700; margin-bottom: .25rem; }
+.b8-tl-bar input { font: .86rem 'Courier New', monospace; padding: .4rem .5rem; border: 1px solid var(--border); border-radius: 4px; }
+.b8-tl-bar input[type=number] { width: 6rem; }
+.b8-tl-bar input[type=text] { width: 16rem; max-width: 100%; }
+.b8-tl-bar p { flex-basis: 100%; margin: 0; font-size: .8rem; color: var(--text-secondary); }
+.b8-btn { border: 1px solid var(--navy); background: var(--navy); color: #fff; font: 700 .74rem Arial, sans-serif; padding: .45rem .8rem; border-radius: 3px; cursor: pointer; }
+.b8-btn.ghost { background: #fff; color: var(--navy); }
+.b8-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
+.b8-key { margin: 0 0 1.2rem; }
+.b8-key h4, .b8-forms h4 { font: 700 1rem Georgia, serif; color: var(--text-primary); margin: 0 0 .5rem; }
+.b8-key ol { margin: 0; padding-left: 1.4rem; font: .84rem/1.5 Arial, sans-serif; color: var(--text-secondary); }
+.b8-key li { margin: .3rem 0; }
+.b8-key li code { font: .8rem 'Courier New', monospace; color: var(--text-primary); }
+.b8-key .b8-src { font: 700 .66rem Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; background: var(--section-alt); color: var(--text-primary); border-radius: 3px; padding: .05rem .35rem; margin: 0 .3rem; }
+.b8-forms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 560px), 1fr)); gap: 1rem; margin-bottom: 1.4rem; }
+.b8-form { border: 1px solid var(--border); border-radius: 4px; background: #fff; padding: .8rem .9rem; font: .8rem/1.5 Arial, sans-serif; color: var(--text-secondary); min-width: 0; }
+.b8-form h5 { font: 700 .92rem Georgia, serif; color: var(--text-primary); margin: 0 0 .4rem; }
+.b8-form dl { display: grid; grid-template-columns: max-content 1fr; gap: .15rem .7rem; margin: 0 0 .6rem; }
+.b8-form dt { font-weight: 700; color: var(--text-primary); }
+.b8-form dd { margin: 0; overflow-wrap: anywhere; }
+.b8-form .table-wrap table.data th, .b8-form .table-wrap table.data td { padding: .3rem .45rem; font-size: .74rem; }
+.b8-blank { color: var(--wrong); font-style: italic; }
+@media (max-width: 500px) { .b8-forms { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script src="evidence.js"></script>
+<script>
+/* ===================== Synthetic evidence (deterministic) =====================
+   Cobalt Ridge Credit Union: credential-theft incident, night of September 11 to 12, 2026.
+   The authentication log and EDR log are in UTC. The VPN appliance clock runs 38 minutes
+   slow (NTP sync failure), so its device time must be normalized. */
+(function () {
+  var seed = 8808;
+  function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+  function ri(a, b) { return a + Math.floor(rnd() * (b - a + 1)); }
+  function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+  function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
+  var S = 1000, M = 60000, H = 3600000;
+  function ts(ms) { var d = new Date(ms); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1, 2) + '-' + pad(d.getUTCDate(), 2) + ' ' + pad(d.getUTCHours(), 2) + ':' + pad(d.getUTCMinutes(), 2) + ':' + pad(d.getUTCSeconds(), 2); }
+  function hex(n) { var s = ''; while (s.length < n) s += '0123456789abcdef'[ri(0, 15)]; return s; }
+  var OFFSET = 38 * M;  // VPN device time = UTC - 38 minutes
+  var D0 = Date.UTC(2026, 8, 12, 0, 0, 0);
+  function T(h, m, s) { return D0 + h * H + m * M + (s || 0) * S; }
+  var ATK = '185.220.101.47', FS02 = '10.40.2.15', BKP = '10.40.2.30', VIP = '10.40.8.23';
+
+  var staff = ['jkamau', 'lnguyen', 'pmorales', 'sbecker', 'aokoye', 'tfischer', 'rdas', 'hpark', 'cwright', 'nsalazar', 'yamin', 'gbaker', 'emensah', 'vlopez', 'kito', 'bharris', 'zahmed', 'oduarte'];
+  var spray = ['dlewis', 'mchavez', 'rsingh', 'kwalsh'];
+  var homeIp = {}; staff.forEach(function (u) { homeIp[u] = pick(['73.', '98.', '24.', '67.', '76.']) + ri(10, 250) + '.' + ri(1, 254) + '.' + ri(1, 254); });
+
+  var auth = [], vpn = [], edr = [];
+  function A(t, user, ip, app, result, mfa, ref, tag) { auth.push({ t: t, user: user, src_ip: ip, app: app, result: result, mfa: mfa, session_ref: ref || '', tag: tag || '' }); }
+  function E(t, host, user, type, detail, sev, tag) { edr.push({ t: t, host: host, user: user, type: type, detail: detail, sev: sev, tag: tag || '' }); }
+  var sid = 88340;
+  function session(user, ip, start, end, bytes, tag) {
+    var id = 'VPN-S-' + (sid += ri(2, 9));
+    A(start - ri(2, 6) * S, user, ip, 'VPN (RADIUS)', 'Success', 'Push approved', id, tag);
+    vpn.push({ t: start - OFFSET, user: user, src_ip: ip, assigned_ip: tag ? VIP : '10.40.8.' + ri(30, 200), event: 'Session start', session_id: id, bytes: '', tag: tag || '' });
+    vpn.push({ t: end - OFFSET, user: user, src_ip: ip, assigned_ip: tag ? VIP : '10.40.8.' + ri(30, 200), event: 'Session end', session_id: id, bytes: String(bytes), tag: tag || '' });
+    return id;
+  }
+  // ---- Noise: night-shift and remote staff ----
+  var vpnUsers = staff.slice(0, 11);
+  vpnUsers.forEach(function (u, k) {
+    var st = T(0, 0) + ri(0, 330) * M + ri(0, 59) * S, en = st + ri(12, 140) * M + ri(0, 59) * S;
+    if (en > T(6, 40)) en = T(6, 40) - ri(1, 30) * M;
+    session(u, homeIp[u], st, en, ri(2, 900) * 100000);
+  });
+  vpnUsers.forEach(function (u) {
+    for (var i = 0; i < ri(1, 3); i++) A(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, u, homeIp[u], pick(['Microsoft 365', 'Core banking', 'Microsoft 365']), 'Success', pick(['Push approved', 'Token (existing session)']), '');
+  });
+  staff.slice(11).forEach(function (u) {
+    var ws = 'WS-CC-' + pad(ri(1, 9), 2), ip = '10.40.5.' + ri(20, 90);
+    for (var i = 0; i < ri(2, 4); i++) A(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, u, ip, pick(['Workstation logon', 'Core banking', 'Microsoft 365']), 'Success', 'n/a (on premises)', '');
+    if (rnd() < 0.5) A(T(0, 0) + ri(0, 380) * M, u, ip, 'Core banking', 'Failure: bad password', 'n/a (on premises)', '');
+    E(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, ws, u, 'User logon', 'Interactive logon (console)', 'Info');
+    E(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, ws, u, 'Process start', pick(['teams.exe', 'msedge.exe', 'corebank-client.exe', 'outlook.exe']), 'Info');
+  });
+  for (var i = 0; i < 4; i++) { var fu = pick(staff); A(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, fu, homeIp[fu] || '10.40.5.' + ri(20, 90), 'Microsoft 365', 'Failure: bad password', 'None', ''); }
+  A(T(1, 0, 4), 'svc-backup', BKP, 'Domain (Kerberos)', 'Success', 'n/a (service)', '');
+  A(T(5, 0, 3), 'svc-backup', BKP, 'Domain (Kerberos)', 'Success', 'n/a (service)', '');
+  E(T(1, 0, 9), 'FS02', 'svc-backup', 'Backup agent', 'Nightly backup job started from BKP01', 'Info');
+  E(T(1, 48, 40), 'FS02', 'svc-backup', 'Backup agent', 'Nightly backup job completed', 'Info');
+  ['FS02', 'DC01', 'WS-AP-14', 'WS-AP-11', 'WS-CC-03', 'WS-CC-07', 'APP03'].forEach(function (h) {
+    E(T(0, 30) + ri(0, 40) * M + ri(0, 59) * S, h, 'SYSTEM', 'Agent update', 'Signature set 2026.09.11.2 applied', 'Info');
+    E(T(4, 0) + ri(0, 60) * M + ri(0, 59) * S, h, 'SYSTEM', 'Scheduled scan', 'Quick scan, no detections', 'Info');
+  });
+  for (i = 0; i < 6; i++) E(T(0, 0) + ri(0, 380) * M + ri(0, 59) * S, pick(['DC01', 'APP03']), 'SYSTEM', 'Process start', pick(['svchost.exe -k netsvcs', 'dfsrs.exe', 'w3wp.exe', 'sqlservr.exe']), 'Info');
+
+  // ---- Attack ----
+  E(Date.UTC(2026, 8, 11, 19, 22, 41), 'WS-AP-14', 'mrios', 'File opened', 'Remittance_0911.iso mounted from email attachment; Remit.lnk launched powershell.exe', 'Medium', 'atk');
+  E(Date.UTC(2026, 8, 11, 19, 22, 58), 'WS-AP-14', 'mrios', 'Network connection', 'powershell.exe downloaded payload from cdn-remit-portal[.]com', 'Medium', 'atk');
+  E(Date.UTC(2026, 8, 11, 19, 23, 12), 'WS-AP-14', 'mrios', 'Credential access', 'Unknown process rtk.exe read browser saved-password store (alert queued, not blocked)', 'Medium', 'atk');
+  spray.forEach(function (u, k) { A(T(1, 31 + k * 3, ri(0, 59)), u, ATK, 'VPN (RADIUS)', 'Failure: bad password', 'None', '', 'atk'); });
+  for (i = 0; i < 9; i++) A(T(1, 52 + i * 2, ri(0, 50)), 'mrios', ATK, 'VPN (RADIUS)', 'Failure: MFA push denied', 'Push denied', '', 'atk');
+  var atkSession = session('mrios', ATK, T(2, 13, 11), T(3, 26, 30), 2264000000, 'atk');
+  auth.forEach(function (a) { if (a.session_ref === atkSession) { a.t = T(2, 13, 7); a.tag = 'initial'; } });
+  E(T(2, 27, 14), 'FS02', 'mrios', 'User logon', 'Remote desktop logon from ' + VIP, 'Low', 'atk');
+  E(T(2, 33, 2), 'FS02', 'mrios', 'Process start', 'whoami /groups; net group "Domain Admins" /domain', 'Low', 'atk');
+  E(T(2, 41, 5), 'FS02', 'mrios', 'Credential access', 'rundll32.exe comsvcs.dll MiniDump of lsass.exe (credential dumping)', 'High', 'atk');
+  E(T(2, 49, 30), 'FS02', 'mrios', 'Explicit credentials', 'Logon with explicit credentials: svc-backup to DC01', 'Medium', 'atk');
+  A(T(2, 49, 31), 'svc-backup', FS02, 'Domain (Kerberos)', 'Success', 'n/a (service)', '', 'atk');
+  A(T(2, 55, 48), 'svc-backup', FS02, 'Domain (Kerberos)', 'Success', 'n/a (service)', '', 'atk');
+  E(T(2, 56, 20), 'DC01', 'svc-backup', 'Persistence', 'Scheduled task \\Microsoft\\Windows\\UpdateCheck created, runs C:\\ProgramData\\upd.exe', 'High', 'atk');
+  E(T(3, 1, 44), 'FS02', 'mrios', 'File activity', 'Archive created: C:\\Temp\\hr_share.7z (2.1 GB)', 'Medium', 'atk');
+  A(T(3, 5, 40), 'mrios', '10.40.1.12', 'Admin action', 'Account disabled by jokoro; IdP sessions revoked', 'n/a', '', 'resp');
+  E(T(3, 9, 31), 'WS-AP-14', 'jokoro', 'Remediation', 'Remediation run: 3 files quarantined, 2 processes terminated', 'Info', 'resp');
+  E(T(3, 12, 6), 'FS02', 'mrios', 'Network connection', 'Outbound transfer of 2.1 GB to ' + VIP + ' over RDP channel', 'High', 'atk');
+  E(T(3, 16, 2), 'FS02', 'SYSTEM', 'Agent status', 'Agent offline: host shut down', 'Info', 'resp');
+  E(T(3, 44, 20), 'WS-AP-14', 'jokoro', 'Containment', 'Network containment enabled on host', 'Info', 'resp');
+
+  // ---- Numbering (time order, gaps from other tenants or filtered rows) ----
+  function number(list, prefix, start) { list.sort(function (a, b) { return a.t - b.t; }); var n = start; list.forEach(function (r) { n += ri(1, 3); r.id = prefix + n; }); }
+  number(auth, 'AUTH-', 40210); number(vpn, 'VPN-', 7730); number(edr, 'EDR-', 991200);
+
+  // ---- Response action log ----
+  var acts = [
+    ['A01', T(3, 2, 10), 'Wen Li (SOC)', 'Triaged EDR credential-dumping alert on FS02; declared incident IR-2026-031; paged IR lead', '', { k: 'detect' }],
+    ['A02', T(3, 5, 40), 'Jamal Okoro (IR lead)', 'Disabled mrios in the directory and revoked identity provider sessions', '', { k: 'contain', host: 'identity' }],
+    ['A03', T(3, 9, 31), 'Jamal Okoro (IR lead)', 'Ran EDR remediation on WS-AP-14: quarantined dropped files and terminated malicious processes', '', { k: 'eradicate', host: 'WS-AP-14' }],
+    ['A04', T(3, 16, 0), 'Adwoa Mensah (IR analyst)', 'Powered off FS02 “to stop the damage”', '', { k: 'poweroff', host: 'FS02' }],
+    ['A05', T(3, 31, 0), 'Adwoa Mensah (IR analyst)', 'Acquired disk image of FS02 with write blocker', 'IMG-01', { k: 'image', host: 'FS02' }],
+    ['A06', T(3, 44, 20), 'Jamal Okoro (IR lead)', 'Enabled EDR network containment on WS-AP-14', '', { k: 'contain', host: 'WS-AP-14' }],
+    ['A07', T(3, 58, 0), 'Adwoa Mensah (IR analyst)', 'Captured memory of WS-AP-14', 'IMG-02', { k: 'memory', host: 'WS-AP-14' }],
+    ['A08', T(4, 12, 0), 'Jamal Okoro (IR lead)', 'Acquired disk image of WS-AP-14', 'IMG-03', { k: 'image', host: 'WS-AP-14' }],
+    ['A09', T(4, 35, 0), 'Tomasz Wiśniewski (infrastructure)', 'Restored FS02 from the September 11 backup and returned it to production', '', { k: 'recover', host: 'FS02' }],
+    ['A10', T(5, 5, 0), 'Tomasz Wiśniewski (infrastructure)', 'Deleted malicious scheduled task UpdateCheck and upd.exe from DC01', '', { k: 'eradicate', host: 'DC01' }],
+    ['A11', T(5, 20, 0), 'Jamal Okoro (IR lead)', 'Reset svc-backup password; reset krbtgt account password twice', '', { k: 'eradicate', host: 'identity' }],
+    ['A12', T(5, 48, 0), 'Adwoa Mensah (IR analyst)', 'Collected DC01 event logs and acquired disk image of DC01', 'IMG-04', { k: 'image', host: 'DC01' }],
+    ['A13', T(6, 20, 0), 'Adwoa Mensah (IR analyst)', 'Exported VPN appliance log and identity provider authentication log for the incident window', 'IMG-05, IMG-06', { k: 'collect', host: 'logs' }],
+    ['A14', Date.UTC(2026, 8, 14, 15, 0, 0), 'Jamal Okoro (IR lead)', 'Held lessons-learned meeting; draft report circulated', '', { k: 'post' }]
+  ];
+  var actions = acts.map(function (a) { return { action_id: a[0], time_utc: ts(a[1]), responder: a[2], action: a[3], evidence_ref: a[4], _k: a[5] }; });
+
+  // ---- Hashes and custody ----
+  var imgs = [['IMG-01', 'FS02 disk image (E01)', 'FS02', 'A05'], ['IMG-02', 'WS-AP-14 memory capture (raw)', 'WS-AP-14', 'A07'], ['IMG-03', 'WS-AP-14 disk image (E01)', 'WS-AP-14', 'A08'], ['IMG-04', 'DC01 disk image and event logs (E01)', 'DC01', 'A12'], ['IMG-05', 'VPN appliance log export (CSV)', 'VPN-GW-01', 'A13'], ['IMG-06', 'Identity provider authentication log export (JSON)', 'IdP', 'A13']];
+  var hashes = imgs.map(function (m) {
+    var h = hex(64), r = h;
+    if (m[0] === 'IMG-03') { r = h.slice(0, 27) + hex(9) + h.slice(36); if (r === h) r = h.slice(0, 27) + 'f00dcafe1' + h.slice(36); }
+    return { item: m[0], description: m[1], source_host: m[2], acquired_in: m[3], recorded_sha256: h, recomputed_sha256: r, recomputed_on: '2026-10-20' };
+  });
+  var H = {}; hashes.forEach(function (h) { H[h.item] = h.recorded_sha256; });
+  var forms = [
+    { form: 'CoC-01', item: 'IMG-01', desc: 'FS02 disk image on evidence drive ED-114', collected_by: 'Adwoa Mensah', collected_at: '2026-09-12 03:31 to 04:02', hash: H['IMG-01'], seal: 'Bag EB-2210, seal intact', transfers: [['2026-09-12 04:15', 'Adwoa Mensah', 'Luis Ortiz (evidence custodian)', 'Storage, evidence locker 2', 'Signed', 'Signed'], ['2026-09-15 09:10', 'Luis Ortiz (evidence custodian)', 'Priya Raman (forensic examiner)', 'Analysis', 'Signed', 'Signed'], ['2026-09-15 17:40', 'Priya Raman (forensic examiner)', 'Luis Ortiz (evidence custodian)', 'Return to locker', 'Signed', 'Signed']] },
+    { form: 'CoC-02', item: 'IMG-02', desc: 'WS-AP-14 memory capture on evidence drive ED-115', collected_by: 'Adwoa Mensah', collected_at: '2026-09-12 03:58 to 04:06', hash: '', seal: 'Bag EB-2211, seal intact', transfers: [['2026-09-12 04:30', 'Adwoa Mensah', 'Luis Ortiz (evidence custodian)', 'Storage, evidence locker 2', 'Signed', ''], ['2026-09-15 09:12', 'Luis Ortiz (evidence custodian)', 'Priya Raman (forensic examiner)', 'Analysis', 'Signed', 'Signed']] },
+    { form: 'CoC-03', item: 'IMG-03', desc: 'WS-AP-14 disk image on evidence drive ED-116', collected_by: 'Jamal Okoro', collected_at: '2026-09-12 04:12 to 04:36', hash: H['IMG-03'], seal: 'Bag EB-2212, seal replaced (no reason recorded)', transfers: [['2026-09-12 04:40', 'Jamal Okoro', 'Luis Ortiz (evidence custodian)', 'Storage, evidence locker 2', 'Signed', 'Signed'], ['2026-09-13 22:55', 'Daniel Kim (IT support)', 'Priya Raman (forensic examiner)', 'Analysis', 'Signed', 'Signed']] },
+    { form: 'CoC-04', item: 'IMG-04', desc: 'DC01 disk image and event logs on evidence drive ED-117', collected_by: 'Adwoa Mensah', collected_at: '2026-09-12 05:48 to 06:31', hash: H['IMG-04'], seal: 'Bag EB-2213, seal intact', transfers: [['2026-09-12 06:40', 'Adwoa Mensah', 'Luis Ortiz (evidence custodian)', 'Storage, evidence locker 2', 'Signed', 'Signed'], ['2026-09-16 10:05', 'Luis Ortiz (evidence custodian)', 'Priya Raman (forensic examiner)', 'Analysis', 'Signed', 'Signed']] }
+  ];
+  var transfers = [];
+  forms.forEach(function (f) { f.transfers.forEach(function (t, k) { transfers.push({ form: f.form, item: f.item, step: String(k + 1), date_time: t[0], released_by: t[1], received_by: t[2], purpose: t[3], released_sig: t[4], received_sig: t[5] }); }); });
+
+  window.B8DATA = {
+    auth: auth.map(function (a) { return { event_id: a.id, time_utc: ts(a.t), user: a.user, src_ip: a.src_ip, app: a.app, result: a.result, mfa: a.mfa, session_ref: a.session_ref }; }),
+    vpn: vpn.map(function (v) { return { vpn_id: v.id, device_time: ts(v.t), user: v.user, src_ip: v.src_ip, assigned_ip: v.assigned_ip, event: v.event, session_id: v.session_id, bytes: v.bytes }; }),
+    edr: edr.map(function (e) { return { edr_id: e.id, time_utc: ts(e.t), host: e.host, user: e.user, event_type: e.type, detail: e.detail, severity: e.sev }; }),
+    actions: actions, hashes: hashes, forms: forms, transfers: transfers, attackerIp: ATK,
+    answers: {
+      offset: OFFSET / M,
+      initial: auth.filter(function (a) { return a.tag === 'initial'; }).map(function (a) { return a.id; }),
+      accounts: ['mrios', 'svc-backup'],
+      order: ['A03', 'A04', 'A09', 'A10'],
+      hash: ['IMG-03'],
+      custody: ['CoC-02', 'CoC-03']
+    }
+  };
+})();
+</script>
+
+<script>
+(function () {
+  var X = window.B8DATA;
+  function A(k) { return function () { return X.answers[k]; }; }
+  window.LAB = {
+    id: 'B8',
+    title: 'Incident Response and Evidence Review',
+    accent: 'Evidence Review',
+    domain: 'Domain 5',
+    time: '60 min',
+    level: 'Advanced',
+    lessonHref: 'lesson08.html#s3',
+    lessonLabel: 'Lesson 8, Security Incident Response Management',
+    lede: 'After an incident the auditor asks two questions. Did the response follow the plan, and will the evidence hold up? Correlate three log sources, normalize a drifting clock, and test the response sequence, the image hashes, and the chain of custody.',
+    workbenchTitle: 'Evidence workbench',
+    ticket: {
+      number: 'AC-2026-0091',
+      priority: 'High priority',
+      from: 'Teresa Abara, Audit Committee Chair, via the Chief Audit Executive',
+      to: 'IS audit staff (you)',
+      subject: 'Post-incident audit: IR-2026-031, credential theft and file server intrusion',
+      due: 'Report to the audit committee on November 18',
+      body: '<p>On the night of September 11 to 12, an attacker used a member services employee’s stolen credentials to reach Cobalt Ridge Credit Union’s network over VPN, moved to a file server, and took credentials for a service account. The response team contained the incident by morning. Legal may need the forensic images if we pursue the attacker or notify members.</p>' +
+        '<p>The committee wants an independent view. Using the evidence package, establish what happened and when, then evaluate the response. Did the team act in the right order? Was volatile evidence preserved? Will the images and custody records stand up? Do our logs meet the retention standard?</p>' +
+        '<p>The package includes the <b>authentication log</b> from the identity provider, the <b>VPN appliance log</b>, the <b>EDR log</b>, the response team’s <b>action log</b>, four <b>chain-of-custody forms</b>, and the <b>hash table</b> for the collected images. Note that the sources were not all on the same clock.</p>'
+    },
+    howTo: 'The <b>Logs</b> tab shows two evidence panes at a time with filter, sort, <b>Match</b>, <b>Lookup</b>, and <b>Compare</b> tools. The <b>Timeline</b> tab merges all three logs: enter the VPN clock offset to normalize VPN times to UTC, then add key event IDs to build your timeline. <b>Custody and integrity</b> holds the custody forms and the hash table. Check each checklist item as you go. A hint is available for every item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points.',
+    workIntro: 'The evidence package is read-only. The authentication and EDR logs record UTC. The VPN appliance records its own device time. Record your results in the checklist below.',
+    checklist: [
+      { id: 'offset', type: 'number', points: 12, short: 'VPN clock offset', title: 'Normalize the VPN clock',
+        task: 'Every VPN session start has a matching RADIUS authentication in the authentication log, a few seconds earlier. How many <b>minutes must be added</b> to VPN device time to convert it to UTC? Enter a whole number (negative if minutes must be subtracted).',
+        answer: A('offset'), tol: 0.5, unit: 'minutes',
+        hint: 'Put the VPN log in pane A and the authentication log in pane B. Match session_id to session_ref and look up time_utc. Compare device_time with the looked-up UTC time for a few sessions.',
+        debrief: '<p>For every session, the RADIUS authentication in UTC is about 38 minutes later than the VPN device time, less the few seconds the appliance takes to build the tunnel after the authentication. The appliance clock is 38 minutes slow; the Policies tab shows its NTP synchronization has failed since July 30. Add 38 minutes to every VPN time.</p><p>Without normalization, the attacker’s VPN session appears to start 38 minutes before the credential was ever accepted and to end before the account was disabled. Both readings are wrong. Time synchronization is a logging control the auditor should test, because unsynchronized clocks weaken both the investigation and any later legal use of the logs.</p>',
+        reviewNote: 'Use matching events across sources to measure clock offset before building a timeline.' },
+      { id: 'initial', type: 'set', points: 12, short: 'Initial access', title: 'Identify the initial access event',
+        task: 'Which <b>authentication log event</b> records the attacker’s first <b>successful</b> use of the stolen credential? Enter the event ID.',
+        label: 'Authentication event ID', placeholder: 'e.g., AUTH-40311',
+        answer: A('initial'),
+        hint: 'Filter the authentication log on the external address that keeps failing in the early morning. Failures do not count. Look for the first success from that address.',
+        debrief: '<p>From 01:31 UTC the address ' + X.attackerIp + ' tried a short password spray against four accounts and failed. It then sent nine MFA push requests to mrios, all denied, and at 02:13:07 the tenth push was approved. That event is the initial access: the VPN session from the same address starts four seconds later in normalized time. The EDR log shows how the password was stolen: an ISO attachment opened on WS-AP-14 the evening before ran an infostealer that read the browser’s saved passwords.</p><p>The MFA fatigue pattern and the infostealer alert that sat in the queue overnight are both detection gaps. The auditor should recommend number matching or phishing-resistant MFA, lockout after repeated denied pushes, and triage targets for medium-severity credential-access alerts.</p>',
+        reviewNote: 'Initial access is the first successful authentication from the attacker, not the first attempt.' },
+      { id: 'accounts', type: 'set', points: 10, short: 'Compromised accounts', title: 'Compromised accounts',
+        task: 'Which accounts did the attacker <b>successfully use</b>? Enter the account names.',
+        label: 'Account names', placeholder: 'e.g., jdoe, svc-example',
+        answer: A('accounts'),
+        hint: 'Look for successful authentications from the attacker’s address, and from FS02 (10.40.2.15) after the EDR credential-dumping alert. The spray targets only failed.',
+        debrief: '<p>Two accounts were compromised. mrios was used for the VPN session and the remote desktop logon to FS02. After the LSASS memory dump on FS02 at 02:41, svc-backup authenticated to the domain controller from FS02, which it never does: its normal logons come from the backup server BKP01. Minutes later a persistence task was created on DC01 under svc-backup. The four spray targets saw only failures.</p><p>The response disabled mrios at 03:05 but did not reset svc-backup until 05:20, more than two hours after it was used from FS02. The auditor should note that containment covered the obvious account and missed the second one for most of the night.</p>',
+        reviewNote: 'Correlate successful logons by source address and host, not only by user.' },
+      { id: 'order', type: 'set', points: 14, short: 'Out-of-order actions', title: 'Response actions taken out of order',
+        task: 'Review the action log. Enter the ID of each action that was taken <b>too early</b>, that is, before a step that must come first had been done (contain before eradicate, capture volatile memory before powering off, collect evidence before cleaning a host, eradicate before recovery).',
+        label: 'Action IDs', placeholder: 'e.g., A01, A02',
+        answer: A('order'),
+        hint: 'For each host, line up its actions in time. Ask whether containment, memory capture, and evidence collection on that host happened before any cleanup or power-off, and whether every eradication was finished before recovery began.',
+        debrief: '<p>Four actions jumped ahead. <b>A03</b> cleaned WS-AP-14 before it was isolated (A06) and before its memory was captured (A07), so malicious processes were killed before anyone recorded them. <b>A04</b> powered off FS02 with no memory capture, destroying the running processes, network connections, and any credential material in memory; the disk image taken afterward (A05) cannot recover them. <b>A09</b> restored FS02 to production while the attacker’s persistence on DC01 and the stolen svc-backup credential were still live (A10, A11). <b>A10</b> deleted the persistence from DC01 before DC01 evidence was collected (A12).</p><p>The containment, imaging, and credential-reset actions were the right steps, several of them late. The correct order is contain, preserve evidence by order of volatility (memory and network state, then disk), eradicate, then recover. The auditor should recommend updating the IR playbook with host-level collection steps and training on order of volatility.</p>',
+        reviewNote: 'Contain, then preserve volatile evidence first, then eradicate, then recover.' },
+      { id: 'hash', type: 'set', points: 10, short: 'Hash mismatch', title: 'Image integrity',
+        task: 'Which collected item’s <b>recomputed SHA-256</b> does not match the hash recorded at acquisition? Enter the item ID.',
+        label: 'Item ID', placeholder: 'e.g., IMG-01',
+        answer: A('hash'),
+        hint: 'In the Custody and integrity tab, compare recorded_sha256 with recomputed_sha256 using “differs from.”',
+        debrief: '<p>IMG-03, the WS-AP-14 disk image, no longer matches the hash recorded when it was acquired. Nine characters in the middle of the value differ, so the image as it exists today is not the image that was collected. The other five items match.</p><p>A mismatch means the auditor cannot show the evidence is unaltered. IMG-03 should not be relied on for legal purposes, and the custody record for that drive explains why: it has an unexplained break. The recommendation is to keep a working copy for analysis and never handle the original, and to verify hashes at every transfer.</p>',
+        reviewNote: 'Compare recorded and recomputed hashes for every evidence item.' },
+      { id: 'custody', type: 'set', points: 14, short: 'Custody defects', title: 'Defective chain-of-custody forms',
+        task: 'Which chain-of-custody forms are <b>defective</b>, meaning a missing hash, a missing signature, or a break in the chain? Enter the form IDs.',
+        label: 'Form IDs', placeholder: 'e.g., CoC-01',
+        answer: A('custody'),
+        hint: 'For each form, check that a hash was recorded, every transfer has both signatures, and each person who releases the item is the person who last received it.',
+        debrief: '<p>Two forms are defective. <b>CoC-02</b> (WS-AP-14 memory) has no hash recorded at collection, and the evidence custodian never signed for receipt. <b>CoC-03</b> (WS-AP-14 disk) shows the custodian receiving the drive on September 12, then Daniel Kim of IT support releasing it to the examiner 18 hours later, with no record of how he obtained it. The seal was also replaced without a reason. This is the same item whose hash no longer matches.</p><p>CoC-01 and CoC-04 are complete. The auditor should report that two of four evidence items have custody gaps, that one of them also fails integrity, and recommend custody training, a single custodian log for the evidence locker, and hash verification on every transfer.</p>',
+        reviewNote: 'Each custody form needs a hash, both signatures on every transfer, and an unbroken chain of names.' },
+      { id: 'retention', type: 'choice', points: 13, short: 'Log retention', title: 'Evaluate log retention',
+        task: 'Read Logging Standard LS-2 and the log source inventory in the Policies tab. Which conclusion about log retention is best supported?',
+        options: ['Every source complies, because the incident night was preserved in the IR log exports', 'The VPN log fails the 12-month rule, so earlier use of the stolen credential cannot be ruled out', 'The EDR log fails the standard, because its console keeps only 30 days of searchable data', 'Log retention is an IT operations setting, so it falls outside the scope of a post-incident audit'],
+        answer: 1,
+        hint: 'Compare each source’s effective retention with LS-2. A copy made by the response team for one night is not retention.',
+        debrief: '<p>The VPN appliance keeps 14 days locally and does not forward to the SIEM, so its effective retention is 14 days against a 12-month requirement. The incident night survives only because the team exported it (IMG-05). Investigators cannot check whether the stolen credential, or the same attacker address, was used over VPN before September 12. The EDR console holds 30 days, but the SIEM copy holds 365 days, which meets LS-2.</p><p>The auditor should recommend forwarding the VPN log to the SIEM, restoring NTP synchronization on the appliance, and adding a log source inventory review to the logging control. Retention failures matter most after an incident, when the missing history is the history the investigators need.</p>',
+        reviewNote: 'Effective retention is what the organization keeps by design, compared with the standard.' },
+      { id: 'report', type: 'text', points: 15, short: 'Audit findings', title: 'Write the post-incident audit findings', reportTitle: 'Post-incident audit findings',
+        task: 'Write the findings summary for the audit committee. Be specific and use times in UTC.',
+        fields: [
+          { key: 'timeline', label: 'What happened: key timeline in UTC', min: 50, placeholder: 'Credential theft, initial access, lateral movement, second account, detection, containment.' },
+          { key: 'response', label: 'Response findings: sequence and order of volatility', min: 40, placeholder: 'Which actions were out of order and what evidence was lost.' },
+          { key: 'evidence', label: 'Evidence findings: integrity, custody, time sync, and retention', min: 40, placeholder: 'Hash mismatch, custody defects, the clock offset, and VPN retention.' },
+          { key: 'rec', label: 'Recommendations', min: 40, placeholder: 'Address the causes in the playbook, logging, and evidence handling.' }
+        ],
+        hint: 'Organize the summary around the committee’s two questions: did the response follow good practice, and will the evidence hold up?',
+        debrief: '<p><b>Model findings.</b> <b>Timeline:</b> On September 11 at 19:22 an ISO attachment opened on WS-AP-14 ran an infostealer that read mrios’s saved passwords; the medium alert was not triaged. On September 12 from 01:31 the attacker sprayed passwords, then sent nine denied MFA pushes; the tenth was approved at 02:13:07 (initial access) and a VPN session began. The attacker reached FS02 by RDP at 02:27, dumped LSASS at 02:41, used svc-backup against DC01 from 02:49, planted a scheduled task on DC01 at 02:56, and staged 2.1 GB of HR files. The SOC triaged the EDR alert at 03:02; mrios was disabled at 03:05, but the VPN session stayed open until 03:26 normalized time. <b>Response:</b> four actions were out of order: WS-AP-14 cleaned before isolation and memory capture (A03), FS02 powered off with no memory capture (A04), FS02 restored before eradication was complete (A09), and DC01 cleaned before its evidence was collected (A10). svc-backup stayed usable for over two hours. <b>Evidence:</b> IMG-03 fails hash verification and its form CoC-03 has a custody break; CoC-02 lacks a hash and a receipt signature; the VPN appliance clock was 38 minutes slow; VPN logs are kept only 14 days against a 12-month standard. <b>Recommendations:</b> update the IR playbook for order of volatility and host-level sequencing, terminate VPN sessions when an account is disabled, reset all credentials exposed on a compromised host at containment, restore NTP and forward VPN logs to the SIEM, retrain staff on custody with hash checks at every transfer, and adopt phishing-resistant MFA.</p><p>Your wording will differ. Check that each element is specific and that the recommendations address causes.</p>',
+        reviewNote: 'Cover the timeline, response sequencing, evidence integrity and custody, and logging, with specific times.' }
+    ],
+
+    workbench: function (root, api) {
+      var esc = api.esc;
+      root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-logs" aria-controls="pn-logs" aria-selected="true">Logs</button>' +
+        '<button role="tab" id="tb-tl" aria-controls="pn-tl" aria-selected="false" tabindex="-1">Timeline</button>' +
+        '<button role="tab" id="tb-coc" aria-controls="pn-coc" aria-selected="false" tabindex="-1">Custody and integrity</button>' +
+        '<button role="tab" id="tb-pol" aria-controls="pn-pol" aria-selected="false" tabindex="-1">Policies</button></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-logs" aria-labelledby="tb-logs"></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-tl" aria-labelledby="tb-tl" hidden></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-coc" aria-labelledby="tb-coc" hidden></div>' +
+        '<div class="lb-panel b8-pol" role="tabpanel" id="pn-pol" aria-labelledby="tb-pol" hidden>' + POL() + '</div></div>';
+      var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+      function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+      tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+      if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+      function cols(list) { return list.map(function (c) { return typeof c === 'string' ? { k: c, h: c } : c; }); }
+      var actionCols = cols(['action_id', 'time_utc', 'responder', { k: 'action', h: 'action', wrap: true }, { k: 'evidence_ref', h: 'evidence_ref', blank: '' }]);
+      var actionRows = X.actions.map(function (a) { return { action_id: a.action_id, time_utc: a.time_utc, responder: a.responder, action: a.action, evidence_ref: a.evidence_ref }; });
+
+      EV.create(document.getElementById('pn-logs'), { id: 'b8logs', api: api, a: 'auth', b: 'vpn', panes: [
+        { id: 'auth', title: 'Authentication log', source: 'Identity provider sign-in log, September 11 18:00 to September 12 07:00. Clock: UTC (NTP synchronized).', rows: X.auth, cols: cols(['event_id', 'time_utc', 'user', 'src_ip', 'app', 'result', 'mfa', { k: 'session_ref', h: 'session_ref', blank: '' }]) },
+        { id: 'vpn', title: 'VPN log', source: 'VPN appliance VPN-GW-01 session log. Clock: appliance device time (see Policies).', rows: X.vpn, cols: cols(['vpn_id', 'device_time', 'user', 'src_ip', 'assigned_ip', 'event', 'session_id', { k: 'bytes', h: 'bytes', blank: '' }]) },
+        { id: 'edr', title: 'EDR log', source: 'Endpoint detection and response events for in-scope hosts. Clock: UTC (agent time synchronized to the EDR cloud).', rows: X.edr, cols: cols(['edr_id', 'time_utc', 'host', 'user', 'event_type', { k: 'detail', h: 'detail', wrap: true }, 'severity']) },
+        { id: 'act', title: 'Response action log', source: 'Actions recorded by the response team in the IR platform. Clock: UTC.', rows: actionRows, cols: actionCols }
+      ] });
+
+      // ---- Timeline builder ----
+      var tl = document.getElementById('pn-tl');
+      function merged(off) {
+        var rows = [];
+        X.auth.forEach(function (a) { rows.push({ utc: a.time_utc, source: 'Auth', event_id: a.event_id, user: a.user, where: a.src_ip, what: a.app + ': ' + a.result }); });
+        X.vpn.forEach(function (v) { var t = Date.parse(v.device_time.replace(' ', 'T') + 'Z') + off * 60000; rows.push({ utc: new Date(t).toISOString().replace('T', ' ').slice(0, 19), source: 'VPN', event_id: v.vpn_id, user: v.user, where: v.src_ip + ' to ' + v.assigned_ip, what: v.event + ' ' + v.session_id + (v.bytes ? ', ' + v.bytes + ' bytes' : '') }); });
+        X.edr.forEach(function (e) { rows.push({ utc: e.time_utc, source: 'EDR', event_id: e.edr_id, user: e.user, where: e.host, what: e.event_type + ': ' + e.detail + ' [' + e.severity + ']' }); });
+        X.actions.forEach(function (a) { rows.push({ utc: a.time_utc, source: 'Response', event_id: a.action_id, user: a.responder, where: '', what: a.action }); });
+        rows.sort(function (a, b) { return a.utc < b.utc ? -1 : a.utc > b.utc ? 1 : 0; });
+        return rows;
+      }
+      function drawTL() {
+        var off = +(api.note('tlOff') || 0), keys = api.note('tlKeys') || [], rows = merged(off), by = {};
+        rows.forEach(function (r) { by[r.event_id.toUpperCase()] = r; });
+        var picked = keys.map(function (k) { return by[k]; }).filter(Boolean).sort(function (a, b) { return a.utc < b.utc ? -1 : a.utc > b.utc ? 1 : 0; });
+        tl.innerHTML = '<div class="b8-tl-bar"><div><label for="tl-off">VPN offset (minutes to add)</label><input type="number" id="tl-off" step="1" value="' + esc(off) + '"></div>' +
+          '<button type="button" class="b8-btn" id="tl-apply">Apply offset</button>' +
+          '<div><label for="tl-add">Add event IDs to my timeline</label><input type="text" id="tl-add" placeholder="e.g., AUTH-40311, EDR-991245" autocomplete="off" spellcheck="false"></div>' +
+          '<button type="button" class="b8-btn" id="tl-addb">Add</button><button type="button" class="b8-btn ghost" id="tl-clear">Clear my timeline</button>' +
+          '<p id="tl-msg" role="status">Merged view of all logs and response actions, sorted by UTC. VPN times are shown with an offset of ' + (off >= 0 ? '+' : '') + off + ' minutes. This is a working view; enter your answers in the checklist.</p></div>' +
+          '<div class="b8-key"><h4>My timeline (' + picked.length + ' events)</h4>' + (picked.length ? '<ol>' + picked.map(function (r) { return '<li><code>' + esc(r.utc) + '</code><span class="b8-src">' + esc(r.source) + '</span><code>' + esc(r.event_id) + '</code> ' + esc(r.user) + (r.where ? ', ' + esc(r.where) : '') + ': ' + esc(r.what) + ' <button type="button" class="b8-btn ghost" data-rm="' + esc(r.event_id.toUpperCase()) + '" aria-label="Remove ' + esc(r.event_id) + ' from my timeline">Remove</button></li>'; }).join('') + '</ol>' : '<p class="lead-p" style="margin:0">No events yet. Add the IDs of key events, such as the first attacker success, lateral movement, and containment.</p>') + '</div>' +
+          '<div id="tl-ev"></div>';
+        EV.create(tl.querySelector('#tl-ev'), { id: 'b8tl', api: api, a: 'merged', b: 'act', panes: [
+          { id: 'merged', title: 'Merged timeline', source: 'All three logs plus the response actions, with VPN times normalized by your offset.', rows: rows, cols: cols(['utc', 'source', 'event_id', 'user', 'where', { k: 'what', h: 'what', wrap: true }]) },
+          { id: 'act', title: 'Response action log', source: 'Actions recorded by the response team. Clock: UTC.', rows: actionRows, cols: actionCols }
+        ] });
+        function msg(t) { tl.querySelector('#tl-msg').textContent = t; }
+        tl.querySelector('#tl-apply').addEventListener('click', function () { var v = parseInt(tl.querySelector('#tl-off').value, 10); api.note('tlOff', isNaN(v) ? 0 : v); drawTL(); tl.querySelector('#tl-apply').focus(); });
+        tl.querySelector('#tl-off').addEventListener('keydown', function (e) { if (e.key === 'Enter') tl.querySelector('#tl-apply').click(); });
+        tl.querySelector('#tl-addb').addEventListener('click', function () {
+          var ids = tl.querySelector('#tl-add').value.split(/[\s,;]+/).map(function (s) { return s.trim().toUpperCase(); }).filter(Boolean), bad = [];
+          ids.forEach(function (id) { if (!by[id]) bad.push(id); else if (keys.indexOf(id) < 0) keys.push(id); });
+          api.note('tlKeys', keys); drawTL(); tl.querySelector('#tl-add').focus();
+          if (bad.length) msg('Not found: ' + bad.join(', ') + '. Use IDs from the merged view.');
+        });
+        tl.querySelector('#tl-add').addEventListener('keydown', function (e) { if (e.key === 'Enter') tl.querySelector('#tl-addb').click(); });
+        tl.querySelector('#tl-clear').addEventListener('click', function () { api.note('tlKeys', []); drawTL(); tl.querySelector('#tl-clear').focus(); });
+        tl.querySelectorAll('[data-rm]').forEach(function (b) { b.addEventListener('click', function () { api.note('tlKeys', keys.filter(function (k) { return k !== b.dataset.rm; })); drawTL(); var f = tl.querySelector('#tl-add'); if (f) f.focus(); }); });
+      }
+      drawTL();
+
+      // ---- Custody and integrity ----
+      var coc = document.getElementById('pn-coc');
+      function v(x, blank) { return x ? esc(x) : '<span class="b8-blank">' + (blank || '(blank)') + '</span>'; }
+      coc.innerHTML = '<div class="b8-forms">' + X.forms.map(function (f) {
+        return '<article class="b8-form" aria-label="Chain-of-custody form ' + f.form + '"><h5>' + f.form + ': ' + f.item + '</h5><dl>' +
+          '<dt>Item</dt><dd>' + esc(f.desc) + '</dd><dt>Collected by</dt><dd>' + esc(f.collected_by) + '</dd><dt>Collected (UTC)</dt><dd>' + esc(f.collected_at) + '</dd>' +
+          '<dt>SHA-256 at collection</dt><dd><code>' + v(f.hash, '(not recorded)') + '</code></dd><dt>Seal</dt><dd>' + esc(f.seal) + '</dd></dl>' +
+          '<div class="table-wrap"><table class="data"><thead><tr><th scope="col">Date and time (UTC)</th><th scope="col">Released by</th><th scope="col">Received by</th><th scope="col">Purpose</th><th scope="col">Signatures (released / received)</th></tr></thead><tbody>' +
+          f.transfers.map(function (t) { return '<tr><td>' + esc(t[0]) + '</td><td>' + esc(t[1]) + '</td><td>' + esc(t[2]) + '</td><td>' + esc(t[3]) + '</td><td>' + v(t[4]) + ' / ' + v(t[5]) + '</td></tr>'; }).join('') +
+          '</tbody></table></div></article>';
+      }).join('') + '</div><div id="coc-ev"></div>';
+      EV.create(coc.querySelector('#coc-ev'), { id: 'b8coc', api: api, a: 'hash', b: 'xfer', intro: '<b>Hash table.</b> The examiner recomputed the SHA-256 of each item on October 20. Compare it with the hash recorded at acquisition. Custody transfers from the four forms are also listed as a table.', panes: [
+        { id: 'hash', title: 'Hash table', source: 'Recorded hash from the acquisition tool log; recomputed hash from the October 20 verification.', rows: X.hashes, cols: cols(['item', 'description', 'source_host', 'acquired_in', 'recorded_sha256', 'recomputed_sha256', 'recomputed_on']) },
+        { id: 'xfer', title: 'Custody transfers', source: 'All transfers from the four chain-of-custody forms.', rows: X.transfers, cols: cols(['form', 'item', 'step', 'date_time', 'released_by', 'received_by', 'purpose', 'released_sig', 'received_sig']) }
+      ] });
+
+      function POL() {
+        return '<div class="lb-doc"><p class="eyebrow">Policy 1</p><h4>Incident Response Plan IRP-3 (excerpt)</h4><ul>' +
+          '<li>Phases: preparation; detection and analysis; <b>containment</b>; <b>eradication</b>; <b>recovery</b>; post-incident activity.</li>' +
+          '<li>Isolate affected hosts from the network before cleanup. Do not power off a suspect host until volatile evidence has been captured.</li>' +
+          '<li>Collect evidence in order of volatility: CPU state and memory, network connections and running processes, then disk, then logs and archival media.</li>' +
+          '<li>Record a SHA-256 hash for every evidence item at acquisition and verify it at each transfer. Every transfer is signed by the person releasing and the person receiving.</li>' +
+          '<li>Restore systems to production only after eradication is complete and credentials exposed on affected hosts have been reset.</li></ul></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Policy 2</p><h4>Logging Standard LS-2 (excerpt)</h4><ul>' +
+          '<li>Security-relevant logs (authentication, remote access, endpoint, and server security events) are retained for <b>12 months</b>, with at least 90 days immediately searchable.</li>' +
+          '<li>All log sources synchronize time to the corporate NTP service and record UTC or an explicit time zone.</li></ul></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Inventory</p><h4>Log source inventory (as of October 20, 2026)</h4><div class="table-wrap"><table class="data"><thead><tr><th scope="col">Source</th><th scope="col">Local retention</th><th scope="col">Forwarded to SIEM</th><th scope="col">SIEM retention</th><th scope="col">Time source</th></tr></thead><tbody>' +
+          '<tr><td>Identity provider sign-in log</td><td>30 days</td><td>Yes</td><td>400 days</td><td>NTP, UTC</td></tr>' +
+          '<tr><td>EDR events</td><td>30 days in console</td><td>Yes</td><td>365 days</td><td>EDR cloud, UTC</td></tr>' +
+          '<tr><td>VPN appliance VPN-GW-01</td><td>14 days (rolling buffer)</td><td>No</td><td>Not applicable</td><td>Device clock; NTP sync failing since 2026-07-30</td></tr>' +
+          '<tr><td>Domain controller security log</td><td>60 days</td><td>Yes</td><td>365 days</td><td>NTP, UTC</td></tr></tbody></table></div></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Note</p><h4>Network reference</h4><ul><li>10.40.8.0/24 is the VPN client pool. FS02 is 10.40.2.15. BKP01, the backup server, is 10.40.2.30. 10.40.1.12 is the IR team’s admin workstation.</li><li>svc-backup runs the nightly backup from BKP01 at 01:00 and 05:00 UTC.</li></ul></div>';
+      }
+    }
+  };
+
+  window.LAB_SELFTEST = function () {
+    var log = [], P = [];
+    // Offset from matched sessions
+    var au = {}; X.auth.forEach(function (a) { if (a.session_ref) au[a.session_ref] = a; });
+    var diffs = X.vpn.filter(function (v) { return v.event === 'Session start'; }).map(function (v) { return (Date.parse(au[v.session_id].time_utc.replace(' ', 'T') + 'Z') - Date.parse(v.device_time.replace(' ', 'T') + 'Z')) / 60000; });
+    var lo = Math.min.apply(null, diffs), hi = Math.max.apply(null, diffs), off = Math.round(diffs.reduce(function (s, x) { return s + x; }, 0) / diffs.length);
+    if (off !== X.answers.offset || hi - lo > 0.2) P.push('offset derived ' + off + ' range ' + lo + ' to ' + hi);
+    // Initial access: first success from the external address with repeated failures
+    var fails = {}; X.auth.forEach(function (a) { if (/^Failure/.test(a.result) && !/^10\./.test(a.src_ip)) fails[a.src_ip] = (fails[a.src_ip] || 0) + 1; });
+    var atk = Object.keys(fails).sort(function (a, b) { return fails[b] - fails[a]; })[0];
+    if (atk !== X.attackerIp) P.push('attacker ip derived ' + atk);
+    var first = X.auth.filter(function (a) { return a.src_ip === atk && a.result === 'Success'; }).sort(function (a, b) { return a.time_utc < b.time_utc ? -1 : 1; })[0];
+    if (!first || first.event_id !== X.answers.initial[0]) P.push('initial derived ' + (first && first.event_id));
+    if (X.answers.initial.length !== 1) P.push('initial should be one event');
+    // Compromised accounts: successes from the attacker address or from FS02
+    var acc = {}; X.auth.forEach(function (a) { if (a.result === 'Success' && (a.src_ip === atk || a.src_ip === '10.40.2.15')) acc[a.user] = 1; });
+    var accs = Object.keys(acc).sort();
+    if (accs.join() !== X.answers.accounts.slice().sort().join()) P.push('accounts derived ' + accs.join(' '));
+    // Out-of-order actions from tagged action kinds
+    var acts = X.actions, early = [];
+    function t(a) { return a.time_utc; }
+    function firstOf(k, host) { var r = acts.filter(function (a) { return (Array.isArray(k) ? k.indexOf(a._k.k) >= 0 : a._k.k === k) && a._k.host === host; }).map(t).sort(); return r[0] || '9999'; }
+    acts.forEach(function (a) {
+      var k = a._k.k, h = a._k.host, machine = h && h !== 'identity' && h !== 'logs', bad = false;
+      if (k === 'eradicate' && machine && (firstOf('contain', h) > t(a) || firstOf(['memory', 'image'], h) > t(a))) bad = true;
+      if (k === 'poweroff' && firstOf('memory', h) > t(a)) bad = true;
+      if (k === 'recover') { var lastErad = acts.filter(function (x) { return x._k.k === 'eradicate'; }).map(t).sort().pop(); if (lastErad > t(a)) bad = true; }
+      if (bad) early.push(a.action_id);
+    });
+    if (early.join() !== X.answers.order.join()) P.push('order derived ' + early.join(' '));
+    // Hash
+    var mm = X.hashes.filter(function (h) { return h.recorded_sha256 !== h.recomputed_sha256; }).map(function (h) { return h.item; });
+    if (mm.join() !== X.answers.hash.join()) P.push('hash derived ' + mm.join(' '));
+    X.hashes.forEach(function (h) { if (!/^[0-9a-f]{64}$/.test(h.recomputed_sha256)) P.push('bad hash ' + h.item); });
+    // Custody: missing hash, missing signature, or broken chain
+    var bad = X.forms.filter(function (f) {
+      if (!f.hash) return true;
+      var holder = f.collected_by;
+      return f.transfers.some(function (tr) { var broken = !tr[4] || !tr[5] || tr[1].split(' (')[0] !== holder.split(' (')[0]; holder = tr[2]; return broken; });
+    }).map(function (f) { return f.form; });
+    if (bad.join() !== X.answers.custody.join()) P.push('custody derived ' + bad.join(' '));
+    X.forms.forEach(function (f) { if (f.hash && f.hash !== X.hashes.filter(function (h) { return h.item === f.item; })[0].recorded_sha256) P.push('form hash differs from table ' + f.form); });
+    log.push('offset ' + off + ' (range ' + lo.toFixed(2) + ' to ' + hi.toFixed(2) + ')', 'attacker ' + atk, 'initial ' + (first && first.event_id), 'accounts ' + accs.join(' '), 'early ' + early.join(' '), 'hash ' + mm.join(' '), 'custody ' + bad.join(' '), 'auth ' + X.auth.length + ', vpn ' + X.vpn.length + ', edr ' + X.edr.length);
+    return { log: log, problems: P };
+  };
+})();
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

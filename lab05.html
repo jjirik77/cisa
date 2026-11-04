@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B5 Disaster Recovery Tabletop Simulation | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+/* ===== Lab B5: DR tabletop (scoped b5-) ===== */
+.b5-modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: 0 0 1rem; }
+.b5-mode { text-align: left; border: 1px solid var(--border); background: var(--card-bg); border-radius: 4px; padding: .7rem .85rem; cursor: pointer; font: .82rem/1.45 Arial, sans-serif; color: var(--text-secondary); }
+.b5-mode b { display: block; font: 700 .95rem Georgia, serif; color: var(--text-primary); margin-bottom: .15rem; }
+.b5-mode:hover { border-color: var(--gold); }
+.b5-mode[aria-pressed="true"] { border-color: var(--navy); box-shadow: inset 0 0 0 2px var(--navy); background: var(--blue-pale); }
+.b5-mode[aria-pressed="true"] b::after { content: " (selected)"; font: 700 .7rem Arial, sans-serif; color: var(--navy); letter-spacing: .04em; }
+.b5-mode:focus-visible, .b5-btnrow .btn:focus-visible, .b5-seg button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.b5-bar { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; padding: .75rem .9rem; border: 1px solid var(--blue-pale-border); background: var(--blue-pale); border-radius: 4px; margin-bottom: 1rem; font: .88rem Arial, sans-serif; color: var(--text-secondary); }
+.b5-bar .b5-simclk { font: 900 1.4rem 'Arial Narrow', Arial, sans-serif; color: var(--navy); letter-spacing: .02em; }
+.b5-btnrow { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+.b5-seg { display: inline-flex; gap: .3rem; flex-wrap: wrap; }
+.b5-seg button { border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); border-radius: 4px; padding: .45rem .8rem; font: 700 .82rem Arial, sans-serif; cursor: pointer; }
+.b5-seg button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+.b5-lbl { display: block; font: 700 .7rem Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+
+/* Facilitator / team board */
+.b5-board { border: 2px solid var(--navy); border-radius: 6px; background: #fff; padding: 1.1rem 1.3rem 1.2rem; margin-bottom: 1.1rem; }
+.b5-b-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1rem 1.6rem; align-items: start; padding-bottom: .9rem; border-bottom: 1px solid var(--border); }
+.b5-code { display: block; font: 700 3.4rem/1.05 'Courier New', monospace; letter-spacing: .08em; color: var(--navy); margin: .2rem 0 .3rem; }
+.b5-codenote { display: block; font: 700 .9rem/1.45 Arial, sans-serif; color: var(--gold); background: var(--gold-pale); border: 1px solid var(--gold); border-radius: 3px; padding: .35rem .6rem; }
+.b5-codenote.calm { color: var(--text-secondary); background: var(--blue-pale); border-color: var(--blue-pale-border); }
+.b5-clock { display: block; font: 900 3.2rem/1.05 'Arial Narrow', Arial, sans-serif; color: var(--text-primary); margin: .2rem 0 .25rem; }
+.b5-clock-sub { display: block; font: 700 1.05rem/1.4 Arial, sans-serif; color: var(--text-secondary); }
+.b5-state { display: inline-block; font: 700 .78rem Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; border-radius: 3px; padding: .15rem .5rem; margin-left: .4rem; vertical-align: middle; border: 1px solid var(--navy); color: var(--navy); }
+.b5-state.paused { border-color: var(--gold); color: var(--gold); background: var(--gold-pale); }
+.b5-cur { padding: 1rem 0 .4rem; }
+.b5-cur .b5-cur-meta { font: 700 1rem Arial, sans-serif; color: var(--gold); letter-spacing: .04em; }
+.b5-cur h3 { font: 700 1.9rem/1.2 Georgia, serif; color: var(--text-primary); margin: .25rem 0 .5rem; }
+.b5-cur p { font: 1.15rem/1.55 Arial, sans-serif; color: var(--text-secondary); margin: 0 0 .6rem; max-width: 70ch; }
+.b5-cur .b5-resp { border-left: 4px solid var(--navy); padding-left: .8rem; }
+.b5-cur .b5-resp b { color: var(--text-primary); }
+.b5-board .b5-btnrow { padding-top: .8rem; border-top: 1px solid var(--border); }
+.b5-board.team .b5-code { font-size: 1.6rem; }
+.b5-board.team .b5-clock { font-size: 2.2rem; }
+.b5-board.team .b5-cur h3 { font-size: 1.4rem; }
+.b5-board.team .b5-cur p { font-size: .98rem; }
+.b5-prev { font: .8rem Arial, sans-serif; color: var(--text-muted); margin: .4rem 0 0; }
+.b5-join { display: flex; flex-wrap: wrap; gap: .6rem; align-items: flex-end; margin-bottom: .8rem; }
+.b5-join label { display: block; font: 700 .9rem Georgia, serif; color: var(--text-primary); margin-bottom: .3rem; }
+.b5-join input { font: 700 1.3rem 'Courier New', monospace; letter-spacing: .1em; text-transform: uppercase; width: 11rem; padding: .45rem .6rem; border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); }
+.b5-join input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px var(--gold-pale); }
+.b5-err { font: 700 .88rem Arial, sans-serif; color: var(--wrong); margin: 0 0 .8rem; }
+.b5-warn { font: .88rem Arial, sans-serif; color: var(--text-primary); background: var(--gold-pale); border-left: 4px solid var(--gold); padding: .5rem .7rem; margin: 0 0 .8rem; }
+.b5-board:fullscreen { box-sizing: border-box; width: 100vw; height: 100vh; border: 0; border-radius: 0; padding: 4vh 4vw; display: flex; flex-direction: column; overflow: hidden; }
+.b5-board:fullscreen .b5-code { font-size: min(9vh, 6vw); }
+.b5-board:fullscreen .b5-clock { font-size: min(9vh, 6vw); }
+.b5-board:fullscreen .b5-clock-sub, .b5-board:fullscreen .b5-codenote { font-size: min(2.6vh, 1.7vw); }
+.b5-board:fullscreen .b5-cur { flex: 1; min-height: 0; overflow: hidden; }
+.b5-board:fullscreen .b5-cur h3 { font-size: min(5vh, 3.2vw); }
+.b5-board:fullscreen .b5-cur p { font-size: min(3vh, 1.9vw); max-width: none; }
+.b5-board:fullscreen .b5-cur .b5-cur-meta { font-size: min(2.6vh, 1.7vw); }
+
+/* Recovery clock */
+.b5-rc { border: 1px solid var(--border); border-radius: 4px; padding: .9rem 1rem 1rem; margin-bottom: 1.1rem; background: var(--card-bg); }
+.b5-rc h4 { font: 700 1rem Georgia, serif; color: var(--text-primary); margin: 0 0 .2rem; }
+.b5-rc .b5-rc-sum { font: .88rem/1.55 Arial, sans-serif; color: var(--text-secondary); margin: .1rem 0 .7rem; }
+.b5-rc .b5-rc-sum b { color: var(--text-primary); }
+.b5-track { position: relative; height: 34px; background: var(--section-alt); border-radius: 3px; margin: 1.5rem 0 1.4rem; }
+.b5-seg-bar { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; font: 700 .68rem Arial, sans-serif; color: #fff; white-space: nowrap; border-right: 2px solid #fff; }
+.b5-seg-bar.k0 { background: #00395d; } .b5-seg-bar.k1 { background: #155a8a; } .b5-seg-bar.k2 { background: #3a6f99; } .b5-seg-bar.k3 { background: #1f4d70; } .b5-seg-bar.k4 { background: #51688a; }
+.b5-seg-bar.plan { background: repeating-linear-gradient(135deg, #e8f1fb 0 6px, #dcebfa 6px 12px); color: var(--text-primary); border: 1px dashed var(--navy-light); }
+.b5-seg-bar.loss { background: #8a1c2a; }
+.b5-mark { position: absolute; top: -1.2rem; bottom: -1.2rem; border-left: 2px solid var(--gold); }
+.b5-mark span { position: absolute; top: -.1rem; left: 4px; font: 700 .7rem Arial, sans-serif; color: var(--gold); white-space: nowrap; background: var(--card-bg); padding: 0 .2rem; }
+.b5-mark.now { border-left: 2px dotted var(--text-primary); }
+.b5-mark.now span { top: auto; bottom: -.15rem; color: var(--text-primary); }
+.b5-axis { display: flex; justify-content: space-between; font: .68rem Arial, sans-serif; color: var(--text-muted); margin-top: -1.1rem; margin-bottom: .6rem; }
+.b5-rc table.data td, .b5-rc table.data th { font-size: .8rem; }
+.b5-tag { font: 700 .66rem Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase; border-radius: 3px; padding: .05rem .35rem; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+.b5-tag.act { border-color: var(--navy); color: var(--navy); }
+
+/* Inject feed */
+.b5-feed { display: grid; gap: .8rem; }
+.b5-inj { border: 1px solid var(--border); border-left: 4px solid var(--navy); border-radius: 0 4px 4px 0; padding: .8rem 1rem .9rem; background: var(--card-bg); }
+.b5-inj.newest { border-left-color: var(--gold); }
+.b5-inj-h { font: 700 .74rem Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+.b5-inj h5 { font: 700 1.02rem Georgia, serif; color: var(--text-primary); margin: .2rem 0 .4rem; }
+.b5-inj p { font: .88rem/1.6 Arial, sans-serif; color: var(--text-secondary); margin: 0 0 .5rem; }
+.b5-inj p b { color: var(--text-primary); }
+.b5-obs { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .5rem 1rem; align-items: start; border-top: 1px dashed var(--border); padding-top: .6rem; margin-top: .3rem; }
+.b5-obs fieldset { border: 0; margin: 0; padding: 0; }
+.b5-obs legend { font: 700 .72rem Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: .3rem; }
+.b5-obs label.r { display: inline-flex; gap: .3rem; align-items: center; margin-right: .7rem; font: .84rem Arial, sans-serif; color: var(--text-primary); cursor: pointer; }
+.b5-obs textarea { width: 100%; min-height: 54px; border: 1px solid var(--border); border-radius: 4px; padding: .4rem .6rem; font: .84rem/1.45 Arial, sans-serif; color: var(--text-primary); resize: vertical; box-sizing: border-box; }
+.b5-obs textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px var(--gold-pale); }
+.b5-obs .b5-nl { font: 700 .72rem Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: .3rem; }
+.b5-empty { font: .9rem Arial, sans-serif; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 4px; padding: 1rem; text-align: center; }
+.b5-pending { font: .82rem Arial, sans-serif; color: var(--text-muted); margin: .3rem 0 0; }
+.b5-h4 { font: 700 1.05rem Georgia, serif; color: var(--text-primary); margin: 1.2rem 0 .6rem; }
+@media (max-width: 760px) {
+  .b5-modes { grid-template-columns: 1fr; }
+  .b5-b-top { grid-template-columns: 1fr; }
+  .b5-code { font-size: 2.4rem; }
+  .b5-clock { font-size: 2.4rem; }
+  .b5-cur h3 { font-size: 1.35rem; }
+  .b5-cur p { font-size: 1rem; }
+  .b5-obs { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script>
+/* ===================== Exercise data and session-code engine =====================
+   Kestrel Valley Distribution, annual DR tabletop. Eight injects with simulated
+   timestamps, the OMS recovery path (plan assumption vs. what the exercise reveals),
+   and a serverless session code that lets team devices follow the facilitator. */
+(function () {
+  var BASE = { day: 'Fri', h: 18, m: 0 }; // T+0:00 = Friday 18:00
+  var INJECTS = [
+    { id: 'I1', t: 0, title: 'Ransom note on the file servers', refs: '2.2, 2.3, 6.1', followed: true,
+      sit: 'At 17:52 the security operations center (SOC) sees mass file renames on the primary data-center file servers. By 18:00 the order management system (OMS) database will not mount, warehouse scanners show sync errors, and a ransom note appears on every share. Orders cannot be entered or shipped.',
+      resp: 'Luis Ortega, the on-call IT operations manager, confirms the outage at 18:04 and takes the incident commander role. The network team isolates the data center from the WAN. Luis opens incident INC-7741 and starts the call tree at 18:12.' },
+    { id: 'I2', t: 40, title: 'The call tree reaches a disconnected number', refs: '2.2, Appendix C', followed: false,
+      sit: 'Appendix C lists Martin Keller as the warehouse management system (WMS) application lead. Keller left Kestrel Valley in May. His mobile number is disconnected, and two other Appendix C entries ring to the voicemail of former employees.',
+      resp: 'The team asks the after-hours HR line for help and reaches the current WMS lead, Priya Raman, at 19:15, 35 minutes later. No one records the outdated entries for follow-up.' },
+    { id: 'I3', t: 75, title: 'No one with declaration authority can be reached', refs: '2.1', followed: false,
+      sit: 'Dana Whitfield, VP of IT Operations, is on an overnight flight to Frankfurt. Kwame Asante, the CIO and the only named alternate, is on leave and has not answered three calls or two texts.',
+      resp: 'Luis keeps trying both executives until 19:50. He then declares a disaster on his own authority, saying the business cannot wait, and sends the declaration notice to the alternate-site provider at 20:00. The declaration is logged 110 minutes after the outage was confirmed.' },
+    { id: 'I4', t: 150, title: 'The newest clean backup is 19 hours old', refs: '3.2, 3.3', followed: true,
+      sit: 'Security reports that continuous replication copied the encrypted OMS database to the warm-site replica, and the attacker deleted the snapshots on the primary storage array. The newest clean copy is the Thursday 23:00 backup in the immutable cloud vault, 19 hours before the outage. Restoring OMS from the vault is estimated at 3 hours.',
+      resp: 'As section 3.3 requires, the security team scans the vault backup and confirms it is clean at 21:10. The team selects it as the OMS restore point and records the decision and the expected data loss in the incident log.' },
+    { id: 'I5', t: 180, title: 'The alternate site needs 6 hours to provision', refs: '2.4, 4.1', followed: false,
+      sit: 'Northgate Colocation calls back. Under the current contract tier, the recovery environment will be ready 6 hours after the declaration notice, at 02:00 Saturday. The DRP assumes 2 hours.',
+      resp: 'Luis tells the team to wait for the provider and moves on. He does not tell the declaring executive or the OMS business owner that the Tier 1 RTO will be missed, and no alternative is assessed or recorded.' },
+    { id: 'I6', t: 240, title: 'Customers and the media start calling', refs: '5.1', followed: true,
+      sit: 'Key accounts report failed EDI orders and call their sales representatives. Two regional news sites post about a systems outage at Kestrel Valley.',
+      resp: 'Aaliyah Brooks, the communications lead, issues the pre-approved customer holding statement at 22:05 and routes media questions to the named spokesperson. Legal notifies outside counsel and the cyber insurer at 22:20, inside the plan window.' },
+    { id: 'I7', t: 360, title: 'Pressure to restart on the original servers', refs: '5.2, 6.1', followed: true,
+      sit: 'Rob Kincaid, VP of Sales, learns about the 6-hour delay from a customer. He demands that IT delete the ransom notes and restart OMS on the original servers so Saturday orders can ship. Minutes later, the attacker emails the help desk and offers a free test decryption.',
+      resp: 'Luis declines and cites section 6.1: affected systems stay offline and preserved for forensics until they are rebuilt from known-good images. The help desk forwards the attacker’s email, unanswered, to security and counsel, as section 5.2 requires.' },
+    { id: 'I8', t: 480, title: 'The restore runbook does not match the environment', refs: '4.2, 7, Appendix D', followed: false,
+      sit: 'The alternate site is ready. The database administrator, Mei Lin Zhao, opens the OMS restore runbook in Appendix D. It references the storage array retired in the 2025 migration and a backup console that no longer exists.',
+      resp: 'Mei Lin improvises the restore steps from vendor documentation. She estimates that validation and rework will take 1 hour instead of the planned 20 minutes. No one has tested Appendix D since the migration.' }
+  ];
+  var SIM_END = 540; // simulated time reached when the last inject window closes
+  // OMS recovery path: plan assumption vs. value revealed by an inject (minutes)
+  var COMP = [
+    { key: 'declare', label: 'Outage confirmed to disaster declaration', plan: 60, actual: 110, inj: 3, planNote: 'Section 2.1: within 60 minutes', actNote: 'Declared at T+1:50 by the incident commander' },
+    { key: 'notice', label: 'Declaration notice to the alternate-site provider', plan: 10, actual: 10, inj: 3, planNote: 'Provider notice', actNote: 'Notice sent at T+2:00' },
+    { key: 'prov', label: 'Alternate-site provisioning', plan: 120, actual: 360, inj: 5, planNote: 'Section 4.1: within 2 hours', actNote: 'Provider: 6 hours under the current tier' },
+    { key: 'data', label: 'Bring OMS data online', plan: 30, actual: 180, inj: 4, planNote: 'Section 3.2: fail over to the replica', actNote: 'Replica encrypted; restore from vault' },
+    { key: 'valid', label: 'Application validation and sign-off', plan: 20, actual: 60, inj: 8, planNote: 'Appendix D: 20 minutes', actNote: 'Runbook outdated; DBA estimate' }
+  ];
+  var LOSS = { plan: 15, actual: 1140, inj: 4 }; // data loss (minutes of OMS transactions)
+  var BIA = { rto: 240, rpo: 60 };
+
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function hm(min) { min = Math.max(0, Math.floor(min)); return Math.floor(min / 60) + ':' + pad(min % 60); }
+  function tplus(min) { return 'T+' + hm(min); }
+  function wall(min) { var tot = BASE.h * 60 + BASE.m + Math.floor(min), d = Math.floor(tot / 1440), r = tot % 1440; return ['Fri', 'Sat', 'Sun'][d] + ' ' + pad(Math.floor(r / 60)) + ':' + pad(r % 60); }
+
+  function projection(n) {
+    var t = 0, rows = COMP.map(function (c) { var known = n >= c.inj, d = known ? c.actual : c.plan, r = { c: c, known: known, d: d, start: t, end: t + d }; t += d; return r; });
+    var lk = n >= LOSS.inj;
+    return { rows: rows, end: t, allKnown: rows.every(function (r) { return r.known; }), knownCount: rows.filter(function (r) { return r.known; }).length, loss: lk ? LOSS.actual : LOSS.plan, lossKnown: lk };
+  }
+
+  /* ---------- Session code ----------
+     30 payload bits in 6 Crockford base32 characters + 1 checksum character.
+     tag(2) | interval(2) | paused(1) | inject index(3) | anchor(22).
+     Running: anchor = start epoch second of the current inject window, mod 2^22
+     (resolved to the value nearest the device clock, valid for about 24 days).
+     Paused: anchor = seconds already elapsed in the current inject window. */
+  var ALPHA = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', M = 4194304, TAG = 2, IVS = [120, 240, 360];
+  function checksum(vals) { var s = 7; vals.forEach(function (v, i) { s += (2 * i + 1) * v; }); return s % 32; }
+  function encode(st) {
+    var a = ((Math.floor(st.anchor) % M) + M) % M;
+    var v = (((TAG * 4 + st.iv) * 2 + (st.paused ? 1 : 0)) * 8 + st.b) * M + a, ch = [];
+    for (var i = 5; i >= 0; i--) { ch[i] = v % 32; v = Math.floor(v / 32); }
+    ch.push(checksum(ch));
+    return ch.map(function (c) { return ALPHA[c]; }).join('');
+  }
+  function fmtCode(c) { return c.slice(0, 3) + '-' + c.slice(3); }
+  function clean(s) { return String(s || '').toUpperCase().replace(/[\s\-_.]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1').replace(/U/g, 'V'); }
+  function resolve(a, nowSec) { var c = nowSec - (((nowSec - a) % M) + M) % M; if (nowSec - c > M / 2) c += M; return c; }
+  function decode(raw, nowSec) {
+    var s = clean(raw);
+    if (!s) return { error: 'Enter the session code shown on the projector.' };
+    if (s.length !== 7) return { error: 'Session codes have 7 characters, such as K7Q-4MZP. You entered ' + s.length + '.' };
+    var vals = [];
+    for (var i = 0; i < 7; i++) { var k = ALPHA.indexOf(s[i]); if (k < 0) return { error: 'The code contains a character that session codes do not use: ' + s[i] + '.' }; vals.push(k); }
+    if (checksum(vals.slice(0, 6)) !== vals[6]) return { error: 'That code does not check out. One character is probably mistyped. Compare it with the projector and try again.' };
+    var v = 0; for (i = 0; i < 6; i++) v = v * 32 + vals[i];
+    var a = v % M, r = Math.floor(v / M), b = r % 8; r = Math.floor(r / 8); var p = r % 2; r = Math.floor(r / 2); var iv = r % 4, tag = Math.floor(r / 4);
+    if (tag !== TAG || iv > 2) return { error: 'That is not a session code for this lab. Ask the facilitator for the B5 code.' };
+    var st = { code: s, b: b, paused: !!p, iv: iv };
+    if (p) { st.within = a; if (a > IVS[iv]) return { error: 'That code is not valid. Ask the facilitator for the current code.' }; }
+    else st.t0 = resolve(a, nowSec);
+    return { state: st };
+  }
+  // Which inject is current at nowSec for a decoded or facilitator state
+  function derive(st, nowSec) {
+    var I = IVS[st.iv], idx, within, nextIn = null;
+    if (st.paused) { idx = st.b; within = st.within || 0; }
+    else {
+      var el = Math.max(0, nowSec - st.t0), steps = Math.floor(el / I);
+      idx = Math.min(7, st.b + steps);
+      within = el - (idx - st.b) * I;
+      if (idx < 7) nextIn = I - within;
+    }
+    var w = Math.min(within, I), nextT = idx < 7 ? INJECTS[idx + 1].t : SIM_END;
+    var sim = INJECTS[idx].t + (nextT - INJECTS[idx].t) * w / I;
+    return { idx: idx, count: idx + 1, within: within, nextIn: nextIn, sim: sim, closed: idx === 7 && within >= I, I: I };
+  }
+
+  window.B5 = {
+    INJECTS: INJECTS, COMP: COMP, LOSS: LOSS, BIA: BIA, IVS: IVS, ALPHA: ALPHA, M: M, TAG: TAG,
+    hm: hm, tplus: tplus, wall: wall, projection: projection,
+    encode: encode, decode: decode, derive: derive, fmtCode: fmtCode, clean: clean, checksum: checksum,
+    answers: {
+      followed: function () { return INJECTS.filter(function (x) { return x.followed; }).map(function (x) { return x.id; }); },
+      rtoExposure: function () { var p = projection(8); return (p.end - BIA.rto) / 60; },
+      rpoExposure: function () { var p = projection(8); return (p.loss - BIA.rpo) / 60; }
+    }
+  };
+})();
+</script>
+
+<script>
+(function () {
+  var B = window.B5, API = null, CUR = null;
+  function nowSec() { return Math.floor(Date.now() / 1000); }
+  function note(k, v) { var a = API || window.LAB_API; return a ? a.note(k, v) : undefined; }
+  function maxSeen() { return +(note('maxSeen') || 0); }
+  function unlockMsg(n) { var x = B.INJECTS[n - 1]; return 'Unlocks when Inject ' + n + ' (' + B.tplus(x.t) + ') is released on the Exercise tab.'; }
+  function lockUntil(n) { return function () { return maxSeen() >= n ? false : unlockMsg(n); }; }
+
+  // Released count and live clock for the current mode
+  function live() {
+    var mode = note('mode') || 'solo', n = nowSec();
+    if (mode === 'solo') { var c = +(note('solo') || 0); return { mode: mode, count: c, idx: c - 1, sim: c ? B.INJECTS[c - 1].t : 0 }; }
+    if (mode === 'fac') {
+      var f = note('fac');
+      if (!f || !f.started) return { mode: mode, count: 0, idx: -1, sim: 0 };
+      var d = B.derive(f, n); d.mode = mode; d.fac = f; return d;
+    }
+    var code = note('code'), dec = code ? B.decode(code, n) : null;
+    if (!dec || !dec.state) return { mode: mode, count: 0, idx: -1, sim: 0, noCode: true };
+    var dt = B.derive(dec.state, n); dt.mode = mode; dt.state = dec.state; return dt;
+  }
+  function mmss(s) { s = Math.max(0, Math.ceil(s)); return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
+
+  function keepFocus(fn) {
+    var a = document.activeElement, id = a && a.id, s1, s2;
+    try { s1 = a.selectionStart; s2 = a.selectionEnd; } catch (e) { }
+    fn();
+    if (id) { var el = document.getElementById(id); if (el && el !== document.activeElement) { el.focus({ preventScroll: true }); try { if (s1 != null) el.setSelectionRange(s1, s2); } catch (e) { } } }
+  }
+  function syncLocks(count) {
+    if (count > maxSeen()) { note('maxSeen', count); if (API) keepFocus(function () { API.refresh(); }); }
+  }
+
+  /* ---------- Facilitator actions: every schedule change issues a new code ---------- */
+  function facCode(f, reason) {
+    var st = { iv: f.iv, b: f.b, paused: f.paused, anchor: f.paused ? f.within : f.t0 };
+    f.code = B.encode(st);
+    f.history = (f.history || []).concat([{ code: f.code, at: Date.now(), reason: reason }]).slice(-6);
+  }
+  function facAction(kind) {
+    var f = note('fac') || { iv: 1 }, n = nowSec();
+    if (kind === 'start') { f = { iv: f.iv == null ? 1 : f.iv, b: 0, t0: n, paused: false, within: 0, started: true, history: [] }; facCode(f, 'start'); }
+    else if (f.started) {
+      var d = B.derive(f, n);
+      if (kind === 'pause' && !f.paused) { f.b = d.idx; f.within = Math.min(Math.floor(d.within), B.IVS[f.iv]); f.paused = true; facCode(f, 'pause'); }
+      else if (kind === 'resume' && f.paused) { f.t0 = n - (f.within || 0); f.paused = false; facCode(f, 'resume'); }
+      else if (kind === 'next' && d.idx < 7) { f.b = d.idx + 1; f.within = 0; f.t0 = n; facCode(f, 'next'); }
+      else if (kind === 'end') { if (!confirm('End this exercise? Teams keep what they have released. You can start a new session afterward.')) return; f = { iv: f.iv }; }
+    }
+    note('fac', f); renderLive(true);
+  }
+
+  /* ---------- Rendering ---------- */
+  function esc(s) { return API.esc(s); }
+  function injCard(x, i, newest) {
+    var obs = (note('obs') || {})[x.id] || {};
+    var radios = [['f', 'Followed plan'], ['g', 'Gap'], ['u', 'Not sure']].map(function (o) {
+      return '<label class="r"><input type="radio" name="b5o-' + x.id + '" id="b5o-' + x.id + '-' + o[0] + '" value="' + o[0] + '" data-obs="' + x.id + '"' + (obs.r === o[0] ? ' checked' : '') + '> ' + o[1] + '</label>';
+    }).join('');
+    return '<article class="b5-inj' + (newest ? ' newest' : '') + '" aria-labelledby="b5h-' + x.id + '">' +
+      '<div class="b5-inj-h">Inject ' + (i + 1) + ' of 8 &middot; ' + B.tplus(x.t) + ' &middot; ' + B.wall(x.t) + (newest ? ' &middot; newest' : '') + '</div>' +
+      '<h5 id="b5h-' + x.id + '">' + x.id + '. ' + esc(x.title) + '</h5>' +
+      '<p><b>Situation.</b> ' + esc(x.sit) + '</p><p><b>Team response.</b> ' + esc(x.resp) + '</p>' +
+      '<p class="b5-pending">Plan sections in play: ' + esc(x.refs) + '</p>' +
+      '<div class="b5-obs"><fieldset><legend>Your observation</legend>' + radios + '</fieldset>' +
+      '<div><label class="b5-nl" for="b5n-' + x.id + '">Note for the memo</label><textarea id="b5n-' + x.id + '" data-note="' + x.id + '" placeholder="Evidence, plan section, objective affected">' + esc(obs.n || '') + '</textarea></div></div></article>';
+  }
+  function feedHTML(L) {
+    if (!L.count) return '<p class="b5-empty">No injects released yet. ' + (L.mode === 'solo' ? 'Select <b>Start exercise</b> to release Inject 1.' : L.mode === 'fac' ? 'Select <b>Start exercise</b> to begin the clock.' : 'Enter the session code to join.') + '</p>';
+    var out = [];
+    for (var i = L.count - 1; i >= 0; i--) out.push(injCard(B.INJECTS[i], i, i === L.count - 1));
+    return '<p class="b5-pending" style="margin-bottom:.6rem">' + L.count + ' of 8 injects released. Newest first. Your observations are saved in this browser.</p><div class="b5-feed">' + out.join('') + '</div>';
+  }
+  function rcHTML(L) {
+    var p = B.projection(L.count), SC = 14 * 60, LS = 24 * 60, simNow = L.sim || 0;
+    function pc(v, s) { return Math.min(100, 100 * v / s).toFixed(2) + '%'; }
+    var segs = p.rows.map(function (r, k) {
+      var w = 100 * r.d / SC;
+      return '<div class="b5-seg-bar ' + (r.known ? 'k' + k : 'plan') + '" style="left:' + pc(r.start, SC) + ';width:' + w.toFixed(2) + '%" title="' + esc(r.c.label) + '">' + (w > 9 ? esc(B.hm(r.d)) + (r.known ? '' : ' plan') : '') + '</div>';
+    }).join('');
+    var rtoLeft = B.BIA.rto - simNow;
+    var sum = '<b>Projected OMS restoration: ' + B.tplus(p.end) + '</b> against an RTO of ' + B.hm(B.BIA.rto) + ' (' + p.knownCount + ' of 5 recovery steps confirmed by the exercise' + (p.allKnown ? '' : '; the rest use plan assumptions') + '). ' +
+      (L.count ? 'Exercise time is ' + B.tplus(simNow) + '. ' + (rtoLeft > 0 ? 'The RTO window closes in ' + B.hm(rtoLeft) + ' of exercise time.' : 'The RTO window closed at ' + B.tplus(B.BIA.rto) + '.') : 'The exercise has not started.');
+    var rows = p.rows.map(function (r, k) {
+      return '<tr><td>' + (k + 1) + '. ' + esc(r.c.label) + '</td><td>' + B.hm(r.c.plan) + '<br><span class="b5-pending">' + esc(r.c.planNote) + '</span></td><td>' + (r.known ? '<b>' + B.hm(r.c.actual) + '</b><br><span class="b5-pending">' + esc(r.c.actNote) + '</span>' : '<span class="b5-tag">Not yet tested</span>') + '</td><td>' + B.tplus(r.start) + ' to ' + B.tplus(r.end) + ' <span class="b5-tag' + (r.known ? ' act' : '') + '">' + (r.known ? 'exercise' : 'plan') + '</span></td></tr>';
+    }).join('');
+    var lw = Math.min(100, 100 * p.loss / LS);
+    return '<section class="b5-rc" aria-labelledby="b5-rc-h"><h4 id="b5-rc-h">Recovery clock: order management system (Tier 1)</h4>' +
+      '<p class="b5-rc-sum">' + sum + '</p>' +
+      '<span class="b5-lbl">Recovery time, T+0:00 to T+14:00</span>' +
+      '<div class="b5-track" role="img" aria-label="Recovery path projected to ' + B.tplus(p.end) + ' against an RTO of ' + B.hm(B.BIA.rto) + '">' + segs +
+        '<div class="b5-mark" style="left:' + pc(B.BIA.rto, SC) + '"><span>RTO ' + B.hm(B.BIA.rto) + '</span></div>' +
+        (L.count ? '<div class="b5-mark now" style="left:' + pc(simNow, SC) + '"><span>Now ' + B.tplus(simNow) + '</span></div>' : '') + '</div>' +
+      '<div class="b5-axis" aria-hidden="true"><span>0 h</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span><span>12</span><span>14 h</span></div>' +
+      '<div class="table-wrap"><table class="data"><thead><tr><th scope="col">Recovery step</th><th scope="col">Plan assumption</th><th scope="col">Exercise result</th><th scope="col">Projected window</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<span class="b5-lbl" style="margin-top:1rem">Data loss: age of the restore point at the outage, 0 to 24 hours</span>' +
+      '<div class="b5-track" role="img" aria-label="Data loss ' + B.hm(p.loss) + ' against an RPO of ' + B.hm(B.BIA.rpo) + '"><div class="b5-seg-bar ' + (p.lossKnown ? 'loss' : 'plan') + '" style="left:0;width:' + lw.toFixed(2) + '%">' + (lw > 8 ? B.hm(p.loss) : '') + '</div>' +
+        '<div class="b5-mark" style="left:' + pc(B.BIA.rpo, LS) + '"><span>RPO ' + B.hm(B.BIA.rpo) + '</span></div></div>' +
+      '<div class="b5-axis" aria-hidden="true"><span>0 h</span><span>6</span><span>12</span><span>18</span><span>24 h</span></div>' +
+      '<p class="b5-rc-sum" style="margin:0"><b>Restore point:</b> ' + (p.lossKnown ? 'immutable vault backup, Thursday 23:00. Data loss ' + B.hm(p.loss) + ' (exercise result).' : 'warm-site replica, expected lag up to ' + B.hm(p.loss) + ' (plan assumption, not yet tested).') + ' RPO ' + B.hm(B.BIA.rpo) + '.</p></section>';
+  }
+  function curHTML(L) {
+    if (!L.count) return '<div class="b5-cur"><p>Waiting for Inject 1.</p></div>';
+    var x = B.INJECTS[L.idx];
+    return '<div class="b5-cur"><div class="b5-cur-meta">Inject ' + (L.idx + 1) + ' of 8 &middot; ' + B.tplus(x.t) + ' &middot; ' + B.wall(x.t) + '</div><h3>' + esc(x.title) + '</h3><p>' + esc(x.sit) + '</p><p class="b5-resp"><b>Team response.</b> ' + esc(x.resp) + '</p></div>';
+  }
+  function clockText(L) {
+    if (!L.count) return { clk: 'T+0:00', sub: 'Not started' };
+    var sub = B.wall(L.sim);
+    if (L.mode === 'solo') sub += ' &middot; self-paced';
+    else if (L.closed) sub += ' &middot; all injects released; exercise window closed';
+    else if (L.nextIn != null) sub += ' &middot; next inject in ' + mmss(L.nextIn);
+    else if (L.idx === 7) sub += ' &middot; final inject';
+    if (L.fac ? L.fac.paused : (L.state && L.state.paused)) sub += ' &middot; <b>paused</b>';
+    return { clk: B.tplus(L.sim), sub: sub };
+  }
+  function ctlHTML(L) {
+    var mode = L.mode;
+    if (mode === 'solo') {
+      return '<div class="b5-bar"><div><span class="b5-lbl">Exercise clock</span><span class="b5-simclk" id="b5-clk">' + clockText(L).clk + '</span> <span id="b5-sub">' + clockText(L).sub + '</span></div>' +
+        '<div class="b5-btnrow" style="margin-left:auto">' + (L.count < 8 ? '<button type="button" class="btn" id="b5-rel">' + (L.count ? 'Release next inject (' + (L.count + 1) + ' of 8)' : 'Start exercise: release Inject 1') + '</button>' : '<span><b>All 8 injects released.</b> Complete the checklist and the memo.</span>') + '</div></div>';
+    }
+    if (mode === 'fac') {
+      var f = L.fac || note('fac') || { iv: 1 };
+      var ivSel = '<div class="b5-seg" role="group" aria-label="Real minutes per inject">' + B.IVS.map(function (s, k) { return '<button type="button" id="b5-iv' + k + '" data-iv="' + k + '" aria-pressed="' + ((f.iv == null ? 1 : f.iv) === k) + '"' + (f.started ? ' disabled' : '') + '>' + (s / 60) + ' min</button>'; }).join('') + '</div>';
+      if (!f.started) return '<div class="b5-board"><p class="b5-lbl">Facilitator setup</p><p class="lead-p" style="margin:.3rem 0 .8rem">Choose the real time per inject, then start. The page shows a session code; teams type it on their own devices and their view follows this clock. Exercise time runs from T+0:00 to T+8:00 across the eight injects.</p>' +
+        '<div class="b5-btnrow"><span class="b5-lbl" style="margin-right:.3rem">Pace</span>' + ivSel + '<button type="button" class="btn" id="b5-start">Start exercise</button></div></div>';
+      var last = f.history[f.history.length - 1], reasons = { start: 'Session started', pause: 'Exercise paused', resume: 'Exercise resumed', next: 'Next inject released early' };
+      var t = new Date(last.at), tt = (t.getHours() < 10 ? '0' : '') + t.getHours() + ':' + (t.getMinutes() < 10 ? '0' : '') + t.getMinutes();
+      var noteTxt = last.reason === 'start' ? 'Teams: open Lab B5, choose Team, and enter this code.' : reasons[last.reason] + ' at ' + tt + '. <b>New code.</b> Teams: enter this code to re-sync.';
+      var ct = clockText(L);
+      return '<div class="b5-board" id="b5-board" aria-label="Facilitator display">' +
+        '<div class="b5-b-top"><div><span class="b5-lbl">Session code</span><span class="b5-code" id="b5-code" aria-live="polite">' + B.fmtCode(f.code) + '</span><span class="b5-codenote' + (last.reason === 'start' ? ' calm' : '') + '">' + noteTxt + '</span>' +
+          (f.history.length > 1 ? '<p class="b5-prev">Earlier codes this session (no longer current): ' + f.history.slice(0, -1).map(function (h) { return B.fmtCode(h.code); }).join(', ') + '</p>' : '') + '</div>' +
+          '<div><span class="b5-lbl">Exercise clock <span class="b5-state' + (f.paused ? ' paused' : '') + '">' + (f.paused ? 'Paused' : 'Running') + '</span></span><span class="b5-clock" id="b5-clk">' + ct.clk + '</span><span class="b5-clock-sub" id="b5-sub">' + ct.sub + '</span><span class="b5-prev">Pace: ' + (B.IVS[f.iv] / 60) + ' real minutes per inject</span></div></div>' +
+        '<div id="b5-curbox">' + curHTML(L) + '</div>' +
+        '<div class="b5-btnrow">' + (f.paused ? '<button type="button" class="btn" id="b5-resume">Resume</button>' : '<button type="button" class="btn secondary" id="b5-pause">Pause</button>') +
+          (L.idx < 7 ? '<button type="button" class="btn ghost" id="b5-next">Release next inject now</button>' : '') +
+          (document.fullscreenEnabled ? '<button type="button" class="btn ghost" id="b5-fs">Present full screen</button>' : '') +
+          '<button type="button" class="btn ghost" id="b5-end">End exercise</button></div></div>';
+    }
+    // team
+    var code = note('code'), err = CUR && CUR.err, warn = '';
+    var form = '<div class="b5-join"><div><label for="b5-codein">Session code</label><input type="text" id="b5-codein" maxlength="9" autocomplete="off" spellcheck="false" placeholder="ABC-DEFG" value="' + esc(CUR && CUR.draft != null ? CUR.draft : (code ? B.fmtCode(code) : '')) + '" aria-describedby="b5-codehelp' + (err ? ' b5-err' : '') + '"></div><button type="button" class="btn" id="b5-join">' + (code ? 'Re-sync with this code' : 'Join session') + '</button></div>' +
+      '<p class="b5-pending" id="b5-codehelp" style="margin:-.3rem 0 .8rem">Seven characters from the projector. Dashes and case do not matter. When the facilitator pauses, resumes, or skips ahead, a new code appears: enter it here. Device clocks must be correct to within a few seconds.</p>' +
+      (err ? '<p class="b5-err" id="b5-err" role="alert">' + esc(err) + '</p>' : '');
+    if (L.noCode) return '<div class="b5-board team"><span class="b5-lbl">Join a facilitated session</span>' + form + '</div>';
+    if (L.state && !L.state.paused) { var age = nowSec() - L.state.t0; if (age > 6 * 3600) warn = 'This code is from a session that started more than 6 hours ago. Ask the facilitator for the current code.'; if (age < -300) warn = 'This code starts in the future. Check that this device’s clock is set correctly.'; }
+    var c2 = clockText(L);
+    return '<div class="b5-board team" aria-label="Team display">' + (warn ? '<p class="b5-warn" role="status">' + esc(warn) + '</p>' : '') +
+      '<div class="b5-b-top"><div><span class="b5-lbl">Synced with code</span><span class="b5-code">' + B.fmtCode(code) + '</span><span class="b5-pending">' + (L.state.paused ? 'The facilitator paused the exercise. Wait for a new code.' : 'Following the facilitator clock.') + '</span></div>' +
+      '<div><span class="b5-lbl">Exercise clock</span><span class="b5-clock" id="b5-clk">' + c2.clk + '</span><span class="b5-clock-sub" id="b5-sub">' + c2.sub + '</span></div></div>' +
+      '<div id="b5-curbox">' + curHTML(L) + '</div><div style="border-top:1px solid var(--border);padding-top:.8rem">' + form + '</div></div>';
+  }
+
+  function renderLive(force) {
+    if (!CUR || !document.body.contains(CUR.root)) return;
+    var L = live();
+    keepFocus(function () {
+      CUR.root.querySelector('#b5-ctl').innerHTML = ctlHTML(L);
+      CUR.root.querySelector('#b5-rcbox').innerHTML = rcHTML(L);
+      if (force || CUR.lastCount !== L.count) CUR.root.querySelector('#b5-feed').innerHTML = feedHTML(L);
+      document.querySelectorAll('.b5-mode').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.mode === L.mode); });
+    });
+    if (CUR.lastCount !== L.count && L.count && CUR.lastCount != null) { var x = B.INJECTS[L.idx]; CUR.root.querySelector('#b5-live').textContent = 'Inject ' + L.count + ' released: ' + x.title + ', ' + B.tplus(x.t) + '.'; }
+    CUR.lastCount = L.count; CUR.lastPaused = L.fac ? L.fac.paused : null; CUR.lastRcMin = Math.floor(L.sim || 0);
+    syncLocks(L.count);
+  }
+  function tick() {
+    if (!CUR || !document.body.contains(CUR.root)) return;
+    var L = live();
+    if (L.count !== CUR.lastCount) return renderLive();
+    var ct = clockText(L), c = document.getElementById('b5-clk'), s = document.getElementById('b5-sub');
+    if (c) c.textContent = ct.clk; if (s) s.innerHTML = ct.sub;
+    var m = Math.floor(L.sim || 0);
+    if (m !== CUR.lastRcMin) { CUR.lastRcMin = m; CUR.root.querySelector('#b5-rcbox').innerHTML = rcHTML(L); }
+  }
+  setInterval(tick, 1000);
+
+  function plansHTML() {
+    function sec(n, h, t) { return '<li><b>' + n + ' ' + h + '.</b> ' + t + '</li>'; }
+    return '<div class="lb-doc"><p class="eyebrow">Document 1</p><h4>Kestrel Valley Distribution: Disaster Recovery Plan v4.1 (excerpt)</h4><p class="b5-pending" style="margin:0 0 .5rem">Approved March 2025 by the CIO. Plan owner: VP of IT Operations.</p><ul>' +
+      sec('2.1', 'Declaration', 'Only the VP of IT Operations may declare a disaster. If the VP cannot be reached within 30 minutes, the CIO declares. A declaration is required within 60 minutes of a confirmed site-wide outage.') +
+      sec('2.2', 'Call tree', 'The incident commander starts the call tree in Appendix C within 15 minutes of confirming an outage. Each department head reviews and updates the Appendix C entries quarterly.') +
+      sec('2.3', 'Incident commander', 'The on-call IT operations manager is the incident commander and directs the technical response until relieved.') +
+      sec('2.4', 'Objective escalation', 'If a Tier 1 system is projected to miss its RTO, the incident commander informs the declaring executive and the business owner within 30 minutes and records the decision taken.') +
+      sec('3.1', 'Recovery order', 'OMS, then WMS, then ERP finance, then email and collaboration.') +
+      sec('3.2', 'OMS recovery strategy', 'Fail over to the warm-site replica, which receives continuous database replication (expected lag under 15 minutes). Fallback: restore from the nightly immutable vault backup taken at 23:00.') +
+      sec('3.3', 'Restore point validation', 'Before any restore after a malware event, the security team scans the restore point and approves it as clean.') +
+      sec('4.1', 'Alternate site', 'Northgate Colocation, contract NGC-2291: warm standby environment available within 2 hours of the declaration notice.') +
+      sec('4.2', 'Runbooks', 'System restore runbooks are kept in Appendix D. They are tested annually and after any major infrastructure change.') +
+      sec('5.1', 'Communications', 'Within 4 hours of declaration, the communications lead issues the pre-approved customer holding statement, and Legal notifies outside counsel and the cyber insurer. One named spokesperson handles the media.') +
+      sec('5.2', 'Ransomware', 'No employee communicates with a threat actor. Messages are forwarded to security and counsel. Decisions on any payment rest with the CEO on advice of counsel and the insurer.') +
+      sec('6.1', 'Compromised systems', 'Affected systems are isolated and preserved for forensic review. They return to service only after a rebuild from known-good images.') +
+      sec('7', 'Testing', 'The plan is exercised at least annually. Last exercise: structured walk-through, April 2025. Last technical restore test at the alternate site: September 2024, before the storage migration.') +
+      '</ul></div>' +
+      '<div class="lb-doc"><p class="eyebrow">Document 2</p><h4>Appendix C: call tree (excerpt, last updated November 2024)</h4><div class="table-wrap"><table class="data"><thead><tr><th scope="col">Role</th><th scope="col">Primary</th><th scope="col">Backup</th></tr></thead><tbody>' +
+      '<tr><td>Disaster declaration</td><td>Dana Whitfield, VP of IT Operations</td><td>Kwame Asante, CIO</td></tr>' +
+      '<tr><td>Incident commander</td><td>On-call IT operations manager</td><td>IT operations duty lead</td></tr>' +
+      '<tr><td>OMS application lead</td><td>Ana Lucía Ferreira</td><td>Mei Lin Zhao, DBA</td></tr>' +
+      '<tr><td>WMS application lead</td><td>Martin Keller</td><td>Devon Pryce</td></tr>' +
+      '<tr><td>Security lead</td><td>Farid Rahimi</td><td>SOC shift lead</td></tr>' +
+      '<tr><td>Communications lead</td><td>Aaliyah Brooks</td><td>Jonah Whitehorse</td></tr>' +
+      '<tr><td>OMS business owner</td><td>Grace Odum, VP of Customer Operations</td><td>Rob Kincaid, VP of Sales</td></tr></tbody></table></div></div>';
+  }
+  function biaHTML() {
+    return '<div class="lb-doc"><p class="eyebrow">Document 3</p><h4>Appendix A: BIA recovery objectives (approved by the business owners, January 2026)</h4><div class="table-wrap"><table class="data"><thead><tr><th scope="col">System</th><th scope="col">Business process</th><th scope="col">Tier</th><th scope="col">RTO</th><th scope="col">RPO</th><th scope="col">Maximum tolerable downtime</th></tr></thead><tbody>' +
+      '<tr><td><b>Order management (OMS)</b></td><td>Order entry, EDI, pricing</td><td>1</td><td><b>4 hours</b></td><td><b>1 hour</b></td><td>24 hours</td></tr>' +
+      '<tr><td>Warehouse management (WMS)</td><td>Picking, packing, shipping</td><td>1</td><td>6 hours</td><td>4 hours</td><td>24 hours</td></tr>' +
+      '<tr><td>ERP finance</td><td>Billing, payables, general ledger</td><td>2</td><td>24 hours</td><td>12 hours</td><td>72 hours</td></tr>' +
+      '<tr><td>Email and collaboration</td><td>Internal communication</td><td>3</td><td>48 hours</td><td>24 hours</td><td>5 days</td></tr></tbody></table></div>' +
+      '<p class="lead-p" style="margin-top:.6rem">The recovery clock tracks the OMS, the system with the tightest objectives. The BIA sets the objectives. The DR capability must be built and funded to meet them.</p></div>' +
+      '<div class="lb-doc"><p class="eyebrow">Document 4</p><h4>Backup and replication configuration (from the IT asset register)</h4><ul>' +
+      '<li><b>Replication:</b> continuous, asynchronous OMS database replication to the warm-site replica. Same administrative domain as production.</li>' +
+      '<li><b>Snapshots:</b> hourly on the primary storage array, kept 48 hours, managed with the same administrator accounts as production.</li>' +
+      '<li><b>Vault:</b> nightly full backup at 23:00 to an immutable cloud vault, 35-day retention, separate credentials.</li>' +
+      '<li><b>Offline:</b> weekly tape on Sunday, stored off site.</li></ul></div>' +
+      '<div class="lb-doc"><p class="eyebrow">Document 5</p><h4>Contract register: Northgate Colocation, NGC-2291</h4><div class="table-wrap"><table class="data"><thead><tr><th scope="col">Term</th><th scope="col">Before January 2026</th><th scope="col">Renewal, January 2026</th></tr></thead><tbody>' +
+      '<tr><td>Service tier</td><td>Warm Standby</td><td>Reserved Capacity</td></tr>' +
+      '<tr><td>Environment availability</td><td>2 hours from declaration notice</td><td>6 hours from declaration notice</td></tr>' +
+      '<tr><td>Annual fee</td><td>$212,000</td><td>$128,000</td></tr>' +
+      '<tr><td>Approved by</td><td colspan="2">Procurement and the VP of IT Operations. DRP section 4.1 was not updated.</td></tr></tbody></table></div></div>';
+  }
+
+  window.B5UI = {
+    workbench: function (root, api) {
+      API = api; CUR = { root: root, lastCount: null };
+      root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-ex" aria-controls="pn-ex" aria-selected="true">Exercise</button>' +
+        '<button role="tab" id="tb-plan" aria-controls="pn-plan" aria-selected="false" tabindex="-1">Plan excerpt</button>' +
+        '<button role="tab" id="tb-bia" aria-controls="pn-bia" aria-selected="false" tabindex="-1">BIA and contracts</button></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-ex" aria-labelledby="tb-ex">' +
+          '<div class="b5-modes" role="group" aria-label="Exercise mode">' +
+            '<button type="button" class="b5-mode" id="b5m-solo" data-mode="solo" aria-pressed="false"><b>Solo</b>Self-paced. Release each inject when you are ready.</button>' +
+            '<button type="button" class="b5-mode" id="b5m-fac" data-mode="fac" aria-pressed="false"><b>Facilitator</b>For the projector. Start the clock, show the session code, and set the pace.</button>' +
+            '<button type="button" class="b5-mode" id="b5m-team" data-mode="team" aria-pressed="false"><b>Team</b>Join with the code on the projector. Your view follows that clock.</button></div>' +
+          '<div id="b5-ctl"></div><p class="sr-only" id="b5-live" aria-live="polite"></p><div id="b5-rcbox"></div>' +
+          '<h4 class="b5-h4">Inject log and observations</h4><div id="b5-feed"></div></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-plan" aria-labelledby="tb-plan" hidden>' + plansHTML() + '</div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-bia" aria-labelledby="tb-bia" hidden>' + biaHTML() + '</div></div>';
+      var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+      function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+      tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+      if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+
+      // Event delegation for all exercise controls
+      root.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b || !root.contains(b)) return;
+        if (b.dataset.mode) { api.note('mode', b.dataset.mode); CUR.err = null; CUR.draft = null; renderLive(true); return; }
+        if (b.id === 'b5-rel') { var c = Math.min(8, +(api.note('solo') || 0) + 1); api.note('solo', c); renderLive(); var nb = document.getElementById('b5-rel'); if (nb) nb.focus(); return; }
+        if (b.dataset.iv != null) { var f = api.note('fac') || {}; f.iv = +b.dataset.iv; api.note('fac', f); renderLive(); return; }
+        if (b.id === 'b5-start') { facAction('start'); var p = document.getElementById('b5-pause'); if (p) p.focus(); return; }
+        if (b.id === 'b5-pause') { facAction('pause'); var r = document.getElementById('b5-resume'); if (r) r.focus(); return; }
+        if (b.id === 'b5-resume') { facAction('resume'); var q = document.getElementById('b5-pause'); if (q) q.focus(); return; }
+        if (b.id === 'b5-next') return facAction('next');
+        if (b.id === 'b5-end') return facAction('end');
+        if (b.id === 'b5-fs') { var bd = document.getElementById('b5-board'); if (document.fullscreenElement) document.exitFullscreen(); else if (bd && bd.requestFullscreen) bd.requestFullscreen(); return; }
+        if (b.id === 'b5-join') return join();
+      });
+      function join() {
+        var inp = document.getElementById('b5-codein'), d = B.decode(inp.value, nowSec());
+        if (d.error) { CUR.err = d.error; CUR.draft = inp.value; renderLive(); var i2 = document.getElementById('b5-codein'); if (i2) i2.focus(); return; }
+        CUR.err = null; CUR.draft = null; api.note('code', d.state.code); renderLive(true);
+        var i3 = document.getElementById('b5-codein'); if (i3) i3.focus();
+      }
+      root.addEventListener('keydown', function (e) { if (e.target.id === 'b5-codein' && e.key === 'Enter') { e.preventDefault(); join(); } });
+      root.addEventListener('input', function (e) {
+        var t = e.target;
+        if (t.id === 'b5-codein') { CUR.draft = t.value; return; }
+        if (t.dataset.note) { var o = api.note('obs') || {}; o[t.dataset.note] = o[t.dataset.note] || {}; o[t.dataset.note].n = t.value; api.note('obs', o); }
+      });
+      root.addEventListener('change', function (e) {
+        var t = e.target;
+        if (t.dataset.obs) { var o = api.note('obs') || {}; o[t.dataset.obs] = o[t.dataset.obs] || {}; o[t.dataset.obs].r = t.value; api.note('obs', o); }
+      });
+      document.addEventListener('fullscreenchange', function () { var fb = document.getElementById('b5-fs'); if (fb) fb.textContent = document.fullscreenElement ? 'Exit full screen' : 'Present full screen'; });
+      renderLive(true);
+    },
+    lockUntil: lockUntil
+  };
+
+  // Automated test hook: release every inject in Solo mode
+  window.LAB_TEST_UNLOCK = function () { if (!API) return; API.note('mode', 'solo'); API.note('solo', 8); API.note('maxSeen', 8); renderLive(true); };
+
+  window.LAB_SELFTEST = function () {
+    var log = [], P = [], now = nowSec();
+    // 1) Round-trip encode/decode
+    var states = [
+      { iv: 1, b: 0, paused: false, anchor: now - 30 },
+      { iv: 0, b: 3, paused: false, anchor: now - 400 },
+      { iv: 2, b: 7, paused: false, anchor: now - 3600 },
+      { iv: 1, b: 4, paused: true, anchor: 100 },
+      { iv: 2, b: 0, paused: true, anchor: 0 },
+      { iv: 0, b: 6, paused: true, anchor: 120 }
+    ];
+    var kb = Math.ceil(now / B.M) * B.M; states.push({ iv: 1, b: 2, paused: false, anchor: kb - 5, _now: kb + 100 }); // straddles the 2^22 wrap
+    states.forEach(function (s, k) {
+      var c = B.encode(s), n = s._now || now, d = B.decode(B.fmtCode(c).toLowerCase(), n);
+      if (!/^[0-9A-HJKMNP-TV-Z]{7}$/.test(c)) P.push('code ' + c + ' has unexpected characters');
+      if (!d.state) { P.push('state ' + k + ' failed to decode: ' + d.error); return; }
+      var ok = d.state.iv === s.iv && d.state.b === s.b && d.state.paused === s.paused && (s.paused ? d.state.within === s.anchor : d.state.t0 === s.anchor);
+      if (!ok) P.push('state ' + k + ' did not round-trip (' + c + ')');
+    });
+    log.push('round-trip ' + states.length + ' session states');
+    // 2) Checksum rejects every single-character corruption
+    var base = B.encode(states[0]), accepted = 0, tried = 0;
+    for (var i = 0; i < 7; i++) for (var j = 0; j < 32; j++) {
+      if (B.ALPHA[j] === base[i]) continue;
+      var bad = base.slice(0, i) + B.ALPHA[j] + base.slice(i + 1); tried++;
+      if (B.decode(bad, now).state) accepted++;
+    }
+    if (accepted) P.push(accepted + ' corrupted codes were accepted');
+    log.push('checksum rejected ' + (tried - accepted) + '/' + tried + ' single-character corruptions');
+    if (B.decode('ABC-DEF', now).state || B.decode('ABC-DEFU!', now).state || B.decode('', now).state) P.push('malformed code accepted');
+    // a payload with a valid checksum but the wrong lab tag must be rejected
+    var v = (((1 * 4 + 1) * 2) * 8) * B.M + 5, ch = []; for (i = 5; i >= 0; i--) { ch[i] = v % 32; v = Math.floor(v / 32); } ch.push(B.checksum(ch));
+    if (B.decode(ch.map(function (x) { return B.ALPHA[x]; }).join(''), now).state) P.push('wrong-tag code accepted');
+    // 3) Inject derivation at sample times
+    var I = 240, t0 = 1800000000;
+    [[0, 0], [239, 0], [240, 1], [719, 2], [7 * I, 7], [7 * I + 9999, 7], [-50, 0]].forEach(function (c) {
+      var d = B.derive({ iv: 1, b: 0, paused: false, t0: t0 }, t0 + c[0]); if (d.idx !== c[1]) P.push('running b=0 at +' + c[0] + 's gave inject ' + (d.idx + 1) + ', expected ' + (c[1] + 1));
+    });
+    var d3 = B.derive({ iv: 0, b: 3, paused: false, t0: t0 }, t0 + 250); if (d3.idx !== 5 || d3.within !== 10) P.push('running b=3, 2-minute pace, +250s should be inject 6 with 10s elapsed');
+    var d4 = B.derive({ iv: 2, b: 7, paused: false, t0: t0 }, t0 + 30); if (d4.nextIn !== null || d4.idx !== 7) P.push('final inject should have no next release');
+    [0, 500, 99999].forEach(function (dt) { var d = B.derive({ iv: 1, b: 4, paused: true, within: 120 }, t0 + dt); if (d.idx !== 4 || d.nextIn !== null || Math.abs(d.sim - (180 + 60 * 0.5)) > 1e-9) P.push('paused state drifted at +' + dt + 's'); });
+    var dr = B.derive({ iv: 1, b: 4, paused: false, t0: t0 - 120 }, t0); if (dr.idx !== 4 || dr.within !== 120) P.push('resume anchor should keep the elapsed time in the inject');
+    // pause, resume, and skip through decoded codes
+    var pc = B.decode(B.encode({ iv: 1, b: 2, paused: true, anchor: 90 }), now).state, rc = B.decode(B.encode({ iv: 1, b: 2, paused: false, anchor: now - 90 }), now).state;
+    if (B.derive(pc, now + 5000).idx !== 2 || B.derive(rc, now + 150).idx !== 3 || B.derive(rc, now + 149).idx !== 2) P.push('decoded pause/resume derivation wrong');
+    log.push('inject derivation checked at sample times, including paused states');
+    // 4) Answer key re-derived independently from the displayed data
+    var tot = 0; B.COMP.forEach(function (c) { tot += c.actual; });
+    var rto = (tot - B.BIA.rto) / 60, rpo = (B.LOSS.actual - B.BIA.rpo) / 60;
+    if (rto !== B.answers.rtoExposure()) P.push('RTO exposure mismatch'); if (rpo !== B.answers.rpoExposure()) P.push('RPO exposure mismatch');
+    var planTot = 0; B.COMP.forEach(function (c) { planTot += c.plan; }); if (planTot !== B.BIA.rto) P.push('plan path should exactly meet the RTO, got ' + planTot);
+    if (B.projection(0).end !== planTot || B.projection(8).end !== tot) P.push('projection does not match component sums');
+    var fol = B.INJECTS.filter(function (x) { return x.followed; }).map(function (x) { return x.id; }).join(',');
+    if (fol !== B.answers.followed().join(',')) P.push('followed-plan key mismatch');
+    for (i = 1; i < 8; i++) if (B.INJECTS[i].t <= B.INJECTS[i - 1].t) P.push('inject times not increasing');
+    log.push('projected OMS recovery T+' + B.hm(tot) + ', RTO exposure ' + rto + ' h, RPO exposure ' + rpo + ' h, followed plan: ' + fol);
+    return { log: log, problems: P };
+  };
+})();
+</script>
+
+<script>
+window.LAB = {
+  id: 'B5',
+  title: 'Disaster Recovery Tabletop Simulation',
+  accent: 'Tabletop Simulation',
+  domain: 'Domain 4',
+  time: '60–90 min',
+  level: 'Advanced',
+  lessonHref: 'lesson06.html#s5',
+  lessonLabel: 'Lesson 6, Business Continuity Plan and Disaster Recovery Plan',
+  lede: 'A recovery plan that has never been exercised is an assumption. Observe a timed ransomware tabletop as the IS auditor, judge each decision against the plan and the BIA, track the recovery clock against RTO and RPO, and rank what you find.',
+  workbenchTitle: 'Exercise workbench',
+  ticket: {
+    number: 'IA-2026-0612',
+    priority: 'High priority',
+    from: 'Helena Okafor, Director of Internal Audit',
+    to: 'IS audit staff (you)',
+    subject: 'Observe the annual DR tabletop: ransomware scenario, order management system',
+    due: 'Post-exercise memo due within two business days',
+    body: '<p>Kestrel Valley Distribution supplies foodservice and janitorial products to about 2,400 customers from three warehouses. The audit committee asked us to observe this year’s disaster recovery exercise rather than rely on management’s summary of it.</p>' +
+      '<p>The scenario is a ransomware outage of the primary data center on a Friday evening. The business continuity manager, Mariam Haddad, will release eight injects on a clock. The response team will describe what it does at each one. <b>You observe and evaluate. You do not advise the team or take part in decisions.</b></p>' +
+      '<p>For each inject, judge whether the team followed the documented plan and whether the recovery objectives can still be met. The plan excerpt, the BIA targets, and the relevant contract and backup records are on the workbench. The order management system (OMS) is the system to watch: <b>RTO 4 hours, RPO 1 hour</b>.</p>' +
+      '<p>Afterward, send me a short memo with your findings ranked by risk. Credit what worked. A tabletop that surfaces gaps has done its job, so the finding is about the plan and the capability, not about the people in the room.</p>'
+  },
+  howTo: 'Choose a mode on the <b>Exercise</b> tab. <b>Solo</b>: you release each inject yourself. <b>Facilitator</b>: for the projector; start the clock and show the session code. <b>Team</b>: type the projector’s session code on your own device and your view follows the facilitator. If the facilitator pauses or skips ahead, a new code appears; enter it to re-sync. Checklist items unlock as their injects are released. Log a quick observation on each inject as it arrives; your notes feed the memo. Team mode: enter the team name and members on the report.',
+  workIntro: 'Release or follow the injects on the <b>Exercise</b> tab, compare each response with the <b>Plan excerpt</b> and the <b>BIA and contracts</b> records, and watch the recovery clock. Checklist items unlock as their injects are released.',
+  checklist: [
+    { id: 'i2', type: 'choice', points: 10, short: 'Inject 2: call tree', title: 'Inject 2: the call tree',
+      locked: B5UI.lockUntil(2),
+      task: 'The call tree reached a former employee and two outdated numbers, and the team lost 35 minutes. What is the <b>best</b> characterization of this observation?',
+      options: ['No gap: improvising contacts under pressure is what a call tree exercise expects', 'Plan maintenance gap: the quarterly contact review in section 2.2 is not being performed', 'An HR control failure: HR should maintain the DR call tree after every departure', 'A communications gap: customers were not told about the outage within the hour'],
+      answer: 1,
+      hint: 'Compare the Appendix C “last updated” date with the review frequency in section 2.2. Who owns that review under the plan?',
+      debrief: '<p>Appendix C was last updated in November 2024, and the plan requires a quarterly review by department heads. A WMS lead who left in May and two other dead entries show that at least several reviews were skipped. The 35-minute delay was a direct effect.</p><p>The auditor reports this as a plan maintenance finding owned by the plan owner, with a recommendation to tie call-tree updates to HR departure and transfer events and to evidence each quarterly review. HR can feed the process, but the plan owner remains accountable.</p>',
+      reviewNote: 'An outdated call tree is a plan maintenance failure; check the review frequency and the last-updated date.' },
+    { id: 'i3', type: 'choice', points: 10, short: 'Inject 3: declaration', title: 'Inject 3: declaration authority',
+      locked: B5UI.lockUntil(3),
+      task: 'Neither the VP of IT Operations nor the CIO could be reached, and the incident commander declared on his own authority at T+1:50. Which conclusion is <b>best</b> supported?',
+      options: ['No gap: the plan lets the incident commander act whenever executives are unreachable', 'A minor timing issue only: the 60-minute target is guidance, and the delay was short', 'Authority gap: succession stops at two executives, so the declaration was late and unauthorized', 'A backup gap: the late declaration is what caused the 19 hours of lost order data'],
+      answer: 2,
+      hint: 'Read section 2.1 closely. Who may declare, how deep does the succession go, and what is the time limit? Then look at what the declaration delay feeds on the recovery clock.',
+      debrief: '<p>Section 2.1 names only two people and requires a declaration within 60 minutes. With both unavailable on a Friday evening, the plan had no authorized path, so the declaration came 50 minutes late and from someone the plan does not empower. That delay pushed back the provider notice and every recovery step after it.</p><p>The auditor recommends a deeper succession list (at least three named alternates), pre-delegated authority for the incident commander under defined conditions, and periodic checks that declarers are reachable. The data loss is a separate backup issue and was not caused by the delay.</p>',
+      reviewNote: 'Declaration authority needs depth of succession; a single alternate is a single point of failure.' },
+    { id: 'i4', type: 'choice', points: 10, short: 'Inject 4: backups', title: 'Inject 4: the newest clean backup',
+      locked: B5UI.lockUntil(4),
+      task: 'The replica was encrypted, the snapshots were deleted, and the newest clean copy is the 19-hour-old vault backup. The team scanned it and selected it. What should the auditor conclude?',
+      options: ['The team deviated from the plan by delaying the restore for a 40-minute malware scan', 'The team should have restored from the warm-site replica to stay within the 1-hour RPO', 'No gap: the backup was confirmed clean, so the recovery objectives can still be achieved', 'The team followed the plan, but the backup design cannot meet the 1-hour RPO for ransomware'],
+      answer: 3,
+      hint: 'Separate two questions: did the team follow section 3.3, and can the backup and replication design deliver a 1-hour RPO when the threat is ransomware? Check Document 4.',
+      debrief: '<p>The team did exactly what section 3.3 requires: it validated the restore point before use. The problem is the design. Continuous replication faithfully copied the encryption, and the hourly snapshots shared administrator accounts with production, so the attacker could delete them. Only the nightly immutable backup survived, and it is 19 hours old.</p><p>Replication is not a backup. The auditor reports a capability gap against the BIA: the 1-hour RPO is achievable only for failures that do not corrupt data. The recommendation is immutable or logically isolated copies at an interval that meets the RPO, with separate credentials, or a documented business decision to accept a longer RPO.</p>',
+      reviewNote: 'Distinguish procedure compliance from capability; replication copies corruption, so it does not meet an RPO for ransomware.' },
+    { id: 'rpo', type: 'number', points: 10, short: 'RPO exposure', title: 'RPO exposure from the recovery clock',
+      locked: B5UI.lockUntil(4), unit: 'hours', tol: 0.1,
+      task: 'Use the recovery clock. By how many hours does the expected OMS data loss <b>exceed the RPO</b>?',
+      answer: function () { return B5.answers.rpoExposure(); },
+      hint: 'Data loss is the age of the restore point at the time of the outage. Subtract the RPO in the BIA.',
+      debrief: '<p>The restore point is the Thursday 23:00 vault backup, 19 hours before the 18:00 outage. Against a 1-hour RPO, the exposure is 18 hours of orders, EDI transactions, and price changes that must be re-entered or reconstructed from customer records.</p><p>The auditor quantifies the exposure in business terms where possible, for example the number of orders in a typical 18-hour window, so management can weigh the cost of a better backup design against the loss.</p>',
+      reviewNote: 'RPO exposure = age of the newest usable restore point minus the RPO.' },
+    { id: 'i5', type: 'choice', points: 10, short: 'Inject 5: alternate site', title: 'Inject 5: alternate-site provisioning',
+      locked: B5UI.lockUntil(5),
+      task: 'The provider needs 6 hours, not the 2 hours the plan assumes, and the team simply waited. What is the <b>most significant</b> issue?',
+      options: ['The contract no longer supports the plan’s 2-hour assumption, and the team did not escalate the RTO miss', 'No gap: the team followed the plan, and provider lead times sit outside the scope of the DRP', 'The provider breached its contract, so the issue belongs to vendor management rather than to the DRP', 'No separate issue: the delay follows from the late declaration, which is already a finding'],
+      answer: 0,
+      hint: 'Open Document 5 on the BIA and contracts tab, then reread sections 4.1 and 2.4.',
+      debrief: '<p>The January 2026 renewal moved the contract from Warm Standby to Reserved Capacity and saved $84,000 a year, but DRP section 4.1 still promises 2 hours. The provider is meeting its contract; the plan is out of date. The team also skipped section 2.4: no one told the declaring executive or the OMS business owner that the Tier 1 RTO would be missed.</p><p>The auditor reports a change-management gap between procurement and continuity planning, and a procedural deviation on escalation. Contract changes that affect recovery capability should trigger a plan review and a business-owner sign-off on the new objective or the funding to keep the old one.</p>',
+      reviewNote: 'Contract changes must flow into the DRP; a projected RTO miss must be escalated to the business owner.' },
+    { id: 'rto', type: 'number', points: 10, short: 'RTO exposure', title: 'RTO exposure from the recovery clock',
+      locked: B5UI.lockUntil(8), unit: 'hours', tol: 0.1,
+      task: 'With all five recovery steps confirmed by the exercise, by how many hours does the projected OMS restoration <b>exceed the RTO</b>?',
+      answer: function () { return B5.answers.rtoExposure(); },
+      hint: 'Read the projected restoration time once every step shows an exercise result, then subtract the 4-hour RTO.',
+      debrief: '<p>The confirmed path is 1:50 to declare, 0:10 to notify the provider, 6:00 to provision, 3:00 to restore from the vault, and 1:00 to validate: OMS returns at T+12:00, 8 hours past the RTO. On paper the plan meets the RTO exactly, with no margin, and every step that the exercise tested took longer.</p><p>A plan whose tested capability does not meet the BIA is a finding, not reassurance. The BIA drives the objective, so the auditor recommends funding a strategy that meets it (for example, restoring the Warm Standby tier and an isolated replica) or a documented business decision to accept a longer RTO, signed by the OMS business owner.</p>',
+      reviewNote: 'RTO exposure = projected restoration time minus the RTO; do not revise the BIA to fit the DRP.' },
+    { id: 'adh', type: 'set', points: 15, short: 'Plan adherence', title: 'Plan adherence across all eight injects',
+      locked: B5UI.lockUntil(8),
+      task: 'Enter the IDs of every inject where the team’s response <b>complied with the documented plan procedure</b>, whether or not the objectives could be met (for example, I1).',
+      label: 'Inject IDs where the response followed the plan', placeholder: 'e.g., I1, I2',
+      answer: function () { return B5.answers.followed(); },
+      hint: 'Judge the team’s actions, not the outcome. A team can follow the plan exactly and still miss the RTO because the plan or the capability is wrong. Use the plan sections listed on each inject.',
+      debrief: '<p>Four responses followed the plan. I1: the call tree started within 15 minutes and the outage was contained. I4: the restore point was validated as section 3.3 requires. I6: the holding statement and notices went out within 4 hours. I7: the team kept compromised servers offline and did not engage the attacker. The other four show gaps: an outdated call tree (I2), no authorized declarer (I3), no escalation of the RTO miss (I5), and an unusable runbook (I8).</p><p>Recording what worked matters. It shows the audit committee that the team’s judgment held up under pressure and points the corrective actions at the plan and the capability, where the real gaps sit.</p>',
+      reviewNote: 'Score adherence on actions against plan sections; outcomes are measured separately against RTO and RPO.' },
+    { id: 'test', type: 'choice', points: 10, short: 'Test type value', title: 'What the tabletop proved, and what comes next',
+      locked: B5UI.lockUntil(8),
+      task: 'Which statement <b>best</b> describes the value of this tabletop and the next test management should schedule?',
+      options: ['It proved the 4-hour RTO is achievable, so a repeat tabletop next year is sufficient', 'It found the key gaps, so a full interruption test of production should be run next', 'It exposed role and decision gaps; a parallel test should now prove actual restore times', 'It had little value, because no system was actually restored during the session'],
+      answer: 2,
+      hint: 'Review the test-type table in Lesson 6: risk and value for tabletop, simulation, parallel, and full interruption. Which recovery times in this exercise were estimates rather than measurements?',
+      debrief: '<p>A tabletop carries no operational risk and is good at exposing gaps in roles, contacts, and decision authority, which it did. It cannot prove technical capability: the 6-hour provisioning, the 3-hour restore, and the 1-hour validation were estimates. A parallel test, recovering OMS at the alternate site from the vault while production runs, measures them without taking production down.</p><p>A full interruption test is premature while known gaps are open, because it would put production at high risk to confirm what the tabletop already showed. The auditor recommends fixing the plan gaps, then a parallel test, and evidencing both.</p>',
+      reviewNote: 'Tabletop tests understanding and decisions; parallel tests prove recovery capability without taking production offline.' },
+    { id: 'memo', type: 'text', points: 15, short: 'Post-exercise memo', title: 'Post-exercise audit memo', reportTitle: 'Post-exercise audit memo',
+      locked: B5UI.lockUntil(8),
+      task: 'Write the memo to the Director of Internal Audit. Rank three findings from highest to lowest risk. For each, state the condition, the criterion (plan section or BIA objective), and the effect. Close with an overall conclusion and the next test you recommend. Use specific times and numbers from the recovery clock.',
+      fields: [
+        { key: 'f1', label: 'Finding 1 (highest risk): condition, criterion, and effect', min: 60, placeholder: 'The finding with the greatest business impact, with numbers from the recovery clock.' },
+        { key: 'f2', label: 'Finding 2: condition, criterion, and effect', min: 40, placeholder: 'Plan section and what happened.' },
+        { key: 'f3', label: 'Finding 3: condition, criterion, and effect', min: 40, placeholder: 'Plan section and what happened.' },
+        { key: 'concl', label: 'Overall conclusion, what worked, and recommended next test', min: 50, placeholder: 'Can the DRP meet the BIA today? What should management do next?' }
+      ],
+      hint: 'Rank by business impact on the Tier 1 system. The capability gap against the BIA (RTO and RPO) outranks the procedural gaps. Group related plan maintenance issues (call tree, contract, runbook) into one finding.',
+      debrief: '<p><b>Model memo.</b> <b>Finding 1 (high): OMS recovery capability does not meet the BIA.</b> Tested recovery projects OMS restoration at T+12:00 against a 4-hour RTO (8 hours over), with 19 hours of data loss against a 1-hour RPO (18 hours over). Continuous replication copied the encryption and snapshots shared production credentials; the alternate-site tier was cut to 6-hour provisioning in January 2026. Effect: a full business day of lost orders and a recovery that runs well into the maximum tolerable downtime. <b>Finding 2 (high): no authorized declaration path.</b> Section 2.1 names two executives; both were unreachable, so the declaration came at T+1:50 by an unauthorized manager, 50 minutes past the limit, and every recovery step slipped with it. <b>Finding 3 (medium): the plan is not maintained.</b> The call tree is 2 years old (section 2.2 requires quarterly review), section 4.1 does not reflect the contract change, the Appendix D runbook predates the storage migration and was never retested (section 4.2), and the RTO miss was not escalated (section 2.4).</p><p><b>Conclusion.</b> The DRP cannot meet the OMS objectives today. The team handled containment, communications, the restore-point check, and pressure to restart compromised servers well. Management should fund a strategy that meets the BIA or obtain the business owner’s documented acceptance of longer objectives, deepen declaration succession, link HR and contract changes to plan updates, and then run a parallel test to measure actual recovery times. Your wording will differ; check that the ranking follows business impact and that each finding cites the plan or the BIA.</p>',
+      reviewNote: 'Rank by impact on the Tier 1 objectives; cite the plan section or BIA target for each finding.' }
+  ],
+  workbench: function (root, api) { B5UI.workbench(root, api); }
+};
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A6 SDLC Control Checkpoints and Go-Live Readiness | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A6',
+  title: 'SDLC Control Checkpoints and Go-Live Readiness',
+  accent: 'Go-Live Readiness',
+  domain: 'Domain 3',
+  time: '35–45 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson04.html#s4',
+  lessonLabel: 'Lesson 4, Control Identification & Design',
+  lede: 'Domain 3 asks where the auditor adds the most value in a project. The answer is usually early, at requirements and design, and again at the go-live decision. Place controls on the life cycle, match edit checks to the errors they catch, and make the readiness call on real evidence.',
+  concepts: [
+    { key: 'sdlc', name: 'Controls on the life cycle', review: 'Lesson 4, Control Identification & Design' },
+    { key: 'edits', name: 'Input edit checks', review: 'Lesson 4, Control Identification & Design' },
+    { key: 'golive', name: 'Go-live readiness evidence', review: 'Lesson 4, System Readiness & Implementation Testing' },
+    { key: 'cutover', name: 'Cutover and post-implementation review', review: 'Lesson 4, Migration & Data Conversion and Post-Implementation Review' }
+  ],
+  stations: [
+    {
+      type: 'sort', short: 'Build the life cycle', title: 'Place each control on the life cycle', concept: 'sdlc',
+      instr: 'Each statement describes a control activity on a development project. Place it in the <b>SDLC phase</b> where it belongs: Feasibility, Requirements and design, Development and testing, Implementation, or Post-implementation. Then select <b>Check answers</b>.',
+      hint: 'Ask when the activity first becomes possible and when it is cheapest. Justifying the spend comes before anything is built. Defining controls belongs in requirements and design. Proving they work belongs in testing. Moving data and deciding go-live belong to implementation. Measuring benefits happens only after the system has run for a while.',
+      buckets: ['Feasibility', 'Requirements and design', 'Development and testing', 'Implementation', 'Post-implementation'],
+      review: { href: 'lesson04.html#s4', label: 'Lesson 4, Control Identification & Design' },
+      items: [
+        { text: 'Batch totals and record counts are specified so the system can prove every transaction in a batch was processed.', answer: 1, why: 'Processing controls are defined as requirements during design. Adding them after launch means rework and a period with no completeness control.' },
+        { text: 'Billing staff execute acceptance scripts and the business owner signs off on the results.', answer: 2, why: 'User acceptance testing is the last testing step before implementation. It must be done by business users, not developers.' },
+        { text: 'Realized savings are compared with the savings promised in the approved business case.', answer: 4, why: 'Benefits realization can only be measured after the system has operated long enough to produce results.' },
+        { text: 'A cost-benefit analysis, including a do-nothing baseline, is approved before funding is released.', answer: 0, why: 'The business case and cost-benefit analysis justify the investment before money is committed.' },
+        { text: 'Validation rules are written for each data-entry field, such as allowed values, formats, and limits.', answer: 1, why: 'Input controls are cheapest and most effective when they are written into the requirements.' },
+        { text: 'Converted record counts and balance totals are reconciled to the legacy system and signed by the data owner.', answer: 3, why: 'Data conversion validation happens at implementation, when data moves from the old system to the new one.' },
+        { text: 'Technical, financial, operational, legal, and schedule viability are assessed for each solution option.', answer: 0, why: 'A feasibility study confirms the project is viable before design work begins.' },
+        { text: 'Roles are mapped to job functions and the approval workflow enforces segregation of duties.', answer: 1, why: 'Access design, least privilege, and segregation of duties belong in design. Retrofitting roles after go-live is costly and often incomplete.' },
+        { text: 'Custom code is peer reviewed and scanned with static analysis before it is promoted to the test environment.', answer: 2, why: 'Source-code review and static analysis are development and testing controls. They find flaws while fixes are still cheap.' },
+        { text: 'The steering committee reviews readiness evidence and the rollback plan, then makes the go or no-go call.', answer: 3, why: 'The go-live decision is the central implementation control. Management makes the call; the auditor can give a readiness opinion.' },
+        { text: 'Output exception reports and their distribution lists are defined so the right people review rejected items.', answer: 1, why: 'Output controls, such as exception reporting and distribution, are designed in with the other application controls.' },
+        { text: 'Control effectiveness and outstanding defects are reviewed about three to six months after go-live.', answer: 4, why: 'The post-implementation review confirms that designed controls work in daily use and that open defects were resolved.' }
+      ]
+    },
+    {
+      type: 'sort', short: 'Edit-check match', title: 'Match the error to the edit check', concept: 'edits',
+      instr: 'Each case describes a data-entry error. Choose the <b>edit check</b> that would catch it at input. Some errors could be caught by more than one check; choose the one designed for that kind of error.',
+      hint: 'A check digit catches transcription and transposition errors in identifiers. A range check uses fixed lower and upper bounds. A reasonableness check compares input with what is normal for that record. A completeness check catches missing data. A validity check compares input with a list of allowed values. A duplicate check catches the same transaction entered twice.',
+      buckets: ['Check digit', 'Range check', 'Reasonableness check', 'Completeness check', 'Validity check', 'Duplicate check'],
+      review: { href: 'lesson04.html#s4', label: 'Lesson 4, Control Identification & Design' },
+      items: [
+        { text: 'A customer who orders about 12 cases a month submits an order for 1,200 cases.', answer: 2, why: 'The quantity is not impossible, but it is far outside this customer\'s normal pattern. A reasonableness check flags it for review.' },
+        { text: 'A clerk keys vendor number 40817 as 40871. Both numbers look like real vendor numbers.', answer: 0, why: 'A check digit is computed from the other digits, so a transposition fails the calculation even when the result looks plausible.' },
+        { text: 'A new-patient record is saved with the date of birth field left blank.', answer: 3, why: 'A completeness check confirms that required fields contain data before the record is accepted.' },
+        { text: 'Invoice 88123 from the same supplier is entered a second time a week later.', answer: 5, why: 'A duplicate check compares new transactions with those already entered. It is a key control against double payment.' },
+        { text: 'A timesheet shows 260 hours worked in a two-week pay period. Policy allows 0 to 120.', answer: 1, why: 'A range check compares the value with fixed lower and upper bounds that apply to every record.' },
+        { text: 'A transaction code of 25 is entered. The only valid codes are 10, 20, 30, and 40.', answer: 4, why: 'The valid values are a defined list, so a validity check is the match. A range check of 10 to 40 would accept 25.' },
+        { text: 'A monthly water meter reading is 30 times the same account\'s prior-month reading.', answer: 2, why: 'The reading is compared with the account\'s own history. That comparison with expected levels is a reasonableness check.' },
+        { text: 'A discount of 140 percent is entered on a sales order. Allowed discounts run from 0 to 40 percent.', answer: 1, why: 'The discount falls outside fixed bounds that apply to every order, which is exactly what a range check tests.' },
+        { text: 'A state code of XZ is entered on a shipping address.', answer: 4, why: 'XZ is not in the table of valid state codes. A validity check compares the entry with that table.' },
+        { text: 'A member ID is scanned from a damaged card and one digit is misread.', answer: 0, why: 'A single wrong digit in an identifier is the classic error a check digit is designed to catch.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Go/no-go board', title: 'Go/no-go board, cutover, and PIR', concept: 'golive',
+      instr: 'Cases 1 to 3 are readiness packs from three projects. Read each table, then make the go-live call and identify the evidence that matters. Cases 4 to 7 ask you to choose a cutover approach and to scope a post-implementation review. Choose the <b>BEST</b> answer.',
+      hint: 'A go-live call rests on three kinds of evidence: testing by the right people with business sign-off, no unresolved critical or high defects, and reconciled data conversion with a fallback plan. Any change to code after sign-off needs regression testing. For cutover, weigh the cost of an error against the cost of running both systems.',
+      review: { href: 'lesson04.html#s5', label: 'Lesson 4, System Readiness & Implementation Testing' },
+      items: [
+        {
+          title: 'Case 1: Harbor Lane Credit Union', text: 'Harbor Lane is replacing its loan origination system. Go-live is planned for Saturday. The IS auditor reviews the readiness pack below.',
+          table: { caption: 'Readiness pack: loan origination', head: ['Evidence', 'Status'], rows: [
+            ['UAT', '212 of 212 scripts executed by loan officers; 209 passed, 3 failed and passed on retest'],
+            ['Open defects', '0 critical, 0 high, 4 low (cosmetic), each with a workaround and a fix date'],
+            ['Business sign-off', 'Signed by the lending operations director'],
+            ['Data conversion', 'Record counts and loan balance totals reconciled; 11 exceptions reviewed and approved by the business owner'],
+            ['Rollback plan', 'Documented and rehearsed in staging']
+          ] },
+          parts: [
+            { q: 'What readiness call does the evidence support?', options: ['No-go, because a system should never launch with open defects', 'Go, with the four low defects tracked to closure', 'No-go until every conversion exception has been eliminated', 'Defer the decision until a full parallel run is complete'], answer: 1, why: 'Business users ran UAT and signed off, no critical or high defects remain, conversion is reconciled with approved exceptions, and rollback is rehearsed. Low defects with workarounds and fix dates do not justify delay.' },
+            { q: 'The sponsor asks the IS auditor to sign the go-live approval form. What is the BEST response?', options: ['Sign it, because the evidence clearly supports going live', 'Sign it, but attach a note listing the four low defects', 'Decline to give any view until the post-implementation review', 'Give the committee a readiness opinion and leave the call to management'], answer: 3, why: 'Approving go-live is a management decision. The auditor reports on the evidence; signing the approval would create a self-review threat for later audits.' }
+          ]
+        },
+        {
+          title: 'Case 2: Northfield Health', text: 'Northfield Health is replacing its patient billing system. The vendor wants to go live at the start of next month.',
+          table: { caption: 'Readiness pack: patient billing', head: ['Evidence', 'Status'], rows: [
+            ['UAT', 'Executed by the vendor\'s developers; billing staff observed two sessions'],
+            ['Open defects', '0 critical, 2 high (multi-line claim amounts round incorrectly), 9 low'],
+            ['Business sign-off', 'Pending; the billing manager is waiting for UAT results'],
+            ['Data conversion', 'Record counts reconciled; dollar totals not yet compared'],
+            ['Rollback plan', 'Documented, not tested']
+          ] },
+          parts: [
+            { q: 'What readiness call does the evidence support?', options: ['Go, since there are no critical defects', 'Go, with the high defects fixed in the first patch', 'No-go until the evidence gaps are closed', 'Go live for a pilot group of clinics first'], answer: 2, why: 'High defects in claim amounts affect revenue and patient bills, UAT was not done by business users, and the business has not accepted the system. A pilot would still send wrong bills to real patients.' },
+            { q: 'Which missing evidence matters MOST for the go-live decision?', options: ['Business-user UAT with the billing owner\'s sign-off', 'A rollback procedure rehearsed in the staging environment', 'A load test at twice the expected monthly claim volume', 'Approved training materials for every billing clerk'], answer: 0, why: 'UAT by developers does not show the system meets business needs, and only the business owner can accept it. Rollback testing and dollar reconciliation also matter, but acceptance is the evidence the decision rests on.' }
+          ]
+        },
+        {
+          title: 'Case 3: Cobalt Freight', text: 'Cobalt Freight is implementing a new warehouse management system. The project manager reports that the defect log is clear.',
+          table: { caption: 'Readiness pack: warehouse management', head: ['Evidence', 'Status'], rows: [
+            ['UAT', 'Completed by warehouse supervisors; signed off two weeks ago'],
+            ['Open defects', '0 open. A critical defect in pick-list allocation was fixed and deployed to test yesterday'],
+            ['Regression testing', 'Not rerun after the fix; scheduled for the week after go-live'],
+            ['Data conversion', 'Record counts and inventory value totals reconciled; signed by the inventory controller'],
+            ['Rollback plan', 'Rehearsed in staging']
+          ] },
+          parts: [
+            { q: 'What readiness call does the evidence support?', options: ['Go, because the defect log shows no open items', 'Go, then run the regression suite in production', 'Hold go-live until regression testing confirms the fix', 'Hold go-live until supervisors repeat all of UAT'], answer: 2, why: 'A critical fix changed the code after sign-off. Regression testing shows the fix works and broke nothing else. Without it, the signed UAT no longer describes the code being deployed.' },
+            { q: 'Which control should the auditor confirm for the fix itself?', options: ['The developer who wrote the fix also moved it to production', 'The team discussed the fix at its next sprint retrospective', 'The vendor provided a written statement certifying the fix', 'It went through change control, linked to the defect record'], answer: 3, why: 'Every change to the release candidate needs an approved change record. Developer self-deployment breaks segregation of duties, and a retrospective or vendor letter is not approval evidence.' }
+          ]
+        },
+        {
+          title: 'Case 4: Meridian Utilities', text: 'Meridian Utilities is replacing the billing system for 1.2 million customer accounts. Billing errors trigger regulatory penalties. The legacy system can keep running for two more billing cycles, and the budget covers staff overtime.',
+          parts: [
+            { q: 'Which cutover approach BEST fits this situation?', concept: 'cutover', options: ['Direct cutover over a single weekend', 'Parallel run for at least one billing cycle', 'Pilot in one district, then a full cutover', 'Phased by module, starting with payments'], answer: 1, why: 'When errors are costly and both systems can run, a parallel run lets the team compare outputs before retiring the legacy system. The overtime budget covers its main cost.' }
+          ]
+        },
+        {
+          title: 'Case 5: Juniper Outfitters', text: 'Juniper Outfitters is rolling out a new point-of-sale system to 140 stores. Store layouts and staffing are similar. The team wants to learn from real use before committing every store.',
+          parts: [
+            { q: 'Which cutover approach BEST fits this situation?', concept: 'cutover', options: ['Parallel run in all 140 stores', 'Direct cutover across all stores in one night', 'Phased by function, starting with returns', 'Pilot in a few stores, then roll out in waves'], answer: 3, why: 'A pilot exposes a small, representative group to the new system first. Lessons from the pilot stores reduce risk before the wider rollout.' }
+          ]
+        },
+        {
+          title: 'Case 6: Alder County', text: 'Alder County is replacing an internal room-booking tool. The old vendor ends support on Friday, and the old tool cannot run after that date. The team has no choice but a direct cutover.',
+          parts: [
+            { q: 'Which control matters MOST for this cutover?', concept: 'cutover', options: ['Running both tools side by side for one month', 'A reconciled data load and a tested manual fallback', 'Piloting the new tool in one department for a quarter', 'A post-implementation review held before go-live'], answer: 1, why: 'A direct cutover has no old system to fall back on. Reconciling the migrated bookings and testing a manual contingency procedure are the controls that remain available.' }
+          ]
+        },
+        {
+          title: 'Case 7: Ridgeview Manufacturing', text: 'Ridgeview Manufacturing went live with a new ERP six weeks ago, on time and under budget. The steering committee wants to close the project now and skip the post-implementation review (PIR).',
+          parts: [
+            { q: 'When should the PIR BEST take place?', concept: 'cutover', options: ['In the first week, while the project team is together', 'About three to six months after go-live', 'Only if a major incident occurs after go-live', 'Before go-live, as part of the readiness review'], answer: 1, why: 'A PIR needs operating history. After three to six months, operational issues and actual benefits have had time to surface.' },
+            { q: 'Which question should the PIR answer that on-time, on-budget delivery cannot?', concept: 'cutover', options: ['Did the project stay within its approved budget?', 'Were developers productive throughout the build?', 'Did it deliver the benefits in the business case?', 'Did the vendor meet every contract milestone?'], answer: 2, why: 'Schedule and budget measure the project. The PIR asks whether the investment achieved what justified it, along with control effectiveness and user adoption.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'early', label: 'Think of a system you have seen go live. Which control was added after launch that should have been designed in, and what did the late fix cost?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

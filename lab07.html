@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B7 Cloud and Network Configuration Audit | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+/* B7: read-only audit console (light theme) */
+.b7-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 1rem; align-items: start; }
+.b7-term { border: 1px solid var(--border); border-left: 4px solid var(--navy); border-radius: 4px; background: #f7f9fc; min-width: 0; }
+.b7-term-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem 1rem; padding: .45rem .8rem; border-bottom: 1px solid var(--border); background: var(--blue-pale); font: 700 .72rem Arial, sans-serif; letter-spacing: .06em; color: var(--text-secondary); }
+.b7-term-head .b7-ro { color: var(--correct); }
+.b7-out { height: 560px; overflow: auto; padding: .7rem .9rem .4rem; font: .8rem/1.45 'Courier New', monospace; color: #0b2440; }
+.b7-out:focus { outline: 3px solid var(--gold); outline-offset: -3px; }
+.b7-entry { margin: 0 0 .7rem; }
+.b7-cmd { font-weight: 700; color: var(--navy); margin: 0; white-space: pre-wrap; word-break: break-word; }
+.b7-cmd .b7-ps { color: var(--navy-light); }
+.b7-res { margin: .15rem 0 0; white-space: pre; font: inherit; color: #0b2440; }
+.b7-res.err { color: var(--wrong); white-space: pre-wrap; }
+.b7-res.b7-pw { white-space: pre-wrap; }
+.b7-in-row { display: flex; align-items: center; gap: .5rem; padding: .5rem .8rem; border-top: 1px solid var(--border); background: #fff; border-radius: 0 0 4px 0; }
+.b7-in-row label { font: 700 .82rem 'Courier New', monospace; color: var(--navy-light); white-space: nowrap; }
+.b7-in-row input { flex: 1; min-width: 0; border: 1px solid var(--border); border-radius: 3px; padding: .45rem .55rem; font: .86rem 'Courier New', monospace; color: var(--text-primary); background: #fff; }
+.b7-in-row input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 3px var(--gold-pale); }
+.b7-in-row .btn { padding: .45rem .9rem; }
+.b7-kbd { font: .72rem Arial, sans-serif; color: var(--text-muted); margin: .4rem 0 0; }
+.b7-cmds { border: 1px solid var(--border); border-radius: 4px; padding: .7rem .75rem; background: var(--card-bg); }
+.b7-cmds h4 { font: 700 .7rem Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); margin: .2rem 0 .4rem; }
+.b7-cmds h4:not(:first-child) { margin-top: .8rem; }
+.b7-cmds ul { list-style: none; margin: 0; padding: 0; }
+.b7-cmds li { margin: 0 0 .2rem; }
+.b7-cmds button { width: 100%; text-align: left; border: 1px solid transparent; background: transparent; border-radius: 3px; padding: .25rem .35rem; font: .78rem 'Courier New', monospace; color: var(--navy); cursor: pointer; }
+.b7-cmds button:hover { background: var(--blue-pale); border-color: var(--blue-pale-border); }
+.b7-cmds button span { display: block; font: .7rem Arial, sans-serif; color: var(--text-muted); }
+.b7-bl td select { font: .8rem Arial, sans-serif; padding: .3rem .35rem; border: 1px solid var(--border); border-radius: 3px; background: #fff; color: var(--text-primary); max-width: 11rem; }
+.b7-bl td:first-child { white-space: nowrap; font-weight: 700; color: var(--text-primary); }
+.b7-bl td.b7-ref { font: .76rem Arial, sans-serif; color: var(--text-muted); white-space: nowrap; }
+.b7-tally { font: .82rem Arial, sans-serif; color: var(--text-secondary); margin: .6rem 0 0; }
+.b7-sev { font: .86rem/1.55 Arial, sans-serif; color: var(--text-secondary); }
+@media (max-width: 900px) {
+  .b7-wrap { grid-template-columns: minmax(0, 1fr); }
+  .b7-cmds ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .2rem .5rem; }
+  .b7-out { height: 380px; }
+}
+@media (max-width: 560px) {
+  .b7-in-row label { display: none; }
+  .b7-bl table.data { min-width: 620px; }
+}
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script>
+/* ===================== Evidence set (fixed, self-consistent) =====================
+   Larkspur Federal Credit Union, hybrid environment. Evidence as of 2026-10-15.
+   On premises: perimeter firewall fw-edge-01. Cloud: Altamira Cloud tenant lfcu-prod (IaaS).
+   Rules, buckets, principals, and trails are written as fixed arrays. Answers are
+   computed from these arrays by the helper functions below, and LAB_SELFTEST
+   re-derives them by parsing the console's printed output. */
+(function () {
+  var AS_OF = '2026-10-15';
+  function ms(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function days(a, b) { return Math.round((ms(b) - ms(a)) / 86400000); }
+
+  // seq, id, name, from, to, src, dst, svc, action, hits_180d, last_hit, owner, ticket, reviewed, log
+  var R = [
+    [10, 'R217', 'mgmt-fw-admin', 'mgmt', 'inside', '10.50.0.0/24', '10.10.0.1/32', 'tcp/22,tcp/443', 'allow', 4812, '2026-10-15', 'Hiro Sato', 'CHG-21877', '2026-03-04', 'yes'],
+    [20, 'R342', 'web-https-in', 'untrust', 'dmz', 'any', '172.16.10.20/32', 'tcp/443', 'allow', 1904331, '2026-10-15', 'Priya Raman', 'CHG-20411', '2026-02-11', 'yes'],
+    [30, 'R109', 'web-http-redirect', 'untrust', 'dmz', 'any', '172.16.10.20/32', 'tcp/80', 'allow', 88210, '2026-10-15', 'Priya Raman', 'CHG-20411', '2026-02-11', 'yes'],
+    [40, 'R455', 'mail-smtp-in', 'untrust', 'dmz', 'any', '172.16.10.25/32', 'tcp/25', 'allow', 412775, '2026-10-15', 'Marcus Bell', 'CHG-19022', '2025-06-30', 'yes'],
+    [50, 'R238', 'web-https-new-lb', 'untrust', 'dmz', 'any', '172.16.10.20/32', 'tcp/443', 'allow', 0, null, 'Priya Raman', 'CHG-22107', '2026-02-11', 'yes'],
+    [60, 'R381', 'vpn-ike-in', 'untrust', 'dmz', 'any', '172.16.10.5/32', 'udp/500,udp/4500', 'allow', 220140, '2026-10-15', 'Sofia Novak', 'CHG-18803', '2026-01-20', 'yes'],
+    [65, 'R229', 'partner-sftp-in', 'untrust', 'dmz', '203.0.113.64/28', '172.16.10.30/32', 'tcp/22', 'allow', 14, '2026-05-06', 'Marcus Bell', 'CHG-20777', '2026-05-06', 'yes'],
+    [70, 'R126', 'legacy-ftp-in', 'untrust', 'dmz', 'any', '172.16.10.40/32', 'tcp/21', 'allow', 0, '2025-11-02', '', '', '2024-08-19', 'no'],
+    [80, 'R290', 'web-to-app', 'dmz', 'inside', '172.16.10.20/32', '10.20.5.10/32', 'tcp/8443', 'allow', 1422090, '2026-10-15', 'Priya Raman', 'CHG-20412', '2026-02-11', 'yes'],
+    [90, 'R173', 'dmz-to-db', 'dmz', 'inside', '172.16.10.0/24', '10.20.8.0/24', 'tcp/1433', 'allow', 0, '2026-02-27', 'Kwame Asante', 'CHG-17654', '2025-09-03', 'yes'],
+    [100, 'R402', 'block-web-to-core-db', 'dmz', 'inside', '172.16.10.20/32', '10.20.8.15/32', 'tcp/1433', 'deny', 0, null, 'Ines Carvalho', 'CHG-22310', '2026-05-14', 'yes'],
+    [110, 'R315', 'users-web-out', 'inside', 'untrust', '10.30.0.0/16', 'any', 'tcp/80,tcp/443', 'allow', 9881204, '2026-10-15', 'Grace Okafor', 'CHG-16220', '2026-04-08', 'yes'],
+    [120, 'R144', 'dns-out', 'inside', 'untrust', '10.20.1.53/32', 'any', 'udp/53,tcp/53', 'allow', 2113560, '2026-10-15', 'Grace Okafor', 'CHG-16221', '2025-10-20', 'yes'],
+    [130, 'R467', 'ntp-out', 'inside', 'untrust', '10.20.1.0/24', 'any', 'udp/123', 'allow', 52880, '2026-10-15', 'Grace Okafor', '', '2026-04-08', 'no'],
+    [140, 'R258', 'temp-troubleshoot-out', 'inside', 'untrust', 'any', 'any', 'any', 'allow', 340612, '2026-10-14', 'Darnell Brooks', 'CHG-21590', '2026-07-22', 'no'],
+    [150, 'R333', 'vendor-rdp-jump', 'vendor', 'inside', '192.168.77.0/24', '10.20.9.12/32', 'tcp/3389', 'allow', 6104, '2026-10-13', 'Sofia Novak', 'CHG-20988', '2026-06-01', 'yes'],
+    [160, 'R199', 'vendor-support', 'vendor', 'inside', 'any', 'any', 'any', 'allow', 1277, '2026-10-02', '', '', '2025-03-17', 'no'],
+    [170, 'R421', 'admin-ssh-dmz', 'inside', 'dmz', '10.50.0.0/24', '172.16.10.0/24', 'tcp/22', 'allow', 9412, '2026-10-15', 'Hiro Sato', 'CHG-15510', '2025-12-09', 'yes'],
+    [180, 'R162', 'admin-ssh-web01', 'inside', 'dmz', '10.50.0.12/32', '172.16.10.20/32', 'tcp/22', 'allow', 0, null, 'Hiro Sato', 'CHG-21004', '2025-12-09', 'yes'],
+    [190, 'R377', 'backup-agent-dmz', 'inside', 'dmz', '10.20.6.0/24', '172.16.10.0/24', 'tcp/9102', 'allow', 0, '2026-03-30', 'Kwame Asante', 'CHG-14402', '2026-01-15', 'yes'],
+    [200, 'R284', 'snmp-monitor', 'mgmt', 'inside', '10.50.0.20/32', '10.0.0.0/8', 'udp/161', 'allow', 3201977, '2026-10-15', 'Hiro Sato', 'CHG-13990', '2026-08-25', 'yes'],
+    [999, 'R500', 'cleanup-deny-all', 'any', 'any', 'any', 'any', 'any', 'deny', 1882006, '2026-10-15', 'Hiro Sato', 'CHG-10001', '2026-03-04', 'yes']
+  ];
+  var rules = R.map(function (r) { return { seq: r[0], id: r[1], name: r[2], from: r[3], to: r[4], src: r[5], dst: r[6], svc: r[7], action: r[8], hits: r[9], last_hit: r[10], owner: r[11], ticket: r[12], reviewed: r[13], log: r[14] }; });
+  var notes = { R258: 'Description: "Temporary: open outbound while proxy is replaced." Expiry: none set.', R199: 'Description: "Vendor support access." Created 2023-05-11 by admin (shared account).', R238: 'Description: "HTTPS to new load balancer VIP." Change CHG-22107 says the VIP moved to 172.16.10.20.', R402: 'Description: "Block web tier from core database (pen test finding PT-2026-03)."', R126: 'Description: none. Created 2019-04-02.', R162: 'Description: "SSH from admin workstation to web01."' };
+
+  var buckets = [
+    { name: 'lfcu-web-assets', region: 'na-east-1', cls: 'Public', bpa: false, enc: 'AES-256 (provider key)', objects: 1840, exception: 'EX-2025-014 (approved by CISO, expires 2027-01-31)', policy: { Version: '2024-10-17', Statement: [{ Sid: 'PublicReadWebAssets', Effect: 'Allow', Principal: '*', Action: 'storage:GetObject', Resource: 'acp:storage:::lfcu-web-assets/*' }] }, anon: 'Anonymous GetObject requests, last 30 days: 2,904,117 (expected: public website images and stylesheets)' },
+    { name: 'lfcu-loan-docs', region: 'na-east-1', cls: 'Confidential', bpa: true, enc: 'AES-256 (customer key lfcu-kms-01)', objects: 412907, exception: 'none', policy: { Version: '2024-10-17', Statement: [{ Sid: 'LoanAppRead', Effect: 'Allow', Principal: { Role: 'acp:iam::4471-0938-2215:role/app-readonly-role' }, Action: ['storage:GetObject'], Resource: 'acp:storage:::lfcu-loan-docs/*' }] }, anon: 'Anonymous requests, last 30 days: 0' },
+    { name: 'lfcu-member-stmt-export', region: 'na-central-1', cls: 'Confidential', bpa: false, enc: 'AES-256 (provider key)', objects: 96214, exception: 'none', policy: { Version: '2024-10-17', Statement: [{ Sid: 'VendorPrintPickup', Effect: 'Allow', Principal: '*', Action: ['storage:GetObject', 'storage:ListBucket'], Resource: ['acp:storage:::lfcu-member-stmt-export', 'acp:storage:::lfcu-member-stmt-export/*'] }] }, anon: 'Anonymous GetObject requests, last 30 days: 1,284 from 37 distinct external IP addresses' },
+    { name: 'lfcu-analytics-staging', region: 'na-central-1', cls: 'Confidential', bpa: true, enc: 'AES-256 (customer key lfcu-kms-01)', objects: 22650, exception: 'none', policy: { Version: '2024-10-17', Statement: [{ Sid: 'ReportingRead', Effect: 'Allow', Principal: { User: 'acp:iam::4471-0938-2215:user/svc-reporting' }, Action: 'storage:GetObject', Resource: 'acp:storage:::lfcu-analytics-staging/*' }] }, anon: 'Anonymous requests, last 30 days: 0' },
+    { name: 'lfcu-app-logs', region: 'na-east-1', cls: 'Internal', bpa: true, enc: 'AES-256 (provider key)', objects: 1183044, exception: 'none', policy: { Version: '2024-10-17', Statement: [{ Sid: 'LogDelivery', Effect: 'Allow', Principal: { Service: 'logging.altamira.cloud' }, Action: 'storage:PutObject', Resource: 'acp:storage:::lfcu-app-logs/*' }] }, anon: 'Anonymous requests, last 30 days: 0' },
+    { name: 'lfcu-backup-vault', region: 'na-west-1', cls: 'Restricted', bpa: true, enc: 'AES-256 (customer key lfcu-kms-dr)', objects: 58120, exception: 'none', policy: { Version: '2024-10-17', Statement: [{ Sid: 'BackupWrite', Effect: 'Allow', Principal: { Role: 'acp:iam::4471-0938-2215:role/backup-role' }, Action: ['storage:PutObject', 'storage:GetObject'], Resource: 'acp:storage:::lfcu-backup-vault/*' }] }, anon: 'Anonymous requests, last 30 days: 0' }
+  ];
+
+  var ACCT = 'acp:iam::4471-0938-2215';
+  var users = [
+    { name: 'amara.okonkwo', console: true, mfa: 'hardware key', keys: [], policy: { Statement: [{ Effect: 'Allow', Action: ['iam:Get*', 'iam:List*', 'storage:GetBucketPolicy', 'logging:Describe*'], Resource: '*' }] }, pname: 'SecurityReview' },
+    { name: 'd.lindgren', console: true, mfa: 'authenticator app', keys: [{ id: 'AKCL7Q2M', created: '2025-11-03', last: '2026-10-14' }], policy: { Statement: [{ Effect: 'Allow', Action: 'compute:*', Resource: 'acp:compute:na-*:4471-0938-2215:instance/*' }, { Effect: 'Allow', Action: ['logging:StartLogging', 'logging:StopLogging'], Resource: '*' }] }, pname: 'CloudOpsEngineer' },
+    { name: 'r.castellanos', console: true, mfa: 'authenticator app', keys: [{ id: 'AKCL3XT9', created: '2025-01-22', last: '2026-08-20' }], policy: { Statement: [{ Effect: 'Allow', Action: ['storage:GetObject', 'storage:PutObject'], Resource: 'acp:storage:::lfcu-analytics-staging/*' }] }, pname: 'DataEngineer' },
+    { name: 'svc-backup', console: false, mfa: null, keys: [{ id: 'AKCL9B4E', created: '2025-07-10', last: '2026-10-15' }], policy: { Statement: [{ Effect: 'Allow', Action: 'iam:AssumeRole', Resource: ACCT + ':role/backup-role' }] }, pname: 'AssumeBackupRole' },
+    { name: 'svc-reporting', console: false, mfa: null, keys: [{ id: 'AKCL1R6P', created: '2024-03-02', last: '2025-12-19' }], policy: { Statement: [{ Effect: 'Allow', Action: 'storage:GetObject', Resource: 'acp:storage:::lfcu-analytics-staging/*' }] }, pname: 'ReportingRead' },
+    { name: 't.nguyen', console: true, mfa: 'hardware key', keys: [{ id: 'AKCL5N8D', created: '2026-09-30', last: null }], policy: { Statement: [{ Effect: 'Allow', Action: ['compute:Describe*', 'compute:StartInstances', 'compute:StopInstances'], Resource: 'acp:compute:na-east-1:4471-0938-2215:instance/*' }] }, pname: 'HelpdeskCompute' }
+  ];
+  var roles = [
+    { name: 'ci-deploy-role', trusted: 'pipeline.altamira.cloud (build runner lfcu-ci)', lastUsed: '2026-10-15', pname: 'DeployEverything', policy: { Statement: [{ Sid: 'Deploy', Effect: 'Allow', Action: '*', Resource: '*' }] } },
+    { name: 'app-readonly-role', trusted: 'compute instances tagged app=lending', lastUsed: '2026-10-15', pname: 'LendingAppRead', policy: { Statement: [{ Effect: 'Allow', Action: ['storage:Get*', 'storage:List*'], Resource: ['acp:storage:::lfcu-loan-docs', 'acp:storage:::lfcu-loan-docs/*'] }] } },
+    { name: 'backup-role', trusted: 'user svc-backup', lastUsed: '2026-10-15', pname: 'BackupVaultWrite', policy: { Statement: [{ Effect: 'Allow', Action: ['storage:PutObject', 'storage:GetObject', 'storage:ListBucket'], Resource: ['acp:storage:::lfcu-backup-vault', 'acp:storage:::lfcu-backup-vault/*'] }] } },
+    { name: 'secops-audit-role', trusted: 'federated auditors (IdP group IA-ReadOnly)', lastUsed: '2026-10-15', pname: 'AuditReadOnly', policy: { Statement: [{ Effect: 'Allow', Action: ['*:Describe*', '*:Get*', '*:List*'], Resource: '*' }] } }
+  ];
+  var root = { mfa: false, keys: 0, lastSignIn: '2026-10-09', lastSignInDetail: '2026-10-09 22:41 UTC from 198.51.100.73 (console)', pwdChanged: '2023-02-14' };
+  var trails = [
+    { region: 'na-east-1', trail: 'org-audit-trail', on: true, validation: 'enabled', last: '2026-10-15 13:58 UTC', note: 'home region', instances: 46 },
+    { region: 'na-central-1', trail: 'org-audit-trail', on: true, validation: 'enabled', last: '2026-10-15 13:57 UTC', note: '', instances: 21 },
+    { region: 'na-west-1', trail: 'org-audit-trail', on: false, validation: 'enabled', last: '2026-06-12 18:04 UTC', note: 'StopLogging by d.lindgren 2026-06-12 (DR failover test)', instances: 14 },
+    { region: 'na-south-1', trail: 'org-audit-trail', on: true, validation: 'enabled', last: '2026-10-15 13:59 UTC', note: '', instances: 3 }
+  ];
+  var notices = [
+    { id: 'PSA-2026-118', date: '2026-10-06', title: 'Hypervisor microcode update, compute host fleet, na-east-1', scope: 'Physical hosts and the hypervisor layer operated by Altamira Cloud', status: 'Provider remediation in progress, completion target 2026-10-31', action: 'None required. Guest operating systems and customer images are not affected.', assurance: 'Altamira Cloud SOC 2 Type 2 report, period 2025-10-01 to 2026-09-30, controls CC7.1 and CC8.1' },
+    { id: 'PSA-2026-097', date: '2026-08-19', title: 'Scheduled maintenance, object storage, na-central-1', scope: 'Provider storage control plane', status: 'Completed 2026-08-20', action: 'None required.', assurance: 'Same report, control CC8.1' }
+  ];
+
+  /* ---------- Baseline tests used by the answer key ---------- */
+  function ipInt(ip) { return ip.split('.').reduce(function (a, o) { return a * 256 + (+o); }, 0); }
+  function range(c) { if (c === 'any') return [0, 4294967295]; var p = c.split('/'), b = ipInt(p[0]), n = +p[1], size = Math.pow(2, 32 - n); return [b, b + size - 1]; }
+  function covers(a, b) { var x = range(a), y = range(b); return x[0] <= y[0] && x[1] >= y[1]; }
+  function svcCovers(a, b) { if (a === 'any') return true; if (b === 'any') return false; var A = a.split(','); return b.split(',').every(function (s) { return A.indexOf(s) >= 0; }); }
+  function zoneCovers(a, b) { return a === 'any' || a === b; }
+  function shadowedBy(r) {
+    for (var i = 0; i < rules.length; i++) { var e = rules[i]; if (e.seq >= r.seq) continue;
+      if (zoneCovers(e.from, r.from) && zoneCovers(e.to, r.to) && covers(e.src, r.src) && covers(e.dst, r.dst) && svcCovers(e.svc, r.svc)) return e; }
+    return null;
+  }
+  function unused(r) { return r.hits === 0 && (!r.last_hit || days(r.last_hit, AS_OF) >= 180); }
+  function docGap(r) { return !r.owner || !r.ticket || days(r.reviewed, AS_OF) > 365; }
+  function anyAny(r) { return r.action === 'allow' && r.src === 'any' && r.dst === 'any' && r.svc === 'any'; }
+  function isPublic(b) { return !b.bpa && b.policy.Statement.some(function (s) { return s.Effect === 'Allow' && s.Principal === '*'; }); }
+  function fullAdmin(p) { return p.policy.Statement.some(function (s) { var a = [].concat(s.Action), r = [].concat(s.Resource); return s.Effect === 'Allow' && a.indexOf('*') >= 0 && r.indexOf('*') >= 0; }); }
+  function staleKey(k) { return days(k.last || k.created, AS_OF) > 90; }
+  function ids(list) { return list.map(function (r) { return r.id; }).sort(); }
+
+  window.B7DATA = {
+    AS_OF: AS_OF, days: days, rules: rules, notes: notes, buckets: buckets, users: users, roles: roles, root: root, trails: trails, notices: notices, ACCT: ACCT,
+    shadowedBy: shadowedBy, unused: unused, docGap: docGap,
+    key: {
+      anyany: function () { return ids(rules.filter(anyAny)); },
+      shadow: function () { return ids(rules.filter(function (r) { return !!shadowedBy(r); })); },
+      unused: function () { return ids(rules.filter(unused)); },
+      docs: function () { return ids(rules.filter(docGap)); },
+      bucket: function () { return buckets.filter(function (b) { return isPublic(b) && b.cls !== 'Public'; }).map(function (b) { return b.name; }); },
+      iam: function () {
+        var out = [];
+        if (!root.mfa || days(root.lastSignIn, AS_OF) <= 90) out.push('root');
+        users.concat(roles).forEach(function (p) { if (fullAdmin(p)) out.push(p.name); });
+        users.forEach(function (u) { if (u.keys.some(staleKey) && out.indexOf(u.name) < 0) out.push(u.name); });
+        return out.sort();
+      },
+      logging: function () { return trails.filter(function (t) { return !t.on; }).map(function (t) { return t.region; }); }
+    }
+  };
+})();
+</script>
+
+<script>
+/* ===================== Read-only console: command interpreter =====================
+   B7EXEC(command) returns { text, err } as plain text. The workbench prints it;
+   LAB_SELFTEST parses the same text to re-derive the answer key. */
+(function () {
+  var D = window.B7DATA;
+  function pad(s, w) { s = String(s); while (s.length < w) s += ' '; return s; }
+  function grid(head, rows) {
+    var w = head.map(function (h, i) { return Math.max(h.length, rows.reduce(function (m, r) { return Math.max(m, String(r[i]).length); }, 0)); });
+    function line(r) { return r.map(function (c, i) { return i === r.length - 1 ? String(c) : pad(c, w[i] + 2); }).join('').replace(/\s+$/, ''); }
+    return [line(head)].concat(rows.map(line)).join('\n');
+  }
+  function num(n) { return Number(n).toLocaleString('en-US'); }
+  function kv(pairs) { var w = pairs.reduce(function (m, p) { return Math.max(m, p[0].length); }, 0); return pairs.map(function (p) { return pad(p[0], w + 2) + p[1]; }).join('\n'); }
+  function json(o) { return JSON.stringify(o, null, 2); }
+  function findRule(id) { id = id.toUpperCase(); for (var i = 0; i < D.rules.length; i++) if (D.rules[i].id === id) return D.rules[i]; return null; }
+  function findP(n) { n = n.toLowerCase(); var all = D.users.map(function (u) { u.kind = 'user'; return u; }).concat(D.roles.map(function (r) { r.kind = 'role'; return r; })); for (var i = 0; i < all.length; i++) if (all[i].name === n) return all[i]; return null; }
+  function findB(n) { n = n.toLowerCase(); for (var i = 0; i < D.buckets.length; i++) if (D.buckets[i].name === n) return D.buckets[i]; return null; }
+
+  var HELP = [
+    ['help', 'List commands'],
+    ['show rules', 'Firewall security policy, top-down'],
+    ['show rule <id>', 'One rule in detail, for example show rule R342'],
+    ['show rule-review', 'Owner, ticket, review date, and hit counts'],
+    ['list buckets', 'Storage buckets and public access status'],
+    ['get-bucket-policy <name>', 'Bucket policy, settings, and access summary'],
+    ['list users', 'Cloud users and access keys'],
+    ['list roles', 'Cloud roles'],
+    ['get-policy <user|role>', 'Permissions attached to a principal'],
+    ['show mfa', 'Multi-factor authentication status'],
+    ['show logging', 'Audit trail status by region'],
+    ['show account-summary', 'Tenant, root user, and regions'],
+    ['show provider-notices', 'Security notices from the cloud provider'],
+    ['whoami', 'Your session and permissions'],
+    ['history', 'Commands entered this session'],
+    ['hint', 'Suggest a next step'],
+    ['clear', 'Clear the screen']
+  ];
+  window.B7HELP = HELP;
+
+  var C = {};
+  C.help = function () { return 'Available commands (read-only session):\n\n' + grid(['COMMAND', 'DESCRIPTION'], HELP) + '\n\nUse the up and down arrow keys to recall earlier commands.'; };
+  C.whoami = function () { return kv([['Session', 'auditor (federated, IdP group IA-ReadOnly)'], ['Firewall', 'fw-edge-01, read-only API profile audit-ro'], ['Cloud', 'assumed role secops-audit-role in tenant lfcu-prod'], ['Permissions', 'show, list, get, describe only. Changes are not permitted.'], ['Evidence as of', D.AS_OF + ' 14:00 UTC']]); };
+  C.rules = function () {
+    return 'fw-edge-01  security policy  ' + D.rules.length + ' rules, evaluated top-down, first match wins\nHit counters cover the last 180 days (since 2026-04-18).\n\n' +
+      grid(['SEQ', 'ID', 'NAME', 'FROM>TO', 'SOURCE', 'DESTINATION', 'SERVICE', 'ACTION', 'HITS_180D'],
+        D.rules.map(function (r) { return [r.seq, r.id, r.name, r.from + '>' + r.to, r.src, r.dst, r.svc, r.action, num(r.hits)]; }));
+  };
+  C.rule = function (id) {
+    if (!id) return { text: 'Usage: show rule <id>   (for example: show rule R342)', err: true };
+    var r = findRule(id); if (!r) return { text: 'No rule with ID ' + id.toUpperCase() + '. Run show rules for the list.', err: true };
+    return kv([['Rule', r.id + '  (' + r.name + ')'], ['Sequence', String(r.seq)], ['From zone', r.from], ['To zone', r.to], ['Source', r.src], ['Destination', r.dst], ['Service', r.svc], ['Action', r.action], ['Logging', r.log],
+      ['Hits, 180 days', num(r.hits)], ['Last hit', r.last_hit || 'never'], ['Owner', r.owner || '(none recorded)'], ['Change ticket', r.ticket || '(none recorded)'], ['Last reviewed', r.reviewed]]) + (D.notes[r.id] ? '\n' + D.notes[r.id] : '');
+  };
+  C.review = function () {
+    return 'fw-edge-01  rule review register (exported ' + D.AS_OF + ')\n\n' +
+      grid(['ID', 'OWNER', 'TICKET', 'LAST_REVIEWED', 'HITS_180D', 'LAST_HIT'],
+        D.rules.map(function (r) { return [r.id, r.owner || '-', r.ticket || '-', r.reviewed, num(r.hits), r.last_hit || 'never']; }));
+  };
+  C.buckets = function () {
+    return 'Tenant lfcu-prod  object storage  ' + D.buckets.length + ' buckets\n\n' +
+      grid(['BUCKET', 'REGION', 'CLASSIFICATION', 'BLOCK_PUBLIC_ACCESS', 'ENCRYPTION', 'OBJECTS'],
+        D.buckets.map(function (b) { return [b.name, b.region, b.cls, b.bpa ? 'on' : 'OFF', b.enc.split(' (')[0], num(b.objects)]; })) +
+      '\n\nBLOCK_PUBLIC_ACCESS OFF means the bucket policy decides. Run get-bucket-policy <name> for details.';
+  };
+  C.bucket = function (n) {
+    if (!n) return { text: 'Usage: get-bucket-policy <name>\nBuckets: ' + D.buckets.map(function (b) { return b.name; }).join(', '), err: true };
+    var b = findB(n); if (!b) return { text: 'NoSuchBucket: ' + n + '. Run list buckets for the names.', err: true };
+    return kv([['Bucket', b.name], ['Region', b.region], ['Classification tag', b.cls], ['Block public access', b.bpa ? 'on (all four settings)' : 'OFF (all four settings)'], ['Encryption at rest', b.enc], ['Public access exception', b.exception], ['Access summary', b.anon]]) +
+      '\n\nBucket policy:\n' + json(b.policy);
+  };
+  C.users = function () {
+    var rows = [];
+    D.users.forEach(function (u) {
+      if (!u.keys.length) rows.push([u.name, u.console ? 'yes' : 'no', '-', '-', '-']);
+      u.keys.forEach(function (k) { rows.push([u.name, u.console ? 'yes' : 'no', k.id, k.created, k.last || 'never']); });
+    });
+    return 'Tenant lfcu-prod  IAM users  (access keys are active unless shown otherwise)\n\n' + grid(['USER', 'CONSOLE', 'ACCESS_KEY', 'KEY_CREATED', 'KEY_LAST_USED'], rows);
+  };
+  C.roles = function () {
+    return 'Tenant lfcu-prod  IAM roles\n\n' + grid(['ROLE', 'POLICY', 'LAST_USED', 'TRUSTED_ENTITY'], D.roles.map(function (r) { return [r.name, r.pname, r.lastUsed, r.trusted]; }));
+  };
+  C.policy = function (n) {
+    if (!n) return { text: 'Usage: get-policy <user|role>\nUsers: ' + D.users.map(function (u) { return u.name; }).join(', ') + '\nRoles: ' + D.roles.map(function (r) { return r.name; }).join(', '), err: true };
+    if (n.toLowerCase() === 'root') return 'root is the account owner. It has unrestricted access to every resource, and policies cannot limit it.\nSee show account-summary and show mfa for how the root user is protected.';
+    var p = findP(n); if (!p) return { text: 'NoSuchEntity: ' + n + '. Run list users or list roles for the names.', err: true };
+    return kv([['Principal', D.ACCT + ':' + p.kind + '/' + p.name], ['Attached policy', p.pname]]) + '\n\nPolicy document:\n' + json({ Version: '2024-10-17', Statement: p.policy.Statement });
+  };
+  C.mfa = function () {
+    var rows = [['root', 'yes', D.root.mfa ? 'yes' : 'NO', '-']];
+    D.users.forEach(function (u) { rows.push([u.name, u.console ? 'yes' : 'no', u.console ? (u.mfa ? 'yes' : 'NO') : 'n/a', u.mfa || '-']); });
+    return 'Tenant lfcu-prod  multi-factor authentication\n\n' + grid(['PRINCIPAL', 'CONSOLE', 'MFA', 'MFA_TYPE'], rows) + '\n\nProgrammatic users (no console password) authenticate with access keys only.';
+  };
+  C.logging = function () {
+    return 'Tenant lfcu-prod  audit trails by region\n\n' + grid(['REGION', 'TRAIL', 'LOGGING', 'VALIDATION', 'LAST_DELIVERY', 'NOTE'],
+      D.trails.map(function (t) { return [t.region, t.trail, t.on ? 'ON' : 'OFF', t.validation, t.last, t.note || '-']; }));
+  };
+  C.summary = function () {
+    var r = D.root;
+    return kv([['Tenant', 'lfcu-prod (4471-0938-2215)'], ['Provider', 'Altamira Cloud'], ['Service model', 'IaaS: compute instances, managed object storage, identity'], ['Home region', 'na-east-1'],
+      ['Regions in use', D.trails.map(function (t) { return t.region + ' (' + t.instances + ' instances' + (t.region === 'na-west-1' ? ', disaster recovery' : '') + ')'; }).join(', ')],
+      ['IAM users', String(D.users.length)], ['IAM roles', String(D.roles.length)], ['Password policy', 'minimum length 14, reuse prevention 24, maximum age 90 days']]) +
+      '\n\nRoot user\n' + kv([['  MFA enabled', r.mfa ? 'true' : 'false'], ['  Access keys', String(r.keys)], ['  Last sign-in', r.lastSignInDetail], ['  Password last changed', r.pwdChanged]]);
+  };
+  C.notices = function () {
+    return 'Altamira Cloud security and maintenance notices for tenant lfcu-prod\n\n' + D.notices.map(function (n) {
+      return n.id + '  ' + n.date + '  ' + n.title + '\n' + kv([['  Scope', n.scope], ['  Status', n.status], ['  Customer action', n.action], ['  Assurance', n.assurance]]);
+    }).join('\n\n');
+  };
+
+  var used = {};
+  var HINTS = [
+    ['rules', 'Start with the firewall. Run show rules and read it top-down: the first matching rule wins, so a broad rule early in a zone pair hides narrower rules below it.'],
+    ['review', 'Run show rule-review. Compare each row with FW-03, FW-04, and FW-05 in the Baseline tab: hits in 180 days, owner and ticket, and a review date within 12 months.'],
+    ['buckets', 'Move to the cloud tenant. Run list buckets and note any bucket with block public access OFF.'],
+    ['bucket', 'Run get-bucket-policy on each bucket with block public access OFF. Compare the classification tag with who can read it.'],
+    ['summary', 'Run show account-summary and show mfa. The root user deserves its own test.'],
+    ['users', 'Run list users. Compare each key’s last use with the 90-day limit in CL-03.'],
+    ['policy', 'Run list roles, then get-policy on each role. Look for "Action": "*" with "Resource": "*".'],
+    ['logging', 'Run show logging. CL-07 requires audit logging in every region in use, not only the home region.'],
+    ['notices', 'Run show provider-notices, then decide who owns CL-08 under the shared responsibility model.']
+  ];
+  C.hint = function () {
+    for (var i = 0; i < HINTS.length; i++) if (!used[HINTS[i][0]]) return 'Hint: ' + HINTS[i][1];
+    return 'Hint: you have run every evidence command. Record your results in the checklist, then mark each baseline item in the Baseline tab.';
+  };
+
+  window.B7EXEC = function (raw, history) {
+    var line = String(raw || '').trim().replace(/\s+/g, ' '), lc = line.toLowerCase(), parts = lc.split(' '), arg = line.split(' ').slice(-1)[0];
+    function done(k, out) { used[k] = 1; return typeof out === 'string' ? { text: out } : out; }
+    if (!line) return { text: '' };
+    if (/^(set|delete|del|remove|rm|put|update|create|enable|disable|attach|detach|modify|configure|config|add|commit|edit|start|stop|apply|no)\b/.test(lc) || /^(put|delete|create|update|attach|detach|start|stop)-/.test(lc))
+      return { text: 'Permission denied: this audit session is read-only (secops-audit-role, audit-ro).\nAuditors test configurations; administrators change them. Record the gap instead.', err: true };
+    if (lc === 'help' || lc === '?' || lc === 'man') return { text: C.help() };
+    if (lc === 'whoami') return { text: C.whoami(), wrap: true };
+    if (lc === 'hint') return { text: C.hint(), wrap: true };
+    if (lc === 'history') return { text: (history || []).length ? history.map(function (h, i) { return pad(i + 1, 4) + h; }).join('\n') : 'No commands yet.' };
+    if (lc === 'show rules') return done('rules', C.rules());
+    if (parts[0] === 'show' && parts[1] === 'rule' && parts.length <= 3) return done('rule', C.rule(parts[2] ? arg : ''));
+    if (lc === 'show rule-review' || lc === 'show rule review') return done('review', C.review());
+    if (lc === 'list buckets' || lc === 'list bucket') return done('buckets', C.buckets());
+    if (parts[0] === 'get-bucket-policy' && parts.length <= 2) return done('bucket', C.bucket(parts[1] ? arg : ''));
+    if (lc === 'list users') return done('users', C.users());
+    if (lc === 'list roles') return done('policy0', C.roles());
+    if (parts[0] === 'get-policy' && parts.length <= 2) { var r = C.policy(parts[1] ? arg : ''); if (parts[1] && findP(arg) && findP(arg).kind === 'role') used.policy = 1; return typeof r === 'string' ? { text: r } : r; }
+    if (lc === 'show mfa') return done('mfa', C.mfa());
+    if (lc === 'show logging') return done('logging', C.logging());
+    if (lc === 'show account-summary' || lc === 'show account summary') { used.summary = 1; return { text: C.summary() }; }
+    if (lc === 'show provider-notices' || lc === 'show provider notices') return done('notices', C.notices());
+    var known = HELP.map(function (h) { return h[0].split(' <')[0]; });
+    var close = known.filter(function (k) { return k.split(' ')[0] === parts[0] || k.indexOf(parts[parts.length - 1]) >= 0; }).slice(0, 4);
+    return { text: 'Unknown command: ' + line + (close.length ? '\nDid you mean: ' + close.join(', ') + '?' : '') + '\nType help for the list of commands.', err: true };
+  };
+  window.B7RESETHINTS = function () { used = {}; };
+})();
+</script>
+
+<script>
+window.LAB = {
+  id: 'B7',
+  title: 'Cloud and Network Configuration Audit',
+  accent: 'Configuration Audit',
+  domain: 'Domain 5',
+  time: '60 min',
+  level: 'Intermediate to Advanced',
+  lessonHref: 'lesson07.html#s4',
+  lessonLabel: 'Lesson 7, Network & Endpoint Security and Cloud',
+  lede: 'Administrators configure controls. Auditors test them against a stated baseline. Use a read-only console to examine a perimeter firewall and a cloud tenant, compare what you see with a 15-item benchmark, decide which gaps belong to the customer, and log them by severity.',
+  workbenchTitle: 'Audit console',
+  ticket: {
+    number: 'IA-2026-0733',
+    priority: 'High priority',
+    from: 'Naledi Mokoena, Chief Audit Executive',
+    to: 'IS audit staff (you)',
+    subject: 'Pre-certification review: fw-edge-01 and the lfcu-prod cloud tenant',
+    due: 'Gap log due before the readiness meeting on October 22',
+    body: '<p>Larkspur Federal Credit Union starts its ISO/IEC 27001 certification audit in January. Before then, the board wants an independent view of two control areas: the perimeter firewall at headquarters (fw-edge-01) and the production tenant in Altamira Cloud (lfcu-prod), where member statements, loan documents, and backups now live.</p>' +
+      '<p>IT security wrote the <b>Larkspur Cloud and Network Benchmark</b>, a 15-item baseline modeled on CIS Benchmark recommendations. Test the current configuration against it. You have a <b>read-only</b> session on both systems. Do not change anything, even if a fix looks simple. That is management’s job, and it would impair your independence.</p>' +
+      '<p>Two cautions. IT copied some baseline items from a generic template, so confirm who actually owns each control before you call it a gap. And not every broad-looking setting is a finding: check for an approved exception before you record one.</p>' +
+      '<p>Record results in the checklist, then give me a severity-ranked gap log with evidence and an owner for each item.</p>'
+  },
+  howTo: 'Step 2 opens a <b>read-only audit console</b>. Type a command and press Enter, or choose one from the command list beside the console. Type <code>help</code> for every command and <code>hint</code> for a suggested next step. The up and down arrow keys recall earlier commands. The <b>Baseline</b> tab holds the 15-item benchmark and a working column where you can mark each item as you test it (ungraded). A hint is available for every checklist item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points.',
+  workIntro: 'Run commands in the console, compare the output with the Baseline tab, and record your results in the checklist below. All evidence is as of October 15, 2026, at 14:00 UTC.',
+  checklist: [
+    { id: 'anyany', type: 'set', points: 10, short: 'Any-any rules', title: 'FW-01: Unrestricted permit rules',
+      task: 'Find every firewall rule that <b>allows</b> traffic with source <code>any</code>, destination <code>any</code>, and service <code>any</code>. Enter the rule IDs.',
+      label: 'Rule IDs of any-any permit rules', placeholder: 'e.g., R101, R102',
+      answer: function () { return B7DATA.key.anyany(); },
+      hint: 'In <code>show rules</code>, scan the SOURCE, DESTINATION, and SERVICE columns together. All three must be <code>any</code>, and the action must be allow. A deny-all rule is the opposite of a finding.',
+      debrief: '<p>Two rules allow everything. R258 opens all outbound traffic from inside to the internet. It was added as a temporary fix while the web proxy was replaced, with no expiry date, and it has 340,612 hits, so the proxy and its content filtering are effectively bypassed. R199 allows the vendor network to reach every inside host on every port. It has no owner, no ticket, and a review date from March 2025, and it also defeats FW-07, since vendors can reach the firewall management address. R500 also reads any, any, any, but it denies. A final deny-all is exactly what FW-06 requires.</p><p>The auditor reports both rules as high severity. Temporary rules need an owner, an expiry date, and a follow-up ticket. Vendor access should be limited to the jump host on RDP, which R333 already permits, and should be reviewed with the vendor contract.</p>',
+      reviewNote: 'An any-any finding needs all three fields set to any on an allow rule.' },
+    { id: 'shadow', type: 'set', points: 10, short: 'Shadowed rules', title: 'FW-02: Shadowed rules',
+      task: 'A rule is <b>shadowed</b> when an earlier rule (lower sequence number) in the same zone pair already matches all of its traffic, so the later rule can never take effect. Enter the IDs of the shadowed rules.',
+      label: 'Rule IDs of shadowed rules', placeholder: 'e.g., R101',
+      answer: function () { return B7DATA.key.shadow(); },
+      hint: 'Within each FROM>TO pair, compare each rule with the rules above it. The earlier rule must cover the later rule’s source, destination, and service: <code>172.16.10.0/24</code> covers <code>172.16.10.20/32</code>, and <code>any</code> covers everything.',
+      debrief: '<p>Three rules can never match. R238 duplicates R342 exactly, so it is redundant clutter. R162 allows SSH from one admin workstation to web01, but R421 already allows SSH from the whole admin subnet to the whole DMZ. R402 is the serious one: it was added to <b>deny</b> the web server access to the core database after a penetration test, but R173 above it already <b>allows</b> the entire DMZ to reach the database subnet on port 1433. The deny that management believes closes the pen test finding does nothing.</p><p>The auditor reports R402 as a high-severity gap, because a remediation was recorded as complete but is not effective, and recommends that rule changes be tested for shadowing before approval. R238 and R162 are low-severity clean-up items.</p>',
+      reviewNote: 'Shadowing is tested top-down within a zone pair: an earlier rule must cover source, destination, and service.' },
+    { id: 'unused', type: 'set', points: 9, short: 'Unused rules', title: 'FW-03: Rules unused for 180 days',
+      task: 'Find every rule with <b>zero hits in the last 180 days</b>, including any you already flagged in another item. Enter the rule IDs.',
+      label: 'Rule IDs with no hits in 180 days', placeholder: 'e.g., R101, R102',
+      answer: function () { return B7DATA.key.unused(); },
+      hint: 'Use <code>show rule-review</code>. HITS_180D must be 0. Check LAST_HIT too: a rule hit 162 days ago has been used within the window and passes.',
+      debrief: '<p>Six rules have no hits in 180 days. The three shadowed rules have never been hit, which is what shadowing predicts. R126 (legacy FTP from the internet), R173 (DMZ to the database subnet), and R377 (backup agent) last matched between November 2025 and March 2026. R229, the partner SFTP rule, has only 14 hits, but its last hit was in May, inside the window, so it passes.</p><p>Unused rules are attack surface without a business purpose. R126 and R173 matter most because they expose legacy FTP to the internet and the database to the DMZ. The auditor recommends that owners confirm or remove each rule, and that hit-count review become part of the annual rule recertification.</p>',
+      reviewNote: 'Use the 180-day hit counter and the last-hit date together.' },
+    { id: 'docs', type: 'set', points: 9, short: 'Owner and review gaps', title: 'FW-04 and FW-05: Owner, justification, and review',
+      task: 'Find every rule that has <b>no owner</b>, <b>no change ticket</b> (business justification), or a <b>last review date more than 12 months</b> before October 15, 2026. Enter the rule IDs.',
+      label: 'Rule IDs failing FW-04 or FW-05', placeholder: 'e.g., R101',
+      answer: function () { return B7DATA.key.docs(); },
+      hint: 'In <code>show rule-review</code>, a dash means the value is missing. Any review date before 2025-10-15 is stale. Watch the boundary: 2025-10-20 is within 12 months.',
+      debrief: '<p>Five rules fail. R126 and R199 have no owner, no ticket, and stale reviews. R467 (NTP outbound) has an owner but no ticket. R455 (inbound mail) and R173 were last reviewed in mid-2025. R144 was reviewed on 2025-10-20, inside the 12-month window, so it passes.</p><p>Missing ownership is a root cause, not a cosmetic issue: a rule nobody owns is a rule nobody will remove. The auditor recommends that the rule base be recertified by named owners, that rules without an owner be disabled after notice, and that the firewall change process require a ticket for every new rule.</p>',
+      reviewNote: 'FW-04 needs both an owner and a ticket; FW-05 needs a review within 12 months.' },
+    { id: 'bucket', type: 'set', points: 9, short: 'Public bucket', title: 'CL-05: Public storage holding sensitive data',
+      task: 'Find every storage bucket that is <b>publicly readable</b> and holds data <b>not classified Public</b>. Enter the bucket names.',
+      label: 'Bucket names', placeholder: 'e.g., lfcu-example-bucket',
+      answer: function () { return B7DATA.key.bucket(); },
+      hint: 'Run <code>list buckets</code>, then <code>get-bucket-policy</code> on each bucket with block public access OFF. <code>"Principal": "*"</code> means anyone on the internet. Then compare the classification tag and look for an approved exception.',
+      debrief: '<p>Two buckets have block public access turned off and a policy that grants <code>"Principal": "*"</code>. lfcu-web-assets holds website images, is classified Public, and has an approved exception, so it meets CL-05. lfcu-member-stmt-export is classified Confidential, allows anonymous GetObject and ListBucket, and has no exception. Its access summary shows 1,284 anonymous downloads from 37 external IP addresses in 30 days. The policy Sid, VendorPrintPickup, suggests it was opened so a statement-printing vendor could collect files.</p><p>This is a critical finding and may be a reportable data breach. The auditor escalates it to the CAE immediately rather than waiting for the report. Management should block public access, give the print vendor scoped, authenticated access, and engage legal and privacy staff to assess notification duties.</p>',
+      reviewNote: 'Public access is a finding only when the data is not classified Public or lacks an approved exception.' },
+    { id: 'iam', type: 'set', points: 10, short: 'Identity gaps', title: 'CL-01 to CL-04: Principals that fail the identity baseline',
+      task: 'Find every principal (the root user, a user, or a role) that fails at least one of <b>CL-01 to CL-04</b>. Enter their names, using <code>root</code> for the root user.',
+      label: 'Principal names', placeholder: 'e.g., root, example-role',
+      answer: function () { return B7DATA.key.iam(); },
+      hint: 'Run <code>show account-summary</code> and <code>show mfa</code> for the root user, <code>list users</code> for key ages (last use, or creation if never used), and <code>get-policy</code> on each role and user for full administrative rights (<code>"Action": "*"</code> on <code>"Resource": "*"</code>).',
+      debrief: '<p>Three principals fail. The root user has no MFA and signed in six days before the evidence date, which fails CL-01 and CL-02. ci-deploy-role allows every action on every resource, so anyone who can change the build pipeline controls the whole tenant (CL-04). svc-reporting has an access key last used in December 2025, about 300 days ago (CL-03). Several decoys pass: secops-audit-role uses wildcards, but only for Describe, Get, and List; d.lindgren has compute:* scoped to instances; r.castellanos last used a key 56 days ago; and t.nguyen’s unused key is only 15 days old.</p><p>The auditor ranks root without MFA and the wildcard role as high, and the stale key as medium. Recommendations: enable hardware MFA on root and store its credentials under dual control, ask who used root on October 9 and why, scope the deployment role to the services it deploys, and disable unused keys automatically after 90 days.</p>',
+      reviewNote: 'Test root MFA and use, key age, and policies with Action * on Resource *.' },
+    { id: 'logging', type: 'set', points: 9, short: 'Logging gap', title: 'CL-07: Audit logging in every region',
+      task: 'Find every region in use where <b>audit logging is not enabled</b>. Enter the region names.',
+      label: 'Region names', placeholder: 'e.g., na-example-1',
+      answer: function () { return B7DATA.key.logging(); },
+      hint: 'Run <code>show logging</code> and compare it with the regions listed in <code>show account-summary</code>.',
+      debrief: '<p>Audit logging has been off in na-west-1 since June 12, 2026, when d.lindgren stopped it during a disaster recovery test and never restarted it. The region runs 14 instances and holds lfcu-backup-vault, the Restricted backup bucket. For four months, nothing done there has been recorded, and d.lindgren’s own policy allows StopLogging.</p><p>The auditor rates this high: the gap removes detection and investigation evidence for the backups the credit union relies on to recover. Management should restart logging, use a multi-region trail that cannot be stopped by a single engineer, alert on any StopLogging call, and add a "restore logging" step to the DR test runbook.</p>',
+      reviewNote: 'Compare the regions in use with the trail status in each region.' },
+    { id: 'shared', type: 'choice', points: 9, short: 'Shared responsibility', title: 'CL-08: Who owns hypervisor patching?',
+      task: 'CL-08 requires hypervisor and physical host patches within 30 days. <code>show provider-notices</code> lists PSA-2026-118, an open hypervisor update in na-east-1. The tenant is IaaS. How should the auditor treat CL-08?',
+      options: ['Record a customer gap, since the advisory is still open in na-east-1', 'Mark it not applicable and drop it from the audit scope entirely', 'Treat it as a provider control: rely on the SOC 2 report and test CUECs', 'Ask the cloud team to patch the hypervisors before the January audit'],
+      answer: 2,
+      hint: 'Under IaaS, which layers does the customer manage, and which does the provider manage? If the customer cannot change a control, how does the auditor still get assurance over it?',
+      debrief: '<p>In IaaS, the provider runs the physical hosts and the hypervisor. The customer manages guest operating systems, identity, storage settings, network rules, and logging. Larkspur cannot patch Altamira’s hypervisors, and its cloud team has no access to them, so an open provider advisory is not a customer finding. It also cannot simply be dropped. The control still matters, and the credit union remains accountable for relying on it.</p><p>The auditor obtains the provider’s SOC 2 Type 2 report, confirms the period and scope cover the hypervisor controls (CC7.1, CC8.1), reviews any exceptions, and tests the complementary user entity controls (CUECs) that Larkspur must perform, as practiced in Lab B2. The auditor also recommends that IT rewrite CL-08 so the baseline states the responsibility split.</p>',
+      reviewNote: 'Under IaaS the provider owns hypervisor patching; the customer gets assurance through the SOC 2 report and its own CUECs.' },
+    { id: 'top', type: 'choice', points: 10, short: 'Most significant gap', title: 'Rank the most significant gap',
+      task: 'Several gaps are serious. Which one should lead the gap log and be escalated to the CAE today?',
+      options: ['Five firewall rules lack an owner, a ticket, or a current review', 'A public bucket exposes Confidential member statements to anyone', 'Audit logging has been off in the disaster recovery region since June', 'The root user signed in last week and has no multi-factor authentication'],
+      answer: 1,
+      hint: 'Separate weaknesses that could lead to harm from one where harm may already be happening. Which gap has evidence of actual access by unknown parties?',
+      debrief: '<p>The public bucket leads. It holds Confidential member data, and the access summary shows anonymous downloads from 37 external addresses, so exposure is not hypothetical. It may trigger breach notification duties, which have deadlines. Root without MFA and the logging gap are high: each makes a serious incident more likely or harder to investigate, but neither shows data already leaving. The documentation gaps are real but medium to low.</p><p>Severity ranking weighs likelihood and impact, and gives the most weight to evidence of exploitation. The auditor escalates the bucket now and does not hold it for the final report. The other items go into the ranked gap log with owners and dates.</p>',
+      reviewNote: 'Rank by impact and likelihood, and lead with evidence of actual exposure.' },
+    { id: 'gaplog', type: 'text', points: 15, short: 'Gap log', title: 'Write the severity-ranked gap log', reportTitle: 'Severity-ranked gap log',
+      task: 'Write the top three gaps in severity order. For each, give the baseline item, the evidence (rule IDs, names, counts, dates), the severity, and the owner who should fix it. Then note the observation that is <b>not</b> a customer finding, and give your overall conclusion.',
+      fields: [
+        { key: 'g1', label: 'Gap 1 (highest severity): item, evidence, severity, owner', min: 60, placeholder: 'e.g., CL-05, bucket name, classification, anonymous access counts, Critical, owner' },
+        { key: 'g2', label: 'Gap 2: item, evidence, severity, owner', min: 50, placeholder: 'Baseline item, specific evidence, severity, owner' },
+        { key: 'g3', label: 'Gap 3: item, evidence, severity, owner', min: 50, placeholder: 'Baseline item, specific evidence, severity, owner' },
+        { key: 'prov', label: 'Not a customer finding: which observation, and how assurance is obtained', min: 40, placeholder: 'Name the item and the shared responsibility reasoning.' },
+        { key: 'concl', label: 'Overall conclusion for the readiness meeting', min: 40, placeholder: 'Is the environment ready for certification? What must happen first?' }
+      ],
+      hint: 'Lead with the public bucket. Root without MFA, the wildcard deployment role, the logging gap in na-west-1, the any-any rules, and the ineffective deny rule R402 are all high, so choose two and explain why. Each gap needs an owner who can act, such as the cloud platform lead or the network operations manager.',
+      debrief: '<p><b>Model gap log.</b> <b>1. Critical, CL-05:</b> lfcu-member-stmt-export (Confidential, 96,214 objects) has block public access off and a policy granting <code>Principal: *</code> GetObject and ListBucket, with no exception. Access logs show 1,284 anonymous downloads from 37 external IPs in 30 days. Owner: cloud platform lead, with the privacy officer for breach assessment. Escalated to the CAE on October 15. <b>2. High, CL-01, CL-02, and CL-04:</b> the root user has no MFA and was used on 2026-10-09, and ci-deploy-role grants Action * on Resource *. Owner: cloud platform lead. <b>3. High, FW-01 and FW-02:</b> R258 and R199 allow any-any traffic outbound and from the vendor network, and the pen test deny R402 is shadowed by R173, so the reported fix is not effective. Owner: network operations manager. <b>Also high, CL-07:</b> logging off in na-west-1 since June 12. <b>Medium and low:</b> svc-reporting’s stale key, six unused rules, and five rules with ownership or review gaps.</p><p><b>Not a customer finding:</b> CL-08 hypervisor patching (PSA-2026-118) is the provider’s responsibility under IaaS. Assurance comes from Altamira’s SOC 2 Type 2 report and testing of Larkspur’s CUECs. <b>Conclusion:</b> the environment is not ready for certification. The bucket must be closed and assessed now, and the high items need remediation and retesting before January. Your wording will differ. Check that every gap has specific evidence, a severity, and an owner.</p>',
+      reviewNote: 'Each gap needs a baseline item, specific evidence, a severity, and an owner; lead with actual exposure.' }
+  ],
+
+  /* ===================== Workbench: console + baseline ===================== */
+  workbench: function (root, api) {
+    var esc = api.esc, D = window.B7DATA;
+    var BASE = [
+      ['FW-01', 'Firewall', 'No allow rule uses any source, any destination, and any service.', '4.1', 'L1, automated'],
+      ['FW-02', 'Firewall', 'No rule is shadowed by an earlier rule in the same zone pair.', '4.2', 'L1, automated'],
+      ['FW-03', 'Firewall', 'Rules with zero hits for 180 days are removed or re-justified.', '4.3', 'L2, automated'],
+      ['FW-04', 'Firewall', 'Every rule has a named owner and a change ticket stating the business need.', '4.4', 'L1, manual'],
+      ['FW-05', 'Firewall', 'Every rule has been reviewed within the last 12 months.', '4.5', 'L1, manual'],
+      ['FW-06', 'Firewall', 'The final rule denies all remaining traffic and logs it.', '4.6', 'L1, automated'],
+      ['FW-07', 'Firewall', 'Firewall management is reachable only from the management zone.', '4.7', 'L1, automated'],
+      ['CL-01', 'Identity', 'The root user has MFA enabled.', '1.5', 'L1, automated'],
+      ['CL-02', 'Identity', 'The root user is not used for daily work (no use in 90 days without a break-glass ticket).', '1.7', 'L1, automated'],
+      ['CL-03', 'Identity', 'Access keys unused for more than 90 days are disabled.', '1.12', 'L1, automated'],
+      ['CL-04', 'Identity', 'No policy granting full administrative rights (Action * on Resource *) is attached.', '1.16', 'L1, automated'],
+      ['CL-05', 'Storage', 'Buckets block public access unless classified Public with an approved exception.', '2.1', 'L1, automated'],
+      ['CL-06', 'Storage', 'All buckets are encrypted at rest.', '2.2', 'L1, automated'],
+      ['CL-07', 'Logging', 'Audit logging is on in every region in use, with log validation.', '3.1', 'L1, automated'],
+      ['CL-08', 'Compute', 'Hypervisor and physical host security patches are applied within 30 days of release.', '5.9', 'L1, manual']
+    ];
+    var MARKS = ['Not tested', 'Meets baseline', 'Gap', 'Not customer-owned'];
+    var bl = api.note('bl') || {};
+    var groups = [
+      ['Firewall', ['show rules', 'show rule <id>', 'show rule-review']],
+      ['Cloud storage', ['list buckets', 'get-bucket-policy <name>']],
+      ['Cloud identity', ['list users', 'list roles', 'get-policy <user|role>', 'show mfa', 'show account-summary']],
+      ['Logging and provider', ['show logging', 'show provider-notices']],
+      ['Session', ['help', 'hint', 'whoami', 'history', 'clear']]
+    ];
+    var desc = {}; window.B7HELP.forEach(function (h) { desc[h[0]] = h[1]; });
+
+    root.innerHTML =
+      '<div class="lb-tool">' +
+      '<div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-con" aria-controls="pn-con" aria-selected="true">Audit console</button>' +
+        '<button role="tab" id="tb-base" aria-controls="pn-base" aria-selected="false" tabindex="-1">Baseline (15 items)</button>' +
+        '<button role="tab" id="tb-sev" aria-controls="pn-sev" aria-selected="false" tabindex="-1">Severity guide</button></div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-con" aria-labelledby="tb-con">' +
+        '<div class="b7-wrap"><div class="b7-term">' +
+          '<div class="b7-term-head"><span>auditor@lfcu-audit &middot; fw-edge-01 + lfcu-prod</span><span class="b7-ro">&#128274; Read-only session</span></div>' +
+          '<div class="b7-out" id="b7-out" role="log" aria-live="polite" aria-label="Console output" tabindex="0"></div>' +
+          '<form class="b7-in-row" id="b7-form" autocomplete="off"><label for="b7-in">audit$</label><input id="b7-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="b7-kbd" placeholder="Type a command, for example: show rules"><button type="submit" class="btn">Run</button></form>' +
+        '</div>' +
+        '<nav class="b7-cmds" aria-label="Available commands">' + groups.map(function (g) {
+          return '<h4>' + esc(g[0]) + '</h4><ul>' + g[1].map(function (c) { return '<li><button type="button" data-cmd="' + esc(c) + '">' + esc(c) + '<span>' + esc(desc[c] || '') + '</span></button></li>'; }).join('') + '</ul>';
+        }).join('') + '</nav></div>' +
+        '<p class="b7-kbd" id="b7-kbd">Enter runs the command. Up and down arrows recall history. Commands with &lt;angle brackets&gt; need a name or ID; choosing one from the list places it in the prompt for you to complete.</p>' +
+      '</div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-base" aria-labelledby="tb-base" hidden>' +
+        '<div class="lb-doc"><p class="eyebrow">Larkspur Cloud and Network Benchmark v2.1</p><h4>Baseline for fw-edge-01 and tenant lfcu-prod</h4>' +
+        '<p class="lead-p" style="margin-bottom:.7rem">Written by IT security and modeled on CIS Benchmark recommendations (profile level and assessment type shown). Use the working column to track your own conclusions. It is not graded and is saved in this browser.</p>' +
+        '<div class="table-wrap b7-bl"><table class="data"><thead><tr><th scope="col">Item</th><th scope="col">Area</th><th scope="col">Requirement</th><th scope="col">Ref.</th><th scope="col">Your conclusion</th></tr></thead><tbody>' +
+        BASE.map(function (b) { return '<tr><td>' + b[0] + '</td><td>' + b[1] + '</td><td>' + esc(b[2]) + '</td><td class="b7-ref">' + b[3] + '<br>' + b[4] + '</td><td><label class="sr-only" for="bl-' + b[0] + '">Conclusion for ' + b[0] + '</label><select id="bl-' + b[0] + '" data-bl="' + b[0] + '">' + MARKS.map(function (m, k) { return '<option value="' + k + '"' + ((bl[b[0]] || 0) === k ? ' selected' : '') + '>' + m + '</option>'; }).join('') + '</select></td></tr>'; }).join('') +
+        '</tbody></table></div><p class="b7-tally" id="b7-tally" aria-live="polite"></p></div>' +
+        '<div class="lb-doc"><h4>Data classification (Policy IS-07, excerpt)</h4><ul><li><b>Public:</b> approved for release, such as website content.</li><li><b>Internal:</b> routine business data.</li><li><b>Confidential:</b> member personal and financial data, loan files, statements.</li><li><b>Restricted:</b> backups, keys, and credentials.</li></ul></div>' +
+      '</div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-sev" aria-labelledby="tb-sev" hidden>' +
+        '<div class="lb-doc"><h4>Internal Audit severity scale</h4><div class="table-wrap"><table class="data"><thead><tr><th scope="col">Severity</th><th scope="col">Meaning</th><th scope="col">Expected response</th></tr></thead><tbody>' +
+        '<tr><td><b>Critical</b></td><td>Evidence of actual exposure or loss of Confidential or Restricted data, or a control failure that is being exploited.</td><td>Escalate to the CAE the same day; do not wait for the report.</td></tr>' +
+        '<tr><td><b>High</b></td><td>A missing or ineffective key control that makes a serious incident likely, or prevents detecting one.</td><td>Remediate within 30 days and retest.</td></tr>' +
+        '<tr><td><b>Medium</b></td><td>A control weakness with compensating controls, or limited exposure.</td><td>Remediate within 90 days.</td></tr>' +
+        '<tr><td><b>Low</b></td><td>Hygiene or documentation gaps with little direct exposure.</td><td>Remediate in the next review cycle.</td></tr></tbody></table></div>' +
+        '<p class="b7-sev" style="margin-top:.7rem">Every gap needs an owner: the person who can make the change, such as the network operations manager or the cloud platform lead. Observations about controls the provider operates are not customer gaps. Record how assurance over them is obtained.</p></div>' +
+      '</div></div>';
+
+    // Tabs (arrow-key navigation), same pattern as B1
+    var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+    function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+    tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+    if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+
+    // Baseline working column
+    function tally() { var c = [0, 0, 0, 0]; BASE.forEach(function (b) { c[bl[b[0]] || 0]++; }); root.querySelector('#b7-tally').textContent = 'Your marks: ' + c[1] + ' meet the baseline, ' + c[2] + ' gaps, ' + c[3] + ' not customer-owned, ' + c[0] + ' not tested.'; }
+    root.querySelectorAll('[data-bl]').forEach(function (s) { s.addEventListener('change', function () { bl[s.dataset.bl] = +s.value; api.note('bl', bl); tally(); }); });
+    tally();
+
+    // Console
+    var out = root.querySelector('#b7-out'), inp = root.querySelector('#b7-in'), hist = api.note('hist') || [], hp = hist.length, draft = '';
+    function print(cmd, res) {
+      var d = document.createElement('div'); d.className = 'b7-entry';
+      if (cmd !== null) { var c = document.createElement('p'); c.className = 'b7-cmd'; c.innerHTML = '<span class="b7-ps">audit$</span> '; c.appendChild(document.createTextNode(cmd)); d.appendChild(c); }
+      if (res.text) { var p = document.createElement('pre'); p.className = 'b7-res' + (res.err ? ' err' : '') + (res.wrap ? ' b7-pw' : ''); p.textContent = res.text; d.appendChild(p); }
+      out.appendChild(d); out.scrollTop = out.scrollHeight;
+    }
+    function banner() { print(null, { text: 'Larkspur FCU audit console. Read-only session as secops-audit-role.\nEvidence as of ' + D.AS_OF + ' 14:00 UTC. Type help to list commands, or hint for a suggestion.' }); }
+    function run(cmd) {
+      cmd = cmd.trim(); if (!cmd) return;
+      if (hist[hist.length - 1] !== cmd) { hist.push(cmd); if (hist.length > 60) hist.shift(); api.note('hist', hist); }
+      hp = hist.length; draft = '';
+      if (cmd.toLowerCase() === 'clear' || cmd.toLowerCase() === 'cls') { out.innerHTML = ''; banner(); return; }
+      print(cmd, window.B7EXEC(cmd, hist));
+    }
+    window.B7RESETHINTS();
+    banner();
+    root.querySelector('#b7-form').addEventListener('submit', function (e) { e.preventDefault(); run(inp.value); inp.value = ''; });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowUp') { if (!hist.length) return; e.preventDefault(); if (hp === hist.length) draft = inp.value; hp = Math.max(0, hp - 1); inp.value = hist[hp]; }
+      else if (e.key === 'ArrowDown') { if (hp >= hist.length) return; e.preventDefault(); hp++; inp.value = hp === hist.length ? draft : hist[hp]; }
+      else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); out.innerHTML = ''; banner(); }
+    });
+    root.querySelectorAll('[data-cmd]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = b.dataset.cmd, k = c.indexOf(' <');
+        if (k >= 0) { inp.value = c.slice(0, k) + ' '; inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+        else { run(c); inp.focus(); }
+      });
+    });
+  }
+};
+
+/* Self-test: re-derive every set answer by parsing the console's printed text. */
+window.LAB_SELFTEST = function () {
+  var log = [], problems = [], X = window.B7EXEC;
+  function T(c) { return X(c, []).text; }
+  function rows(text, headStart) { var L = text.split('\n'), i = 0; while (i < L.length && L[i].indexOf(headStart) !== 0) i++; var out = []; for (var j = i + 1; j < L.length && L[j].trim(); j++) out.push(L[j].split(/\s{2,}/)); return out; }
+  function same(name, a, b) { a = a.slice().sort().join(','); b = b.slice().sort().join(','); log.push(name + ': ' + a); if (a !== b) problems.push(name + ' key ' + b + ' but console shows ' + a); }
+  function d(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]) / 864e5; }
+  var asOf = d('2026-10-15');
+  // Firewall
+  var R = rows(T('show rules'), 'SEQ').map(function (c) { var z = c[3].split('>'); return { seq: +c[0], id: c[1], from: z[0], to: z[1], src: c[4], dst: c[5], svc: c[6], act: c[7], hits: +c[8].replace(/,/g, '') }; });
+  if (R.length !== window.B7DATA.rules.length) problems.push('show rules printed ' + R.length + ' rows');
+  function net(c) { if (c === 'any') return { b: 0, m: 0 }; var p = c.split('/'), o = p[0].split('.'), n = +p[1]; var v = ((+o[0] << 24) | (+o[1] << 16) | (+o[2] << 8) | +o[3]) >>> 0; var m = n === 0 ? 0 : (0xFFFFFFFF << (32 - n)) >>> 0; return { b: (v & m) >>> 0, m: m }; }
+  function inNet(outer, inner) { var A = net(outer), B = net(inner); return ((A.m & B.m) >>> 0) === A.m && ((B.b & A.m) >>> 0) === A.b; }
+  function svcIn(outer, inner) { if (outer === 'any') return true; if (inner === 'any') return false; var o = {}; outer.split(',').forEach(function (s) { o[s] = 1; }); return inner.split(',').every(function (s) { return o[s]; }); }
+  same('any-any', R.filter(function (r) { return r.act === 'allow' && r.src === 'any' && r.dst === 'any' && r.svc === 'any'; }).map(function (r) { return r.id; }), window.B7DATA.key.anyany());
+  same('shadowed', R.filter(function (r) { return R.some(function (e) { return e.seq < r.seq && (e.from === 'any' || e.from === r.from) && (e.to === 'any' || e.to === r.to) && inNet(e.src, r.src) && inNet(e.dst, r.dst) && svcIn(e.svc, r.svc); }); }).map(function (r) { return r.id; }), window.B7DATA.key.shadow());
+  var RV = rows(T('show rule-review'), 'ID').map(function (c) { return { id: c[0], owner: c[1], ticket: c[2], rev: c[3], hits: +c[4].replace(/,/g, ''), last: c[5] }; });
+  same('unused', RV.filter(function (r) { return r.hits === 0 && (r.last === 'never' || asOf - d(r.last) >= 180); }).map(function (r) { return r.id; }), window.B7DATA.key.unused());
+  RV.forEach(function (r) { if (r.hits > 0 && r.last !== 'never' && asOf - d(r.last) > 180) problems.push(r.id + ' has hits but last hit is outside 180 days'); });
+  same('doc gaps', RV.filter(function (r) { return r.owner === '-' || r.ticket === '-' || asOf - d(r.rev) > 365; }).map(function (r) { return r.id; }), window.B7DATA.key.docs());
+  // Shadowed rules must show zero hits (consistency of the planted data)
+  window.B7DATA.key.shadow().forEach(function (id) { var r = RV.filter(function (x) { return x.id === id; })[0]; if (r.hits !== 0) problems.push('shadowed ' + id + ' shows hits'); });
+  // Buckets
+  var B = rows(T('list buckets'), 'BUCKET').map(function (c) { return { name: c[0], cls: c[2], bpa: c[3] }; });
+  same('public sensitive buckets', B.filter(function (b) {
+    var t = T('get-bucket-policy ' + b.name), pol = JSON.parse(t.slice(t.indexOf('{')));
+    var pub = b.bpa === 'OFF' && pol.Statement.some(function (s) { return s.Effect === 'Allow' && s.Principal === '*'; });
+    return pub && b.cls !== 'Public';
+  }).map(function (b) { return b.name; }), window.B7DATA.key.bucket());
+  // Identity
+  var bad = [], sum = T('show account-summary');
+  var mfaRoot = /MFA enabled\s+false/.test(sum), last = (sum.match(/Last sign-in\s+(\d{4}-\d\d-\d\d)/) || [])[1];
+  if (mfaRoot || (last && asOf - d(last) <= 90)) bad.push('root');
+  if (!/^root\s+yes\s+NO/m.test(T('show mfa'))) problems.push('show mfa does not show root without MFA');
+  rows(T('list users'), 'USER').forEach(function (c) { if (c[2] !== '-' && asOf - d(c[4] === 'never' ? c[3] : c[4]) > 90 && bad.indexOf(c[0]) < 0) bad.push(c[0]); });
+  var names = rows(T('list users'), 'USER').map(function (c) { return c[0]; }).concat(rows(T('list roles'), 'ROLE').map(function (c) { return c[0]; }));
+  names.filter(function (n, i) { return names.indexOf(n) === i; }).forEach(function (n) {
+    var t = T('get-policy ' + n), pol = JSON.parse(t.slice(t.indexOf('{')));
+    if (pol.Statement.some(function (s) { return [].concat(s.Action).indexOf('*') >= 0 && [].concat(s.Resource).indexOf('*') >= 0; }) && bad.indexOf(n) < 0) bad.push(n);
+  });
+  same('identity principals', bad, window.B7DATA.key.iam());
+  // Logging: every region in use must appear, and OFF regions are the key
+  var regions = (sum.match(/Regions in use\s+(.*)/) || [])[1].split(/\),\s*/).map(function (s) { return s.split(' ')[0]; });
+  var LG = rows(T('show logging'), 'REGION');
+  regions.forEach(function (r) { if (!LG.some(function (c) { return c[0] === r; })) problems.push('region ' + r + ' missing from show logging'); });
+  same('logging off', LG.filter(function (c) { return c[2] !== 'ON'; }).map(function (c) { return c[0]; }), window.B7DATA.key.logging());
+  // Choice items rest on displayed evidence
+  if (!/Customer action\s+None required/.test(T('show provider-notices')) || !/IaaS/.test(sum)) problems.push('shared responsibility evidence missing');
+  if (!/1,284 from 37 distinct external/.test(T('get-bucket-policy lfcu-member-stmt-export'))) problems.push('bucket exposure evidence missing');
+  // Read-only enforcement
+  if (!X('delete-bucket lfcu-web-assets', []).err || !X('set rule R258 action deny', []).err) problems.push('a write command was not refused');
+  return { log: log, problems: problems };
+};
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

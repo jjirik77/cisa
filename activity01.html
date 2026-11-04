@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A1 Auditor Judgment: Standards, Ethics, and Independence | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A1',
+  title: 'Auditor Judgment: Standards, Ethics, and Independence',
+  accent: 'Standards, Ethics, and Independence',
+  domain: 'Domain 1',
+  time: '30\u201340 min',
+  level: 'Foundational',
+  lessonHref: 'lesson01.html#s1',
+  lessonLabel: 'Lesson 1, Standards & Ethics',
+  lede: 'The CISA exam tests audit judgment, not technical recall. Practice thinking like an independent auditor: know the standards, spot threats to independence, and choose the response the profession expects.',
+  concepts: [
+    { key: 'mindset', name: 'Auditor mindset', review: 'Lesson 0, the auditor mindset' },
+    { key: 'standards', name: 'ITAF standards', review: 'Lesson 1, IS Audit Standards' },
+    { key: 'independence', name: 'Independence threats', review: 'Lesson 1, Code of Ethics and independence' },
+    { key: 'response', name: 'Professional response', review: 'Lesson 1, Code of Ethics and reporting' }
+  ],
+  stations: [
+    {
+      type: 'sort', short: 'Warm-up', title: 'Warm-up: auditor or practitioner?', concept: 'mindset',
+      instr: 'Read each statement. Decide whether it reflects the mindset of an <b>independent IS auditor</b> or of an <b>IT practitioner</b>. Then select <b>Check answers</b>.',
+      hint: 'Auditors evaluate, report, and recommend. Management decides and remediates. If the statement has the speaker fixing, choosing, or accepting on management\'s behalf, it is probably the practitioner view.',
+      buckets: ['Auditor mindset', 'Practitioner mindset'],
+      review: { href: 'lesson00.html', label: 'Lesson 0, the auditor mindset' },
+      items: [
+        { text: 'The control looks weak, so I will fix the configuration myself before the audit closes.', answer: 1, why: 'Auditors recommend; management remediates. Making the fix places the auditor in a management role and impairs independence for any later review of that control.' },
+        { text: 'I will document the condition, the criteria, and the risk, then recommend that management remediate.', answer: 0, why: 'This is the auditor\'s job: evaluate against criteria, explain the risk, and leave the remediation decision with management.' },
+        { text: 'The best answer is usually the most technically advanced control available.', answer: 1, why: 'The exam favors the control that addresses the business risk at a reasonable cost. Technical sophistication is not the goal.' },
+        { text: 'Before testing anything, I need to know which risks matter most to the business.', answer: 0, why: 'Risk-based planning comes first. It decides where audit effort goes.' },
+        { text: 'Management says the issue is fixed, so the finding can be closed.', answer: 1, why: 'A management statement is inquiry evidence. The auditor closes a finding only after follow-up evidence shows the action was taken and is effective.' },
+        { text: 'If the evidence is not sufficient, I will expand testing or report a scope limitation.', answer: 0, why: 'An auditor never concludes without sufficient, appropriate evidence. Expanding the work or disclosing the limitation are the professional options.' },
+        { text: 'I will scope the audit around the tool I know best and test what it can scan.', answer: 1, why: 'Scope follows risk and objectives, not tool familiarity.' },
+        { text: 'Material issues go to those charged with governance, even when the message is unwelcome.', answer: 0, why: 'Reporting obligations do not change with management comfort. The audit committee relies on the auditor for exactly this.' }
+      ]
+    },
+    {
+      type: 'sort', short: 'Sort the standards', title: 'Sort the ITAF standards', concept: 'standards',
+      instr: 'ISACA\'s IT Audit Framework (ITAF) groups its standards as <b>General</b> (the guiding principles and the auditor\'s attributes), <b>Performance</b> (how the engagement is planned and carried out), and <b>Reporting</b> (communicating results and following up). Place each requirement in its group.',
+      hint: 'Ask when the requirement applies. If it is true of the audit function or the auditor at all times, it is General. If it governs doing the engagement, it is Performance. If it is about the report or what happens after it, it is Reporting.',
+      buckets: ['General', 'Performance', 'Reporting'],
+      review: { href: 'lesson01.html#s1', label: 'Lesson 1, IS Audit Standards' },
+      items: [
+        { text: 'The audit function\'s purpose, responsibility, authority, and accountability are documented in an approved charter.', answer: 0, why: 'The audit charter is a General standard. It establishes the function before any engagement begins.' },
+        { text: 'The audit function is positioned to be free from conflicts of interest and undue influence.', answer: 0, why: 'Organizational independence is a General standard.' },
+        { text: 'Auditors remain objective in both attitude and appearance.', answer: 0, why: 'Auditor objectivity is a General standard. It applies to every engagement.' },
+        { text: 'Auditors hold, and maintain through continuing education, the knowledge and skills the work requires.', answer: 0, why: 'Proficiency is a General standard.' },
+        { text: 'Criteria used to evaluate the subject matter are objective, complete, relevant, measurable, and understandable.', answer: 0, why: 'Criteria is a General standard in ITAF. Without suitable criteria there is nothing to audit against.' },
+        { text: 'Planning considers the risk of the subject matter so audit resources focus where they matter.', answer: 1, why: 'Risk assessment in planning is a Performance standard.' },
+        { text: 'Sufficient and appropriate evidence is obtained to support conclusions.', answer: 1, why: 'Evidence is a Performance standard.' },
+        { text: 'Materiality is considered when planning the work and when evaluating results.', answer: 1, why: 'Materiality is a Performance standard.' },
+        { text: 'Work performed by other experts is used only after their competence, independence, and work quality are assessed.', answer: 1, why: 'Using the work of other experts is a Performance standard.' },
+        { text: 'Staff work is supervised so that engagement objectives are met and standards are followed.', answer: 1, why: 'Performance and supervision is a Performance standard.' },
+        { text: 'The report states the objectives, scope, period, findings, conclusions, and any restrictions.', answer: 2, why: 'Reporting is its own standard group.' },
+        { text: 'Auditors monitor whether management has taken timely and appropriate action on reported findings.', answer: 2, why: 'Follow-up activities belong to the Reporting group.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Independence scenarios', title: 'Independence and ethics scenarios',
+      instr: 'For each case, identify the threat (where asked) and choose the <b>BEST</b> or <b>FIRST</b> auditor response. On the exam, more than one option can sound reasonable. Pick the one an independent auditor would choose.',
+      hint: 'The common threats are self-review (auditing your own work), self-interest (a personal benefit), familiarity (closeness to the auditee), intimidation (pressure), and a reporting line that lets the auditee control the auditor. The best response usually discloses or removes the threat and keeps reporting intact.',
+      review: { href: 'lesson01.html#s1', label: 'Lesson 1, Code of Ethics and independence' },
+      items: [
+        {
+          title: 'Case 1', text: 'Priya administered the payroll application until three months ago, when she transferred into internal audit. She has just been assigned to lead this year\'s payroll application audit.',
+          parts: [
+            { q: 'Which threat to independence is present?', concept: 'independence', options: ['Self-interest', 'Self-review', 'Intimidation', 'Familiarity with the external auditor'], answer: 1, why: 'Priya would be evaluating controls she configured and operated. That is a self-review threat.' },
+            { q: 'What is the BEST action?', concept: 'response', options: ['Proceed, because her system knowledge will make the audit more efficient', 'Proceed, but have her sign a statement that she will be objective', 'Inform audit management so the engagement can be reassigned or the threat otherwise addressed', 'Ask the payroll manager whether he objects to her assignment'], answer: 2, why: 'Audit management should know about the impairment and reassign the work or apply safeguards. Knowledge does not cure a self-review threat, and the auditee should not decide audit staffing.' }
+          ]
+        },
+        {
+          title: 'Case 2', text: 'The CIO asks the IS audit manager to help design the access-control model for a new ERP system. Internal audit plans to review the ERP system next year.',
+          parts: [
+            { q: 'What is the BEST response?', concept: 'response', options: ['Decline any involvement in the project', 'Design the access-control model, since auditors know controls best', 'Advise on control requirements without making design decisions, and disclose the involvement when planning next year\'s audit', 'Let the CIO\'s team design the model, then sign off on it as approved by audit'], answer: 2, why: 'Auditors may advise on control requirements early, where they add the most value. They should not make management decisions or approve designs, and any advisory role should be disclosed so the later audit can address it.' }
+          ]
+        },
+        {
+          title: 'Case 3', text: 'Before the audit committee meeting, the CFO reviews the draft report and asks the auditor to remove a finding about unreviewed journal entries. The CFO says the finding will "only cause confusion."',
+          parts: [
+            { q: 'Which threat to independence is present?', concept: 'independence', options: ['Intimidation', 'Self-review', 'Self-interest', 'No threat; this is a normal management review'], answer: 0, why: 'Pressure from a senior executive to change reported results is an intimidation threat. Management review for factual accuracy is normal. A request to remove a supported finding is not.' },
+            { q: 'What is the BEST action?', concept: 'response', options: ['Remove the finding and raise it verbally at the meeting', 'Confirm the facts with the CFO, keep the finding if it is supported, and include management\'s response', 'Soften the finding to a low-risk observation', 'Delay the report until the CFO agrees'], answer: 1, why: 'The auditor should verify accuracy, keep a supported finding, and include management\'s response. The audit committee depends on an unaltered report.' }
+          ]
+        },
+        {
+          title: 'Case 4', text: 'A cloud vendor whose controls are under review offers each member of the audit team a free pass to its annual user conference, including travel.',
+          parts: [
+            { q: 'Which threat to independence is present?', concept: 'independence', options: ['Familiarity', 'Self-review', 'Self-interest', 'Intimidation'], answer: 2, why: 'A personal benefit from the auditee is a self-interest threat.' },
+            { q: 'What is the BEST action?', concept: 'response', options: ['Accept, since conference content improves proficiency', 'Accept only the conference pass and pay for travel personally', 'Decline the offer and disclose it according to the gifts policy', 'Accept, but complete the audit before attending'], answer: 2, why: 'The auditor should decline and disclose. Both the fact and the appearance of independence matter.' }
+          ]
+        },
+        {
+          title: 'Case 5', text: 'During fieldwork, the auditor finds vendor payments approved by a procurement manager to a company registered at the manager\'s home address.',
+          parts: [
+            { q: 'What should the auditor do FIRST?', concept: 'response', options: ['Ask the procurement manager to explain the payments', 'Report the indicators to audit management and, as the charter requires, to those charged with governance', 'Expand the audit into a full fraud investigation', 'Notify law enforcement directly'], answer: 1, why: 'Fraud indicators go to the appropriate level of audit management and governance, following the charter. Confronting the suspect may alert them and destroy evidence. Investigations and referrals are decisions for authorized parties.' }
+          ]
+        },
+        {
+          title: 'Case 6', text: 'Internal audit reports administratively and functionally to the CIO. Most of the audit plan covers IT processes the CIO owns.',
+          parts: [
+            { q: 'Which threat to independence is present?', concept: 'independence', options: ['Self-interest', 'Familiarity', 'Organizational: the auditee controls the audit function', 'No threat, because the CIO is a senior executive'], answer: 2, why: 'When the audited executive controls the audit function\'s reporting, budget, or plan, organizational independence is impaired.' },
+            { q: 'What is the BEST recommendation?', concept: 'response', options: ['Keep the reporting line but rotate audit staff more often', 'Have internal audit report functionally to the audit committee of the board', 'Have the CIO approve the audit plan in writing', 'Outsource IT audits to the CIO\'s preferred consultancy'], answer: 1, why: 'A functional reporting line to the audit committee protects independence. Staff rotation does not fix a structural conflict.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'shift', label: 'Describe one situation from your own work where a practitioner instinct could lead you to the wrong CISA answer. What would the auditor do instead?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

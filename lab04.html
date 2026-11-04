@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B4 Change and Patch Management Audit | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+<style>
+.b4-pol { font: .86rem/1.6 Arial, sans-serif; color: var(--text-secondary); }
+.b4-pol table.data td { padding: .45rem .7rem; }
+</style>
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script src="evidence.js"></script>
+<script>
+/* ===================== Synthetic evidence (deterministic) =====================
+   Bramblewood Outfitters, OrderHub order-management platform, Q3 2026 (July 1 to September 30).
+   Eight change exceptions (two of each type) and four late critical patches are planted.
+   The generator keeps every other row clean for the same tests, so each item has one answer. */
+(function () {
+  var seed = 4417;
+  function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+  function ri(a, b) { return a + Math.floor(rnd() * (b - a + 1)); }
+  function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
+  var MIN = 60000, HOUR = 3600000, DAY = 86400000;
+  function d10(ms) { var d = new Date(ms); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1, 2) + '-' + pad(d.getUTCDate(), 2); }
+  function ts(ms) { var d = new Date(ms); return d10(ms) + ' ' + pad(d.getUTCHours(), 2) + ':' + pad(d.getUTCMinutes(), 2); }
+  function dow(ms) { return new Date(ms).getUTCDay(); }
+  function hex(n) { var s = ''; while (s.length < n) s += '0123456789abcdef'[ri(0, 15)]; return s; }
+  var Q0 = Date.UTC(2026, 6, 1), Q1 = Date.UTC(2026, 9, 1);
+
+  var devs = ['achen', 'bokafor', 'cmendez', 'dpatel', 'eschmidt', 'fnakamura', 'gadeyemi', 'hlarsen'];
+  var rel = ['rwashington', 'tkaur', 'jbeaulieu'], ops = ['mvolkov', 'sidowu'];
+  var services = ['orders-api', 'checkout-web', 'inventory-sync', 'payments-gw', 'catalog-svc', 'notify-svc'];
+  var summaries = {
+    'orders-api': ['Add partial-shipment status to order endpoint', 'Fix rounding on multi-currency totals', 'Paginate order history query', 'Raise rate limit for B2B clients', 'Return-authorization workflow update'],
+    'checkout-web': ['New gift-card entry field', 'Address validation message fix', 'Accessibility fixes on payment step', 'Promo code stacking rule change', 'Checkout page performance tuning'],
+    'inventory-sync': ['Warehouse feed retry logic', 'Nightly stock reconciliation job update', 'Add Reno DC to sync targets', 'Fix duplicate SKU import', 'Reduce sync batch size'],
+    'payments-gw': ['Tokenization library upgrade', 'Refund status webhook handling', 'Card network error-code mapping', 'Settlement file format change', '3-D Secure challenge flow update'],
+    'catalog-svc': ['Seasonal category tree update', 'Image CDN path change', 'Search synonym list refresh', 'Product badge rules', 'Price feed parser fix'],
+    'notify-svc': ['Shipping SMS template update', 'Email bounce handling', 'Order-delay notification rule', 'Unsubscribe link fix', 'Push notification throttle']
+  };
+  var stdSummaries = ['TLS certificate renewal (standard change SC-03)', 'Scale web tier from 6 to 8 nodes (SC-07)', 'Rotate API gateway keys (SC-05)', 'Feature-flag toggle for promotion (SC-09)'];
+  var emSummaries = ['Hotfix: checkout 500 errors after card-network outage', 'Hotfix: duplicate order emails', 'Hotfix: inventory sync stalled at Reno DC', 'Hotfix: refund webhook timeout', 'Hotfix: tax calculation for new county rate', 'Hotfix: payment page script error in Safari', 'Hotfix: order export job memory leak', 'Hotfix: catalog search returning empty results'];
+
+  var cabs = []; for (var c = Date.UTC(2026, 5, 23); c < Date.UTC(2026, 9, 14); c += DAY) if (dow(c) === 2) cabs.push(c + 15 * HOUR);
+  function cabBefore(ms) { var r = null; cabs.forEach(function (x) { if (x + 90 * MIN < ms - 4 * HOUR) r = x; }); return r; }
+  function cabAfter(ms) { for (var i = 0; i < cabs.length; i++) if (cabs[i] > ms + 2 * HOUR) return cabs[i]; return null; }
+  function weekdayEve(dayMs) { while (dow(dayMs) === 0 || dow(dayMs) === 6) dayMs += DAY; return dayMs + (21 * 60 + ri(0, 150)) * MIN; }
+
+  // ---- Ticket specs ----
+  var T = [];
+  function tk(o) { o.service = o.service || pick(services); o.requested_by = pick(devs); T.push(o); return o; }
+  for (var i = 0; i < 86; i++) tk({ type: 'Normal' });
+  for (i = 0; i < 8; i++) tk({ type: 'Emergency', summary: emSummaries[i] });
+  for (i = 0; i < 10; i++) tk({ type: 'Standard', summary: stdSummaries[i % stdSummaries.length] });
+  var normals = shuffle(T.filter(function (t) { return t.type === 'Normal'; }));
+  normals.slice(0, 2).forEach(function (t, k) { t.undeployed = true; t.status = 'Scheduled'; });
+  normals.slice(2, 4).forEach(function (t) { t.undeployed = true; t.status = 'Cancelled'; });
+  normals.slice(4, 6).forEach(function (t) { t.plant = 'after'; });
+  normals.slice(6, 8).forEach(function (t, k) { t.plant = 'self'; t.selfDev = ['dpatel', 'gadeyemi'][k]; });
+  normals.slice(8, 26).forEach(function (t) { t.redeploy = true; });
+  var ems = shuffle(T.filter(function (t) { return t.type === 'Emergency'; }));
+  ems.slice(0, 2).forEach(function (t) { t.plant = 'noretro'; });
+
+  // ---- Deployments ----
+  var D = [];
+  function dep(t, at, o) { o = o || {}; var d = { ticket: t, at: at, service: t ? t.service : o.service, method: o.method || 'Pipeline', by: o.by || pick(rel), plant: o.plant || null, ref: o.ref }; D.push(d); return d; }
+  T.forEach(function (t) {
+    if (t.summary == null) t.summary = pick(summaries[t.service]);
+    if (t.undeployed) {
+      if (t.status === 'Scheduled') { t.approved = cabs.filter(function (x) { return x >= Date.UTC(2026, 8, 22); })[0] + ri(5, 80) * MIN; t.created = t.approved - ri(3, 9) * DAY; }
+      else { t.created = Q0 + ri(5, 80) * DAY; t.approved = null; }
+      return;
+    }
+    var at;
+    if (t.type === 'Emergency') {
+      at = Q0 + ri(2, 85) * DAY + ri(1, 19) * HOUR + ri(0, 59) * MIN;
+      t.approved = at - ri(20, 95) * MIN; t.approver = 'palvarez'; t.created = t.approved - ri(10, 40) * MIN;
+      t.retro = t.plant === 'noretro' ? null : cabAfter(at) + ri(5, 80) * MIN;
+      dep(t, at, { plant: t.plant });
+      return;
+    }
+    if (t.type === 'Standard') {
+      at = weekdayEve(Q0 + ri(1, 88) * DAY) - ri(2, 5) * HOUR;
+      t.approved = Date.UTC(2026, 0, 12, 16, 0); t.approver = 'Standard change catalog'; t.created = at - ri(1, 4) * DAY;
+      t.noted = cabAfter(at) + ri(5, 80) * MIN;
+      dep(t, at, { method: 'Console', by: pick(ops) });
+      return;
+    }
+    // Normal
+    do { at = weekdayEve(Q0 + ri(t.plant === 'after' ? 7 : 0, t.redeploy ? 84 : 89) * DAY); } while (at >= Q1 || (t.plant !== 'after' && !cabBefore(at)));
+    if (t.plant === 'after') { t.approved = cabAfter(at) + ri(5, 80) * MIN; }
+    else { t.approved = cabBefore(at) + ri(5, 80) * MIN; }
+    t.approver = 'ltran'; t.created = Math.min(t.approved, at) - ri(2, 9) * DAY;
+    var d1 = dep(t, at, t.plant === 'self' ? { by: t.selfDev, plant: 'self' } : { plant: t.plant });
+    if (t.redeploy) dep(t, weekdayEve(at - (at % DAY) + ri(1, 3) * DAY), {});
+  });
+
+  // ---- Ticket numbering (by creation time, with gaps from other queues) ----
+  T.sort(function (a, b) { return a.created - b.created; });
+  var num = 30412, gapPick = ri(40, 60), fake = null;
+  T.forEach(function (t, k) { num += ri(1, 6); if (k === gapPick) { fake = 'CHG-' + (num + 1); num += 2; } t.id = 'CHG-' + num; });
+
+  // ---- Planted unauthorized deployments ----
+  dep(null, Date.UTC(2026, 7, 15, 2, 14), { service: 'payments-gw', method: 'Console', by: 'sidowu', plant: 'noticket', ref: '' });
+  dep(null, Date.UTC(2026, 8, 3, 22, 41), { service: 'checkout-web', method: 'Pipeline', by: 'jbeaulieu', plant: 'noticket', ref: fake });
+
+  // ---- Pipeline runs ----
+  var runs = [];
+  D.forEach(function (d) {
+    if (d.method !== 'Pipeline') return;
+    var author = d.plant === 'self' ? d.by : pick(devs.filter(function (x) { return x !== 'dpatel' && x !== 'gadeyemi'; }).concat(['dpatel', 'gadeyemi']));
+    var rev; do { rev = pick(devs); } while (rev === author);
+    var r = { built: d.at - ri(40, 1800) * MIN, service: d.service, commit: hex(7), author: author, reviewer: rev, tests: 'Pass', sast: 'Pass', status: 'Deployed', dep: d };
+    d.run = r; runs.push(r);
+  });
+  for (i = 0; i < 11; i++) {
+    var au = pick(devs), rv; do { rv = pick(devs); } while (rv === au);
+    var fail = rnd() < 0.5;
+    runs.push({ built: Q0 + ri(1, 89) * DAY + ri(8, 18) * HOUR, service: pick(services), commit: hex(7), author: au, reviewer: fail ? rv : '', tests: fail ? 'Pass' : 'Fail', sast: fail ? 'Fail' : 'Not run', status: 'Blocked' });
+  }
+  runs.sort(function (a, b) { return a.built - b.built; });
+  runs.forEach(function (r, k) { r.id = 'RUN-' + (58210 + k * 3 + ri(0, 2)); });
+
+  // ---- Deploy numbering and versions ----
+  D.sort(function (a, b) { return a.at - b.at; });
+  var ver = {}; services.forEach(function (s) { ver[s] = [ri(2, 6), ri(0, 20), 0]; });
+  D.forEach(function (d, k) {
+    d.id = 'DEP-' + (7301 + k);
+    var v = ver[d.service]; if (d.method === 'Console') v[2]++; else if (rnd() < 0.3) { v[1]++; v[2] = 0; } else v[2]++;
+    d.version = d.method === 'Console' ? 'config ' + v.join('.') : 'v' + v.join('.');
+  });
+
+  // ---- Displayed tables ----
+  var deployments = D.map(function (d) { return { deploy_id: d.id, deployed_at: ts(d.at), service: d.service, version: d.version, method: d.method, pipeline_run: d.run ? d.run.id : '', change_ref: d.ticket ? d.ticket.id : (d.ref || ''), triggered_by: d.by }; });
+  var tickets = T.map(function (t) { return { change_id: t.id, type: t.type, service: t.service, summary: t.summary, requested_by: t.requested_by, approved_by: t.approved ? t.approver || 'ltran' : '', approved_at: t.approved ? ts(t.approved) : '', status: t.status || 'Closed' }; });
+  var pipeline = runs.map(function (r) { return { run_id: r.id, built_at: ts(r.built), service: r.service, commit: r.commit, commit_author: r.author, peer_reviewer: r.reviewer, unit_tests: r.tests, sast_gate: r.sast, run_status: r.status }; });
+  var cab = [];
+  T.forEach(function (t) {
+    if (t.type === 'Normal' && t.approved) cab.push({ t: t.approved, change_id: t.id, item: 'Normal change', decision: 'Approved', note: t.status === 'Scheduled' ? 'Scheduled for the October release window' : '' });
+    if (t.type === 'Normal' && t.status === 'Cancelled') cab.push({ t: cabs.filter(function (x) { return x > t.created; })[0] + ri(5, 80) * MIN, change_id: t.id, item: 'Normal change', decision: 'Deferred', note: 'Requester withdrew; ticket later cancelled' });
+    if (t.type === 'Emergency' && t.retro) cab.push({ t: t.retro, change_id: t.id, item: 'Emergency change, retroactive review', decision: 'Ratified', note: 'Post-implementation review completed' });
+    if (t.type === 'Standard') cab.push({ t: t.noted, change_id: t.id, item: 'Standard change', decision: 'Noted', note: 'Pre-approved catalog item' });
+  });
+  cab.sort(function (a, b) { return a.t - b.t; });
+  var cabRows = cab.map(function (r) { return { meeting: d10(r.t), change_id: r.change_id, agenda_item: r.item, decision: r.decision, note: r.note }; });
+  var names = { achen: 'Amy Chen', bokafor: 'Bola Okafor', cmendez: 'Carlos Mendez', dpatel: 'Divya Patel', eschmidt: 'Erik Schmidt', fnakamura: 'Fumiko Nakamura', gadeyemi: 'Gideon Adeyemi', hlarsen: 'Hanna Larsen', rwashington: 'Renee Washington', tkaur: 'Tejinder Kaur', jbeaulieu: 'Julien Beaulieu', mvolkov: 'Mira Volkov', sidowu: 'Samuel Idowu', ltran: 'Linh Tran', palvarez: 'Pedro Alvarez' };
+  var roleOf = function (u) { return devs.indexOf(u) >= 0 ? ['Developer', 'OrderHub engineering'] : rel.indexOf(u) >= 0 ? ['Release engineer', 'Release management'] : ops.indexOf(u) >= 0 ? ['Platform operations admin', 'Infrastructure'] : u === 'ltran' ? ['Change manager (CAB chair)', 'IT service management'] : ['Emergency change approver', 'IT service management']; };
+  var roles = Object.keys(names).map(function (u) { var r = roleOf(u); return { user_id: u, name: names[u], role: r[0], team: r[1], prod_deploy_rights: devs.indexOf(u) >= 0 ? (u === 'dpatel' || u === 'gadeyemi' ? 'Yes (granted 2025-11-03, project Falcon)' : 'No') : (rel.indexOf(u) >= 0 || ops.indexOf(u) >= 0 ? 'Yes' : 'No') }; });
+
+  // ---- Patch evidence ----
+  var assets = ['web-prd-01', 'web-prd-02', 'web-prd-03', 'api-prd-01', 'api-prd-02', 'db-prd-01', 'db-prd-02', 'pay-prd-01', 'inv-prd-01', 'mq-prd-01', 'bastion-01', 'wh-ctl-07', 'vpn-gw-01', 'jump-02', 'log-prd-01'];
+  var crit = [['CVE-2026-1182', 'OpenSSL remote code execution', 9.8], ['CVE-2026-0931', 'Kernel privilege escalation', 9.1], ['CVE-2026-2207', 'Java deserialization RCE', 9.8], ['CVE-2026-1540', 'PostgreSQL authentication bypass', 9.3], ['CVE-2026-0718', 'nginx request smuggling', 9.0], ['CVE-2026-2290', 'SSH pre-auth RCE', 9.8], ['CVE-2026-1876', 'Controller firmware RCE', 9.6], ['CVE-2026-1433', 'VPN gateway path traversal', 9.4], ['CVE-2026-2015', 'Message broker RCE', 9.1]];
+  var high = [['CVE-2026-1301', 'glibc buffer overflow', 7.8], ['CVE-2026-0877', 'Node.js HTTP header DoS', 7.5], ['CVE-2026-1690', 'Log4j-style lookup injection', 8.1], ['CVE-2026-1124', 'Redis memory disclosure', 7.4], ['CVE-2026-0555', 'sudo privilege bypass', 7.8]];
+  var lateDays = shuffle([37, 45, 52, 60]), onTime = shuffle([6, 9, 11, 13, 14, 17, 19, 21, 24, 27, 30].slice(0)), P = [];
+  // 15 critical: 10 on time (one at exactly 30 days), 4 late, 1 late with a valid exception
+  var critPlan = shuffle(onTime.slice(0, 10).map(function (x) { return { days: x }; }).concat(lateDays.map(function (x) { return { days: x, late: true }; })).concat([{ days: 58, validExc: true }]));
+  if (!critPlan.some(function (p) { return p.days === 30; })) critPlan.filter(function (p) { return !p.late && !p.validExc; })[0].days = 30;
+  var invalidSet = false;
+  critPlan.forEach(function (p, k) { var cv = crit[k % crit.length]; p.sev = 'Critical'; p.cve = cv[0]; p.title = cv[1]; p.cvss = cv[2]; if (p.late && !invalidSet && p.days >= 45) { p.invalidExc = true; invalidSet = true; } });
+  critPlan.forEach(function (p) { if (p.validExc) { p.asset = 'wh-ctl-07'; p.cve = 'CVE-2026-1876'; p.title = 'Controller firmware RCE'; p.cvss = 9.6; } });
+  var highPlan = []; for (i = 0; i < 12; i++) { var hv = high[i % high.length]; highPlan.push({ days: i < 5 ? ri(31, 55) : ri(8, 29), sev: 'High', cve: hv[0], title: hv[1], cvss: hv[2] }); }
+  highPlan[2].highExc = true;
+  var used = {};
+  critPlan.concat(highPlan).forEach(function (p) {
+    if (!p.asset) { do { p.asset = pick(assets.filter(function (a) { return a !== 'wh-ctl-07'; })); } while (used[p.asset + p.cve]); }
+    used[p.asset + p.cve] = 1;
+    p.first = Date.UTC(2026, 5, 1) + ri(0, 80) * DAY; p.fixed = p.first + p.days * DAY;
+    P.push(p);
+  });
+  P.sort(function (a, b) { return a.first - b.first || (a.cve < b.cve ? -1 : 1); });
+  var fnum = 5120; P.forEach(function (p) { fnum += ri(1, 7); p.id = 'VF-' + fnum; });
+  var scan = P.map(function (p) { return { finding_id: p.id, asset: p.asset, cve: p.cve, title: p.title, cvss: p.cvss.toFixed(1), severity: p.sev, first_detected: d10(p.first), rescan_status: 'Not detected (fixed)' }; });
+  var bypatch = P.slice().sort(function (a, b) { return a.fixed - b.fixed; });
+  var patches = bypatch.map(function (p, k) { return { patch_rec: 'PR-' + (880 + k * 2 + ri(0, 1)), finding_id: p.id, asset: p.asset, patch: p.cve.replace('CVE-', 'Fix for ') , installed_on: d10(p.fixed), verified_by: 'Rescan ' + d10(p.fixed + ri(1, 3) * DAY) }; });
+  var exc = [];
+  P.forEach(function (p) {
+    if (p.validExc) exc.push({ exc_id: 'EX-14', finding_id: p.id, asset: p.asset, reason: 'Vendor firmware not yet certified for the conveyor PLC; patching breaks line control', compensating_controls: 'Isolated OT VLAN, IPS virtual patch rule 4471, daily log review by SOC', approved_by: 'Adaeze Nwosu, CISO', approved_on: d10(p.first + 19 * DAY), expires: d10(p.first + 75 * DAY), status: 'Closed (patched)' });
+    if (p.invalidExc) exc.push({ exc_id: 'EX-19', finding_id: p.id, asset: p.asset, reason: 'Test environment backlog; patch waiting for regression testing', compensating_controls: '', approved_by: 'Wade Lindqvist, IT Operations Manager', approved_on: d10(p.first + 41 * DAY), expires: d10(p.first + 90 * DAY), status: 'Closed (patched)' });
+    if (p.highExc) exc.push({ exc_id: 'EX-16', finding_id: p.id, asset: p.asset, reason: 'Change freeze for quarter-end close', compensating_controls: 'WAF rule blocking the vulnerable endpoint', approved_by: 'Adaeze Nwosu, CISO', approved_on: d10(p.first + 20 * DAY), expires: d10(p.first + 70 * DAY), status: 'Closed (patched)' });
+  });
+  exc.push({ exc_id: 'EX-11', finding_id: 'VF-4987', asset: 'erp-legacy-01', reason: 'End-of-support OS pending decommission (prior quarter)', compensating_controls: 'Host isolated, no inbound internet, monitored by SOC', approved_by: 'Adaeze Nwosu, CISO', approved_on: '2026-04-02', expires: '2026-06-30', status: 'Closed (decommissioned)' });
+  exc.sort(function (a, b) { return a.exc_id < b.exc_id ? -1 : 1; });
+
+  function idsOf(list, f) { return list.filter(f).map(function (d) { return d.id; }).sort(); }
+  window.B4DATA = {
+    deployments: deployments, tickets: tickets, pipeline: pipeline, cab: cabRows, roles: roles, scan: scan, patches: patches, exceptions: exc,
+    validExc: P.filter(function (p) { return p.validExc; })[0].id, invalidExc: P.filter(function (p) { return p.invalidExc; })[0].id,
+    answers: {
+      noticket: idsOf(D, function (d) { return d.plant === 'noticket'; }),
+      noretro: idsOf(D, function (d) { return d.plant === 'noretro'; }),
+      self: idsOf(D, function (d) { return d.plant === 'self'; }),
+      after: idsOf(D, function (d) { return d.plant === 'after'; }),
+      late: P.filter(function (p) { return p.late; }).map(function (p) { return p.id; }).sort(),
+      rate: Math.round(1000 * P.filter(function (p) { return p.sev === 'Critical' && !p.late; }).length / P.filter(function (p) { return p.sev === 'Critical'; }).length) / 10
+    }
+  };
+})();
+</script>
+
+<script>
+(function () {
+  var X = window.B4DATA;
+  function A(k) { return function () { return X.answers[k]; }; }
+  window.LAB = {
+    id: 'B4',
+    title: 'Change and Patch Management Audit',
+    accent: 'Patch Management Audit',
+    domain: 'Domain 4',
+    time: '60 min',
+    level: 'Intermediate to Advanced',
+    lessonHref: 'lesson05.html#s7',
+    lessonLabel: 'Lesson 5, Change, Configuration & Patch Management',
+    lede: 'An approved ticket does not prove a controlled change. Start from what actually reached production, trace each deployment back to its approval, and measure critical patching from the scan data, not from the patch tickets.',
+    workbenchTitle: 'Evidence workbench',
+    ticket: {
+      number: 'IA-2026-0533',
+      priority: 'High priority',
+      from: 'Keisha Obeng, IT Audit Manager',
+      to: 'IS audit staff (you)',
+      subject: 'Q3 2026 change and patch management audit: OrderHub platform',
+      due: 'Workpapers before the Q4 planning meeting',
+      body: '<p>Bramblewood Outfitters runs its online and store orders on the OrderHub platform. Engineering releases through a CI/CD pipeline several times a week, and the operations team still makes some changes directly in the cloud console. Management’s self-assessment rates change management as “effective, no exceptions.”</p>' +
+        '<p>For July 1 to September 30, 2026, I obtained the evidence myself: the <b>production deployment log</b> exported from the platform (system-generated, 120 deployments), the <b>change ticket export</b> from the service desk (104 tickets), the <b>pipeline run history</b>, the <b>CAB minutes</b>, and the <b>user-role list</b>. For patching, I have the <b>critical and high vulnerability scan findings</b>, the <b>patch records</b>, and the <b>exceptions register</b>.</p>' +
+        '<p>Test the full population. Identify every change exception by type, measure critical patch SLA compliance, and give me a conclusion on whether these controls operated effectively. Management says the patch numbers “beat the industry average.” I want the number against our own policy.</p>' +
+        '<p><b>Relevant policy:</b> Change Management Standard CM-02 and Patch Management Standard PM-01, in the Policies tab.</p>'
+    },
+    howTo: 'The <b>Evidence workbench</b> shows two panes of tabular evidence at a time. Pick the evidence for pane A and pane B, filter and sort each pane, and use the <b>Match</b>, <b>Lookup</b>, and <b>Compare</b> tools to test pane A against pane B. For example, match deployments to tickets, or bring a ticket’s approval time into the deployment log and compare it with the deployment time. Patch evidence has its own tab. Check each checklist item as you go. A hint is available for every item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points.',
+    workIntro: 'All evidence is read-only. Times are UTC. Record exceptions by their IDs in the checklist below. Results are calculated from the evidence in your browser.',
+    checklist: [
+      { id: 'direction', type: 'choice', points: 10, short: 'Sampling direction', title: 'Choose the direction of the test',
+        task: 'The objective is to confirm that <b>every change that reached production</b> was authorized. Which population and direction should the test use?',
+        options: ['Start from the change tickets and trace each approved ticket forward to its deployment', 'Start from the system-generated deployment log and trace each deployment back to an approved ticket', 'Start from the CAB minutes and confirm that each approved change has a closed ticket', 'Start from the pipeline run history and confirm that each run passed its security gates'],
+        answer: 1,
+        hint: 'Which source would contain a change that nobody raised a ticket for?',
+        debrief: '<p>Only the deployment log records every change that actually reached production, including changes nobody ticketed. Tracing tickets forward tests whether approved work was deployed, which is a completeness question for the change process, not an authorization test. A deployment with no ticket can never be found from the ticket side.</p><p>The auditor also relies on the deployment log because it is system-generated and was obtained directly from the platform, not prepared by the team under audit. The CAB minutes and pipeline history are supporting evidence for each traced deployment, not the population.</p>',
+        reviewNote: 'Test authorization from the population of actual changes (the deployment log) back to approvals.' },
+      { id: 'noticket', type: 'set', points: 12, short: 'No ticket', title: 'Deployments with no valid change ticket',
+        task: 'Which deployments have <b>no matching change ticket</b> in the ticket export? Enter the deployment IDs.',
+        label: 'Deployment IDs with no valid ticket', placeholder: 'e.g., DEP-7301, DEP-7302',
+        answer: A('noticket'),
+        hint: 'Put the deployment log in pane A and the change tickets in pane B. Match change_ref in A to change_id in B and flag rows with no match. A reference that looks valid but does not exist in the export is still unauthorized.',
+        debrief: '<p>Two deployments cannot be traced to an approved ticket. One was made directly in the cloud console on a Saturday night with no change reference at all. The other went through the pipeline but cites a ticket number that does not exist in the service desk export, so the reference was mistyped or invented. Either way, nothing shows that anyone authorized it.</p><p>The auditor should obtain an explanation and the code or configuration that changed, and recommend a technical control: the pipeline and the console should reject production changes that do not carry a valid, approved ticket. Detective reconciliation of the deployment log to tickets should run every week, not only at audit time.</p>',
+        reviewNote: 'Match the deployment log to the ticket export and flag deployments with no valid ticket.' },
+      { id: 'noretro', type: 'set', points: 11, short: 'Emergency, no review', title: 'Emergency changes without retroactive approval',
+        task: 'Standard CM-02 lets an emergency change proceed on the emergency approver’s sign-off, but the CAB must ratify it at its next meeting. Which deployments were emergency changes that the CAB <b>never ratified</b>? Enter the deployment IDs.',
+        label: 'Deployment IDs of unratified emergency changes', placeholder: 'e.g., DEP-7301',
+        answer: A('noretro'),
+        hint: 'Put the change tickets in pane A, filter on Emergency, and match change_id against the CAB minutes in pane B. Then find the deployments that carry those tickets. Or start from the deployment log, look up the ticket type, and match against the CAB minutes.',
+        debrief: '<p>Eight emergency changes went to production in the quarter. Six were ratified at the next CAB with a post-implementation review. Two never appear in the CAB minutes, so no one reviewed whether the hotfix was appropriate, tested, or properly documented after the fact.</p><p>The emergency path is legitimate only when it is controlled: expedited approval before the change, and retroactive review afterward. Without the review, the emergency path becomes a way around the CAB. The auditor should recommend that the change manager track open emergency changes until ratified and report overdue reviews.</p>',
+        reviewNote: 'Emergency changes need both the expedited approval and a retroactive CAB review.' },
+      { id: 'self', type: 'set', points: 11, short: 'Own code deployed', title: 'Developers deploying their own code',
+        task: 'Segregation of duties requires that the person who wrote a change does not deploy it to production. Which deployments were <b>triggered by the author of the code</b>? Enter the deployment IDs.',
+        label: 'Deployment IDs deployed by the code author', placeholder: 'e.g., DEP-7301',
+        answer: A('self'),
+        hint: 'With the deployment log in pane A and the pipeline runs in pane B, match pipeline_run to run_id and use Lookup to bring commit_author into pane A. Then compare triggered_by with the new column using “equals.” The user-role list shows who has production deploy rights.',
+        debrief: '<p>Two deployments were triggered by the developer who authored the commit. The user-role list explains how: two developers still hold production deploy rights granted for a past project. Every other pipeline deployment was triggered by a release engineer.</p><p>A peer review in the pipeline does not cure this. The developer can still choose what reaches production and when. The auditor should recommend removing the two developers’ production rights, enforcing author and deployer separation in the pipeline, and reviewing the two releases for unreviewed changes.</p>',
+        reviewNote: 'Compare the deployer with the commit author for each pipeline deployment.' },
+      { id: 'after', type: 'set', points: 11, short: 'Approved after deploy', title: 'Approval recorded after deployment',
+        task: 'Which deployments went to production <b>before</b> their change ticket was approved? Enter the deployment IDs.',
+        label: 'Deployment IDs approved after the fact', placeholder: 'e.g., DEP-7301',
+        answer: A('after'),
+        hint: 'With the deployment log in pane A and the change tickets in pane B, match change_ref to change_id and look up approved_at. Then compare approved_at with deployed_at using “is later than.”',
+        debrief: '<p>Two normal changes reached production several days before the CAB approved them. The tickets look complete today, which is why a ticket-first sample would pass them. Only the comparison of the system timestamp with the approval timestamp shows that the approval was retroactive.</p><p>An approval after deployment is not an authorization. It is a record of a decision that was already made by someone else. The auditor should report these as unauthorized changes in substance and recommend a pipeline gate that checks the ticket’s approval status before deployment.</p>',
+        reviewNote: 'Compare the approval timestamp with the deployment timestamp for every deployment.' },
+      { id: 'exc', type: 'choice', points: 10, short: 'Patch exceptions', title: 'Evaluate the patch exceptions',
+        task: 'Two critical findings that were patched after 30 days have entries in the exceptions register: <b>EX-14</b> and <b>EX-19</b>. How should the auditor treat them when measuring SLA compliance?',
+        options: ['Count both findings as compliant, because each has an approved exception on file', 'Count both findings as late, because both patches were installed after 30 days', 'Leave both findings out of the population, since excepted items fall outside the SLA', 'Treat the EX-14 finding as compliant once its controls are verified, and count EX-19 as late'],
+        answer: 3,
+        hint: 'Read Standard PM-01 on exceptions. Who must approve, when, and what must the exception contain? Compare each register entry with the finding’s due date.',
+        debrief: '<p>EX-14 meets the standard: the CISO approved it before the 30-day due date, it documents compensating controls (an isolated network segment, an IPS virtual patch, and daily log review), and it expired after the patch was installed. The auditor still tests that the compensating controls actually operated, then treats the finding as managed through the exception process.</p><p>EX-19 does not. It was approved by the IT operations manager eleven days after the due date, lists no compensating control, and cites a testing backlog. A retroactive exception signed by the owner of the delay is not risk acceptance. That finding counts as late.</p>',
+        reviewNote: 'A valid exception is approved by the right person before the due date and lists compensating controls.' },
+      { id: 'late', type: 'set', points: 10, short: 'Late critical patches', title: 'Late critical patches',
+        task: 'Which <b>critical</b> findings breached the 30-day SLA, after you account for valid exceptions? Enter the finding IDs.',
+        label: 'Finding IDs of late critical patches', placeholder: 'e.g., VF-5123',
+        answer: A('late'),
+        hint: 'In the Patch evidence tab, put the scan findings in pane A and the patch records in pane B. Match finding_id, look up installed_on, then compare installed_on with first_detected using “is more than N days after” with N = 30. Filter pane A on Critical. High findings have a 60-day SLA.',
+        debrief: '<p>Five critical findings were patched after 30 days. One of them, on the warehouse controller, is covered by the valid exception EX-14. The other four were patched at 37, 45, 52, and 60 days. One finding was patched on exactly day 30, which meets the policy.</p><p>The test starts from the scan, which is independent evidence that the vulnerability existed and when it was first seen. Patch tickets alone would show only the patches that someone chose to track.</p>',
+        reviewNote: 'Measure days from first detection to installation for critical findings, then apply only valid exceptions.' },
+      { id: 'rate', type: 'number', points: 10, short: 'SLA compliance rate', title: 'Critical patch SLA compliance rate',
+        task: 'What percentage of the critical findings met Standard PM-01 (within 30 days, or covered by a valid exception)? Round to one decimal place.',
+        answer: A('rate'), tol: 0.4, unit: '% of critical findings',
+        hint: 'Count the critical findings in the scan, subtract the late ones, and divide by the total.',
+        debrief: '<p>Eleven of fifteen critical findings met the standard, a compliance rate of 73.3%. Management’s point that this beats an industry average is not the criterion. The criterion is the company’s own 30-day standard, and more than a quarter of critical vulnerabilities stayed open past it.</p><p>The auditor reports a control failure and looks for the root cause. Here the late patches share a cause: a regression-testing backlog. The recommendation is to fix the testing bottleneck or formally revise the SLA with documented risk acceptance, not to rush the four patches after the fact.</p>',
+        reviewNote: 'Compliance = (critical findings within SLA or validly excepted) / all critical findings.' },
+      { id: 'concl', type: 'text', points: 15, short: 'Conclusion', title: 'Conclude on control effectiveness', reportTitle: 'Conclusion on control effectiveness',
+        task: 'Write your conclusion for the audit manager. Use specific counts from your tests.',
+        fields: [
+          { key: 'change', label: 'Change management: did the control operate effectively? Why or why not?', min: 50, placeholder: 'State the population tested, the exceptions by type, and your conclusion.' },
+          { key: 'patch', label: 'Patch management: did the control operate effectively?', min: 40, placeholder: 'State the compliance rate against PM-01 and how you treated the exceptions.' },
+          { key: 'cause', label: 'Root cause: why did these exceptions happen?', min: 30, placeholder: 'Look for the control design gap behind the symptoms.' },
+          { key: 'rec', label: 'Recommendations', min: 40, placeholder: 'Address the causes, not just the individual exceptions.' }
+        ],
+        hint: 'Every change exception shares one cause: nothing in the pipeline or the console stops a deployment that lacks a valid, approved, independent change record. Patch lateness has a different cause.',
+        debrief: '<p><b>Model conclusion.</b> <b>Change management:</b> not effective. Of 120 production deployments, 8 (6.7%) lacked valid authorization: 2 had no valid ticket, 2 emergency changes were never ratified by the CAB, 2 were deployed by the developer who wrote the code, and 2 were approved only after deployment. Management’s “no exceptions” self-assessment is not supported. <b>Patch management:</b> not effective. 11 of 15 critical findings (73.3%) met the 30-day standard; EX-14 was accepted as a valid exception, and EX-19 was rejected because it was approved after the due date without compensating controls. <b>Root cause:</b> change approval is a manual, after-the-fact record rather than an enforced gate, and developers retain production rights; patch delays trace to a regression-testing backlog. <b>Recommendations:</b> enforce an approved-ticket check and author and deployer separation in the pipeline and console, remove developer production rights, track emergency changes to ratification, reconcile the deployment log to tickets weekly, and address the testing backlog or formally revise the SLA with business risk acceptance.</p><p>Your wording will differ. Check that each conclusion is stated, quantified, and tied to the criterion.</p>',
+        reviewNote: 'State the conclusion, quantify it, and address the root cause.' }
+    ],
+
+    workbench: function (root, api) {
+      var esc = api.esc;
+      root.innerHTML = '<div class="lb-tool"><div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-chg" aria-controls="pn-chg" aria-selected="true">Change evidence</button>' +
+        '<button role="tab" id="tb-pat" aria-controls="pn-pat" aria-selected="false" tabindex="-1">Patch evidence</button>' +
+        '<button role="tab" id="tb-pol" aria-controls="pn-pol" aria-selected="false" tabindex="-1">Policies</button></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-chg" aria-labelledby="tb-chg"></div>' +
+        '<div class="lb-panel" role="tabpanel" id="pn-pat" aria-labelledby="tb-pat" hidden></div>' +
+        '<div class="lb-panel b4-pol" role="tabpanel" id="pn-pol" aria-labelledby="tb-pol" hidden>' + POL() + '</div></div>';
+      var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+      function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+      tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+      if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+      function cols(list) { return list.map(function (c) { return typeof c === 'string' ? { k: c, h: c } : c; }); }
+      EV.create(document.getElementById('pn-chg'), { id: 'b4chg', api: api, a: 'dep', b: 'tix', panes: [
+        { id: 'dep', title: 'Deployment log', source: 'System-generated export from the OrderHub platform, obtained by the auditor. One row per production deployment.', rows: X.deployments, cols: cols(['deploy_id', 'deployed_at', 'service', 'version', 'method', 'pipeline_run', 'change_ref', 'triggered_by']) },
+        { id: 'tix', title: 'Change tickets', source: 'Service desk export of OrderHub change tickets created or implemented in the quarter.', rows: X.tickets, cols: cols(['change_id', 'type', 'service', { k: 'summary', h: 'summary', wrap: true }, 'requested_by', 'approved_by', 'approved_at', 'status']) },
+        { id: 'pipe', title: 'Pipeline runs', source: 'CI/CD run history: build, peer review, test and SAST gates. Blocked runs never deployed.', rows: X.pipeline, cols: cols(['run_id', 'built_at', 'service', 'commit', 'commit_author', 'peer_reviewer', 'unit_tests', 'sast_gate', 'run_status']) },
+        { id: 'cab', title: 'CAB minutes', source: 'Change Advisory Board minutes, weekly on Tuesdays, June 23 to October 13. One row per agenda item.', rows: X.cab, cols: cols(['meeting', 'change_id', 'agenda_item', 'decision', { k: 'note', h: 'note', wrap: true, blank: '' }]) },
+        { id: 'roles', title: 'User-role list', source: 'Identity system export of people with OrderHub change or deployment roles.', rows: X.roles, cols: cols(['user_id', 'name', 'role', 'team', 'prod_deploy_rights']) }
+      ] });
+      EV.create(document.getElementById('pn-pat'), { id: 'b4pat', api: api, a: 'scan', b: 'patch', panes: [
+        { id: 'scan', title: 'Scan findings', source: 'Vulnerability scanner export: critical and high findings first detected June 1 to August 20, 2026, on OrderHub assets.', rows: X.scan, cols: cols(['finding_id', 'asset', 'cve', { k: 'title', h: 'title', wrap: true }, 'cvss', 'severity', 'first_detected', 'rescan_status']) },
+        { id: 'patch', title: 'Patch records', source: 'Patch deployment records from the endpoint management tool, linked to scan findings.', rows: X.patches, cols: cols(['patch_rec', 'finding_id', 'asset', 'patch', 'installed_on', 'verified_by']) },
+        { id: 'exc', title: 'Exceptions register', source: 'Security exceptions register, entries touching OrderHub assets.', rows: X.exceptions, cols: cols(['exc_id', 'finding_id', 'asset', { k: 'reason', h: 'reason', wrap: true }, { k: 'compensating_controls', h: 'compensating_controls', wrap: true, blank: '(none listed)' }, 'approved_by', 'approved_on', 'expires', 'status']) }
+      ] });
+      function POL() {
+        return '<div class="lb-doc"><p class="eyebrow">Policy 1</p><h4>Change Management Standard CM-02 (excerpt)</h4><ul>' +
+          '<li>Every production change must have a change ticket in the service desk, approved <b>before</b> implementation.</li>' +
+          '<li><b>Normal changes</b> are approved by the Change Advisory Board (CAB), which meets weekly on Tuesdays.</li>' +
+          '<li><b>Emergency changes</b> may proceed on approval by the designated emergency approver. The CAB must ratify each emergency change, with a post-implementation review, at its next meeting.</li>' +
+          '<li><b>Standard changes</b> are pre-approved catalog items (for example, certificate renewal) and are noted at the next CAB.</li>' +
+          '<li>The person who authored a code change may not deploy it to production. Production deploy rights are limited to release engineering and platform operations.</li></ul></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Policy 2</p><h4>Patch Management Standard PM-01 (excerpt)</h4><div class="table-wrap"><table class="data"><thead><tr><th>Severity</th><th>Remediation SLA</th><th>Measured from</th></tr></thead><tbody>' +
+          '<tr><td>Critical (CVSS 9.0 to 10.0)</td><td>30 calendar days</td><td>First detection by the vulnerability scanner</td></tr>' +
+          '<tr><td>High (CVSS 7.0 to 8.9)</td><td>60 calendar days</td><td>First detection by the vulnerability scanner</td></tr></tbody></table></div>' +
+          '<ul style="margin-top:.7rem"><li>A finding not remediated within its SLA requires a <b>security exception</b> approved by the <b>CISO before the due date</b>, documenting the compensating controls and an expiry date.</li>' +
+          '<li>An exception approved after the due date, or without compensating controls, does not bring the finding into compliance.</li>' +
+          '<li>Compliance is reported quarterly as the share of findings remediated within SLA or covered by a valid exception.</li></ul></div>' +
+          '<div class="lb-doc"><p class="eyebrow">Note</p><h4>About the evidence</h4><ul><li>All timestamps are UTC. Dates in the patch evidence are calendar dates.</li><li>User IDs are shared across all sources. The user-role list gives names and roles.</li><li>Service desk ticket numbers are shared with other queues, so gaps in the CHG sequence are normal.</li></ul></div>';
+      }
+    }
+  };
+
+  /* Independent re-derivation of the key from the displayed evidence */
+  window.LAB_SELFTEST = function () {
+    var log = [], P = [];
+    var tix = {}; X.tickets.forEach(function (t) { tix[t.change_id] = t; });
+    var runs = {}; X.pipeline.forEach(function (r) { runs[r.run_id] = r; });
+    var retro = {}; X.cab.forEach(function (c) { if (/retroactive/.test(c.agenda_item)) retro[c.change_id] = 1; });
+    var got = { noticket: [], noretro: [], self: [], after: [] };
+    X.deployments.forEach(function (d) {
+      var t = tix[d.change_ref];
+      if (!t) { got.noticket.push(d.deploy_id); return; }
+      if (t.type === 'Emergency' && !retro[t.change_id]) got.noretro.push(d.deploy_id);
+      if (d.pipeline_run && runs[d.pipeline_run] && runs[d.pipeline_run].commit_author === d.triggered_by) got.self.push(d.deploy_id);
+      if (t.approved_at > d.deployed_at) got.after.push(d.deploy_id);
+      if (!t.approved_at) P.push(d.deploy_id + ' links to an unapproved ticket');
+    });
+    var seen = {};
+    Object.keys(got).forEach(function (k) {
+      got[k].sort(); var exp = X.answers[k];
+      if (got[k].join() !== exp.join()) P.push(k + ': derived ' + got[k].join(' ') + ' vs key ' + exp.join(' '));
+      if (got[k].length !== 2) P.push(k + ' should have 2 exceptions');
+      got[k].forEach(function (id) { if (seen[id]) P.push(id + ' trips two tests'); seen[id] = 1; });
+    });
+    if (X.deployments.length !== 120) P.push('deployments ' + X.deployments.length);
+    if (X.tickets.length !== 104) P.push('tickets ' + X.tickets.length);
+    X.deployments.forEach(function (d) { if (d.pipeline_run && !runs[d.pipeline_run]) P.push(d.deploy_id + ' run missing'); });
+    // Patch SLA
+    var inst = {}; X.patches.forEach(function (p) { inst[p.finding_id] = p.installed_on; });
+    var exc = {}; X.exceptions.forEach(function (e) { exc[e.finding_id] = e; });
+    function dd(a, b) { return Math.round((Date.parse(a) - Date.parse(b)) / 864e5); }
+    var crit = X.scan.filter(function (s) { return s.severity === 'Critical'; }), late = [], excused = [];
+    crit.forEach(function (s) {
+      var days = dd(inst[s.finding_id], s.first_detected);
+      if (days <= 30) return;
+      var e = exc[s.finding_id], due = new Date(Date.parse(s.first_detected) + 30 * 864e5).toISOString().slice(0, 10);
+      if (e && /CISO/.test(e.approved_by) && e.approved_on <= due && e.compensating_controls && e.expires >= inst[s.finding_id]) excused.push(s.finding_id); else late.push(s.finding_id);
+    });
+    late.sort();
+    if (late.join() !== X.answers.late.join()) P.push('late derived ' + late.join(' ') + ' vs ' + X.answers.late.join(' '));
+    if (excused.length !== 1 || excused[0] !== X.validExc) P.push('valid exception mismatch ' + excused.join(' '));
+    var rate = Math.round(1000 * (crit.length - late.length) / crit.length) / 10;
+    if (rate !== X.answers.rate) P.push('rate ' + rate + ' vs ' + X.answers.rate);
+    if (crit.length !== 15) P.push('critical count ' + crit.length);
+    X.scan.forEach(function (s) { if (s.severity === 'High' && dd(inst[s.finding_id], s.first_detected) > 60) P.push('high over 60 ' + s.finding_id); });
+    if (X.exceptions.filter(function (e) { return e.exc_id === 'EX-19'; })[0].finding_id !== X.invalidExc) P.push('EX-19 not on invalid finding');
+    log.push('noticket ' + got.noticket.join(' '), 'noretro ' + got.noretro.join(' '), 'self ' + got.self.join(' '), 'after ' + got.after.join(' '), 'late ' + late.join(' '), 'rate ' + rate, 'excused ' + excused.join(' '));
+    return { log: log, problems: P };
+  };
+})();
+</script>
+<script src="lab.js"></script>
+</body>
+</html>

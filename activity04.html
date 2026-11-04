@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A4 Governance, Frameworks, and Risk Treatment | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A4',
+  title: 'Governance, Frameworks, and Risk Treatment',
+  accent: 'Risk Treatment',
+  domain: 'Domain 2',
+  time: '40 min',
+  level: 'Foundational to Intermediate',
+  lessonHref: 'lesson02.html#s2',
+  lessonLabel: 'Lesson 2, IT Governance & Strategy',
+  lede: 'Governance questions test whether you can keep the roles apart. The board sets direction and appetite, management selects the risk response, and the auditor evaluates whether that response fits the appetite. Practice the COBIT split, the purpose of each major framework, and the auditor\'s view of risk treatment.',
+  concepts: [
+    { key: 'cobit', name: 'COBIT governance and management', review: 'Lesson 2, COBIT 2019 governance system' },
+    { key: 'frameworks', name: 'Framework purpose', review: 'Lesson 2, Laws, Regulations & Industry Standards' },
+    { key: 'treatment', name: 'Risk treatment against appetite', review: 'Lesson 2, Enterprise Risk Management' },
+    { key: 'roles', name: 'Who decides', review: 'Lesson 2, governance bodies and the Three Lines Model' }
+  ],
+  stations: [
+    {
+      type: 'sort', short: 'COBIT sort', title: 'Sort activities into COBIT 2019 domains', concept: 'cobit',
+      instr: 'COBIT 2019 has one <b>governance</b> domain, <b>EDM</b> (Evaluate, Direct and Monitor), and four <b>management</b> domains: <b>APO</b> (Align, Plan and Organize), <b>BAI</b> (Build, Acquire and Implement), <b>DSS</b> (Deliver, Service and Support), and <b>MEA</b> (Monitor, Evaluate and Assess). Place each activity in its domain.',
+      hint: 'First ask who is acting. If the board or its committee is setting direction, judging value, or setting appetite, it is EDM. For management activities, ask whether the work is planning (APO), building or changing (BAI), running day to day (DSS), or checking performance and compliance (MEA).',
+      buckets: ['EDM', 'APO', 'BAI', 'DSS', 'MEA'],
+      review: { href: 'lesson02.html#s2', label: 'Lesson 2, COBIT 2019 governance system' },
+      items: [
+        { text: 'IT deploys and configures a new SIEM platform.', answer: 2, why: 'Acquiring, building, and implementing a solution is BAI. The work carries out a decision already made; it does not set direction.' },
+        { text: 'The board sets the enterprise risk appetite.', answer: 0, why: 'Setting risk appetite is governance (EDM, ensured risk optimization). Management works within the appetite; it does not set it.' },
+        { text: 'Management monitors control performance against agreed KPIs and reports exceptions.', answer: 4, why: 'Operational monitoring of performance and internal control is MEA. Both EDM and MEA "monitor," but EDM is board oversight and MEA is management checking its own execution.' },
+        { text: 'IT operations applies the monthly patch cycle to production servers.', answer: 3, why: 'Routine, repeating operational work is DSS. The patch cycle runs the service day to day.' },
+        { text: 'The CIO\'s office drafts a three-year IT strategic plan aligned to business goals.', answer: 1, why: 'Developing the IT strategy is APO (managed strategy). The board evaluates and directs it, but management prepares the plan.' },
+        { text: 'The audit committee evaluates the value delivered by a completed IT investment.', answer: 0, why: 'Evaluating whether investments deliver value is governance (EDM, ensured benefits delivery). The governing body judges the result.' },
+        { text: 'The change advisory board reviews and schedules changes before they reach production.', answer: 2, why: 'Managing IT changes is BAI (managed IT changes). Despite the word "board," this is a management body, not the governing body.' },
+        { text: 'The service desk logs, prioritizes, and resolves user incidents.', answer: 3, why: 'Incident handling is DSS (managed service requests and incidents). It is part of running the service.' },
+        { text: 'The board directs the information security strategy.', answer: 0, why: 'Directing strategy is the "D" in EDM. Management then plans and builds the program that carries it out.' },
+        { text: 'Procurement and IT negotiate and manage contracts with key cloud vendors.', answer: 1, why: 'Vendor management is APO (managed vendors). It organizes the relationships that later support delivery.' },
+        { text: 'The compliance team checks whether IT meets newly issued regulatory requirements.', answer: 4, why: 'Monitoring compliance with external requirements is MEA. It is assessment of management\'s own conformance.' },
+        { text: 'The project office manages the schedule, budget, and resources of the ERP replacement.', answer: 2, why: 'Program and project management sit in BAI. The project builds and implements a new solution.' }
+      ]
+    },
+    {
+      type: 'sort', short: 'Framework match', title: 'Match the business need to the framework', concept: 'frameworks',
+      instr: 'Each statement describes a need at <b>Kestrel Logistics</b>, a fictional freight company. Choose the framework or standard that <b>most directly</b> addresses it. Several frameworks overlap, so pick the one built for that purpose.',
+      hint: 'COBIT is for governance and management of enterprise IT. ITIL is for IT service management. ISO/IEC 27001 is a certifiable information security management system. NIST CSF organizes cybersecurity outcomes and profiles. COSO is for internal control and enterprise risk management.',
+      buckets: ['COBIT', 'ITIL', 'ISO/IEC 27001', 'NIST CSF', 'COSO'],
+      review: { href: 'lesson02.html#s1', label: 'Lesson 2, Laws, Regulations & Industry Standards' },
+      items: [
+        { text: 'A major customer requires Kestrel to hold a third-party certification of its information security management system.', answer: 2, why: 'ISO/IEC 27001 specifies the requirements for an ISMS and is the standard organizations are certified against.' },
+        { text: 'The CFO needs a framework for internal control over financial reporting to support the SOX 404 assessment.', answer: 4, why: 'The COSO Internal Control framework is the common basis for management\'s SOX 404 assessment of internal control over financial reporting.' },
+        { text: 'The service desk wants good practices for incident, problem, and change handling and for service-level management.', answer: 1, why: 'ITIL is the IT service management framework. It describes practices for delivering and supporting IT services.' },
+        { text: 'The board wants a framework that separates governance of enterprise IT from its management.', answer: 0, why: 'COBIT 2019 is built around that separation: the EDM governance domain and the four management domains.' },
+        { text: 'The CISO wants to compare the current cybersecurity posture to a target profile using common functions.', answer: 3, why: 'NIST CSF organizes cybersecurity outcomes into functions and uses current and target profiles to show gaps.' },
+        { text: 'The risk committee wants to integrate risk with strategy setting and business performance across the enterprise.', answer: 4, why: 'COSO ERM (2017) links enterprise risk management to strategy and performance. It covers all risk, not just IT.' },
+        { text: 'Internal audit wants IT process objectives and capability levels it can use as audit criteria.', answer: 0, why: 'COBIT defines governance and management objectives with capability levels, which makes it a natural source of IS audit criteria.' },
+        { text: 'IT operations wants to define a service catalog and the value streams that deliver services to users.', answer: 1, why: 'Service catalogs and service value streams are ITIL 4 concepts. ITIL focuses on how IT delivers value as services.' },
+        { text: 'The security team must document a Statement of Applicability for its Annex A controls.', answer: 2, why: 'The Statement of Applicability is an ISO/IEC 27001 requirement. It lists which Annex A controls apply and why.' },
+        { text: 'A small subsidiary wants a voluntary, outcome-based structure to plan its first cybersecurity program.', answer: 3, why: 'NIST CSF is voluntary and outcome-based, and it scales well for organizations starting a program. It does not require certification.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Treat the risk', title: 'Treat the risk: who decides, and does it fit?',
+      instr: 'Kestrel scores risk as likelihood times impact on a 1 to 25 scale. The board approved the appetite and tolerance shown below. For each register entry, evaluate the proposed response as the <b>IS auditor</b>. Remember that management selects the response; the auditor evaluates it.',
+      table: {
+        caption: 'Kestrel Logistics risk policy (board-approved)',
+        head: ['Residual score', 'Status', 'What policy requires'],
+        rows: [
+          ['1 to 8', 'Within appetite', 'The risk owner may accept the risk and document the decision.'],
+          ['9 to 12', 'Above appetite, within tolerance', 'The business risk owner accepts in writing, with a dated treatment plan, and the risk committee is informed.'],
+          ['13 to 25', 'Outside tolerance', 'Treat the risk further or escalate it to the board risk committee. A manager cannot accept it alone.']
+        ]
+      },
+      hint: 'Compare the residual score to the policy bands, then ask two questions. Is the residual score supported by evidence? Did the right person make the decision? The auditor tests and reports; the auditor does not choose the response or sign the acceptance.',
+      review: { href: 'lesson02.html#s5', label: 'Lesson 2, Enterprise Risk Management' },
+      items: [
+        {
+          title: 'Register entry R1', text: 'Online orders depend on a single payment gateway. The VP of eCommerce, Ana Whitfield, owns the risk.',
+          table: { head: ['Field', 'R1'], rows: [['Inherent score', '16'], ['Proposed response', 'Mitigate: add a second gateway with automatic failover'], ['Residual score', '6 (management estimate)']] },
+          parts: [
+            { q: 'What should the auditor do?', concept: 'treatment', options: ['Accept the residual score, since 6 is within appetite', 'Ask the board to formally approve the residual score', 'Test that failover works before relying on the score', 'Recommend transferring the risk to the gateway vendor'], answer: 2, why: 'A residual score is only as good as the control behind it. The auditor tests the failover design and operation before relying on management\'s estimate.' }
+          ]
+        },
+        {
+          title: 'Register entry R2', text: 'The HR system runs on an operating system that no longer receives security updates. Budget is not available this year. IT infrastructure manager Marcus Oyelaran signed the acceptance.',
+          table: { head: ['Field', 'R2'], rows: [['Inherent score', '15'], ['Proposed response', 'Accept'], ['Residual score', '15']] },
+          parts: [
+            { q: 'How should the auditor evaluate this acceptance?', concept: 'treatment', options: ['Valid, because acceptance is a legitimate response', 'Valid, as long as the manager renews it each quarter', 'Invalid, because unsupported systems must always be replaced', 'Invalid: 15 is outside tolerance, so it needs escalation'], answer: 3, why: 'Acceptance is legitimate only within the approved limits. A residual of 15 is outside tolerance, so it needs further treatment or escalation; replacement is one option, not the only one.' },
+            { q: 'Who should decide what happens next?', concept: 'roles', options: ['The board risk committee, through escalation', 'The IS auditor, by selecting a compensating control', 'The IT steering committee, by approving the acceptance', 'Marcus, after a second review of the risk'], answer: 0, why: 'Policy sends risk outside tolerance to the board risk committee. The auditor reports the gap but does not choose the control, and the steering committee cannot override the board\'s tolerance.' }
+          ]
+        },
+        {
+          title: 'Register entry R3', text: 'A ransomware attack on the warehouse management system would halt shipments. Management bought a cyber insurance policy with a $5 million limit.',
+          table: { head: ['Field', 'R3'], rows: [['Inherent score', '20'], ['Proposed response', 'Transfer: cyber insurance'], ['Residual score', '4 (management estimate)']] },
+          parts: [
+            { q: 'What is the auditor\'s MAIN concern?', concept: 'treatment', options: ['The $5 million limit may be too low for a large ransomware event', 'Insurance covers loss, not the outage, so 4 is overstated', 'Transfer is not an acceptable response for cyber risk', 'The audit committee should have approved the policy'], answer: 1, why: 'Insurance shifts financial loss but does not reduce the likelihood of an attack or the operational disruption. A residual of 4 overstates the effect of the transfer.' }
+          ]
+        },
+        {
+          title: 'Register entry R4', text: 'The marketing team began a pilot of an unreviewed AI transcription service that processes recorded customer calls. Management stopped the pilot until a vendor risk review is complete.',
+          table: { head: ['Field', 'R4'], rows: [['Inherent score', '20'], ['Proposed response', 'Stop the pilot'], ['Residual score', 'Not applicable while the activity is stopped']] },
+          parts: [
+            { q: 'Which risk response has management chosen?', concept: 'treatment', options: ['Accept', 'Mitigate', 'Transfer', 'Avoid'], answer: 3, why: 'Stopping the activity that creates the risk is avoidance. The auditor can confirm the pilot is actually stopped and that no data remains with the vendor.' }
+          ]
+        },
+        {
+          title: 'Register entry R5', text: 'Quarterly access recertification for the warehouse application is two quarters behind while a new identity system rolls out. Help desk lead Tomas Reyes approved the acceptance by email. There is no treatment plan.',
+          table: { head: ['Field', 'R5'], rows: [['Inherent score', '12'], ['Proposed response', 'Accept until the new identity system is live'], ['Residual score', '10']] },
+          parts: [
+            { q: 'What does policy require for this acceptance to be valid?', concept: 'treatment', options: ['Board approval, because the score is above appetite', 'Nothing more, because a residual of 10 is within tolerance', 'Written owner acceptance with a dated treatment plan', 'An auditor sign-off confirming the residual score'], answer: 2, why: 'A residual of 10 is above appetite but within tolerance. Policy allows acceptance only in writing by the business risk owner, with a dated plan.' },
+            { q: 'Who is the right person to sign the acceptance?', concept: 'roles', options: ['The warehouse operations director, who owns the process', 'Tomas, because he raised the issue', 'The IS auditor, to show the risk was reviewed', 'The CIO, because the application runs on IT-managed infrastructure'], answer: 0, why: 'Risk ownership sits with the business owner accountable for the process and its data. Hosting the system does not make IT the owner, and an auditor signature would impair independence.' }
+          ]
+        },
+        {
+          title: 'Register entry R6', text: 'A spare training laptop holds no business data. Expected annual loss is about $1,200. IT proposed full-disk encryption and tracking software costing $40,000 per year. Management asks whether accepting the risk instead would be reasonable.',
+          table: { head: ['Field', 'R6'], rows: [['Inherent score', '4'], ['Proposed response', 'Mitigate: encryption and tracking'], ['Residual score', '2']] },
+          parts: [
+            { q: 'Which assessment is BEST?', concept: 'treatment', options: ['Mitigate anyway, because any unencrypted laptop is a finding', 'Accept: it is within appetite and the fix costs more than the loss', 'Transfer the risk by adding the laptop to the corporate insurance policy', 'Escalate to the board, because the spend exceeds the expected loss'], answer: 1, why: 'The inherent risk is already within appetite, and the control costs far more than the loss it prevents. Documented acceptance is a reasonable, legitimate response.' }
+          ]
+        },
+        {
+          title: 'Who decides?', text: 'Kestrel is starting its annual governance and risk cycle. Identify the party responsible for each decision.',
+          parts: [
+            { q: 'Who approves the enterprise risk appetite?', concept: 'roles', options: ['The CIO', 'The IT steering committee', 'The board of directors', 'The IS auditor'], answer: 2, why: 'Risk appetite is a governance decision. The board sets it, and management operates within it.' },
+            { q: 'Who prioritizes the IT investment portfolio, including funding for the R1 failover?', concept: 'roles', options: ['The IT steering committee', 'The internal audit manager', 'The service desk manager', 'The external auditor'], answer: 0, why: 'The IT steering committee is the cross-functional body that prioritizes IT investments against business strategy.' },
+            { q: 'Who provides independent assurance that risk responses fit the appetite?', concept: 'roles', options: ['The second-line risk function', 'The IS auditor', 'The risk owner', 'The CISO'], answer: 1, why: 'Internal audit is the third line. It gives independent assurance; the second line oversees and monitors, and the first line owns the risk.' },
+            { q: 'Who selects the response for a risk in the register?', concept: 'roles', options: ['The IS auditor, who knows the controls', 'The external auditor, during the annual audit', 'The second-line risk function, on its own', 'The accountable risk owner in management'], answer: 3, why: 'Management, through the named risk owner, selects the response. The risk function may advise and challenge, and the auditor evaluates the result.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'roles', label: 'Think of a risk decision in your own organization. Who made it, who should have made it, and what would an IS auditor test?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

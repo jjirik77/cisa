@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>A5 Privacy, Data Governance, and Classification | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This activity needs JavaScript enabled.</p></noscript></div>
+
+<script>
+window.ACTIVITY = {
+  id: 'A5',
+  title: 'Privacy, Data Governance, and Classification',
+  accent: 'Classification',
+  domain: 'Domain 2',
+  time: '35 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson02.html#s6',
+  lessonLabel: 'Lesson 2, Privacy Program & Principles',
+  lede: 'Privacy and classification questions are scenario-based. Decide whether a proposed use of data is permitted, who is accountable for it, and what handling it requires. Treat each one as a policy decision an auditor can test, not as legal advice.',
+  concepts: [
+    { key: 'roles', name: 'Data roles and accountability', review: 'Lesson 2, Data Governance & Classification' },
+    { key: 'classify', name: 'Classification and handling', review: 'Lesson 2, Data Governance & Classification' },
+    { key: 'privacy', name: 'Privacy principles', review: 'Lesson 2, Privacy Program & Principles' },
+    { key: 'lifecycle', name: 'Retention and disposal', review: 'Lesson 2, data lifecycle, retention, and disposal' }
+  ],
+  stations: [
+    {
+      type: 'sort', short: 'Data roles', title: 'Roles and accountability', concept: 'roles',
+      instr: 'At <b>Brightwater Health Partners</b>, a fictional clinic network, assign each task to the role that is responsible for it: the <b>data owner</b> (business, accountable for the data), the <b>data custodian</b> (IT, implements and operates the controls), the <b>data user</b>, or the <b>privacy officer</b>.',
+      hint: 'The owner decides: classification, who gets access, how long to keep it. The custodian carries out those decisions technically. The user follows the rules. The privacy officer runs the privacy program across all data sets.',
+      buckets: ['Data owner', 'Data custodian', 'Data user', 'Privacy officer'],
+      review: { href: 'lesson02.html#s7', label: 'Lesson 2, Data Governance & Classification' },
+      items: [
+        { text: 'Performs nightly backups of the patient scheduling database and tests restores.', answer: 1, why: 'Backup and restore are technical operations the custodian performs to meet the owner\'s availability requirements.' },
+        { text: 'Assigns the classification level to the billing data set.', answer: 0, why: 'Classification is the owner\'s decision. The owner is accountable for the data and understands its business value and sensitivity.' },
+        { text: 'Uses patient records only for the treatment tasks the job requires.', answer: 2, why: 'Users must use data only for authorized purposes and follow handling rules.' },
+        { text: 'Reviews privacy impact assessments before new processing of personal data begins.', answer: 3, why: 'The privacy officer oversees PIAs as part of the privacy program. The owner supplies the business facts, but the privacy review sits with the privacy function.' },
+        { text: 'Approves who may access the clinical results data and at what level.', answer: 0, why: 'The owner sets access requirements. When access is wrong, the root cause is often that the owner never defined them.' },
+        { text: 'Configures database encryption and access rules to match the approved requirements.', answer: 1, why: 'The custodian implements the technical controls the owner specified. Implementing a control is not the same as deciding what it should be.' },
+        { text: 'Coordinates responses to patient requests to access or correct their personal data.', answer: 3, why: 'Handling data-subject requests across systems is a privacy program function, led by the privacy officer.' },
+        { text: 'Reports a lost tablet that contained clinic schedules.', answer: 2, why: 'Prompt reporting of a suspected loss is a basic user responsibility under the handling policy.' },
+        { text: 'Recertifies the list of people with access to the payroll data each quarter.', answer: 0, why: 'Access recertification confirms that access still matches business need, which only the owner can judge. IT may prepare the list, but the owner signs off.' },
+        { text: 'Securely deletes records from the server when the owner confirms they have reached end of retention.', answer: 1, why: 'The owner decides when data is due for disposal; the custodian carries out the technical deletion and keeps evidence that it happened.' },
+        { text: 'Maintains the privacy notice and monitors compliance with the privacy policy.', answer: 3, why: 'Notices and program-level compliance monitoring belong to the privacy officer.' },
+        { text: 'Sets the retention requirement for the patient billing data set, with input from legal.', answer: 0, why: 'The owner sets the retention requirement for the data, based on legal, regulatory, and business needs.' }
+      ]
+    },
+    {
+      type: 'sort', short: 'Classify', title: 'Classify the data', concept: 'classify',
+      instr: 'Apply the Brightwater classification policy below to each data item. When an item could fit two levels, choose the <b>higher</b> one the policy supports.',
+      table: {
+        caption: 'Brightwater Health Partners classification policy',
+        head: ['Level', 'Meaning', 'Minimum handling'],
+        rows: [
+          ['Public', 'Approved for release to anyone', 'Publish only through approved channels'],
+          ['Internal', 'Routine business information for staff; little harm if disclosed', 'Staff access only; do not share outside the company'],
+          ['Confidential', 'Sensitive business or personal information; disclosure would cause real harm', 'Need-to-know access; encrypt when sent outside the network; shred or wipe at disposal'],
+          ['Restricted', 'Regulated data, or data whose disclosure could cause severe harm', 'Owner-approved named access; encrypt at rest and in transit; log access; sanitize media to NIST SP 800-88']
+        ]
+      },
+      hint: 'Ask what would happen if the item were disclosed, and whether a regulation covers it. Health, payment card, government ID, and credential data are regulated or high-harm. Setting a level too low is the higher-risk error, because the handling controls follow the label.',
+      buckets: ['Public', 'Internal', 'Confidential', 'Restricted'],
+      review: { href: 'lesson02.html#s7', label: 'Lesson 2, Data Governance & Classification' },
+      items: [
+        { text: 'Patient lab results stored in the patient portal.', answer: 3, why: 'Health information is regulated and its disclosure can cause severe harm. Labeling it Confidential would be too low and would drop required controls such as access logging.' },
+        { text: 'Clinic hours and locations on the public website.', answer: 0, why: 'This information is approved for release to anyone, so Public is correct.' },
+        { text: 'Employee performance reviews.', answer: 2, why: 'Personal and sensitive, and disclosure would cause real harm, but not regulated data of the highest-harm kind. Internal would be too low.' },
+        { text: 'Full payment card numbers held by the billing system.', answer: 3, why: 'Cardholder data is regulated under PCI DSS. Anything below Restricted would leave it without required encryption and logging.' },
+        { text: 'The staff cafeteria menu and holiday schedule.', answer: 1, why: 'Routine staff information with little harm if disclosed is Internal. It has not been approved for public release.' },
+        { text: 'Database administrator passwords and encryption keys.', answer: 3, why: 'Credentials and keys unlock every other protected data set, so disclosure could cause severe harm. Restricted is the only safe level.' },
+        { text: 'Negotiated pricing in a medical supply contract.', answer: 2, why: 'Disclosure would harm the company\'s negotiating position, so it is Confidential. Treating it as Internal would allow sharing it with anyone on staff.' },
+        { text: 'The internal help guide for resetting a staff badge.', answer: 1, why: 'Routine staff guidance with little harm if disclosed is Internal.' },
+        { text: 'The published annual community health report.', answer: 0, why: 'Once approved and published, the report is Public.' },
+        { text: 'Employee Social Security numbers in the payroll system.', answer: 3, why: 'Government ID numbers enable identity theft and are protected by law in many jurisdictions. Restricted is required; Confidential would be too low.' },
+        { text: 'Aggregated patient satisfaction scores with no identifiers, prepared for internal quality review.', answer: 1, why: 'Without identifiers the data carries little harm, but it is not approved for release, so it is Internal rather than Public.' }
+      ]
+    },
+    {
+      type: 'scenario', short: 'Data decisions', title: 'Privacy, handling, and retention decisions',
+      instr: 'Each case is a request or record at Brightwater. Choose the <b>BEST</b> answer as the IS auditor, applying Brightwater\'s privacy policy, its classification policy, and its retention schedule. These are policy decisions you can test, not legal opinions.',
+      hint: 'For privacy, ask why the data was collected, how much is needed, and what the person was told. For handling, let the classification drive the control. For retention, a legal hold overrides the schedule, and disposal must fit the media and leave evidence.',
+      review: { href: 'lesson02.html#s6', label: 'Lesson 2, Privacy Program & Principles' },
+      items: [
+        {
+          title: 'Case 1', text: 'Marketing manager Leila Haddad wants to use patient support tickets, collected to resolve billing and portal problems, to target a new wellness campaign by email.',
+          parts: [
+            { q: 'Which privacy principle is MOST directly at issue?', concept: 'privacy', options: ['Purpose limitation', 'Data accuracy', 'Integrity and confidentiality', 'Storage limitation'], answer: 0, why: 'The data was collected for support, and marketing is a new purpose. Purpose limitation is the principle being tested.' },
+            { q: 'What is the BEST policy response?', concept: 'privacy', options: ['Approve the use if the ticket data is encrypted', 'Approve the use after removing ticket numbers', 'Allow it only if notice and consent cover marketing use', 'Approve it, since patients already gave Brightwater the data'], answer: 2, why: 'A new purpose needs a basis the policy recognizes, such as updated notice and consent, confirmed through privacy review. Encryption is a security control and does not answer the privacy question.' }
+          ]
+        },
+        {
+          title: 'Case 2', text: 'An analyst, Dev Malhotra, asks for full patient records, including Social Security numbers and diagnoses, to calculate average waiting times by clinic.',
+          parts: [
+            { q: 'What is the BEST response?', concept: 'privacy', options: ['Provide the full records under a signed confidentiality agreement', 'Provide only the timing fields needed, without identifiers', 'Provide the records but mask the last four SSN digits', 'Decline, because patient data may not be used for analysis'], answer: 1, why: 'Data minimization limits data to what the purpose requires. Waiting times need timestamps and clinic codes, not identities or diagnoses.' }
+          ]
+        },
+        {
+          title: 'Case 3', text: 'Brightwater\'s policy commits to answering patient access requests within 30 days. The request log shows that 14 of 40 requests this year took more than 60 days.',
+          parts: [
+            { q: 'What is the MOST significant finding?', concept: 'privacy', options: ['Individual rights requests are not met on the committed timeline', 'The request log should be kept in a more secure system', 'Patients submit more requests than the current privacy staff can handle', 'The 30-day commitment should be extended to 60 days'], answer: 0, why: 'The control over individual rights is failing against the organization\'s own commitment. The auditor reports the gap; changing the commitment is management\'s decision, not a fix for the finding.' }
+          ]
+        },
+        {
+          title: 'Case 4', text: 'The portal team plans to launch a chatbot next week. A vendor will process patient messages on its own servers. No privacy impact assessment has been done, and no data-processing agreement has been signed.',
+          parts: [
+            { q: 'What should happen FIRST?', concept: 'privacy', options: ['Launch on schedule and complete the PIA during the first month', 'Ask the vendor for its security certification, then launch on schedule', 'Launch with a banner telling patients a vendor is involved', 'Complete the PIA and processor agreement before processing begins'], answer: 3, why: 'A PIA belongs before new processing starts, and a third-party processor needs a data-processing agreement. A security certificate or banner does not replace either.' }
+          ]
+        },
+        {
+          title: 'Case 5', text: 'The owner of the lab results data set labeled it Internal so that clinic staff can share results more easily by email.',
+          parts: [
+            { q: 'What should the auditor do?', concept: 'classify', options: ['Accept the label, because the owner is accountable for it', 'Ask IT to apply Restricted controls without changing the label', 'Recommend moving the data to Confidential as a compromise', 'Report it: the label is below policy and weakens controls'], answer: 3, why: 'The owner decides, but the decision must follow policy. Under-classification is the higher-risk error because every downstream control follows the label, so the auditor reports it for reclassification to Restricted.' }
+          ]
+        },
+        {
+          title: 'Case 6', text: 'A billing analyst, Grace Okafor, wants to copy a file of full payment card numbers to a personal USB drive so she can reconcile accounts at home.',
+          parts: [
+            { q: 'Which response is consistent with the classification policy?', concept: 'classify', options: ['Allow it if the USB drive is password protected', 'Allow it once, provided her manager approves the copy in writing', 'Allow it if she deletes the file after reconciling', 'Deny it: Restricted data stays on approved, encrypted systems'], answer: 3, why: 'Card data is Restricted. Policy requires owner-approved access, encryption, and logging, which a personal USB drive cannot provide. A manager\'s approval does not replace the owner\'s.' }
+          ]
+        },
+        {
+          title: 'Retention review', text: 'Five records have reached the end of their scheduled retention period. Choose the correct action for each.',
+          table: {
+            head: ['Record', 'Description'],
+            rows: [
+              ['A', 'Paper billing statements past their seven-year retention period; no legal hold applies.'],
+              ['B', 'Mailbox of a former clinic manager, past retention, but named in a legal hold for a pending lawsuit.'],
+              ['C', 'Hard drives from retired laptops that stored patient data.'],
+              ['D', 'Production records and cloud backups for former portal users, past retention.'],
+              ['E', 'A marketing prospect list kept past its retention period because it "may be useful later."']
+            ]
+          },
+          parts: [
+            { q: 'Record A: what is the correct action?', concept: 'lifecycle', options: ['Keep them, since storage is cheap', 'Cross-cut shred and record the destruction', 'Recycle them along with normal office paper', 'Scan them, then keep the digital copies'], answer: 1, why: 'Once retention ends and no hold applies, the records should be securely destroyed, with evidence such as a destruction log or certificate. Scanning keeps the data, which defeats the schedule.' },
+            { q: 'Record B: what is the correct action?', concept: 'lifecycle', options: ['Preserve it until legal releases the hold', 'Delete it, because its retention period has ended', 'Export it to the manager\'s successor', 'Archive half and delete the rest'], answer: 0, why: 'A legal hold overrides the retention schedule. Destroying held records can expose the organization to serious legal consequences.' },
+            { q: 'Record C: what is the correct action?', concept: 'lifecycle', options: ['Reformat the drives, then donate the laptops to a school', 'Delete the patient files and reissue the laptops', 'Sanitize per NIST SP 800-88 and verify the result', 'Store the drives in a locked cabinet indefinitely'], answer: 2, why: 'Formatting or deleting files leaves recoverable data. Restricted data on media needs sanitization (purge or destroy) to NIST SP 800-88, with verification and a record.' },
+            { q: 'Record D: what is the correct action?', concept: 'lifecycle', options: ['Delete production records only; backups expire later', 'Delete all copies, backups included, such as by crypto-erasure', 'Keep everything, because backup copies are exempt from retention', 'Move the records to a cheaper storage tier'], answer: 1, why: 'Retention applies to every copy, including backups. Cryptographic erasure, destroying the keys, is an accepted method for cloud data the organization cannot physically destroy.' },
+            { q: 'Record E: what is the correct action?', concept: 'lifecycle', options: ['Keep it, since marketing owns the list', 'Keep it, but restrict it to marketing staff', 'Dispose of it per the retention schedule', 'Ask the custodian to decide case by case'], answer: 2, why: 'Storage limitation means personal data is kept no longer than needed. "May be useful later" is not a documented business need, so the schedule applies.' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'reflect', short: 'Reflect', title: 'Reflect on your readiness',
+      instr: 'Rate your confidence on each concept, then answer the prompts. Your responses appear in the summary report.',
+      prompts: [
+        { key: 'privacy', label: 'Describe a data request from your own work that could raise a purpose limitation or data minimization question. What would you want to see before approving it?' },
+        { key: 'next', label: 'Which concept from this activity will you review before the next lesson, and how?' }
+      ]
+    }
+  ]
+};
+</script>
+<script src="practice.js"></script>
+</body>
+</html>

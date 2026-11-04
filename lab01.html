@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>B1 Audit Data Analytics: Accounts Payable Exception Testing | CISA 5-Day Workshop</title>
+<link rel="stylesheet" href="cisa-lesson.css">
+<link rel="stylesheet" href="practice.css">
+</head>
+<body>
+<div id="app"><noscript><p style="padding:2rem;font-family:Arial">This lab needs JavaScript enabled.</p></noscript></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+<script>
+/* ===================== Synthetic dataset (deterministic) =====================
+   Tamarack Medical Supply, fiscal years 2025 and 2026 (July 2024 to June 2026).
+   Exceptions are planted on purpose; the generator guarantees that random rows
+   never trip the same tests, so the checklist has one defensible answer. */
+(function () {
+  var seed = 153;
+  function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+  function ri(a, b) { return a + Math.floor(rnd() * (b - a + 1)); }
+  function pick(arr) { return arr[Math.floor(rnd() * arr.length)]; }
+  function pad(n, w) { n = String(n); while (n.length < w) n = '0' + n; return n; }
+  var D0 = Date.UTC(2024, 6, 1), DAY = 86400000, NDAYS = 730;
+  function iso(ms) { var d = new Date(ms); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1, 2) + '-' + pad(d.getUTCDate(), 2); }
+  function ms(isoStr) { var p = isoStr.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
+  function dow(m) { return new Date(m).getUTCDay(); }
+  function weekday(m) { while (dow(m) === 0 || dow(m) === 6) m += DAY; return m; }
+  function acct() { return String(ri(1000000000, 9999999999)); }
+
+  var first = ['Ana', 'Marcus', 'Priya', 'Tomas', 'Leila', 'Dev', 'Grace', 'Kwame', 'Mei', 'Ines', 'Darnell', 'Aisha', 'Jonah', 'Rosa', 'Hiro', 'Farah', 'Luis', 'Noor', 'Ethan', 'Sofia', 'Omar', 'Hannah', 'Yusuf', 'Clara', 'Mateo', 'Zara', 'Ben', 'Elena', 'Samir', 'Joy'];
+  var lastN = ['Whitfield', 'Oyelaran', 'Raman', 'Reyes', 'Haddad', 'Malhotra', 'Okafor', 'Asante', 'Zhou', 'Carvalho', 'Brooks', 'Bello', 'Lindqvist', 'Moreno', 'Tanaka', 'Siddiqui', 'Navarro', 'Hassan', 'Price', 'Rossi', 'Farouk', 'Kowalski', 'Demir', 'Novak', 'Castillo', 'Iqbal', 'Adler', 'Petrova', 'Nasser', 'Mensah'];
+  var depts = ['Accounts Payable', 'Procurement', 'Warehouse', 'Finance', 'IT', 'Sales', 'Quality', 'Facilities', 'Customer Service', 'HR'];
+  var empStreets = ['Maple Ave', 'Birch Ln', 'Cedar Ct', 'Willow Dr', 'Aspen Way', 'Spruce St', 'Juniper Rd', 'Hawthorn Pl', 'Linden Blvd', 'Sycamore Ter'];
+  var venStreets = ['Commerce Pkwy', 'Industrial Dr', 'Enterprise Blvd', 'Harbor Rd', 'Lakeview Plaza', 'Market St', 'Technology Way', 'Gateway Ctr', 'Riverfront Ave', 'Summit Park'];
+  var cities = ['Orland Park, IL', 'Palos Hills, IL', 'Oak Lawn, IL', 'Tinley Park, IL', 'Bridgeview, IL', 'Burbank, IL'];
+  var vendorNames = ['Apex Surgical Supply', 'Bluewater Logistics', 'Cardinal Packaging', 'Delta Sterile Products', 'Evergreen Facility Services', 'Fairway Office Solutions', 'Granite IT Partners', 'Harbor Freight Carriers', 'Ironwood Calibration', 'Jasper Gloves and Apparel', 'Keystone Lab Instruments', 'Lumen Lighting Co', 'Meridian Wound Care', 'Northgate Electrical', 'Orchard Catering', 'Pinecrest Lab Services', 'Quarry Printing', 'Redwood HVAC', 'Silverline Couriers', 'Trident Disposal', 'Union Pallet Works', 'Vantage Software', 'Westbrook Uniforms', 'Yellowpine Janitorial', 'Zenith Diagnostics', 'Allied Fasteners', 'Beacon Telecom', 'Copperleaf Insurance Brokers', 'Driftwood Plastics', 'Elmstreet Legal Group', 'Foxglove Medical Textiles', 'Goldcrest Staffing', 'Highland Water Systems', 'Indigo Labels', 'Junction Fleet Repair', 'Kingsley Safety Equipment', 'Northline Consulting LLC', 'Lakeshore Scales', 'Monarch Cold Chain', 'Nimbus Cloud Hosting', 'Oakridge Security Patrol', 'Crestview Analytics', 'Prairie Tape and Film', 'Quantum Sensors', 'Riverside Elevator', 'Stonebridge Auditors', 'Timberline Crates', 'Upland Paper Goods', 'Valor Medical Gases', 'Wexford Office Furniture'];
+
+  var employees = [], usedEmpAddr = {};
+  for (var e = 0; e < 60; e++) {
+    var addr; do { addr = ri(100, 9899) + ' ' + pick(empStreets); } while (usedEmpAddr[addr]); usedEmpAddr[addr] = 1;
+    employees.push({ emp_id: 'E' + (201 + e), name: pick(first) + ' ' + pick(lastN), department: e < 6 ? 'Accounts Payable' : pick(depts), address: addr, city: pick(cities), bank_account: acct() });
+  }
+  var E = function (id) { return employees[+id.slice(1) - 201]; };
+  E('E244').department = 'Accounts Payable'; E('E219').department = 'Accounts Payable'; E('E251').department = 'Quality'; E('E233').department = 'Warehouse';
+
+  var vendors = [], usedVenAddr = {};
+  for (var v = 0; v < 50; v++) {
+    var va; do { va = ri(100, 9899) + ' ' + pick(venStreets); } while (usedVenAddr[va]); usedVenAddr[va] = 1;
+    vendors.push({ vendor_id: 'V' + (1001 + v), name: vendorNames[v], address: va, city: pick(cities), bank_account: acct(), status: 'Active', inactive_date: null, created_date: iso(Date.UTC(2019, 0, 1) + ri(0, 1800) * DAY) });
+  }
+  var V = function (id) { return vendors[+id.slice(1) - 1001]; };
+  // Planted vendor master exceptions
+  V('V1037').address = E('E244').address; V('V1037').city = E('E244').city; V('V1037').created_date = '2024-09-16';   // AP clerk's home address
+  V('V1042').bank_account = E('E219').bank_account; V('V1042').created_date = '2025-02-03';                            // AP clerk's bank account
+  V('V1016').address = E('E251').address; V('V1016').city = E('E251').city;                                            // disclosed related party (false positive)
+  V('V1049').status = 'Inactive'; V('V1049').inactive_date = '2025-09-30';
+  V('V1050').status = 'Inactive'; V('V1050').inactive_date = '2025-12-31';
+
+  var requesters = employees.slice(6, 40).map(function (x) { return x.emp_id; }).filter(function (id) { return id !== 'E233'; });
+  var managers = ['E203', 'E204', 'E205'], director = 'E202';
+  var payments = [], used = {}, invSeq = {}, pid = 10001;
+  function invNo(vid) { invSeq[vid] = (invSeq[vid] || 0) + 1; return vid.slice(1) + '-' + pad(invSeq[vid] * 7 + 100, 5); }
+  function addPay(o) { o.payment_id = 'P' + (pid++); o.approver = o.amount >= 10000 ? director : pick(managers); payments.push(o); return o; }
+  function keyOf(vid, req, d) { return vid + '|' + req + '|' + d; }
+  function benfordAmount() { var x; do { x = Math.round(Math.pow(10, 2 + 3 * rnd()) * 100) / 100; } while (x >= 9000 && x < 10000); return x; }  // exact decades (100 to 100,000) follow Benford; 9,000 to 9,999 reserved for the planted cluster
+  function canPay(vend, dayMs) { return vend.status === 'Active' || ms(vend.inactive_date) > dayMs + 30 * DAY; }
+
+  // 1) Normal population, Benford-like amounts, weekday postings, unique (vendor, requester, date)
+  for (var n = 0; n < 2000; n++) {
+    var vend, d, req, k, tries = 0;
+    do { vend = vendors[ri(0, 49)]; d = D0 + ri(0, NDAYS - 40) * DAY; req = pick(requesters); k = keyOf(vend.vendor_id, req, iso(d)); tries++; } while ((used[k] || !canPay(vend, d)) && tries < 50);
+    used[k] = 1;
+    addPay({ vendor_id: vend.vendor_id, invoice_no: invNo(vend.vendor_id), invoice_date: iso(d), amount: benfordAmount(), requester: req, posted_on: iso(weekday(d + ri(5, 25) * DAY)) });
+  }
+  // 2) Threshold avoidance: 130 invoices just under the $10,000 second-approval threshold, spread out
+  for (var t = 0; t < 130; t++) {
+    var tv, td, tr, tk; do { tv = vendors[ri(0, 47)]; td = D0 + ri(0, NDAYS - 40) * DAY; tr = pick(requesters); tk = keyOf(tv.vendor_id, tr, iso(td)); } while (used[tk] || !canPay(tv, td));
+    used[tk] = 1;
+    addPay({ vendor_id: tv.vendor_id, invoice_no: invNo(tv.vendor_id), invoice_date: iso(td), amount: Math.round((9400 + rnd() * 590) * 100) / 100, requester: tr, posted_on: iso(weekday(td + ri(5, 25) * DAY)) });
+  }
+  // 3) Payments to fraudulent vendors
+  var planted = { dup: [], split: [], weekend: [], inactive: [] };
+  [['V1037', 7], ['V1042', 5]].forEach(function (p) {
+    for (var i = 0; i < p[1]; i++) { var fd = Date.UTC(2025, 0, 15) + i * 41 * DAY; addPay({ vendor_id: p[0], invoice_no: invNo(p[0]), invoice_date: iso(fd), amount: Math.round((2800 + rnd() * 4200) * 100) / 100, requester: p[0] === 'V1037' ? 'E244' : 'E219', posted_on: iso(weekday(fd + 8 * DAY)) }); }
+  });
+  // 4) Split purchases by one requester (E233): same vendor, same day, each under $10,000, total over
+  [['V1008', '2025-03-11', [6450.00, 5980.00]], ['V1022', '2025-08-19', [7200.00, 4850.00, 3990.00]], ['V1031', '2026-01-27', [9850.00, 8725.50]]].forEach(function (s) {
+    s[2].forEach(function (amt) { var p = addPay({ vendor_id: s[0], invoice_no: invNo(s[0]), invoice_date: s[1], amount: amt, requester: 'E233', posted_on: iso(weekday(ms(s[1]) + 9 * DAY)) }); planted.split.push(p.payment_id); });
+    used[keyOf(s[0], 'E233', s[1])] = 1;
+  });
+  if (planted.split.length) { /* vendors are the answer */ }
+  // 5) Payments to inactive vendors after the inactive date
+  [['V1049', '2025-10-14', 3120.40], ['V1049', '2026-02-05', 4475.00], ['V1050', '2026-03-18', 1890.25]].forEach(function (x) {
+    var p = addPay({ vendor_id: x[0], invoice_no: invNo(x[0]), invoice_date: x[1], amount: x[2], requester: pick(requesters), posted_on: iso(weekday(ms(x[1]) + 6 * DAY)) }); planted.inactive.push(p);
+  });
+  // 6) Duplicate payments: exact copies (vendor, invoice, amount) paid again 3 to 20 days later
+  var dupSrc = payments.filter(function (p) { return p.amount >= 1200 && p.amount <= 4800 && p.vendor_id < 'V1037'; });
+  [37, 402, 811, 1530].forEach(function (ix) {
+    var o = dupSrc[ix % dupSrc.length];
+    var c = addPay({ vendor_id: o.vendor_id, invoice_no: o.invoice_no, invoice_date: o.invoice_date, amount: o.amount, requester: o.requester, posted_on: iso(weekday(ms(o.posted_on) + ri(3, 20) * DAY)) });
+    c.approver = o.approver; planted.dup.push(c);
+  });
+  // 7) Weekend postings (manual entries outside the normal batch)
+  for (var w = 0; w < 6; w++) {
+    var wv = vendors[ri(0, 30)], wd = Date.UTC(2025, 1, 1) + ri(0, 380) * DAY; while (dow(wd) !== 6 && dow(wd) !== 0) wd += DAY;
+    var wr = pick(requesters), wk = keyOf(wv.vendor_id, wr, iso(wd - 7 * DAY));
+    if (used[wk]) { w--; continue; } used[wk] = 1;
+    var wp = addPay({ vendor_id: wv.vendor_id, invoice_no: invNo(wv.vendor_id), invoice_date: iso(wd - 7 * DAY), amount: Math.round((1500 + rnd() * 6000) * 100) / 100, requester: wr, posted_on: iso(wd) });
+    planted.weekend.push(wp);
+  }
+  // Number payments in posting order so planted rows do not stand out by ID
+  payments.sort(function (a, b) { return a.posted_on < b.posted_on ? -1 : a.posted_on > b.posted_on ? 1 : (a.payment_id < b.payment_id ? -1 : 1); });
+  payments.forEach(function (p, i) { p.payment_id = 'P' + (10001 + i); });
+  function ids(arr) { return arr.map(function (p) { return p.payment_id; }).sort(); }
+  window.B1DATA = {
+    employees: employees, vendors: vendors, payments: payments,
+    answers: {
+      dup: ids(planted.dup),
+      split: ['V1008', 'V1022', 'V1031'],
+      match: ['V1016', 'V1037', 'V1042'],
+      weekend: planted.weekend.length,
+      inactive: ids(planted.inactive)
+    }
+  };
+})();
+</script>
+
+<script>
+window.LAB = {
+  id: 'B1',
+  title: 'Audit Data Analytics: Accounts Payable Exception Testing',
+  accent: 'Accounts Payable Exception Testing',
+  domain: 'Domain 1',
+  time: '60–75 min',
+  level: 'Intermediate',
+  lessonHref: 'lesson01.html#s8',
+  lessonLabel: 'Lesson 1, Audit Data Analytics',
+  lede: 'Test the full population, not a sample. Query two years of vendor, employee, and payment data, choose the right analytic for each risk, separate true exceptions from false positives, and write a supported finding.',
+  workbenchTitle: 'Analytics workbench',
+  ticket: {
+    number: 'IA-2026-0417',
+    priority: 'High priority',
+    from: 'Rosa Moreno, Director of Internal Audit',
+    to: 'IS audit staff (you)',
+    subject: 'Continuous auditing pilot: accounts payable, FY2025 to FY2026',
+    due: 'Draft results before Friday’s audit committee prep',
+    body: '<p>Tamarack Medical Supply’s audit committee approved a continuous-auditing pilot over accounts payable. IT has extracted the vendor master, the employee master, and every payment from July 2024 through June 2026 into a read-only database. You have query access only.</p>' +
+      '<p>Run the population tests on the checklist. For each one, record the exceptions the test identifies. Some matches will have a legitimate explanation, so read the supporting documents before you confirm anything. Then draft one supported finding for the most significant issue.</p>' +
+      '<p><b>Relevant policy:</b> any invoice of <b>$10,000 or more</b> needs a second approval by the finance director. Splitting a purchase to stay under that threshold is prohibited. Vendors are paid only while active. Payments post in the weekday batch.</p>' +
+      '<p>Treat everything you find as preliminary. Do not contact the employees involved. Fraud indicators go to me, and I will brief the audit committee chair.</p>'
+  },
+  howTo: 'Use the <b>SQL console</b> in step 2 to query the data. Prefer not to write SQL? Pick a test from <b>Query templates</b> and run it, then read the results. Check each checklist item as you go. A hint is available for every item. After your first check you can reveal the auditor’s debrief, but a revealed item earns no points. Team mode: one person drives the console while the team decides, then enter the team name and members on the report.',
+  workIntro: 'Query the read-only database, read the supporting documents, and record your results in the checklist below. Results are calculated from the data in your browser.',
+  checklist: [
+    { id: 'dup', type: 'set', points: 15, short: 'Duplicate payments', title: 'Duplicate payments',
+      task: 'Find invoices that were paid more than once: same vendor, same invoice number, same amount. Enter the payment ID of the <b>later</b> payment in each duplicate pair.',
+      label: 'Payment IDs of the duplicate (later) payments', placeholder: 'e.g., P10123, P10456',
+      answer: function () { return B1DATA.answers.dup; },
+      hint: 'Group payments by vendor_id, invoice_no, and amount, and keep groups with COUNT(*) > 1. The duplicate is the payment with the later posted_on date.',
+      debrief: '<p>Each pair shares vendor, invoice number, invoice date, and amount, and the second payment posted days after the first. That pattern points to a missing duplicate-invoice check in the AP system, not to a data problem.</p><p>The auditor should confirm with the vendor statements whether credits were issued, quantify the overpayment, and recommend a system-enforced duplicate check on vendor and invoice number. A full-population test finds every pair. A sample of 40 payments would very likely find none.</p>',
+      reviewNote: 'Revisit grouping on the fields that define a duplicate invoice.' },
+    { id: 'split', type: 'set', points: 15, short: 'Split purchases', title: 'Split purchases under the approval threshold',
+      task: 'Find purchases split to avoid the $10,000 second approval: two or more invoices from the same vendor, by the same requester, on the same invoice date, each under $10,000 but together $10,000 or more. Enter the <b>vendor IDs</b> involved.',
+      label: 'Vendor IDs involved in split purchases', placeholder: 'e.g., V1001, V1002',
+      answer: function () { return B1DATA.answers.split; },
+      hint: 'GROUP BY vendor_id, requester, invoice_date with HAVING COUNT(*) > 1 AND SUM(amount) >= 10000 AND MAX(amount) < 10000.',
+      debrief: '<p>All three groups were requested by the same warehouse employee, E233, and each combined total would have required the finance director’s approval. One requester across three vendors is a pattern, not a coincidence.</p><p>The control weakness is that the approval threshold applies per invoice, not per purchase. The auditor should recommend aggregated threshold monitoring (same vendor, requester, and short window) and report the requester pattern to the audit director.</p>',
+      reviewNote: 'Split purchases group on vendor, requester, and date, and each part stays under the threshold.' },
+    { id: 'benford', type: 'choice', points: 10, short: 'Benford analysis', title: 'First-digit (Benford) analysis',
+      task: 'Compare the first-digit distribution of payment amounts with Benford’s expected frequencies (see <b>Documents</b>). Which first digit shows the <b>largest excess</b> over its expected share, and what does it suggest?',
+      options: ['Digit 1: payments are dominated by small routine purchases', 'Digit 5: a vendor rounds invoices to $5,000', 'Digit 9: many invoices sit just under the $10,000 approval threshold', 'No digit: the distribution conforms to Benford’s law'],
+      answer: 2,
+      hint: 'Use substr(CAST(amount AS TEXT), 1, 1) to get the first digit, then compute each digit’s share of all payments. Compare with the expected percentages.',
+      debrief: '<p>Digit 9 appears about twice as often as Benford’s law predicts, and most of the excess falls between $9,400 and $9,990. Amounts clustered just under an approval threshold are a classic sign that requesters are managing invoices to avoid review.</p><p>Benford analysis does not prove fraud. It tells the auditor where to look next: the payments between $9,000 and $9,999, by requester and vendor.</p>',
+      reviewNote: 'Benford analysis compares first-digit frequencies with expected percentages; look for clustering near thresholds.' },
+    { id: 'match', type: 'set', points: 15, short: 'Vendor-employee matches', title: 'Vendor and employee master matches',
+      task: 'Compare the vendor master with the employee master. Enter every <b>vendor ID</b> whose address or bank account matches an employee’s.',
+      label: 'Vendor IDs that match an employee address or bank account', placeholder: 'e.g., V1001',
+      answer: function () { return B1DATA.answers.match; },
+      hint: 'JOIN vendors to employees ON v.address = e.address OR v.bank_account = e.bank_account. Include the employee department in your output.',
+      debrief: '<p>Three vendors match. V1037 shares a home address with an accounts payable clerk, and the vendor was created in September 2024. V1042 pays into a bank account belonging to a second AP clerk. Both clerks can set up vendors and enter invoices, which is a segregation-of-duties failure as well as a fraud indicator.</p><p>V1016 also matches on address, but the next item shows why it is a different case.</p>',
+      reviewNote: 'Match vendors to employees on both address and bank account.' },
+    { id: 'fp', type: 'choice', points: 10, short: 'Clear a false positive', title: 'Clear the false positive',
+      task: 'Read the <b>related-party disclosure register</b> in Documents. Which matched vendor has a documented, approved explanation and can be cleared, subject to checking that the disclosed safeguards operated?',
+      options: ['V1037, Northline Consulting LLC', 'V1016, Pinecrest Lab Services', 'V1042, Crestview Analytics', 'None of them; every match is a confirmed exception'],
+      answer: 1,
+      hint: 'Look for a disclosure that names the employee, the vendor, the approval, and a safeguard. Then confirm the safeguard in the payment data.',
+      debrief: '<p>Pinecrest Lab Services is owned by the spouse of quality engineer E251. The relationship was disclosed in 2022 and approved, and E251 is barred from requesting or approving Pinecrest invoices. A query confirms E251 never requested a Pinecrest payment, so the safeguard operated.</p><p>Analytics produce matches, not conclusions. The auditor clears a match only with evidence: the approved disclosure and a test that the condition attached to it was met.</p>',
+      reviewNote: 'Clear a match only with documented evidence, then test the safeguard.' },
+    { id: 'weekend', type: 'number', points: 10, short: 'Weekend postings', title: 'Weekend postings',
+      task: 'Payments normally post in the weekday batch. How many payments were <b>posted on a Saturday or Sunday</b>?',
+      answer: function () { return B1DATA.answers.weekend; }, unit: 'payments',
+      hint: 'strftime(\'%w\', posted_on) returns 0 for Sunday and 6 for Saturday.',
+      debrief: '<p>Six payments posted on weekends, outside the scheduled batch. Off-cycle postings suggest manual entries that may have bypassed the normal batch controls.</p><p>The auditor should obtain the system audit log for these entries, identify who posted them, and confirm that each had approval and supporting documents.</p>',
+      reviewNote: 'Use the day-of-week function on the posting date, not the invoice date.' },
+    { id: 'inactive', type: 'set', points: 10, short: 'Inactive vendors', title: 'Payments to inactive vendors',
+      task: 'Find payments to vendors marked Inactive that are <b>dated after</b> the vendor’s inactive date. Enter the payment IDs.',
+      label: 'Payment IDs paid to inactive vendors after inactivation', placeholder: 'e.g., P10999',
+      answer: function () { return B1DATA.answers.inactive; },
+      hint: 'JOIN payments to vendors, filter status = \'Inactive\' and invoice_date > inactive_date.',
+      debrief: '<p>Three payments went to two vendors after they were deactivated. The vendor status flag is not blocking payment, so the control exists on paper only.</p><p>The auditor should confirm whether these were valid late invoices with approval or payments that should have been stopped, and recommend that the AP system reject payments to inactive vendors.</p>',
+      reviewNote: 'Compare the invoice date with the vendor inactive date.' },
+    { id: 'finding', type: 'text', points: 15, short: 'Draft the finding', title: 'Draft the five-part finding', reportTitle: 'Draft finding',
+      task: 'Write one finding for the most significant issue you found. Complete all five elements, as practiced in Activity A3. Use specific numbers from your queries.',
+      fields: [
+        { key: 'condition', label: 'Condition: what you found', min: 40, placeholder: 'State what the data shows, with counts and amounts.' },
+        { key: 'criteria', label: 'Criteria: the policy or standard', min: 25, placeholder: 'Name the policy requirement.' },
+        { key: 'cause', label: 'Cause: why it happened', min: 25, placeholder: 'Explain the control gap.' },
+        { key: 'effect', label: 'Effect: the risk or impact', min: 25, placeholder: 'Describe the exposure.' },
+        { key: 'rec', label: 'Recommendation: what management should do', min: 30, placeholder: 'Address the cause.' }
+      ],
+      hint: 'The vendor-employee matches are the most significant result: two AP clerks are linked to vendors they can pay. Build the finding around that, and address the cause, not just the symptom.',
+      debrief: '<p><b>Model finding.</b> <b>Condition:</b> Two vendors, V1037 and V1042, share a home address or bank account with accounts payable clerks E244 and E219. Twelve payments to these vendors were requested by the related clerk. <b>Criteria:</b> Accounts Payable Policy AP-04 requires independent vendor setup by procurement and prohibits employees from processing payments to vendors in which they hold an undisclosed interest. <b>Cause:</b> AP clerks can create vendors and enter invoices, and no routine comparison of vendor and employee master data is performed. <b>Effect:</b> Fictitious or conflicted vendors may be paid without detection, exposing the company to financial loss. <b>Recommendation:</b> Management should separate vendor setup from invoice entry, run a monthly vendor-to-employee match, and refer the two cases to the audit director for investigation.</p><p>Your wording will differ. Check that every element is specific and that the recommendation addresses the cause.</p>',
+      reviewNote: 'Each element needs specific evidence; the recommendation should address the cause.' }
+  ],
+
+  /* ===================== Workbench: SQL console + documents + schema ===================== */
+  workbench: function (root, api) {
+    var esc = api.esc, data = window.B1DATA;
+    var TEMPLATES = [
+      ['Preview: first 20 payments', 'SELECT * FROM payments\nORDER BY payment_id\nLIMIT 20;'],
+      ['Duplicate payments', 'SELECT vendor_id, invoice_no, amount,\n       COUNT(*) AS times_paid,\n       GROUP_CONCAT(payment_id) AS payment_ids,\n       GROUP_CONCAT(posted_on) AS posted_dates\nFROM payments\nGROUP BY vendor_id, invoice_no, amount\nHAVING COUNT(*) > 1;'],
+      ['Split purchases', 'SELECT vendor_id, requester, invoice_date,\n       COUNT(*) AS invoices, SUM(amount) AS total, MAX(amount) AS largest\nFROM payments\nGROUP BY vendor_id, requester, invoice_date\nHAVING COUNT(*) > 1 AND SUM(amount) >= 10000 AND MAX(amount) < 10000;'],
+      ['First-digit distribution (Benford)', 'SELECT substr(CAST(amount AS TEXT), 1, 1) AS first_digit,\n       COUNT(*) AS payments,\n       ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM payments), 1) AS pct\nFROM payments\nGROUP BY first_digit\nORDER BY first_digit;'],
+      ['Vendor and employee matches', 'SELECT v.vendor_id, v.name AS vendor, e.emp_id, e.name AS employee, e.department,\n       CASE WHEN v.address = e.address THEN \'address\' ELSE \'bank account\' END AS matched_on\nFROM vendors v\nJOIN employees e ON v.address = e.address OR v.bank_account = e.bank_account;'],
+      ['Weekend postings', 'SELECT payment_id, vendor_id, amount, posted_on,\n       CASE strftime(\'%w\', posted_on) WHEN \'0\' THEN \'Sunday\' ELSE \'Saturday\' END AS day\nFROM payments\nWHERE strftime(\'%w\', posted_on) IN (\'0\', \'6\');'],
+      ['Payments to inactive vendors', 'SELECT p.payment_id, p.vendor_id, v.name, v.inactive_date, p.invoice_date, p.amount\nFROM payments p\nJOIN vendors v ON v.vendor_id = p.vendor_id\nWHERE v.status = \'Inactive\' AND p.invoice_date > v.inactive_date;'],
+      ['Check a safeguard: who requested Pinecrest (V1016) payments?', 'SELECT requester, COUNT(*) AS payments, SUM(amount) AS total\nFROM payments\nWHERE vendor_id = \'V1016\'\nGROUP BY requester\nORDER BY payments DESC;']
+    ];
+    root.innerHTML =
+      '<div class="lb-tool">' +
+      '<div class="lb-tabs" role="tablist" aria-label="Workbench tools">' +
+        '<button role="tab" id="tb-sql" aria-controls="pn-sql" aria-selected="true">SQL console</button>' +
+        '<button role="tab" id="tb-docs" aria-controls="pn-docs" aria-selected="false" tabindex="-1">Documents</button>' +
+        '<button role="tab" id="tb-schema" aria-controls="pn-schema" aria-selected="false" tabindex="-1">Schema</button></div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-sql" aria-labelledby="tb-sql">' +
+        '<div class="sq-bar"><label for="sq-tpl" class="sq-lab">Query templates</label><select id="sq-tpl"><option value="">Choose a test to load&hellip;</option>' + TEMPLATES.map(function (t, i) { return '<option value="' + i + '">' + esc(t[0]) + '</option>'; }).join('') + '</select>' +
+        '<span class="sq-status" id="sq-status" role="status">Loading the SQL engine&hellip;</span></div>' +
+        '<label for="sq-ed" class="sr-only">SQL query</label><textarea id="sq-ed" class="sq-ed" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>' +
+        '<div class="sq-run"><button type="button" class="btn" id="sq-go" disabled>&#9654; Run query</button><span class="sq-kbd">Ctrl + Enter</span><button type="button" class="btn ghost" id="sq-clear">Clear</button></div>' +
+        '<div id="sq-out" class="sq-out" aria-live="polite"></div></div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-docs" aria-labelledby="tb-docs" hidden>' + DOCS() + '</div>' +
+      '<div class="lb-panel" role="tabpanel" id="pn-schema" aria-labelledby="tb-schema" hidden>' + SCHEMA() + '</div>' +
+      '</div>';
+
+    // Tabs (arrow-key navigation)
+    var tabs = [].slice.call(root.querySelectorAll('[role=tab]'));
+    function sel(t) { tabs.forEach(function (x) { var on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); api.note('tab', t.id); }
+    tabs.forEach(function (t, i) { t.addEventListener('click', function () { sel(t); }); t.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; sel(n); n.focus(); } }); });
+    if (api.note('tab')) { var tt = document.getElementById(api.note('tab')); if (tt) sel(tt); }
+
+    var ed = root.querySelector('#sq-ed'), out = root.querySelector('#sq-out'), go = root.querySelector('#sq-go'), status = root.querySelector('#sq-status');
+    ed.value = api.note('sql') || '-- Write a query, or load one from Query templates.\nSELECT COUNT(*) AS payments, ROUND(SUM(amount), 2) AS total_paid FROM payments;';
+    ed.addEventListener('input', function () { api.note('sql', ed.value); });
+    ed.addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); } if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey) { /* allow normal focus movement for keyboard users */ } });
+    root.querySelector('#sq-tpl').addEventListener('change', function (e) { if (e.target.value === '') return; ed.value = TEMPLATES[+e.target.value][1]; api.note('sql', ed.value); e.target.value = ''; ed.focus(); });
+    root.querySelector('#sq-clear').addEventListener('click', function () { ed.value = ''; api.note('sql', ''); out.innerHTML = ''; ed.focus(); });
+    go.addEventListener('click', run);
+
+    function fmt(v) { if (v === null) return '<span class="sq-null">NULL</span>'; return esc(typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(2) : v); }
+    function run() {
+      if (!window.B1DB) return;
+      var sql = ed.value.trim(); if (!sql) return;
+      if (/\b(insert|update|delete|drop|alter|create|replace|attach|pragma)\b/i.test(sql.replace(/'[^']*'/g, ''))) { out.innerHTML = '<div class="rationale show bad"><b>Read-only access.</b> This database allows SELECT queries only.</div>'; return; }
+      var t0 = performance.now();
+      try {
+        var res = window.B1DB.exec(sql), ms = Math.round(performance.now() - t0);
+        if (!res.length) { out.innerHTML = '<p class="sq-meta">Query ran in ' + ms + ' ms and returned no rows.</p>'; return; }
+        var r = res[res.length - 1], shown = r.values.slice(0, 200);
+        out.innerHTML = '<p class="sq-meta">' + r.values.length + ' row' + (r.values.length === 1 ? '' : 's') + ' &middot; ' + ms + ' ms' + (r.values.length > 200 ? ' &middot; showing the first 200' : '') + '</p>' +
+          '<div class="table-wrap sq-res"><table class="data"><thead><tr>' + r.columns.map(function (c) { return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          shown.map(function (row) { return '<tr>' + row.map(function (c) { return '<td>' + fmt(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
+      } catch (err) { out.innerHTML = '<div class="rationale show bad"><b>SQL error.</b> ' + esc(err.message) + '</div>'; }
+    }
+
+    function ready() { status.textContent = 'Ready: ' + data.payments.length.toLocaleString() + ' payments, ' + data.vendors.length + ' vendors, ' + data.employees.length + ' employees'; status.className = 'sq-status ok'; go.disabled = false; }
+    if (window.B1DB) ready();
+    else if (typeof initSqlJs !== 'function') { status.textContent = 'The SQL engine could not load. Check the internet connection, then reload the page.'; status.className = 'sq-status bad'; }
+    else initSqlJs({ locateFile: function (f) { return 'https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/' + f; } }).then(function (SQL) {
+      var db = new SQL.Database();
+      db.run('CREATE TABLE employees (emp_id TEXT PRIMARY KEY, name TEXT, department TEXT, address TEXT, city TEXT, bank_account TEXT);' +
+        'CREATE TABLE vendors (vendor_id TEXT PRIMARY KEY, name TEXT, address TEXT, city TEXT, bank_account TEXT, status TEXT, inactive_date TEXT, created_date TEXT);' +
+        'CREATE TABLE payments (payment_id TEXT PRIMARY KEY, vendor_id TEXT, invoice_no TEXT, invoice_date TEXT, amount REAL, requester TEXT, approver TEXT, posted_on TEXT);');
+      db.run('BEGIN');
+      var s1 = db.prepare('INSERT INTO employees VALUES (?,?,?,?,?,?)'); data.employees.forEach(function (e) { s1.run([e.emp_id, e.name, e.department, e.address, e.city, e.bank_account]); }); s1.free();
+      var s2 = db.prepare('INSERT INTO vendors VALUES (?,?,?,?,?,?,?,?)'); data.vendors.forEach(function (v) { s2.run([v.vendor_id, v.name, v.address, v.city, v.bank_account, v.status, v.inactive_date, v.created_date]); }); s2.free();
+      var s3 = db.prepare('INSERT INTO payments VALUES (?,?,?,?,?,?,?,?)'); data.payments.forEach(function (p) { s3.run([p.payment_id, p.vendor_id, p.invoice_no, p.invoice_date, p.amount, p.requester, p.approver, p.posted_on]); }); s3.free();
+      db.run('COMMIT');
+      window.B1DB = db; ready();
+    }).catch(function (e) { status.textContent = 'The SQL engine could not start: ' + e.message; status.className = 'sq-status bad'; });
+
+    function DOCS() {
+      var bf = [[1, 30.1], [2, 17.6], [3, 12.5], [4, 9.7], [5, 7.9], [6, 6.7], [7, 5.8], [8, 5.1], [9, 4.6]];
+      return '<div class="lb-doc"><p class="eyebrow">Document 1</p><h4>Accounts Payable Policy AP-04 (excerpt)</h4><ul>' +
+        '<li>Invoices of $10,000 or more require a second approval by the finance director. Invoices below $10,000 require one manager approval.</li>' +
+        '<li>Splitting a purchase into smaller invoices to avoid the second approval is prohibited.</li>' +
+        '<li>Vendors are set up by the procurement team after independent verification. Accounts payable staff enter invoices and do not maintain vendor records.</li>' +
+        '<li>Employees may not request, approve, or process payments to a vendor in which they or a family member hold an interest, unless the interest is disclosed and approved under the Conflict of Interest Policy, with stated safeguards.</li>' +
+        '<li>Payments to vendors with Inactive status are blocked. Payments post in the scheduled weekday batch.</li></ul></div>' +
+        '<div class="lb-doc"><p class="eyebrow">Document 2</p><h4>Related-party disclosure register (approved entries)</h4><div class="table-wrap"><table class="data"><thead><tr><th>Employee</th><th>Vendor</th><th>Relationship</th><th>Approved</th><th>Safeguard</th></tr></thead><tbody>' +
+        '<tr><td>E251, Quality</td><td>V1016, Pinecrest Lab Services</td><td>Spouse is the owner</td><td>Audit committee, March 2022</td><td>E251 may not request or approve Pinecrest invoices</td></tr>' +
+        '<tr><td>E214, Sales</td><td>V1029, Elmstreet Legal Group</td><td>Sibling is a partner</td><td>Audit committee, May 2023</td><td>Legal invoices approved by the CFO only</td></tr></tbody></table></div>' +
+        '<p class="lead-p" style="margin-top:.6rem">No other related-party relationships have been disclosed.</p></div>' +
+        '<div class="lb-doc"><p class="eyebrow">Document 3</p><h4>Benford’s law: expected first-digit frequency</h4><div class="table-wrap"><table class="data"><thead><tr><th>First digit</th>' + bf.map(function (b) { return '<th>' + b[0] + '</th>'; }).join('') + '</tr></thead><tbody><tr><td>Expected %</td>' + bf.map(function (b) { return '<td>' + b[1] + '</td>'; }).join('') + '</tr></tbody></table></div>' +
+        '<p class="lead-p" style="margin-top:.6rem">Naturally occurring financial amounts that span several orders of magnitude tend to follow this pattern. Large deviations do not prove fraud. They point the auditor to where further testing is needed.</p></div>';
+    }
+    function SCHEMA() {
+      function tbl(name, n, cols) { return '<div class="lb-doc"><h4>' + name + ' <span class="lb-pts">' + n + ' rows</span></h4><div class="table-wrap"><table class="data"><thead><tr><th>Column</th><th>Description</th></tr></thead><tbody>' + cols.map(function (c) { return '<tr><td><code>' + c[0] + '</code></td><td>' + c[1] + '</td></tr>'; }).join('') + '</tbody></table></div></div>'; }
+      return tbl('payments', data.payments.length.toLocaleString(), [['payment_id', 'Unique payment ID, such as P10001'], ['vendor_id', 'Vendor paid (joins to vendors)'], ['invoice_no', 'Vendor invoice number'], ['invoice_date', 'Invoice date, YYYY-MM-DD'], ['amount', 'Amount paid, US dollars'], ['requester', 'Employee who requested the purchase (joins to employees.emp_id)'], ['approver', 'Employee who approved the invoice'], ['posted_on', 'Date the payment posted, YYYY-MM-DD']]) +
+        tbl('vendors', data.vendors.length, [['vendor_id', 'Unique vendor ID, such as V1001'], ['name', 'Vendor name'], ['address', 'Street address'], ['city', 'City and state'], ['bank_account', 'Remittance bank account number'], ['status', 'Active or Inactive'], ['inactive_date', 'Date the vendor was deactivated, if any'], ['created_date', 'Date the vendor record was created']]) +
+        tbl('employees', data.employees.length, [['emp_id', 'Unique employee ID, such as E201'], ['name', 'Employee name'], ['department', 'Department'], ['address', 'Home street address'], ['city', 'City and state'], ['bank_account', 'Payroll direct-deposit account']]) +
+        '<p class="lead-p">The database is SQLite. Useful functions: <code>strftime(\'%w\', date)</code> for day of week (0 = Sunday), <code>substr(text, start, length)</code>, <code>CAST(x AS TEXT)</code>, <code>GROUP_CONCAT(col)</code>, <code>ROUND(x, 1)</code>.</p>';
+    }
+  }
+};
+</script>
+<script src="lab.js"></script>
+</body>
+</html>
