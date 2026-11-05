@@ -165,9 +165,79 @@
     }).join('');
   }
 
+  /* ---------- Pop-out windows (shared by labs and activities) ---------- */
+  var POPS = [];
+  function popCourse() { var parts = document.title.split(' | '); return parts.length > 1 ? parts[parts.length - 1] : ''; }
+  function popDocHTML(kicker, sub, bodyHTML, note) {
+    var css = [].map.call(document.querySelectorAll('link[rel="stylesheet"]'), function (l) { return '<link rel="stylesheet" href="' + esc(l.href) + '">'; }).join('') +
+      [].map.call(document.querySelectorAll('style'), function (s) { return '<style>' + s.textContent + '</style>'; }).join('');
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="color-scheme" content="light">' +
+      '<base href="' + esc(location.href) + '"><title>' + esc(sub) + ' | ' + esc(kicker) + '</title>' + css + '</head><body class="px-popwin">' +
+      '<header class="px-pop-head"><div><p class="px-pop-kicker">' + esc(kicker) + '</p><h1>' + esc(sub) + '</h1>' + (note ? '<p class="px-pop-note">' + esc(note) + '</p>' : '') + '</div>' +
+      '<div class="px-pop-actions"><button type="button" class="btn secondary" onclick="window.print()">Print</button><button type="button" class="btn ghost" onclick="window.close()">Close</button></div></header>' +
+      '<main class="px-pop-main" id="px-pop-main">' + bodyHTML + '</main></body></html>';
+  }
+  function openPop(key, kicker, sub, snapshot, note, live) {
+    var w = window.open('', 'px-pop-' + key.replace(/[^a-z0-9]/gi, '-'), 'width=780,height=900,resizable=yes,scrollbars=yes');
+    if (!w) { alert('Your browser blocked the new window. Allow pop-ups for this page, then try again.'); return; }
+    var html = snapshot();
+    w.document.open(); w.document.write(popDocHTML(kicker, sub, html, note)); w.document.close();
+    try { w.focus(); } catch (e) { }
+    POPS = POPS.filter(function (p) { return p.key !== key; });
+    if (live) POPS.push({ key: key, w: w, snap: snapshot, last: html });
+  }
+  setInterval(function () {
+    POPS = POPS.filter(function (p) { try { return p.w && !p.w.closed; } catch (e) { return false; } });
+    POPS.forEach(function (p) {
+      try { var h = p.snap(); if (h && h !== p.last) { var m = p.w.document.getElementById('px-pop-main'); if (m) { m.innerHTML = h; p.last = h; } } } catch (e) { }
+    });
+  }, 1200);
+  // Read-only snapshot of a live element: copies form values, turns canvases into images, disables controls
+  function liveSnapshot(node, stopAt) {
+    var clone = node.cloneNode(true);
+    var sc = node.querySelectorAll('canvas'), dc = clone.querySelectorAll('canvas');
+    [].forEach.call(dc, function (c, i) { try { var img = document.createElement('img'); img.src = sc[i].toDataURL(); img.alt = c.getAttribute('aria-label') || 'Chart'; img.style.maxWidth = '100%'; c.parentNode.replaceChild(img, c); } catch (e) { } });
+    var si = node.querySelectorAll('input,select,textarea'), di = clone.querySelectorAll('input,select,textarea');
+    [].forEach.call(di, function (el, i) {
+      var o = si[i];
+      if (o) {
+        if (el.type === 'checkbox' || el.type === 'radio') { if (o.checked) el.setAttribute('checked', ''); else el.removeAttribute('checked'); }
+        else if (el.tagName === 'SELECT') { [].forEach.call(el.options, function (op, k) { if (k === o.selectedIndex) op.setAttribute('selected', ''); else op.removeAttribute('selected'); }); }
+        else if (el.tagName === 'TEXTAREA') el.textContent = o.value;
+        else el.setAttribute('value', o.value);
+      }
+      el.setAttribute('disabled', '');
+    });
+    [].forEach.call(clone.querySelectorAll('button'), function (b) { b.setAttribute('disabled', ''); });
+    clone.removeAttribute('hidden');
+    var html = clone.outerHTML, el = node.parentElement;
+    while (el && el !== stopAt && el !== document.body) {
+      html = '<div' + (el.id ? ' id="' + esc(el.id) + '"' : '') + (el.className && typeof el.className === 'string' ? ' class="' + esc(el.className) + '"' : '') + '>' + html + '</div>';
+      el = el.parentElement;
+    }
+    return html;
+  }
+
+  function hasFacts(st) {
+    return !!(st.table || (st.groups || []).some(function (g) { return g.text || g.table; }) ||
+      ((st.type === 'scenario' || st.type === 'calc') && (st.items || []).some(function (it) { return it.text || it.table; })));
+  }
+  function factsHTML(st) {
+    function block(title, text, table) { return '<div class="px-case-block">' + (title ? '<p class="eyebrow">' + esc(title) + '</p>' : '') + (text ? '<div class="px-case">' + esc(text) + '</div>' : '') + tableHTML(table) + '</div>'; }
+    var h = '<div class="px-content"><p class="lead-p">' + st.instr + '</p>' + tableHTML(st.table);
+    (st.groups || []).forEach(function (g) { if (g.text || g.table) h += block(g.title, g.text, g.table); });
+    if (st.type === 'scenario' || st.type === 'calc') (st.items || []).forEach(function (it) { if (it.text || it.table) h += block(it.title, it.text, it.table); });
+    return h + '</div>';
+  }
+  function openFacts(si) {
+    var st = stations[si];
+    openPop(cfg.id + '-s' + si, popCourse() + ' · Activity ' + cfg.id + ': ' + cfg.title, 'Station ' + (si + 1) + ': ' + st.title,
+      function () { return factsHTML(st); }, 'Case facts only. Answer the questions in the main window.', false);
+  }
+
   /* ---------- Stations ---------- */
   function header(st, si) {
-    return '<p class="eyebrow">Station ' + (si + 1) + ' of ' + stations.length + '</p><h2 class="h2" id="px-h2" tabindex="-1">' + esc(st.title) + '</h2><div class="rule"></div><p class="lead-p">' + st.instr + '</p>' + tableHTML(st.table);
+    return '<p class="eyebrow">Station ' + (si + 1) + ' of ' + stations.length + '</p><h2 class="h2" id="px-h2" tabindex="-1">' + esc(st.title) + '</h2><div class="rule"></div>' + (hasFacts(st) ? '<div class="px-viewbar"><button type="button" class="btn ghost" data-act="pop">Open case facts in new window &#8599;</button><span>Keep the scenario and tables in view while you answer.</span></div>' : '') + '<p class="lead-p">' + st.instr + '</p>' + tableHTML(st.table);
   }
   function actionsRow(si, canCheck, label) {
     var done = isDone(si), st = stations[si], sc = stationScore(si), res = '';
@@ -366,6 +436,7 @@
         var si = S.cur, st = stations[si];
         if (b.dataset.act === 'check') { S.checked[si] = true; S.attempts[si] = (S.attempts[si] || 0) + 1; save(); render(); }
         if (b.dataset.act === 'retry') { S.checked[si] = false; if (st.type !== 'reflect') S.ans[si] = {}; save(); render(); }
+        if (b.dataset.act === 'pop') { openFacts(si); return; }
         if (b.dataset.act === 'hint') {
           var box = document.getElementById('px-hintbox'), open = b.getAttribute('aria-expanded') === 'true';
           box.innerHTML = open ? '' : '<div class="tip"><span class="tip-label">&#128161; Hint</span>' + st.hint + '</div>';

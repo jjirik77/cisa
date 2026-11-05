@@ -160,6 +160,101 @@
       (L.howTo ? '<div class="tip"><span class="tip-label">&#128161; How this lab works</span>' + L.howTo + '</div>' : '') + '</div>';
   }
 
+  /* ---------- Pop-out windows (shared by labs and activities) ---------- */
+  var POPS = [];
+  function popCourse() { var parts = document.title.split(' | '); return parts.length > 1 ? parts[parts.length - 1] : ''; }
+  function popDocHTML(kicker, sub, bodyHTML, note) {
+    var css = [].map.call(document.querySelectorAll('link[rel="stylesheet"]'), function (l) { return '<link rel="stylesheet" href="' + esc(l.href) + '">'; }).join('') +
+      [].map.call(document.querySelectorAll('style'), function (s) { return '<style>' + s.textContent + '</style>'; }).join('');
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="color-scheme" content="light">' +
+      '<base href="' + esc(location.href) + '"><title>' + esc(sub) + ' | ' + esc(kicker) + '</title>' + css + '</head><body class="px-popwin">' +
+      '<header class="px-pop-head"><div><p class="px-pop-kicker">' + esc(kicker) + '</p><h1>' + esc(sub) + '</h1>' + (note ? '<p class="px-pop-note">' + esc(note) + '</p>' : '') + '</div>' +
+      '<div class="px-pop-actions"><button type="button" class="btn secondary" onclick="window.print()">Print</button><button type="button" class="btn ghost" onclick="window.close()">Close</button></div></header>' +
+      '<main class="px-pop-main" id="px-pop-main">' + bodyHTML + '</main></body></html>';
+  }
+  function openPop(key, kicker, sub, snapshot, note, live) {
+    var w = window.open('', 'px-pop-' + key.replace(/[^a-z0-9]/gi, '-'), 'width=780,height=900,resizable=yes,scrollbars=yes');
+    if (!w) { alert('Your browser blocked the new window. Allow pop-ups for this page, then try again.'); return; }
+    var html = snapshot();
+    w.document.open(); w.document.write(popDocHTML(kicker, sub, html, note)); w.document.close();
+    try { w.focus(); } catch (e) { }
+    POPS = POPS.filter(function (p) { return p.key !== key; });
+    if (live) POPS.push({ key: key, w: w, snap: snapshot, last: html });
+  }
+  setInterval(function () {
+    POPS = POPS.filter(function (p) { try { return p.w && !p.w.closed; } catch (e) { return false; } });
+    POPS.forEach(function (p) {
+      try { var h = p.snap(); if (h && h !== p.last) { var m = p.w.document.getElementById('px-pop-main'); if (m) { m.innerHTML = h; p.last = h; } } } catch (e) { }
+    });
+  }, 1200);
+  // Read-only snapshot of a live element: copies form values, turns canvases into images, disables controls
+  function liveSnapshot(node, stopAt) {
+    var clone = node.cloneNode(true);
+    var sc = node.querySelectorAll('canvas'), dc = clone.querySelectorAll('canvas');
+    [].forEach.call(dc, function (c, i) { try { var img = document.createElement('img'); img.src = sc[i].toDataURL(); img.alt = c.getAttribute('aria-label') || 'Chart'; img.style.maxWidth = '100%'; c.parentNode.replaceChild(img, c); } catch (e) { } });
+    var si = node.querySelectorAll('input,select,textarea'), di = clone.querySelectorAll('input,select,textarea');
+    [].forEach.call(di, function (el, i) {
+      var o = si[i];
+      if (o) {
+        if (el.type === 'checkbox' || el.type === 'radio') { if (o.checked) el.setAttribute('checked', ''); else el.removeAttribute('checked'); }
+        else if (el.tagName === 'SELECT') { [].forEach.call(el.options, function (op, k) { if (k === o.selectedIndex) op.setAttribute('selected', ''); else op.removeAttribute('selected'); }); }
+        else if (el.tagName === 'TEXTAREA') el.textContent = o.value;
+        else el.setAttribute('value', o.value);
+      }
+      el.setAttribute('disabled', '');
+    });
+    [].forEach.call(clone.querySelectorAll('button'), function (b) { b.setAttribute('disabled', ''); });
+    clone.removeAttribute('hidden');
+    var html = clone.outerHTML, el = node.parentElement;
+    while (el && el !== stopAt && el !== document.body) {
+      html = '<div' + (el.id ? ' id="' + esc(el.id) + '"' : '') + (el.className && typeof el.className === 'string' ? ' class="' + esc(el.className) + '"' : '') + '>' + html + '</div>';
+      el = el.parentElement;
+    }
+    return html;
+  }
+
+  function ticketSnap() {
+    var t = L.ticket;
+    return '<div class="lb-ticket"><div class="lb-ticket-head"><span class="lb-tno">' + esc(t.number) + '</span><span class="lb-prio">' + esc(t.priority || 'Normal priority') + '</span></div>' +
+      '<dl class="lb-meta"><dt>From</dt><dd>' + esc(t.from) + '</dd><dt>To</dt><dd>' + esc(t.to) + '</dd><dt>Subject</dt><dd><b>' + esc(t.subject) + '</b></dd>' + (t.due ? '<dt>Due</dt><dd>' + esc(t.due) + '</dd>' : '') + '</dl>' +
+      '<div class="lb-body">' + t.body + '</div></div>';
+  }
+  function popTargets() {
+    var tool = document.getElementById('lb-tool');
+    var out = [{ key: 'ticket', name: 'Ticket brief', snap: ticketSnap, live: false }];
+    if (!tool) return out;
+    var panels = [].filter.call(tool.querySelectorAll('[role="tabpanel"]'), function (p) { return !(p.parentElement && p.parentElement.closest('[role="tabpanel"]')); });
+    if (!panels.length) out.push({ key: 'tool', name: STEPS[1].title, live: true, snap: function () { var t = document.getElementById('lb-tool'); return t && t.firstElementChild ? liveSnapshot(t.firstElementChild, t.parentElement) : null; } });
+    panels.forEach(function (p, i) {
+      var id = p.id, lb = p.getAttribute('aria-labelledby');
+      var tab = (lb && document.getElementById(lb)) || (id && tool.querySelector('[aria-controls="' + id + '"]'));
+      var name = (tab ? tab.textContent : 'Panel ' + (i + 1)).replace(/\s+/g, ' ').trim();
+      out.push({ key: 'p-' + (id || i), name: name, live: true, snap: function () {
+        var t = document.getElementById('lb-tool'), el = id ? document.getElementById(id) : null;
+        return el && t ? liveSnapshot(el, t.parentElement) : null;
+      } });
+    });
+    return out;
+  }
+  function setupViewbar() {
+    var sel = document.getElementById('lb-pop-sel'), go = document.getElementById('lb-pop-go'), sb = document.getElementById('lb-split-btn');
+    if (!sel || !go || !sb) return;
+    var T = popTargets();
+    sel.innerHTML = T.map(function (t, i) { return '<option value="' + i + '">' + esc(t.name) + '</option>'; }).join('');
+    var cur = document.querySelector('#lb-tool [role="tab"][aria-selected="true"]');
+    if (cur) T.forEach(function (t, i) { if (t.name === cur.textContent.replace(/\s+/g, ' ').trim()) sel.value = String(i); });
+    go.onclick = function () {
+      var t = popTargets()[+sel.value]; if (!t) return;
+      openPop(L.id + '-' + t.key, popCourse() + ' · Lab ' + L.id + ': ' + L.title, t.name,
+        function () { return t.snap() || '<p class="lead-p">Open the workbench in the main window to refresh this view.</p>'; },
+        t.live ? 'Live, read-only view. It updates as you work in the main window.' : 'Read-only copy of the ticket.', t.live);
+    };
+    sb.setAttribute('aria-pressed', S.split ? 'true' : 'false');
+    sb.textContent = S.split ? 'Stacked view' : 'Side-by-side view';
+    sb.onclick = function () { S.split = !S.split; save(); applySplit(); setupViewbar(); try { window.dispatchEvent(new Event('resize')); } catch (e) { } };
+  }
+  function applySplit() { document.body.classList.toggle('lb-split-on', !!S.split && S.step === 1); }
+
   /* ---------- Step 2: workbench + checklist ---------- */
   function itemHTML(it, i) {
     var st = S.st[it.id], g = S.a[it.id], locked = st === 'ok';
@@ -186,10 +281,15 @@
   function renderWork(card) {
     card.innerHTML = '<p class="eyebrow">Step 2 of 3</p><h2 class="h2" id="px-h2" tabindex="-1">' + esc(STEPS[1].title) + '</h2><div class="rule"></div>' +
       (L.workIntro ? '<p class="lead-p">' + L.workIntro + '</p>' : '') +
-      '<div id="lb-tool"></div>' +
-      '<h3 class="lb-h3" id="lb-checklist">Checklist</h3><div class="quiz-card" id="lb-items">' + items.map(itemHTML).join('') + '</div>';
+      '<div class="lb-viewbar" role="group" aria-label="View options"><span class="lb-viewbar-label">Keep the facts in view</span>' +
+        '<label class="sr-only" for="lb-pop-sel">Choose what to open in a new window</label><select id="lb-pop-sel"></select>' +
+        '<button type="button" class="btn ghost" id="lb-pop-go">Open in new window &#8599;</button>' +
+        '<button type="button" class="btn ghost" id="lb-split-btn" aria-pressed="false">Side-by-side view</button></div>' +
+      '<div class="lb-split" id="lb-split"><div class="lb-split-tool"><div id="lb-tool"></div></div>' +
+      '<div class="lb-split-list"><h3 class="lb-h3" id="lb-checklist">Checklist</h3><div class="quiz-card" id="lb-items">' + items.map(itemHTML).join('') + '</div></div></div>';
     L.workbench(document.getElementById('lb-tool'), API);
     wireItems();
+    setupViewbar();
   }
   function rerenderItem(i, focusSel) {
     var el = document.getElementById('ci-' + i); if (!el) return;
@@ -275,6 +375,7 @@
     stage.innerHTML = '<section class="block" id="lb-card" style="margin-bottom:0"></section>' + pager();
     var card = document.getElementById('lb-card');
     [renderBrief, renderWork, renderReport][S.step](card);
+    applySplit();
     stage.querySelectorAll('[data-nav]').forEach(function (b) {
       b.addEventListener('click', function (e) {
         var n = b.dataset.nav; e.preventDefault();

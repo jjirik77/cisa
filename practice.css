@@ -248,3 +248,38 @@ fieldset.options legend.sr-only { position: absolute; }
 
 /* Headings receive programmatic focus on step change; they are not interactive, so no outline */
 #px-h2:focus, #px-h2:focus-visible { outline: none; }
+
+/* ===================== View tools: pop-out windows and side-by-side ===================== */
+.lb-viewbar, .px-viewbar { display: flex; flex-wrap: wrap; gap: .5rem .7rem; align-items: center; margin: 0 0 1rem; padding: .6rem .8rem; background: var(--blue-pale); border: 1px solid var(--blue-pale-border); border-radius: 4px; font: .8rem/1.4 Arial, sans-serif; color: var(--text-secondary); }
+.lb-viewbar-label { font: 700 .68rem Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); }
+.lb-viewbar select { font: .84rem Arial, sans-serif; padding: .42rem .55rem; border: 1px solid var(--border); border-radius: 4px; background: #fff; color: var(--text-primary); max-width: 100%; }
+.lb-viewbar .btn, .px-viewbar .btn { padding: .45rem .9rem; font-size: .72rem; }
+.lb-viewbar .btn[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+@media (min-width: 1100px) {
+  body.lb-split-on .px-layout { grid-template-columns: minmax(0, 1fr); max-width: 1720px; }
+  body.lb-split-on .px-rail { display: none; }
+  body.lb-split-on #app .lesson-hero-inner { max-width: 1656px; }
+  body.lb-split-on .lb-split { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(380px, 1fr); gap: 1.4rem; align-items: start; }
+  body.lb-split-on .lb-split-tool, body.lb-split-on .lb-split-list { position: sticky; top: 72px; max-height: calc(100vh - 86px); overflow: auto; overscroll-behavior: contain; }
+  body.lb-split-on .lb-split-list .lb-h3 { margin-top: 0; position: sticky; top: 0; z-index: 2; background: var(--body-bg); padding: .1rem 0 .5rem; }
+}
+@media (max-width: 1099px) { #lb-split-btn { display: none; } }
+
+/* Pop-out window document */
+body.px-popwin { margin: 0; background: var(--body-bg); }
+.px-pop-head { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: var(--card-bg); border-bottom: 3px solid var(--gold); padding: .7rem 1.1rem; }
+.px-pop-kicker { margin: 0; font: 700 .64rem Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); }
+.px-pop-head h1 { margin: .15rem 0 0; font: 700 1.2rem/1.25 Georgia, serif; color: var(--text-primary); }
+.px-pop-note { margin: .2rem 0 0; font: .74rem Arial, sans-serif; color: var(--text-muted); }
+.px-pop-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+.px-pop-actions .btn { padding: .45rem .9rem; font-size: .72rem; }
+.px-pop-main { padding: 1rem 1.1rem 2rem; }
+.px-pop-main [role="tabpanel"] { display: block !important; }
+.px-pop-main [disabled], .px-pop-main button, .px-pop-main select, .px-pop-main input, .px-pop-main textarea, .px-pop-main summary { pointer-events: none; cursor: default; }
+.px-pop-main button[disabled] { opacity: .7; }
+@media print {
+  .lb-viewbar, .px-viewbar { display: none !important; }
+  body.px-popwin .px-pop-actions { display: none !important; }
+  body.px-popwin .px-pop-head { position: static; }
+  body.px-popwin .lb-tool, body.px-popwin #lb-tool { display: block !important; }
+}
